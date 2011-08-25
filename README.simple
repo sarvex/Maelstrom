@@ -14,15 +14,6 @@ The latest GPL'd version of Maelstrom is available at:
 The original Macintosh version of this game is available at:
 	http://www.ambrosiasw.com/
 
-Check out the file "INSTALL" in the source distribution for instructions
-on building and installing Maelstrom from source code.
-
-Check out the file "README.network" for information on how to play
-networked Maelstrom.
-
-See the file "README.options" for more information on the command line
-options and compile-time features.
-
 The Docs directory contains FAQs, press-releases, and technical notes
 about the Maelstrom porting process.
 

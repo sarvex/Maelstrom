@@ -51,6 +51,7 @@ EXTRA_DIST =			\
 	README.joystick		\
 	README.network		\
 	README.options		\
+	README.simple		\
 	COPYING			\
 	COPYING.GPL		\
 	Images			\
@@ -80,7 +81,7 @@ install_gamedata:
 
 install_gamedocs:
 	sh mkinstalldirs $(target)/
-	cp -rv README* COPYING* Docs*	$(target)/
+	cp -rv README* COPYING* Docs	$(target)/
 
 # Rule to build tar-gzipped distribution package
 $(PACKAGE)-$(VERSION).tar.gz: dist
@@ -88,3 +89,28 @@ $(PACKAGE)-$(VERSION).tar.gz: dist
 # Rule to build RPM distribution package
 rpm: $(PACKAGE)-$(VERSION).tar.gz
 	rpm -ta $(PACKAGE)-$(VERSION).tar.gz
+
+# Rule to build a Mac OS X application
+Maelstrom.app: Maelstrom
+	unzip $@.zip
+	cp $< $@/Contents/MacOS/$<
+	strip $@/Contents/MacOS/$<
+	install_name_tool -change `otool -L $< | fgrep libSDL-1.2.0.dylib | awk '{print $$1}'` @executable_path/../Frameworks/libSDL-1.2.0.dylib $@/Contents/MacOS/$<
+	install_name_tool -change `otool -L $< | fgrep libSDL_net-1.2.0.dylib | awk '{print $$1}'` @executable_path/../Frameworks/libSDL_net-1.2.0.dylib $@/Contents/MacOS/$<
+	cp -rv Images			\
+	       Maelstrom_Fonts		\
+	       Maelstrom_Sounds		\
+	       Maelstrom_Sprites	\
+	       Maelstrom-Scores		\
+	       icon.bmp			$@/Contents/Resources/
+	chmod 666 $@/Contents/Resources/Maelstrom-Scores
+
+Maelstrom.dmg: Maelstrom.app
+	-mkdir tmp
+	mv $< tmp/
+	cp README.simple tmp/README.txt
+	cp COPYING tmp/COPYING.txt
+	cp COPYING.GPL tmp/
+	cp -r Docs tmp/
+	hdiutil create -fs HFS+ -srcfolder tmp -volname "Maelstrom" $@
+	$(RM) -r tmp

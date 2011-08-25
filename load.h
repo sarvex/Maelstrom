@@ -45,13 +45,18 @@ static inline char *strdup(const char *str)
 #error Unspecified platform!
 #endif /* Choose your platform */
 
+#if defined(__MACOSX__)
+#undef LIBDIR
+#define LIBDIR	"Maelstrom.app/Contents/Resources"
+#else
 #ifndef LIBDIR
-#if defined(unix) || defined(__MACH__)
+#if defined(unix)
 #define LIBDIR	"/usr/local/lib/Maelstrom"
 #else
 #define LIBDIR	CUR_DIR
 #endif
 #endif /* !defined(LIBDIR) */
+#endif /* defined(__MACOSX__) */
 
 #ifndef IMAGEDIR
 #define IMAGEDIR "Images"DIR_SEP

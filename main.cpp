@@ -192,9 +192,15 @@ int main(int argc, char *argv[])
 	}
 
 	/* Parse command line arguments */
+#ifdef __MACOSX__
+	video_flags |= SDL_FULLSCREEN;
+#endif
 	for ( progname=argv[0]; --argc; ++argv ) {
 		if ( strcmp(argv[1], "-fullscreen") == 0 ) {
 			video_flags |= SDL_FULLSCREEN;
+		} else
+		if ( strcmp(argv[1], "-windowed") == 0 ) {
+			video_flags &= ~SDL_FULLSCREEN;
 		} else
 		if ( strcmp(argv[1], "-gamma") == 0 ) {
 			int gammacorrect;
