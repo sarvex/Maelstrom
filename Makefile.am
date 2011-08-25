@@ -47,6 +47,7 @@ EXTRA_DIST =			\
 	MPWmake.sea.bin		\
 	CREDITS			\
 	Changelog		\
+	Docs			\
 	README.joystick		\
 	README.network		\
 	README.options		\
@@ -61,7 +62,7 @@ EXTRA_DIST =			\
 	icon.bmp icon.xpm	\
 	Maelstrom.spec
 
-DIST_SUBDIRS = $(SUBDIRS) Images Docs
+DIST_SUBDIRS = $(SUBDIRS)
 
 # Special install rule for the game
 install:

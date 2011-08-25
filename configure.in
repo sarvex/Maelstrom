@@ -120,7 +120,5 @@ Makefile
 netlogic/Makefile
 screenlib/Makefile
 maclib/Makefile
-Images/Makefile
-Docs/Makefile
 Maelstrom.spec
 ])
