@@ -156,7 +156,7 @@ int main(int argc, char *argv[])
 	signal(SIGTERM, CleanUp);
 
 	/* Show what audio format we're playing */
-	printf("Playing %#.2f seconds (%d bit %s) at %lu Hz\n", 
+	printf("Playing %#.2f seconds (%d bit %s) at %u Hz\n", 
 		(double)(wave->DataLeft()/wave->SampleSize())/wave->Frequency(),
 			wave->BitsPerSample(),
 			wave->Stereo() ? "stereo" : "mono", wave->Frequency());

@@ -10,6 +10,7 @@
 #include <sys/time.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include <netdb.h>
 #include <unistd.h>
 
@@ -156,7 +157,7 @@ printf("Let's party!!\n");
 		for ( i=0; i<numplayers; ++i ) {
 			connection *player = &players[positions[i]];
 
-			strcpy(ptr, (char *)inet_ntoa(player->raddr.sin_addr));
+			strcpy(ptr, inet_ntoa(player->raddr.sin_addr));
 printf("Setting up player %d at host %s and port ", i+1, ptr);
 			len += strlen(ptr)+1;
 			ptr += strlen(ptr)+1;
@@ -366,7 +367,7 @@ printf("Connection received on port %d\n", i);
 			players[slot].raddr.sin_port = 
 						htons((short)ntohl(cliport));
 printf("Player %d arrived on port %d\n", player+1, slot);
-printf("  the remote address is %s:%lu\n",
+printf("  the remote address is %s:%u\n",
 	inet_ntoa(players[slot].raddr.sin_addr),
 	ntohs(players[slot].raddr.sin_port));
 		}

@@ -229,7 +229,7 @@ error("\n");
 }
 
 /* Call this later, when you want to see the checksum */
-char *get_checksum(unsigned char *key, int keylen)
+const char *get_checksum(unsigned char *key, int keylen)
 {
 	unsigned char csum[MD5LEN], seed;
 	int i, j;
@@ -258,10 +258,10 @@ static inline void Unused(...) { }	/* For eliminating compiler warnings */
 
 void checksum(void) { return; }
 
-char *get_checksum(unsigned char *key, int keylen)
+const char *get_checksum(unsigned char *key, int keylen)
 {
 	Unused(key); Unused(keylen);
-	static char *foo = "Checksum Not Enabled";
+	static const char *foo = "Checksum Not Enabled";
 	return(foo);
 }
 #endif /* USE_CHECKSUM */

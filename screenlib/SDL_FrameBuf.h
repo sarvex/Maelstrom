@@ -130,7 +130,7 @@ public:
 
 	/* Area copy/dump routines */
 	SDL_Surface *GrabArea(Uint16 x, Uint16 y, Uint16 w, Uint16 h);
-	int ScreenDump(char *prefix, Uint16 x, Uint16 y, Uint16 w, Uint16 h);
+	int ScreenDump(const char *prefix, Uint16 x, Uint16 y, Uint16 w, Uint16 h);
 
 	/* Cursor handling routines */
 	void ShowCursor(void) {
@@ -139,7 +139,7 @@ public:
 	void HideCursor(void) {
 		SDL_ShowCursor(0);
 	}
-	void SetCaption(char *caption, char *icon = NULL) {
+	void SetCaption(const char *caption, const char *icon = NULL) {
 		if ( icon == NULL ) {
 			icon = caption;
 		}
@@ -161,7 +161,7 @@ private:
 	int locked, faded;
 
 	/* Error message */
-	void SetError(char *fmt, ...) {
+	void SetError(const char *fmt, ...) {
 		va_list ap;
 
 		va_start(ap, fmt);
