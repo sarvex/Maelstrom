@@ -36,10 +36,6 @@ Note: Most of the info in this file came from "Inside Macintosh"
 #include "bitesex.h"
 #include "Mac_Resource.h"
 
-#ifndef SEEK_SET
-#define SEEK_SET	0
-#endif
-
 /* The format for AppleDouble files -- in a header file */
 #define APPLEDOUBLE_MAGIC	0x00051607
 #include "applefile.h"
@@ -121,18 +117,18 @@ int Res_cmp(const void *A, const void *B)
    This function may be overkill, but I want to be able to find any Macintosh
    resource fork, darn it! :)
 */
-static void CheckAppleFile(FILE *resfile, Uint32 *resbase)
+static void CheckAppleFile(PHYSFS_File *resfile, Uint32 *resbase)
 {
 	ASHeader header;
-	if (fread(&header.magicNum,sizeof(header.magicNum),1,resfile)&&
+	if (PHYSFS_readBytes(resfile,&header.magicNum,sizeof(header.magicNum)) == sizeof(header.magicNum) &&
 		(bytesex32(header.magicNum) == APPLEDOUBLE_MAGIC) ) {
-		fread(&header.versionNum,
-				sizeof(header.versionNum), 1, resfile);
+		PHYSFS_readBytes(resfile, &header.versionNum,
+				sizeof(header.versionNum));
 		bytesex32(header.versionNum);
-		fread(&header.filler,
-				sizeof(header.filler), 1, resfile);
-		fread(&header.numEntries,
-				sizeof(header.numEntries), 1, resfile);
+		PHYSFS_readBytes(resfile, &header.filler,
+				sizeof(header.filler));
+		PHYSFS_readBytes(resfile, &header.numEntries,
+				sizeof(header.numEntries));
 		bytesex16(header.numEntries);
 #ifdef APPLEDOUBLE_DEBUG
 mesg("Header magic: 0x%.8x, version 0x%.8x\n",
@@ -145,7 +141,7 @@ mesg("Number of entries: %d, sizeof(entry) = %d\n",
 			header.numEntries, sizeof(entry));
 #endif
 		for ( int i = 0; i<header.numEntries; ++ i ) {
-			if (! fread(&entry, sizeof(entry), 1, resfile))
+			if (PHYSFS_readBytes(resfile, &entry, sizeof(entry)) != sizeof(entry))
 				break;
 			bytesex32(entry.entryID);
 			bytesex32(entry.entryOffset);
@@ -160,22 +156,22 @@ mesg("Entry (%d): ID = 0x%.8x, Offset = %d, Length = %d\n",
 			}
 		}
 	}
-	fseek(resfile, 0, SEEK_SET);
+	PHYSFS_seek(resfile, 0);
 }
-static void CheckMacBinary(FILE *resfile, Uint32 *resbase)
+static void CheckMacBinary(PHYSFS_File *resfile, Uint32 *resbase)
 {
 	MBHeader header;
-	if (fread(header.data,sizeof(header.data),1,resfile)&&
+	if ( PHYSFS_readBytes(resfile, header.data, sizeof(header.data)) == sizeof(header.data) &&
 		((header.Version()&MACBINARY_MASK) == MACBINARY_MAGIC) ) {
 		*resbase = sizeof(header.data) + header.DataLength();
 	}
-	fseek(resfile, 0, SEEK_SET);
+	PHYSFS_seek(resfile, 0);
 }
-static FILE *Open_MacRes(char **original, Uint32 *resbase)
+static PHYSFS_File *Open_MacRes(char **original, Uint32 *resbase)
 {
 	char *filename, *basename, *ptr, *newname;
 	const char *dirname;
-	FILE *resfile=NULL;
+	PHYSFS_File *resfile=NULL;
 
 	/* Search and replace characters */
 	const int N_SNRS = 2;
@@ -211,7 +207,7 @@ static FILE *Open_MacRes(char **original, Uint32 *resbase)
 		newname = new char[strlen(dirname)+2+1+strlen(basename)+1];
 		sprintf(newname, "%s%s%%%s", dirname, (*dirname ? "/" : ""),
 								basename);
-		if ( (resfile=fopen(newname, "rb")) != NULL ) {
+		if ( (resfile=PHYSFS_openRead(newname)) != NULL ) {
 			break;
 		}
 		delete[] newname;
@@ -220,7 +216,7 @@ static FILE *Open_MacRes(char **original, Uint32 *resbase)
 		newname = new char[strlen(dirname)+2+strlen(basename)+4+1];
 		sprintf(newname, "%s%s%s.bin", dirname, (*dirname ? "/" : ""),
 								basename);
-		if ( (resfile=fopen(newname, "rb")) != NULL ) {
+		if ( (resfile=PHYSFS_openRead(newname)) != NULL ) {
 			break;
 		}
 		delete[] newname;
@@ -229,7 +225,7 @@ static FILE *Open_MacRes(char **original, Uint32 *resbase)
 		newname = new char[strlen(dirname)+2+strlen(basename)+1];
 		sprintf(newname, "%s%s%s", dirname, (*dirname ? "/" : ""),
 								basename);
-		if ( (resfile=fopen(newname, "rb")) != NULL ) {
+		if ( (resfile=PHYSFS_openRead(newname)) != NULL ) {
 			break;
 		}
 	}
@@ -275,9 +271,9 @@ Mac_Resource:: Mac_Resource(const char *file)
 		/* Open_MacRes() passes back the real name of resource file */
 		delete[] filename;
 	}
-	fseek(filep, base, SEEK_SET);
+	PHYSFS_seek(filep, base);
 
-	if ( ! fread(&Header, sizeof(Header), 1, filep) ) {
+	if ( PHYSFS_readBytes(filep, &Header, sizeof(Header)) != sizeof(Header) ) {
 		error("Couldn't read resource info from '%s'", filename);
 		return;
 	}
@@ -287,8 +283,8 @@ Mac_Resource:: Mac_Resource(const char *file)
 	bytesex32(Header.map_length);
 	bytesex32(Header.map_offset);
 
-	fseek(filep, base+Header.map_offset, SEEK_SET);
-	if ( ! fread(&Map, sizeof(Map), 1, filep) ) {
+	PHYSFS_seek(filep, base+Header.map_offset);
+	if ( PHYSFS_readBytes(filep, &Map, sizeof(Map)) != sizeof(Map) ) {
 		error("Couldn't read resource info from '%s'", filename);
 		return;
 	}
@@ -304,9 +300,9 @@ Mac_Resource:: Mac_Resource(const char *file)
 		Resources[i].list = NULL;
 
 	ref_offsets = new Uint16[num_types];
-	fseek(filep, base+Header.map_offset+Map.types_offset+2, SEEK_SET);
+	PHYSFS_seek(filep, base+Header.map_offset+Map.types_offset+2);
 	for ( i=0; i<num_types; ++i ) {
-		if ( ! fread(&type_ent, sizeof(type_ent), 1, filep) ) {
+		if ( PHYSFS_readBytes(filep, &type_ent, sizeof(type_ent)) != sizeof(type_ent) ) {
 			error("Couldn't read resource info from '%s'",
 								filename);
 			delete[] ref_offsets;
@@ -328,11 +324,10 @@ Mac_Resource:: Mac_Resource(const char *file)
 	}
 
 	for ( i=0; i<num_types; ++i ) {
-		fseek(filep, 
-		base+Header.map_offset+Map.types_offset+ref_offsets[i],
-								SEEK_SET);
+		PHYSFS_seek(filep, 
+		base+Header.map_offset+Map.types_offset+ref_offsets[i]);
 		for ( n=0; n<Resources[i].count; ++n ) {
-			if ( ! fread(&ref_ent, sizeof(ref_ent), 1, filep) ) {
+			if ( PHYSFS_readBytes(filep, &ref_ent, sizeof(ref_ent)) != sizeof(ref_ent) ) {
 				error("Couldn't read resource info from '%s'",
 								filename);
 				delete[] ref_offsets;
@@ -351,16 +346,14 @@ Mac_Resource:: Mac_Resource(const char *file)
 				Resources[i].list[n].name = new char[1];
 				Resources[i].list[n].name[0] = '\0';
 			} else {
-				cur_offset = ftell(filep);
-				fseek(filep, 
-		base+Header.map_offset+Map.names_offset+ref_ent.Name_offset,
-								SEEK_SET);
-				fread(&name_len, 1, 1, filep);
+				cur_offset = PHYSFS_tell(filep);
+				PHYSFS_seek(filep, 
+		base+Header.map_offset+Map.names_offset+ref_ent.Name_offset);
+				PHYSFS_readBytes(filep, &name_len, 1);
 				Resources[i].list[n].name=new char[name_len+1];
-				fread(Resources[i].list[n].name,
-							1, name_len, filep);
+				PHYSFS_readBytes(filep, Resources[i].list[n].name, name_len);
 				Resources[i].list[n].name[name_len] = '\0';
-				fseek(filep, cur_offset, SEEK_SET);
+				PHYSFS_seek(filep, cur_offset);
 			}
 		}
 #ifndef macintosh
@@ -375,7 +368,7 @@ Mac_Resource:: Mac_Resource(const char *file)
 Mac_Resource:: ~Mac_Resource()
 {
 	if ( filep )
-		fclose(filep);
+		PHYSFS_close(filep);
 
 	if ( ! Resources )
 		return;
@@ -473,11 +466,11 @@ Mac_Resource:: Resource(const char *res_type, Uint16 id)
 
 					/* Load it */
 					d = new Mac_ResData;
-					fseek(filep, base+res_offset+Resources[i].list[n].offset, SEEK_SET);
-					fread(&d->length, 4, 1, filep);
+					PHYSFS_seek(filep, base+res_offset+Resources[i].list[n].offset);
+					PHYSFS_readBytes(filep, &d->length, 4);
 					bytesex32(d->length);
 					d->data = new Uint8[d->length];
-					if (!fread(d->data,d->length,1,filep)) {
+					if (PHYSFS_readBytes(filep, d->data, d->length) != d->length) {
 						delete[] d->data;
 						error("Couldn't read %d bytes", d->length);
 						delete d;
@@ -510,11 +503,11 @@ Mac_Resource:: Resource(const char *res_type, const char *name)
 
 					/* Load it */
 					d = new Mac_ResData;
-					fseek(filep, base+res_offset+Resources[i].list[n].offset, SEEK_SET);
-					fread(&d->length, 4, 1, filep);
+					PHYSFS_seek(filep, base+res_offset+Resources[i].list[n].offset);
+					PHYSFS_readBytes(filep, &d->length, 4);
 					bytesex32(d->length);
 					d->data = new Uint8[d->length];
-					if (!fread(d->data,d->length,1,filep)) {
+					if (PHYSFS_readBytes(filep, d->data, d->length) != d->length) {
 						delete[] d->data;
 						error("Couldn't read %d bytes", d->length);
 						delete d;

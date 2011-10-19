@@ -20,7 +20,7 @@
 extern int DoInitializations(Uint32 video_flags);		/* init.cc */
 
 static const char *Version =
-"Maelstrom v1.4.3 (GPL version 3.0.6) -- 10/19/2002 by Sam Lantinga\n";
+"Maelstrom v1.4.3 (GPL version 4.0.0) -- 10/08/2011 by Sam Lantinga\n";
 
 // Global variables set in this file...
 int	gStartLives;
@@ -154,6 +154,7 @@ void PrintUsage(void)
 	error("Usage: %s <options>\n\n", progname);
 	error("Where <options> can be any of:\n\n"
 "	-fullscreen		# Run Maelstrom in full-screen mode\n"
+"	-windowed		# Run Maelstrom in windowed mode\n"
 "	-gamma [0-8]		# Set the gamma correction\n"
 "	-volume [0-8]		# Set the sound volume\n"
 "	-netscores		# Use the world-wide network score server\n"
@@ -174,7 +175,20 @@ int main(int argc, char *argv[])
 
 	/* Normal variables */
 	SDL_Event event;
-	LibPath::SetExePath(argv[0]);
+
+	if ( !PHYSFS_init(argv[0]) ) {
+		error("Couldn't initialize PHYSFS: %s\n", PHYSFS_getLastError());
+		exit(1);
+	}
+	if ( !PHYSFS_setSaneConfig("galaxygameworks", "Maelstrom", NULL, 0, 0) ) {
+		error("Couldn't set PHYSFS config: %s\n", PHYSFS_getLastError());
+		exit(1);
+	}
+	if ( !PHYSFS_mount(argv[0], "/", 1) &&
+	     !PHYSFS_mount("Maelstrom_Data.zip", "/", 1) ) {
+		error("Can't find Maelstrom_Data.zip\n");
+		exit(1);
+	}
 
 #ifndef __WIN95__
 	/* The first thing we do is calculate our checksum */

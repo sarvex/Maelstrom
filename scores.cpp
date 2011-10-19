@@ -29,7 +29,6 @@ Scores hScores[NUM_SCORES];
 
 void LoadScores(void)
 {
-	LibPath path;
 	SDL_RWops *scores_src;
 	int i;
 
@@ -44,7 +43,7 @@ void LoadScores(void)
 	}
 	memset(&hScores, 0, sizeof(hScores));
 
-	scores_src = SDL_RWFromFile(path.Path(MAELSTROM_SCORES), "rb");
+	scores_src = PHYSFSRWOPS_openRead(MAELSTROM_SCORES);
 	if ( scores_src != NULL ) {
 		for ( i=0; i<NUM_SCORES; ++i ) {
 			SDL_RWread(scores_src, hScores[i].name,
@@ -58,7 +57,6 @@ void LoadScores(void)
 
 void SaveScores(void)
 {
-	LibPath path;
 	SDL_RWops *scores_src;
 	int i;
 #ifdef unix
@@ -72,7 +70,7 @@ void SaveScores(void)
 #ifdef unix
 	omask=umask(SCORES_PERMMASK);
 #endif
-	scores_src = SDL_RWFromFile(path.Path(MAELSTROM_SCORES), "wb");
+	scores_src = PHYSFSRWOPS_openWrite(MAELSTROM_SCORES);
 	if ( scores_src != NULL ) {
 		for ( i=0; i<NUM_SCORES; ++i ) {
 			SDL_RWwrite(scores_src, hScores[i].name,
@@ -83,7 +81,7 @@ void SaveScores(void)
 		SDL_RWclose(scores_src);
 	} else {
 		error("Warning: Couldn't save scores to %s\n",
-						path.Path(MAELSTROM_SCORES));
+						MAELSTROM_SCORES);
 	}
 #ifdef unix
 	umask(omask);

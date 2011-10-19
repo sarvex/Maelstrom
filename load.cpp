@@ -6,83 +6,16 @@
 
 #include "load.h"
 #include "myerror.h"
-#include "bitesex.h"
 
-
-/* For data loading */
-char *LibPath::exepath = NULL;
-
-SDL_Surface *Load_Icon(char **xpm)
-{
-	SDL_Surface *icon;
-	int width, height, num_colors, chars_per_pixel;
-	int index, i;
-	char *buf;
-	int b, p;
-	Uint8 rgb[3];
-
-	/* Figure out the size of the picture */
-	index = 0;
-	if ( sscanf(xpm[index++], "%d %d %d %d", &width, &height, &num_colors, 
-						&chars_per_pixel) != 4 ) {
-		SDL_SetError("Can't read XPM format");
-		return(NULL);
-	}
-
-	/* We only support 8-bit images, we punt here */
-	if ( chars_per_pixel != 1 ) {
-		SDL_SetError("Can't read XPM colors");
-		return(NULL);
-	}
-
-	/* Allocate a surface of the appropriate type */
-	icon = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 8, 0,0,0,0);
-	if ( icon == NULL ) {
-		return(NULL);
-	}
-
-	/* Fill in the palette */
-	for ( i=0; i<num_colors; ++i ) {
-		buf = xpm[index++];
-		p = *buf;
-		memset(rgb, 0, 3);
-		buf += 5;
-		for ( b=0; b<6; ++b ) {
-			rgb[b/2] *= 16;
-			if ( (*buf >= 'a') && (*buf <='f') ) {
-				rgb[b/2] += 10+*buf-'a';
-			} else
-			if ( (*buf >= 'A') && (*buf <='F') ) {
-				rgb[b/2] += 10+*buf-'A';
-			} else
-			if ( (*buf >= '0') && (*buf <='9') ) {
-				rgb[b/2] += *buf-'0';
-			}
-			++buf;
-		}
-		icon->format->palette->colors[p].r = rgb[0];
-		icon->format->palette->colors[p].g = rgb[1];
-		icon->format->palette->colors[p].b = rgb[2];
-	}
-
-	/* Fill in the pixels */
-	buf = (char *)icon->pixels;
-	for ( i=0; i<height; ++i ) {
-		memcpy(buf, xpm[index++], width);
-		buf += icon->pitch;
-	}
-	return(icon);
-}
 
 SDL_Surface *Load_Title(FrameBuf *screen, int title_id)
 {
 	char file[256];
-	LibPath path;
 	SDL_Surface *bmp, *title;
 	
 	/* Open the title file -- we know its colormap is our global one */
-	sprintf(file, IMAGEDIR"Maelstrom_Titles#%d.bmp", title_id);
-	bmp = SDL_LoadBMP(path.Path(file));
+	sprintf(file, "Images/Maelstrom_Titles#%d.bmp", title_id);
+	bmp = SDL_LoadBMP_RW(PHYSFSRWOPS_openRead(file), 1);
 	if ( bmp == NULL ) {
 		return(NULL);
 	}
@@ -96,17 +29,16 @@ SDL_Surface *Load_Title(FrameBuf *screen, int title_id)
 SDL_Surface *GetCIcon(FrameBuf *screen, short cicn_id)
 {
 	char file[256];
-	LibPath path;
 	SDL_Surface *cicn;
 	SDL_RWops *cicn_src;
 	Uint8 *pixels, *mask;
 	Uint16 w, h;
 	
 	/* Open the cicn sprite file.. */
-	sprintf(file, IMAGEDIR"Maelstrom_Icon#%hd.cicn", cicn_id);
-	if ( (cicn_src=SDL_RWFromFile(path.Path(file), "r")) == NULL ) {
+	sprintf(file, "Images/Maelstrom_Icon#%hd.cicn", cicn_id);
+	if ( (cicn_src=PHYSFSRWOPS_openRead(file)) == NULL ) {
 		error("GetCIcon(%hd): Can't open CICN %s: ",
-					cicn_id, path.Path(file));
+					cicn_id, file);
 		return(NULL);
 	}
 

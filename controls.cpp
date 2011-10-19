@@ -74,17 +74,10 @@ static FILE *OpenData(const char *mode, char **fname)
 	const char *home;
 	FILE *data;
 
-	if ( (home=getenv("HOME")) == NULL ) {
-		if ( strcmp(CUR_DIR, DIR_SEP) != 0 ) {
-			home = CUR_DIR;
-		} else {
-			home="";
-		}
-	}
 	if ( fname ) {
 		*fname = datafile;
 	}
-	sprintf(datafile,  "%s"DIR_SEP"%s", home, MAELSTROM_DATA);
+	sprintf(datafile,  "%s/%s", PHYSFS_getWriteDir(), MAELSTROM_DATA);
 	if ( (data=fopen(datafile, mode)) == NULL )
 		return(NULL);
 	return(data);

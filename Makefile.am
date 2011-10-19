@@ -24,6 +24,8 @@ Maelstrom_SOURCES =		\
 	myerror.h		\
 	netscore.cpp		\
 	netscore.h		\
+	physfsrwops.c		\
+	physfsrwops.h		\
 	public_key.h		\
 	rect.cpp		\
 	rect.h			\
@@ -54,34 +56,18 @@ EXTRA_DIST =			\
 	README.simple		\
 	COPYING			\
 	COPYING.GPL		\
-	Images			\
-	Maelstrom_Fonts		\
-	Maelstrom_Sounds	\
-	Maelstrom_Sprites	\
-	Maelstrom-Scores	\
+	Maelstrom_Data.zip	\
 	ico_o			\
-	icon.bmp icon.xpm	\
+	icon.xpm		\
 	Maelstrom.spec
 
 DIST_SUBDIRS = $(SUBDIRS)
 
-# Special install rule for the game
-install:
-	make install_gamedata target=@GAME_INSTALLDIR@
+install-exec-hook:
+	make append-data BINARY="$(DESTDIR)$(bindir)/Maelstrom$(EXEEXT)"
 
-install_gamedata:
-	sh mkinstalldirs $(target)/
-	cp -rv Images			\
-	       Maelstrom_Fonts		\
-	       Maelstrom_Sounds		\
-	       Maelstrom_Sprites	\
-	       Maelstrom-Scores		\
-	       icon.bmp icon.xpm	$(target)/
-	chmod 666 $(target)/Maelstrom-Scores
-
-install_gamedocs:
-	sh mkinstalldirs $(target)/
-	cp -rv README* COPYING* Docs	$(target)/
+append-data:
+	cat Maelstrom_Data.zip >>$(if $(BINARY),$(BINARY),Maelstrom$(EXEEXT))
 
 # Rule to build tar-gzipped distribution package
 $(PACKAGE)-$(VERSION).tar.gz: dist
@@ -91,19 +77,13 @@ rpm: $(PACKAGE)-$(VERSION).tar.gz
 	rpm -ta $(PACKAGE)-$(VERSION).tar.gz
 
 # Rule to build a Mac OS X application
-Maelstrom.app: Maelstrom
+Maelstrom.app: Maelstrom$(EXEEXT)
 	unzip $@.zip
 	cp $< $@/Contents/MacOS/$<
 	strip $@/Contents/MacOS/$<
 	install_name_tool -change `otool -L $< | fgrep libSDL-1.2.0.dylib | awk '{print $$1}'` @executable_path/../Frameworks/libSDL-1.2.0.dylib $@/Contents/MacOS/$<
 	install_name_tool -change `otool -L $< | fgrep libSDL_net-1.2.0.dylib | awk '{print $$1}'` @executable_path/../Frameworks/libSDL_net-1.2.0.dylib $@/Contents/MacOS/$<
-	cp -rv Images			\
-	       Maelstrom_Fonts		\
-	       Maelstrom_Sounds		\
-	       Maelstrom_Sprites	\
-	       Maelstrom-Scores		\
-	       icon.bmp			$@/Contents/Resources/
-	chmod 666 $@/Contents/Resources/Maelstrom-Scores
+	make append-data BINARY="$@/Contents/MacOS/$<"
 
 Maelstrom.dmg: Maelstrom.app
 	-mkdir tmp

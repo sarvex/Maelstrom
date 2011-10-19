@@ -65,6 +65,17 @@ http://www.devolution.com/~slouken/SDL/projects/SDL_net/
 ])
 fi
 
+dnl Check for physfs
+AC_CHECK_LIB(physfs, PHYSFS_init, have_physfs=yes)
+if test x$have_physfs = xyes; then
+    LIBS="$LIBS -lphysfs"
+else
+    AC_MSG_ERROR([*** Can't find the physfs library
+The physfs library can be found at:
+http://icculus.org/physfs
+])
+fi
+
 dnl Check for RSA checksum authentication
 AC_MSG_CHECKING(for RSA checksum authentication)
 if test -d $HOME/RSA; then
