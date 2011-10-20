@@ -30,7 +30,7 @@ Uint8 gGammaCorrect = 3;
 
 
 /* Map a keycode to a key name */
-void KeyName(SDLKey keycode, char *namebuf)
+void KeyName(SDL_Keycode keycode, char *namebuf)
 {
 	const char *name;
 	char ch;
@@ -150,7 +150,7 @@ Controls newcontrols;
 static struct {
 	const char *label;
 	int  yoffset;
-	SDLKey *control;
+	SDL_Keycode *control;
 } checkboxes[] = {
 	{ "Fire",	0*BOX_HEIGHT+0*SP, &newcontrols.gFireControl },
 	{ "Thrust",	1*BOX_HEIGHT+1*SP, &newcontrols.gThrustControl },
@@ -176,7 +176,7 @@ static int Cancel_callback(void) {
 	valid = 0;
 	return(1);
 }
-static void BoxKeyPress(SDL_keysym key, int *doneflag)
+static void BoxKeyPress(const SDL_Keysym &key, int *doneflag)
 {
 	SDL_Color black = { 0x00, 0x00, 0x00, 0 };
 	SDL_Color white = { 0xFF, 0xFF, 0xFF, 0 };
