@@ -18,6 +18,16 @@
 
 #define EXPAND_STEPS	50
 
+/* Foreground color */
+#define R_FG		0x00
+#define G_FG		0x00
+#define B_FG		0x00
+
+/* Background color */
+#define R_BG		0xFF
+#define G_BG		0xFF
+#define B_BG		0xFF
+
 class Mac_Dialog {
 
 public:
@@ -29,26 +39,23 @@ public:
 				(int x, int y, int button, int *doneflag)) {
 		button_callback = new_button_callback;
 	}
-	virtual void HandleButtonPress(int x, int y, int button, 
-							int *doneflag) {
+	virtual void HandleButtonPress(int x, int y, int button, int *doneflag) {
 		if ( button_callback ) {
 			(*button_callback)(x, y, button, doneflag);
 		}
 	}
 	virtual void SetKeyPress(void (*new_key_callback)
-				(SDL_keysym key, int *doneflag)) {
+				(const SDL_Keysym &key, int *doneflag)) {
 		key_callback = new_key_callback;
 	}
-	virtual void HandleKeyPress(SDL_keysym key, int *doneflag) {
+	virtual void HandleKeyPress(const SDL_Keysym &key, int *doneflag) {
 		if ( key_callback ) {
 			(*key_callback)(key, doneflag);
 		}
 	}
 
 	/* Display handling */
-	virtual void Map(int Xoff, int Yoff, FrameBuf *screen,
-				Uint8 R_bg, Uint8 G_bg, Uint8 B_bg,
-				Uint8 R_fg, Uint8 G_fg, Uint8 B_fg) {
+	virtual void Map(int Xoff, int Yoff, FrameBuf *screen) {
 		X += Xoff;
 		Y += Yoff;
 		Screen = screen;
@@ -58,12 +65,12 @@ public:
 
 	static void EnableText(void) {
 		if ( text_enabled++ == 0 ) {
-			SDL_EnableUNICODE(1);
+			SDL_StartTextInput();
 		}
 	}
 	static void DisableText(void) {
 		if ( --text_enabled == 0 ) {
-			SDL_EnableUNICODE(0);
+			SDL_StopTextInput();
 		}
 	}
 
@@ -77,10 +84,10 @@ protected:
 	FrameBuf *Screen;
 	int  X, Y;
 	void (*button_callback)(int x, int y, int button, int *doneflag);
-	void (*key_callback)(SDL_keysym key, int *doneflag);
+	void (*key_callback)(const SDL_Keysym &key, int *doneflag);
 
 	/* Utility routines for dialogs */
-	int IsSensitive(SDL_Rect *area, int x, int y) {
+	int IsSensitive(const SDL_Rect *area, int x, int y) {
 		if ( (y > area->y) && (y < (area->y+area->h)) &&
 	    	     (x > area->x) && (x < (area->x+area->w)) )
 			return(1);
@@ -115,33 +122,21 @@ public:
 		SDL_FreeSurface(button);
 	}
 
-	virtual void Map(int Xoff, int Yoff, FrameBuf *screen,
-				Uint8 R_bg, Uint8 G_bg, Uint8 B_bg,
-				Uint8 R_fg, Uint8 G_fg, Uint8 B_fg) {
+	virtual void Map(int Xoff, int Yoff, FrameBuf *screen) {
 		/* Do the normal dialog mapping */
-		Mac_Dialog::Map(Xoff, Yoff, screen,
-				R_bg, G_bg, B_bg, R_fg, G_fg, B_fg);
+		Mac_Dialog::Map(Xoff, Yoff, screen);
 
 		/* Set up the button sensitivity */
 		sensitive.x = X;
 		sensitive.y  = Y;
 		sensitive.w = Width;
 		sensitive.h = Height;
-
-		/* Map the bitmap image */
-		button->format->palette->colors[0].r = R_bg;
-		button->format->palette->colors[0].g = G_bg;
-		button->format->palette->colors[0].b = B_bg;
-		button->format->palette->colors[1].r = R_fg;
-		button->format->palette->colors[1].g = G_fg;
-		button->format->palette->colors[1].b = B_fg;
 	}
 	virtual void Show(void) {
 		Screen->QueueBlit(X, Y, button, NOCLIP);
 	}
 
-	virtual void HandleButtonPress(int x, int y, int button, 
-							int *doneflag) {
+	virtual void HandleButtonPress(int x, int y, int button, int *doneflag) {
 		if ( IsSensitive(&sensitive, x, y) )
 			ActivateButton(doneflag);
 	}
@@ -221,17 +216,14 @@ public:
 						int (*callback)(void));
 	virtual ~Mac_DefaultButton() { }
 
-	virtual void HandleKeyPress(SDL_keysym key, int *doneflag) {
+	virtual void HandleKeyPress(const SDL_Keysym &key, int *doneflag) {
 		if ( key.sym == SDLK_RETURN )
 			ActivateButton(doneflag);
 	}
 
-	virtual void Map(int Xoff, int Yoff, FrameBuf *screen,
-				Uint8 R_bg, Uint8 G_bg, Uint8 B_bg,
-				Uint8 R_fg, Uint8 G_fg, Uint8 B_fg) {
-		Mac_Button::Map(Xoff, Yoff, screen,
-				R_bg, G_bg, B_bg, R_fg, G_fg, B_fg);
-		Fg = Screen->MapRGB(R_fg, G_fg, B_fg);
+	virtual void Map(int Xoff, int Yoff, FrameBuf *screen) {
+		Mac_Button::Map(Xoff, Yoff, screen);
+		Fg = Screen->MapRGB(R_FG, G_FG, B_FG);
 	}
 	virtual void Show(void) {
 		int x, y, maxx, maxy;
@@ -293,21 +285,15 @@ public:
 		}
 	}
 
-	virtual void HandleButtonPress(int x, int y, int button, 
-							int *doneflag) {
+	virtual void HandleButtonPress(int x, int y, int button, int *doneflag) {
 		if ( IsSensitive(&sensitive, x, y) ) {
 			*checkval = !*checkval;
-			Check_Box(*checkval);
-			Screen->Update();
 		}
 	}
 
-	virtual void Map(int Xoff, int Yoff, FrameBuf *screen,
-				Uint8 R_bg, Uint8 G_bg, Uint8 B_bg,
-				Uint8 R_fg, Uint8 G_fg, Uint8 B_fg) {
+	virtual void Map(int Xoff, int Yoff, FrameBuf *screen) {
 		/* Do the normal dialog mapping */
-		Mac_Dialog::Map(Xoff, Yoff, screen,
-				R_bg, G_bg, B_bg, R_fg, G_fg, B_fg);
+		Mac_Dialog::Map(Xoff, Yoff, screen);
 
 		/* Set up the checkbox sensitivity */
 		sensitive.x = X;
@@ -316,42 +302,27 @@ public:
 		sensitive.h = CHECKBOX_SIZE;
 
 		/* Get the screen colors */
-		Fg = Screen->MapRGB(R_fg, G_fg, B_fg);
-		Bg = Screen->MapRGB(R_bg, G_bg, B_bg);
-
-		/* Map the checkbox text */
-		label->format->palette->colors[1].r = R_fg;
-		label->format->palette->colors[1].g = G_fg;
-		label->format->palette->colors[1].b = B_fg;
+		Fg = Screen->MapRGB(R_FG, G_FG, B_FG);
 	}
 	virtual void Show(void) {
 		Screen->DrawRect(X, Y, CHECKBOX_SIZE, CHECKBOX_SIZE, Fg);
 		if ( label ) {
 			Screen->QueueBlit(X+CHECKBOX_SIZE+4, Y-2, label,NOCLIP);
 		}
-		Check_Box(*checkval);
+		if ( *checkval ) {
+			Screen->DrawLine(X, Y,
+					X+CHECKBOX_SIZE-1, Y+CHECKBOX_SIZE-1, Fg);
+			Screen->DrawLine(X, Y+CHECKBOX_SIZE-1,
+						X+CHECKBOX_SIZE-1, Y, Fg);
+		}
 	}
 
 private:
 	FontServ *Fontserv;
-	SDL_Surface *label;
-	Uint32 Fg, Bg;
+	SDL_Texture *label;
+	Uint32 Fg;
 	int *checkval;
 	SDL_Rect sensitive;
-
-	void Check_Box(int checked) {
-		Uint32 color;
-
-		if ( checked )
-			color = Fg;
-		else
-			color = Bg;
-
-		Screen->DrawLine(X, Y,
-				X+CHECKBOX_SIZE-1, Y+CHECKBOX_SIZE-1, color);
-		Screen->DrawLine(X, Y+CHECKBOX_SIZE-1,
-					X+CHECKBOX_SIZE-1, Y, color);
-	}
 };
 
 /* Class of radio buttons */
@@ -373,24 +344,13 @@ public:
 		}
 	}
 
-	virtual void HandleButtonPress(int x, int y, int button, 
-							int *doneflag) {
+	virtual void HandleButtonPress(int x, int y, int button, int *doneflag) {
 		int n;
-		struct radio *radio, *oldradio;
+		struct radio *radio;
 
-		oldradio = radio_list.next;
-		for (n=0, radio=radio_list.next; radio; radio=radio->next, ++n){
-			if ( n == *radiovar ) {
-				oldradio = radio;
-				break;
-			}
-		}
 		for (n=0, radio=radio_list.next; radio; radio=radio->next, ++n){
 			if ( IsSensitive(&radio->sensitive, x, y) ) {
-				Spot(oldradio->x, oldradio->y, Bg);
 				*radiovar = n;
-				Spot(radio->x, radio->y, Fg);
-				Screen->Update();
 			}
 		}
 	}
@@ -413,23 +373,17 @@ public:
 		radio->y = y;
 		radio->sensitive.x = x;
 		radio->sensitive.y = y;
-		radio->sensitive.w = 20+radio->label->w;
-		radio->sensitive.h = BOX_HEIGHT;
 		radio->next = NULL;
 	}
 
-	virtual void Map(int Xoff, int Yoff, FrameBuf *screen,
-				Uint8 R_bg, Uint8 G_bg, Uint8 B_bg,
-				Uint8 R_fg, Uint8 G_fg, Uint8 B_fg) {
+	virtual void Map(int Xoff, int Yoff, FrameBuf *screen) {
 		struct radio *radio;
 
 		/* Do the normal dialog mapping */
-		Mac_Dialog::Map(Xoff, Yoff, screen,
-				R_bg, G_bg, B_bg, R_fg, G_fg, B_fg);
+		Mac_Dialog::Map(Xoff, Yoff, screen);
 
 		/* Get the screen colors */
-		Fg = Screen->MapRGB(R_fg, G_fg, B_fg);
-		Bg = Screen->MapRGB(R_bg, G_bg, B_bg);
+		Fg = Screen->MapRGB(R_FG, G_FG, B_FG);
 
 		/* Adjust sensitivity and map the radiobox text */
 		for ( radio=radio_list.next; radio; radio=radio->next ) {
@@ -437,9 +391,8 @@ public:
 			radio->y += Yoff;
 			radio->sensitive.x += Xoff;
 			radio->sensitive.y += Yoff;
-			radio->label->format->palette->colors[1].r = R_fg;
-			radio->label->format->palette->colors[1].g = G_fg;
-			radio->label->format->palette->colors[1].b = B_fg;
+			radio->sensitive.w = 20+Screen->GetImageWidth(radio->label);
+			radio->sensitive.h = BOX_HEIGHT;
 		}
 	}
 	virtual void Show(void) {
@@ -449,7 +402,7 @@ public:
 		for (n=0, radio=radio_list.next; radio; radio=radio->next, ++n){
 			Circle(radio->x, radio->y);
 			if ( n == *radiovar ) {
-				Spot(radio->x, radio->y, Fg);
+				Spot(radio->x, radio->y);
 			}
 			if ( radio->label ) {
 				Screen->QueueBlit(radio->x+21, radio->y+3,
@@ -461,10 +414,10 @@ public:
 private:
 	FontServ *Fontserv;
 	MFont *Font;
-	Uint32 Fg, Bg;
+	Uint32 Fg;
 	int *radiovar;
 	struct radio {
-		SDL_Surface *label;
+		SDL_Texture *label;
 		int x, y;
 		SDL_Rect sensitive;
 		struct radio *next;
@@ -486,21 +439,21 @@ private:
 		Screen->DrawLine(x+8, y+10, x+9, y+10, Fg);
 		Screen->DrawLine(x+4, y+11, x+7, y+11, Fg);
 	}
-	void Spot(int x, int y, Uint32 color)
+	void Spot(int x, int y);
 	{
 		x += 8;
 		y += 8;
-		Screen->DrawLine(x+1, y, x+4, y, color);
+		Screen->DrawLine(x+1, y, x+4, y, Fg);
 		++y;
-		Screen->DrawLine(x, y, x+5, y, color);
+		Screen->DrawLine(x, y, x+5, y, Fg);
 		++y;
-		Screen->DrawLine(x, y, x+5, y, color);
+		Screen->DrawLine(x, y, x+5, y, Fg);
 		++y;
-		Screen->DrawLine(x, y, x+5, y, color);
+		Screen->DrawLine(x, y, x+5, y, Fg);
 		++y;
-		Screen->DrawLine(x, y, x+5, y, color);
+		Screen->DrawLine(x, y, x+5, y, Fg);
 		++y;
-		Screen->DrawLine(x+1, y, x+4, y, color);
+		Screen->DrawLine(x+1, y, x+4, y, Fg);
 	}
 };
 		
@@ -524,8 +477,7 @@ public:
 		DisableText();
 	}
 
-	virtual void HandleButtonPress(int x, int y, int button, 
-							int *doneflag) {
+	virtual void HandleButtonPress(int x, int y, int button, int *doneflag) {
 		struct text_entry *entry;
 
 		for ( entry=entry_list.next; entry; entry=entry->next ) {
@@ -538,7 +490,7 @@ public:
 			}
 		}
 	}
-	virtual void HandleKeyPress(SDL_keysym key, int *doneflag) {
+	virtual void HandleKeyPress(const SDL_Keysym &key, int *doneflag) {
 		int n;
 
 		switch (key.sym) {
@@ -609,24 +561,21 @@ public:
 		entry->next = NULL;
 	}
 
-	virtual void Map(int Xoff, int Yoff, FrameBuf *screen,
-				Uint8 R_bg, Uint8 G_bg, Uint8 B_bg,
-				Uint8 R_fg, Uint8 G_fg, Uint8 B_fg) {
+	virtual void Map(int Xoff, int Yoff, FrameBuf *screen) {
 		struct text_entry *entry;
 
 		/* Do the normal dialog mapping */
-		Mac_Dialog::Map(Xoff, Yoff, screen,
-				R_bg, G_bg, B_bg, R_fg, G_fg, B_fg);
+		Mac_Dialog::Map(Xoff, Yoff, screen);
 
 		/* Get the screen colors */
-		foreground.r = R_fg;
-		foreground.g = G_fg;
-		foreground.b = B_fg;
-		background.r = R_bg;
-		background.g = G_bg;
-		background.b = B_bg;
-		Fg = Screen->MapRGB(R_fg, G_fg, B_fg);
-		Bg = Screen->MapRGB(R_bg, G_bg, B_bg);
+		foreground.r = R_FG;
+		foreground.g = G_FG;
+		foreground.b = B_FG;
+		background.r = R_BG;
+		background.g = G_BG;
+		background.b = B_BG;
+		Fg = Screen->MapRGB(R_FG, G_FG, B_FG);
+		Bg = Screen->MapRGB(R_BG, G_BG, B_BG);
 
 		/* Adjust sensitivity and map the radiobox text */
 		for ( entry=entry_list.next; entry; entry=entry->next ) {
@@ -655,7 +604,7 @@ private:
 	SDL_Color background;
 
 	struct text_entry {
-		SDL_Surface *text;
+		SDL_Texture *text;
 		char *variable;
 		SDL_Rect sensitive;
 		int  x, y;
@@ -685,7 +634,7 @@ private:
 		Screen->FillRect(entry->x, entry->y,
 					entry->width, entry->height, clear);
 		if ( entry->text ) {
-			entry->end = entry->text->w;
+			entry->end = Screen->GetImageWidth(entry->text);
 			Screen->QueueBlit(entry->x, entry->y, entry->text, NOCLIP);
 		} else {
 			entry->end = 0;
@@ -716,8 +665,7 @@ public:
 		}
 	}
 
-	virtual void HandleButtonPress(int x, int y, int button, 
-							int *doneflag) {
+	virtual void HandleButtonPress(int x, int y, int button, int *doneflag) {
 		struct numeric_entry *entry;
 
 		for ( entry=entry_list.next; entry; entry=entry->next ) {
@@ -730,7 +678,7 @@ public:
 			}
 		}
 	}
-	virtual void HandleKeyPress(SDL_keysym key, int *doneflag) {
+	virtual void HandleKeyPress(const SDL_Keysym &key, int *doneflag) {
 		int n;
 
 		switch (key.sym) {
@@ -813,24 +761,21 @@ public:
 		entry->next = NULL;
 	}
 
-	virtual void Map(int Xoff, int Yoff, FrameBuf *screen,
-				Uint8 R_bg, Uint8 G_bg, Uint8 B_bg,
-				Uint8 R_fg, Uint8 G_fg, Uint8 B_fg) {
+	virtual void Map(int Xoff, int Yoff, FrameBuf *screen) {
 		struct numeric_entry *entry;
 
 		/* Do the normal dialog mapping */
-		Mac_Dialog::Map(Xoff, Yoff, screen,
-				R_bg, G_bg, B_bg, R_fg, G_fg, B_fg);
+		Mac_Dialog::Map(Xoff, Yoff, screen);
 
 		/* Get the screen colors */
-		foreground.r = R_fg;
-		foreground.g = G_fg;
-		foreground.b = B_fg;
-		background.r = R_bg;
-		background.g = G_bg;
-		background.b = B_bg;
-		Fg = Screen->MapRGB(R_fg, G_fg, B_fg);
-		Bg = Screen->MapRGB(R_bg, G_bg, B_bg);
+		foreground.r = R_FG;
+		foreground.g = G_FG;
+		foreground.b = B_FG;
+		background.r = R_BG;
+		background.g = G_BG;
+		background.b = B_BG;
+		Fg = Screen->MapRGB(R_FG, G_FG, B_FG);
+		Bg = Screen->MapRGB(R_BG, G_BG, B_BG);
 
 		/* Adjust sensitivity and map the radiobox text */
 		for ( entry=entry_list.next; entry; entry=entry->next ) {
@@ -859,7 +804,7 @@ private:
 	SDL_Color background;
 
 	struct numeric_entry {
-		SDL_Surface *text;
+		SDL_Texture *text;
 		int *variable;
 		SDL_Rect sensitive;
 		int  x, y;
@@ -889,7 +834,7 @@ private:
 			entry->text = Fontserv->TextImage(buf,
 				Font, STYLE_NORM, foreground, background);
 		}
-		entry->end = entry->text->w;
+		entry->end = Screen->GetImageWidth(entry->text);
 		Screen->FillRect(entry->x, entry->y,
 					entry->width, entry->height, clear);
 		Screen->QueueBlit(entry->x, entry->y, entry->text, NOCLIP);
@@ -910,7 +855,7 @@ public:
 	~Maclike_Dialog();
 
 	void Add_Rectangle(int x, int y, int w, int h, Uint32 color);
-	void Add_Image(SDL_Surface *image, int x, int y);
+	void Add_Image(SDL_Texture *image, int x, int y);
 	void Add_Dialog(Mac_Dialog *dialog);
 
 	void Run(int expand_steps = 1);
@@ -927,7 +872,7 @@ private:
 		struct rect_elem *next;
 	} rect_list;
 	struct image_elem {
-		SDL_Surface *image;
+		SDL_Texture *image;
 		int x, y;
 		struct image_elem *next;
 	} image_list;

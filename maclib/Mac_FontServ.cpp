@@ -72,8 +72,9 @@ struct FOND {
 };
 
 
-FontServ:: FontServ(const char *fontfile)
+FontServ:: FontServ(FrameBuf *_screen, const char *fontfile)
 {
+	screen = _screen;
 	fontres = new Mac_Resource(fontfile);
 	text_allocated = 0;
 	if ( fontres->Error() ) {
@@ -257,16 +258,15 @@ FontServ:: TextHeight(MFont *font)
 /* Get/Set bit i of a scan line */
 #define GETBIT(scanline, i) \
 		((scanline[(i)/16] >> (15 - (i)%16)) & 1)
-#define SETBIT(scanline, i, bit) \
-		(scanline[(i)/8] |= bit << (7 - (i)%8))
 
-SDL_Surface *
+SDL_Texture *
 FontServ:: TextImage(const char *text, MFont *font, Uint8 style,
 			SDL_Color foreground, SDL_Color background)
 {
-	Uint16 width, height;
-	SDL_Surface *image;
-	Uint8 *bitmap;
+	int width, height;
+	SDL_Texture *image;
+	Uint32 *bitmap;
+	Uint32 color;
 	int nchars;
 	int bit_offset;		/* The current bit offset into a scanline */
 	int space_width;	/* The width of the whole character */
@@ -331,13 +331,9 @@ FontServ:: TextImage(const char *text, MFont *font, Uint8 style,
 	}
 	height = (font->header)->fRectHeight;
 
-	/* Allocate the text bitmap image */
-	image = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 1, 0,0,0,0);
-	if ( image == NULL ) {
-		SetError("Unable to allocate bitmap: %s", SDL_GetError());
-		return(NULL);
-	}
-	bitmap = (Uint8 *)image->pixels;
+	/* Allocate the text pixels */
+	bitmap = new Uint32[width*height];
+	color = screen->MapRGB(foreground.r, foreground.g, foreground.b);
 
 	/* Print the individual characters */
 	/* Note: this could probably be optimized.. eh, who cares. :) */
@@ -363,13 +359,12 @@ FontServ:: TextImage(const char *text, MFont *font, Uint8 style,
 				int     dst_offset;
 				Uint16 *src_scanline;
 			
-				dst_offset = (y*image->pitch*8+
-						bit_offset+space_offset);
+				dst_offset = (y*width+bit_offset+space_offset);
 				src_scanline = font->bitImage + 
 						y*(font->header)->rowWords;
 				for ( bit = 0; bit<glyph_width; ++bit ) {
-					SETBIT(bitmap, dst_offset+bit+boldness, 
-				  		GETBIT(src_scanline, glyph_line_offset+bit));
+					bitmap[dst_offset+bit+boldness] =
+				  		GETBIT(src_scanline, glyph_line_offset+bit)*color;
 				}
 			}
 #ifdef WIDE_BOLD
@@ -381,38 +376,22 @@ FontServ:: TextImage(const char *text, MFont *font, Uint8 style,
 	}
 	if ( (style&STYLE_ULINE) == STYLE_ULINE ) {
 		y = (height-(font->header)->descent+1);
-		bit_offset = (y*image->pitch*8);
+		bit_offset = (y*width);
 		for ( bit=0; bit<width; ++bit )
-			SETBIT(bitmap, bit_offset+bit, 0x01);
+			bitmap[bit_offset++] = color;
 	}
 
 	/* Map the image and return */
-	SDL_SetColorKey(image, SDL_SRCCOLORKEY, 0);
-	image->format->palette->colors[0] = background;
-	image->format->palette->colors[1] = foreground;
-	++text_allocated;
+	image = screen->LoadImage(width, height, bitmap);
+	if (image) {
+		++text_allocated;
+	}
+	delete[] bitmap;
 	return(image);
 }
 void
-FontServ:: FreeText(SDL_Surface *text)
+FontServ:: FreeText(SDL_Texture *text)
 {
 	--text_allocated;
-	SDL_FreeSurface(text);
-}
-int
-FontServ:: InvertText(SDL_Surface *text)
-{
-	SDL_Color colors[2];
-
-	/* Only works on bitmap images */
-	if ( text->format->BitsPerPixel != 1 ) {
-		SetError("Not a text bitmap");
-		return(-1);
-	}
-
-	/* Swap background and foreground colors */
-	colors[0] = text->format->palette->colors[1];
-	colors[1] = text->format->palette->colors[0];
-	SDL_SetColors(text, colors, 0, 2);
-	return(0);
+	screen->FreeImage(text);
 }

@@ -165,7 +165,7 @@ static struct {
 static int X=0;
 static int Y=0;
 static MFont *chicago;
-static SDL_Surface *keynames[NUM_CTLS];
+static SDL_Texture *keynames[NUM_CTLS];
 static int currentbox, valid;
 
 static int OK_callback(void) {
@@ -240,13 +240,13 @@ void ConfigureControls(void)
 		"While playing Maelstrom, CAPS LOCK pauses the game and";
 	static char *C_text2 = 
 		"ESC aborts the game.";
-	SDL_Surface *text1, *text2;
+	SDL_Texture *text1, *text2;
 #endif
 	Uint32 black;
 	int i;
 	char keyname[128];
 	Maclike_Dialog *dialog;
-	SDL_Surface *splash;
+	SDL_Texture *splash;
 	Mac_Button *cancel, *okay;
 	Mac_RadioList *radiobuttons;
 	Mac_Dialog *boxes;
@@ -411,7 +411,7 @@ static void HandleEvent(SDL_Event *event)
 					SetControl(PAUSE_KEY, 1);
 				else if ( key == controls.gQuitControl )
 					SetControl(ABORT_KEY, 1);
-				else if ( SpecialKey(event->key.keysym) == 0 )
+				else if ( SpecialKey(event->key.keysym.sym) == 0 )
 					/* The key has been handled */;
 				else if ( key == SDLK_F3 ) {
 					/* Special key --
@@ -499,7 +499,7 @@ void ShowDawn(void)
 		                    "dawn."
 	};
 	MFont *chicago;
-	SDL_Surface *splash, *text[6];
+	SDL_Texture *splash, *text[6];
 	Maclike_Dialog *dialog;
 	Mac_Button *OK;
 	int i, x, y, X, Y;

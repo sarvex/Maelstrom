@@ -27,7 +27,7 @@
 
 /* A simple display management class based on SDL:
 
-   It supports medium-slow line drawing, rectangle filling, and fading,
+   It supports line drawing, rectangle filling, and fading,
    and it supports loading 8 bits-per-pixel masked images.
 */
 
@@ -36,10 +36,6 @@
 #include <stdarg.h>
 
 #include "SDL.h"
-
-/* Macros to make sure we lock the screen if necessary (used internally!) */
-#define LOCK_IF_NEEDED()	{ if ( ! locked )  Lock(); }
-#define UNLOCK_IF_NEEDED()	{ if ( locked ) Unlock(); }
 
 typedef enum {
 	DOCLIP,
@@ -50,17 +46,17 @@ class FrameBuf {
 
 public:
 	FrameBuf();
-	int Init(int width, int height, Uint32 video_flags,
+	int Init(int width, int height, Uint32 flags,
 			SDL_Color *colors = NULL, SDL_Surface *icon = NULL);
 	~FrameBuf();
 
 	/* Setup routines */
 	/* Set the image palette -- 256 entries */
 	void SetPalette(SDL_Color *colors);
-	/* Set the background color -- used by Clear() */
-	void   SetBackground(Uint8 r, Uint8 g, Uint8 b);
 	/* Map an RGB value to a color pixel */
-	Uint32 MapRGB(Uint8 R, Uint8 G, Uint8 B);
+	Uint32 MapRGB(Uint8 R, Uint8 G, Uint8 B) {
+		return (0xFF0000 | ((Uint32)R << 16) | ((Uint32)G << 8) | B);
+	}
 	/* Set the blit clipping rectangle */
 	void   ClipBlit(SDL_Rect *cliprect);
 
@@ -71,66 +67,93 @@ public:
 	int WaitEvent(SDL_Event *event) {
 		return(SDL_WaitEvent(event));
 	}
-	int ToggleFullScreen(void) {
-		return(SDL_WM_ToggleFullScreen(SDL_GetVideoSurface()));
+	void ToggleFullScreen(void) {
+		if (SDL_GetWindowFlags(window) & SDL_WINDOW_FULLSCREEN) {
+			SDL_SetWindowFullscreen(window, SDL_FALSE);
+		} else {
+			SDL_SetWindowFullscreen(window, SDL_TRUE);
+		}
 	}
 
-	/* Locking blitting and update routines */
-	void Lock(void);
-	void Unlock(void);
-	void QueueBlit(int dstx, int dsty, SDL_Surface *src,
+	/* Blit and update routines */
+	void QueueBlit(int dstx, int dsty, SDL_Texture *src,
 			int srcx, int srcy, int w, int h, clipval do_clip);
-	void QueueBlit(int x, int y, SDL_Surface *src, clipval do_clip) {
-		QueueBlit(x, y, src, 0, 0, src->w, src->h, do_clip);
+	void QueueBlit(int x, int y, SDL_Texture *src, clipval do_clip = DOCLIP) {
+		int w, h;
+		SDL_QueryTexture(src, NULL, NULL, &w, &h);
+		QueueBlit(x, y, src, 0, 0, w, h, do_clip);
 	}
-	void QueueBlit(int x, int y, SDL_Surface *src) {
-		QueueBlit(x, y, src, DOCLIP);
+	void Update() {
+		SDL_RenderPresent(renderer);
 	}
-	void PerformBlits(void);
-	void Update(int auto_update = 0);
 	void Fade(void);		/* Fade screen out, then in */
 
 	/* Informational routines */
-	Uint16 Width(void) {
-		return(screen->w);
+	int Width(void) {
+		int w, h;
+		SDL_GetWindowSize(window, &w, &h);
+		return w;
 	}
-	Uint16 Height(void) {
-		return(screen->h);
-	}
-	SDL_PixelFormat *Format(void) {
-		return(screenfg->format);
-	}
-
-	/* Set the drawing focus (foreground or background) */
-	void FocusFG(void) {
-		UNLOCK_IF_NEEDED();
-		screen = screenfg;
-	}
-	void FocusBG(void) {
-		UNLOCK_IF_NEEDED();
-		screen = screenbg;
+	int Height(void) {
+		int w, h;
+		SDL_GetWindowSize(window, &w, &h);
+		return h;
 	}
 
 	/* Drawing routines */
-	/* These drawing routines must be surrounded by Lock()/Unlock() calls */
-	void Clear(Sint16 x, Sint16 y, Uint16 w, Uint16 h,
-						clipval do_clip = NOCLIP);
-	void Clear(void) {
-		Clear(0, 0, screen->w, screen->h);
+	void Clear(int x, int y, int w, int h) {
+		FillRect(x, y, w, h, 0);
 	}
-	void DrawPoint(Sint16 x, Sint16 y, Uint32 color);
-	void DrawLine(Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color);
-	void DrawRect(Sint16 x1, Sint16 y1, Uint16 w, Uint16 h, Uint32 color);
-	void FillRect(Sint16 x1, Sint16 y1, Uint16 w, Uint16 h, Uint32 color);
+	void Clear(void) {
+		UpdateDrawColor(0);
+		SDL_RenderClear(renderer);
+	}
+	void DrawPoint(int x, int y, Uint32 color) {
+		UpdateDrawColor(color);
+		SDL_RenderDrawPoint(renderer, x, y);
+	}
+	void DrawLine(int x1, int y1, int x2, int y2, Uint32 color) {
+		UpdateDrawColor(color);
+		SDL_RenderDrawLine(renderer, x1, y1, x2, y2);
+	}
+	void DrawRect(int x1, int y1, int w, int h, Uint32 color) {
+		UpdateDrawColor(color);
+
+		SDL_Rect rect;
+		rect.x = x1;
+		rect.y = y1;
+		rect.w = w;
+		rect.h = h;
+		SDL_RenderDrawRect(renderer, &rect);
+	}
+	void FillRect(int x1, int y1, int w, int h, Uint32 color) {
+		UpdateDrawColor(color);
+
+		SDL_Rect rect;
+		rect.x = x1;
+		rect.y = y1;
+		rect.w = w;
+		rect.h = h;
+		SDL_RenderFillRect(renderer, &rect);
+	}
 
 	/* Load and convert an 8-bit image with the given mask */
-	SDL_Surface *LoadImage(Uint16 w, Uint16 h, Uint8 *pixels,
-							Uint8 *mask = NULL);
-	void FreeImage(SDL_Surface *image);
+	SDL_Texture *LoadImage(int w, int h, Uint8 *pixels, Uint8 *mask = NULL);
+	SDL_Texture *LoadImage(int w, int h, Uint32 *pixels);
+	int GetImageWidth(SDL_Texture *image) {
+		int w, h;
+		SDL_QueryTexture(image, NULL, NULL, &w, &h);
+		return w;
+	}
+	int GetImageHeight(SDL_Texture *image) {
+		int w, h;
+		SDL_QueryTexture(image, NULL, NULL, &w, &h);
+		return h;
+	}
+	void FreeImage(SDL_Texture *image);
 
-	/* Area copy/dump routines */
-	SDL_Surface *GrabArea(Uint16 x, Uint16 y, Uint16 w, Uint16 h);
-	int ScreenDump(const char *prefix, Uint16 x, Uint16 y, Uint16 w, Uint16 h);
+	/* Screen dump routines */
+	int ScreenDump(const char *prefix, int x, int y, int w, int h);
 
 	/* Cursor handling routines */
 	void ShowCursor(void) {
@@ -140,10 +163,7 @@ public:
 		SDL_ShowCursor(0);
 	}
 	void SetCaption(const char *caption, const char *icon = NULL) {
-		if ( icon == NULL ) {
-			icon = caption;
-		}
-		SDL_WM_SetCaption(caption, icon);
+		SDL_SetWindowTitle(window, caption);
 	}
 
 	/* Error message routine */
@@ -152,13 +172,20 @@ public:
 	}
 
 private:
-	/* The current display and background */
-	SDL_Surface *screen;
-	SDL_Surface *screenfg;
-	SDL_Surface *screenbg;
-	Uint8 *screen_mem;
+	/* The current display */
+	SDL_Window *window;
+	SDL_Renderer *renderer;
 	Uint32 image_map[256];
-	int locked, faded;
+	int faded;
+	SDL_Rect clip;
+
+	void UpdateDrawColor(Uint32 color) {
+		Uint8 r, g, b;
+		r = (color >> 16) & 0xFF;
+		g = (color >>  8) & 0xFF;
+		b = (color >>  0) & 0xFF;
+		SDL_SetRenderDrawColor(renderer, r, g, b, 0xFF);
+	}
 
 	/* Error message */
 	void SetError(const char *fmt, ...) {
@@ -171,48 +198,6 @@ private:
         }
 	char *errstr;
 	char  errbuf[1024];
-
-	/* Blit queue list */
-#define QUEUE_CHUNK	16
-	typedef struct {
-		SDL_Surface *src;
-		SDL_Rect srcrect;
-		SDL_Rect dstrect;
-	} BlitQ;
-	BlitQ *blitQ;
-	int blitQlen;
-	int blitQmax;
-
-	/* Rectangle update list */
-#define UPDATE_CHUNK	QUEUE_CHUNK*2
-	void AddDirtyRect(SDL_Rect *rect);
-	int updatelen;
-	int updatemax;
-	SDL_Rect *updatelist;
-	Uint16 dirtypitch;
-	SDL_Rect **dirtymap;
-	Uint16 dirtymaplen;
-	void ClearDirtyList(void) {
-		updatelen = 0;
-		memset(dirtymap, 0, dirtymaplen*sizeof(SDL_Rect *));
-	}
-
-	/* Background color */
-	Uint8  BGrgb[3];
-	Uint32 BGcolor;
-
-	/* Blit clipping rectangle */
-	SDL_Rect clip;
-
-	/* List of loaded images */
-	typedef struct image_list {
-		SDL_Surface *image;
-		struct image_list *next;
-	} image_list;
-	image_list images, *itail;
-	
-	/* Function to write to the display surface */
-	void (*PutPixel)(Uint8 *screen_loc, SDL_Surface *screen, Uint32 pixel);
 };
 
 #endif /* _SDL_FrameBuf_h */

@@ -171,7 +171,7 @@ int main(int argc, char *argv[])
 	/* Command line flags */
 	int doprinthigh = 0;
 	int speedtest = 0;
-	Uint32 video_flags = SDL_SWSURFACE;
+	Uint32 video_flags = 0;
 
 	/* Normal variables */
 	SDL_Event event;
@@ -207,14 +207,14 @@ int main(int argc, char *argv[])
 
 	/* Parse command line arguments */
 #ifdef __MACOSX__
-	video_flags |= SDL_FULLSCREEN;
+	//video_flags |= SDL_WINDOW_FULLSCREEN;
 #endif
 	for ( progname=argv[0]; --argc; ++argv ) {
 		if ( strcmp(argv[1], "-fullscreen") == 0 ) {
-			video_flags |= SDL_FULLSCREEN;
+			video_flags |= SDL_WINDOW_FULLSCREEN;
 		} else
 		if ( strcmp(argv[1], "-windowed") == 0 ) {
-			video_flags &= ~SDL_FULLSCREEN;
+			video_flags &= ~SDL_WINDOW_FULLSCREEN;
 		} else
 		if ( strcmp(argv[1], "-gamma") == 0 ) {
 			int gammacorrect;

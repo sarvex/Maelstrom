@@ -128,6 +128,6 @@ extern BlitPtr	gThrust1, gThrust2, gShrapnel1, gShrapnel2;
 
 /* -- The prize CICN's */
 
-extern SDL_Surface *gAutoFireIcon, *gAirBrakesIcon, *gMult2Icon, *gMult3Icon;
-extern SDL_Surface *gMult4Icon, *gMult5Icon, *gLuckOfTheIrishIcon;
-extern SDL_Surface *gLongFireIcon, *gTripleFireIcon, *gKeyIcon, *gShieldIcon;
+extern SDL_Texture *gAutoFireIcon, *gAirBrakesIcon, *gMult2Icon, *gMult3Icon;
+extern SDL_Texture *gMult4Icon, *gMult5Icon, *gLuckOfTheIrishIcon;
+extern SDL_Texture *gLongFireIcon, *gTripleFireIcon, *gKeyIcon, *gShieldIcon;

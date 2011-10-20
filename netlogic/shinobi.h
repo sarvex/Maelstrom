@@ -184,16 +184,6 @@ public:
 		}
 		Object::BlitSprite();
 	}
-	virtual void UnBlitSprite(void) {
-		/* Erase all old shots */
-		int i;
-		OBJ_LOOP(i, numshots) {
-			int X = (shots[i]->x>>SPRITE_PRECISION);
-			int Y = (shots[i]->y>>SPRITE_PRECISION);
-			screen->Clear(X, Y, SHOT_SIZE, SHOT_SIZE, DOCLIP);
-		}
-		Object::UnBlitSprite();
-	}
 
 	virtual void HitSound(void) {
 		sound->PlaySound(gBonk, 3);

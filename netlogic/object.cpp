@@ -30,7 +30,6 @@ Object::Object(int X, int Y, int Xvec, int Yvec, Blit *blit, int PhaseTime)
 	HitPoints = DEFAULT_HITS;
 	Exploding = 0;
 	Set_TTL(-1);
-	onscreen = 0;
 	++gNumSprites;
 }
 
@@ -82,23 +81,6 @@ Object::BlitSprite(void)
 {
 	screen->QueueBlit(x>>SPRITE_PRECISION, y>>SPRITE_PRECISION,
 							myblit->sprite[phase]);
-	onscreen = 1;
-}
-void
-Object::UnBlitSprite(void)
-{
-	/* Only unblit if we were onscreen */
-	if ( ! onscreen )
-		return;
-
-	if ( myblit->isSmall ) {
-		screen->Clear(x>>SPRITE_PRECISION, y>>SPRITE_PRECISION, 16, 16,
-									DOCLIP);
-	} else {
-		screen->Clear(x>>SPRITE_PRECISION, y>>SPRITE_PRECISION, 32, 32,
-									DOCLIP);
-	}
-	onscreen = 0;
 }
 
 /* Sound functions */

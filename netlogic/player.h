@@ -36,7 +36,6 @@ public:
 	virtual int Move(int Freeze);
 	virtual void HandleKeys(void);
 	virtual void BlitSprite(void);
-	virtual void UnBlitSprite(void);
 
 	/* Small access functions */
 	virtual Uint32 Color(void) {

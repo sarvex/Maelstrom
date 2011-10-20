@@ -11,7 +11,7 @@ extern int  InitLogic(void);
 extern int  InitPlayerSprites(void);
 extern void HaltLogic(void);
 extern void SetControl(unsigned char which, int toggle);
-extern int  SpecialKey(SDL_keysym key);
+extern int  SpecialKey(SDL_Keycode key);
 extern int GetScore(void);
 
 /* From game.cpp */
@@ -20,9 +20,9 @@ extern void NewGame(void);
 /* From about.cpp */
 extern void DoAbout(void);
 
-/* From blit.cpp (fastlogic) player.cpp (netlogic) */
+/* From player.cpp */
 extern Uint8 gPlayerShotColors[];
-extern SDL_Surface *gPlayerShot;
+extern SDL_Texture *gPlayerShot;
 extern Uint8 gEnemyShotColors[];
-extern SDL_Surface *gEnemyShot;
+extern SDL_Texture *gEnemyShot;
 

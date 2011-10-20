@@ -39,9 +39,9 @@ BlitPtr	gThrust1, gThrust2, gShrapnel1, gShrapnel2;
 
 /* -- The prize CICN's */
 
-SDL_Surface *gAutoFireIcon, *gAirBrakesIcon, *gMult2Icon, *gMult3Icon;
-SDL_Surface *gMult4Icon, *gMult5Icon, *gLuckOfTheIrishIcon, *gLongFireIcon;
-SDL_Surface *gTripleFireIcon, *gKeyIcon, *gShieldIcon;
+SDL_Texture *gAutoFireIcon, *gAirBrakesIcon, *gMult2Icon, *gMult3Icon;
+SDL_Texture *gMult4Icon, *gMult5Icon, *gLuckOfTheIrishIcon, *gLongFireIcon;
+SDL_Texture *gTripleFireIcon, *gKeyIcon, *gShieldIcon;
 
 // Local functions used in this file.
 static void DrawLoadBar(int first);
@@ -58,7 +58,7 @@ static int LoadSmallSprite(Mac_Resource *spriteres,
 /* Put up an Ambrosia Software splash screen */
 void DoSplash(void)
 {
-	SDL_Surface *splash;
+	SDL_Texture *splash;
 
 	splash = Load_Title(screen, 999);
 	if ( splash == NULL ) {
@@ -77,7 +77,7 @@ void DoSplash(void)
 void DoIntroScreen(void)
 {
 	MFont  *geneva;
-	SDL_Surface *intro, *text;
+	SDL_Texture *intro, *text;
 	Uint16  Yoff, Xoff;
 	Uint32  clr, ltClr, ltrClr;
 

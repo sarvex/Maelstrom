@@ -91,7 +91,7 @@ public:
 	/* The "fontfile" parameter should be a Macintosh Resource fork file
 	   that contains FOND and NFNT information for the desired fonts.
 	*/
-	FontServ(const char *fontfile);
+	FontServ(FrameBuf *screen, const char *fontfile);
 	~FontServ();
 	
 	/* The font returned by NewFont() should be delete'd */
@@ -104,9 +104,9 @@ public:
 	/* Returns a bitmap image filled with the requested text.
 	   The text should be freed with FreeText() after it is used.
 	 */
-	SDL_Surface *TextImage(const char *text, MFont *font, Uint8 style,
+	SDL_Texture *TextImage(const char *text, MFont *font, Uint8 style,
 				SDL_Color background, SDL_Color foreground);
-	SDL_Surface *TextImage(const char *text, MFont *font, Uint8 style,
+	SDL_Texture *TextImage(const char *text, MFont *font, Uint8 style,
 						Uint8 R, Uint8 G, Uint8 B) {
 		SDL_Color background = { 0xFF, 0xFF, 0xFF, 0 };
 		SDL_Color foreground;
@@ -116,10 +116,7 @@ public:
 		foreground.b = B;
 		return(TextImage(text, font, style, foreground, background));
 	}
-	void FreeText(SDL_Surface *text);
-
-	/* Inverts the color of the text image */
-	int InvertText(SDL_Surface *text);
+	void FreeText(SDL_Texture *text);
 
 	/* Returns NULL if everything is okay, or an error message if not */
 	char *Error(void) {
@@ -127,6 +124,7 @@ public:
 	}
 
 private:
+	FrameBuf *screen;
 	Mac_Resource *fontres;
 	int text_allocated;
 

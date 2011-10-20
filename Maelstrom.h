@@ -81,6 +81,6 @@ typedef	struct {
 	int numFrames;
 	int isSmall;
 	Rect hitRect;
-	SDL_Surface *sprite[MAX_SPRITE_FRAMES];
+	SDL_Texture *sprite[MAX_SPRITE_FRAMES];
 	Uint8 *mask[MAX_SPRITE_FRAMES];
 } Blit, *BlitPtr;

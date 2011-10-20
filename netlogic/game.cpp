@@ -117,7 +117,7 @@ int	gWhenEnemy;
 
 // Local global variables;
 static MFont *geneva=NULL;
-static Uint32 ourGrey, ourWhite, ourBlack;
+static Uint32 ourGrey, ourWhite;
 static int text_height;
 
 // Local functions used in the game module of Maelstrom
@@ -130,298 +130,130 @@ static void TwinkleStars(void);
 /* ----------------------------------------------------------------- */
 /* -- Draw the status display */
 
-void DrawStatus(Bool first, Bool ForceDraw)
+static void DrawStatus(Bool first)
 {
-	static int nextDraw;
-	static int lastDisplayed;
-	int		Score;
-	static int	lastScore, lastScores[MAX_PLAYERS];
-	static int	lastWave;
-	int		Lives;
-	static	int	lastLives;
-	static int	lastLife[MAX_PLAYERS];
-	int		Bonus;
-	static int	lastBonus;
-	int		Frags;
-	static int	lastFrags;
-	int		AutoFire;
-	static int	lastGun;
-	int		AirBrakes;
-	static int	lastBrakes;
-	int		ShieldLevel;
-	static int	lastShield;
-	int		MultFactor;
-	static int	lastMult;
-	int		LongFire;
-	static int	lastLong;
-	int		TripleFire;
-	static int	lastTriple;
-	int		LuckOfTheIrish;
-	static int	lastLuck;
-	static int	fragoff;
-	static int score_width, wave_width;
-	static int lives_width, bonus_width;
-	static int frags_width;
-	int i;
+	static int lastScores[MAX_PLAYERS], lastLife[MAX_PLAYERS];
+	int Score;
+	int MultFactor;
+	int i, x;
 	char numbuf[128];
 
-	if (first) {
-		int x;
-
-		nextDraw = 1;
-		lastDisplayed = -1;
-		OBJ_LOOP(i, gNumPlayers)
-			lastScores[i] = -1;
-		lastScore = -1;
-		lastWave = -1;
-		lastShield = -1;
-		lastLives = -1;
-		lastBonus = -1;
-		lastFrags = -1;
-		lastGun = -1;
-		lastBrakes = -1;
-		lastMult = -1;
-		lastLuck = -1;
-		if (gWave == 1) {
-			OBJ_LOOP(i, gNumPlayers)
-				lastLife[i] = 0;
-		}
-		lastLong = -1;
-		lastTriple = -1;
-	
-		score_width = 0;
-		wave_width = 0;
-		lives_width = 0;
-		bonus_width = 0;
-		frags_width = 0;
-	
 /* -- Draw the status display */
 
-		screen->DrawLine(0, gStatusLine, SCREEN_WIDTH-1, 
-							gStatusLine, ourWhite);
-		x = 3;
-		i = DrawText(x, gStatusLine+11, "Score:", geneva, STYLE_BOLD,
-						30000>>8, 30000>>8, 0xFF);
-		x += (i+70);
-		i = DrawText(x, gStatusLine+11, "Shield:", geneva, STYLE_BOLD,
-						30000>>8, 30000>>8, 0xFF);
-		x += (i+70);
-		i = DrawText(x, gStatusLine+11, "Wave:", geneva, STYLE_BOLD,
-						30000>>8, 30000>>8, 0xFF);
-		x += (i+30);
-		i = DrawText(x, gStatusLine+11, "Lives:", geneva, STYLE_BOLD,
-						30000>>8, 30000>>8, 0xFF);
-		x += (i+30);
-		DrawText(x, gStatusLine+11, "Bonus:", geneva, STYLE_BOLD,
-						30000>>8, 30000>>8, 0xFF);
-		/* Heh, DOOM style frag count */
-		if ( gNumPlayers > 1 ) {
-			x = 530;
-			i = DrawText(x, gStatusLine+11, "Frags:", geneva,
-					STYLE_BOLD, 30000>>8, 30000>>8, 0xFF);
-			fragoff = x+i+4;
-		}
-	}
-
-	if ( ForceDraw || (--nextDraw == 0) ) {
-		nextDraw = DISPLAY_DELAY+1;
-		/* -- Do incremental updates */
-	
-		if ( (gNumPlayers > 1) && (lastDisplayed != gDisplayed) ) {
-			char caption[BUFSIZ];
-
-			lastDisplayed = gDisplayed;
-			screen->FillRect(0, 0, SCREEN_WIDTH, 12, ourBlack);
-			sprintf(caption,
-				"You are player %d --- displaying player %d",
-						gOurPlayer+1, gDisplayed+1);
-			DrawText(SPRITES_WIDTH, 11, caption, geneva,
-					STYLE_BOLD, 30000>>8, 30000>>8, 0xFF);
-
-			/* Fill in the color by the frag count */
-			screen->FillRect(518, gStatusLine+4, 4, 8,
-							TheShip->Color());
-		}
-
-		ShieldLevel = TheShip->GetShieldLevel();
-		if (lastShield != ShieldLevel) {
-			int	fact;
-
-			lastShield = ShieldLevel;
-			screen->DrawRect(152, gStatusLine+4, SHIELD_WIDTH, 
-								8, ourWhite);
-			fact = ((SHIELD_WIDTH - 2) * ShieldLevel) / MAX_SHIELD;
-			screen->FillRect(152+1,gStatusLine+4+1, fact, 6,
-								ourGrey);
-			screen->FillRect(152+1+fact, gStatusLine+4+1,
-					SHIELD_WIDTH-2-fact, 6, ourBlack);
-		}
-		
-		MultFactor = TheShip->GetBonusMult();
-		if (lastMult != MultFactor) {
-			lastMult = MultFactor;
-		
-			switch (MultFactor) {
-				case 1:	screen->FillRect(424,
-						gStatusLine+4, 8, 8, ourBlack);
-					break;
-				case 2:	screen->QueueBlit(424, gStatusLine+4,
-							gMult2Icon, NOCLIP);
-					break;
-				case 3:	screen->QueueBlit(424, gStatusLine+4,
-							gMult3Icon, NOCLIP);
-					break;
-				case 4:	screen->QueueBlit(424, gStatusLine+4,
-							gMult4Icon, NOCLIP);
-					break;
-				case 5:	screen->QueueBlit(424, gStatusLine+4,
-							gMult5Icon, NOCLIP);
-					break;
-				default:  /* WHAT? */
-					break;
-			}
-		}
-	
-		/* -- Do incremental updates */
-	
-		AutoFire = TheShip->GetSpecial(MACHINE_GUNS);
-		if (lastGun != AutoFire) {
-			lastGun = AutoFire;
-
-			if ( AutoFire > 0 ) {
-				screen->QueueBlit(438, gStatusLine+4,
-						gAutoFireIcon, NOCLIP);
-			} else {
-				screen->FillRect(438, gStatusLine+4, 8, 8,
-								ourBlack);
-			}
-		}
-	
-		AirBrakes = TheShip->GetSpecial(AIR_BRAKES);
-		if (lastBrakes != AirBrakes) {
-			lastBrakes = AirBrakes;
-
-			if ( AirBrakes > 0 ) {
-				screen->QueueBlit(454, gStatusLine+4,
-						gAirBrakesIcon, NOCLIP);
-			} else {
-				screen->FillRect(454, gStatusLine+4, 8, 8,
-								ourBlack);
-			}
-		}
-	
-		LuckOfTheIrish = TheShip->GetSpecial(LUCKY_IRISH);
-		if (lastLuck != LuckOfTheIrish) {
-			lastLuck = LuckOfTheIrish;
-
-			if ( LuckOfTheIrish > 0 ) {
-				screen->QueueBlit(470, gStatusLine+4, 
-						gLuckOfTheIrishIcon, NOCLIP);
-			} else {
-				screen->FillRect(470, gStatusLine+4, 8, 8,
-								ourBlack);
-			}
-		}
-	
-		TripleFire = TheShip->GetSpecial(TRIPLE_FIRE);
-		if (lastTriple != TripleFire) {
-			lastTriple = TripleFire;
-
-			if ( TripleFire > 0 ) {
-				screen->QueueBlit(486, gStatusLine+4,
-						gTripleFireIcon, NOCLIP);
-			} else {
-				screen->FillRect(486, gStatusLine+4, 8, 8,
-								ourBlack);
-			}
-		}
-	
-		LongFire = TheShip->GetSpecial(LONG_RANGE);
-		if (lastLong != LongFire) {
-			lastLong = LongFire;
-
-			if ( LongFire > 0 ) {
-				screen->QueueBlit(502, gStatusLine+4,
-						gLongFireIcon, NOCLIP);
-			} else {
-				screen->FillRect(502, gStatusLine+4, 8, 8,
-								ourBlack);
-			}
-		}
-	
-		/* Check for everyone else's new lives */
+	if (first && gWave == 1) {
 		OBJ_LOOP(i, gNumPlayers) {
-			Score = gPlayers[i]->GetScore();
-	
-			if ( (i == gDisplayed) && (Score != lastScore) ) {
-				/* -- Erase old and draw new score */
-				screen->FillRect(45, gStatusLine+1,
-					score_width, text_height, ourBlack);
-				sprintf(numbuf, "%d", Score);
-				score_width = DrawText(45, gStatusLine+11, 
-						numbuf, geneva, STYLE_BOLD,
-							0xFF, 0xFF, 0xFF);
-				lastScore = Score;
-			}
-
-			if (lastScores[i] == Score)
-				continue;
-
-			/* -- See if they got a new life */
-			lastScores[i] = Score;
-			if ((Score - lastLife[i]) >= NEW_LIFE) {
-				gPlayers[i]->IncrLives(1);
-				lastLife[i] = (Score / NEW_LIFE) * NEW_LIFE;
-				if ( i == gOurPlayer )
-					sound->PlaySound(gNewLife, 5);
-			}
-		}
-	
-		if (lastWave != gWave) {
-			screen->FillRect(255, gStatusLine+1,
-					wave_width, text_height, ourBlack);
-			sprintf(numbuf, "%d", gWave);
-			wave_width = DrawText(255, gStatusLine+11, 
-					numbuf, geneva, STYLE_BOLD,
-							0xFF, 0xFF, 0xFF);
-			lastWave = gWave;
-		}
-	
-		Lives = TheShip->GetLives();
-		if (lastLives != Lives) {
-			screen->FillRect(319, gStatusLine+1,
-					lives_width, text_height, ourBlack);
-			sprintf(numbuf, "%-3.1d", Lives);
-			lives_width = DrawText(319, gStatusLine+11,
-					numbuf, geneva, STYLE_BOLD,
-							0xFF, 0xFF, 0xFF);
-			lastLives = Lives;
-		}
-	
-		Bonus = TheShip->GetBonus();
-		if (lastBonus != Bonus) {
-			screen->FillRect(384, gStatusLine+1,
-					bonus_width, text_height, ourBlack);
-			sprintf(numbuf, "%-7.1d", Bonus);
-			bonus_width = DrawText(384, gStatusLine+11,
-					numbuf, geneva, STYLE_BOLD,
-							0xFF, 0xFF, 0xFF);
-			lastBonus = Bonus;
-		}
-
-		if ( gNumPlayers > 1 ) {
-			Frags = TheShip->GetFrags();
-			if (lastFrags != Frags) {
-				screen->FillRect(fragoff, gStatusLine+1,
-					frags_width, text_height, ourBlack);
-				sprintf(numbuf, "%-3.1d", Frags);
-				frags_width = DrawText(fragoff, gStatusLine+11,
-						numbuf, geneva, STYLE_BOLD,
-							0xFF, 0xFF, 0xFF);
-				lastFrags = Frags;
-			}
+			lastLife[i] = lastScores[i] = 0;
 		}
 	}
+
+	screen->DrawLine(0, gStatusLine, SCREEN_WIDTH-1, 
+						gStatusLine, ourWhite);
+	x = 3;
+	i = DrawText(x, gStatusLine+11, "Score:", geneva, STYLE_BOLD,
+					30000>>8, 30000>>8, 0xFF);
+	x += (i+70);
+	i = DrawText(x, gStatusLine+11, "Shield:", geneva, STYLE_BOLD,
+					30000>>8, 30000>>8, 0xFF);
+	x += (i+70);
+	i = DrawText(x, gStatusLine+11, "Wave:", geneva, STYLE_BOLD,
+					30000>>8, 30000>>8, 0xFF);
+	x += (i+30);
+	i = DrawText(x, gStatusLine+11, "Lives:", geneva, STYLE_BOLD,
+					30000>>8, 30000>>8, 0xFF);
+	x += (i+30);
+	DrawText(x, gStatusLine+11, "Bonus:", geneva, STYLE_BOLD,
+					30000>>8, 30000>>8, 0xFF);
+	/* Heh, DOOM style frag count */
+	if ( gNumPlayers > 1 ) {
+		x = 530;
+		i = DrawText(x, gStatusLine+11, "Frags:", geneva,
+				STYLE_BOLD, 30000>>8, 30000>>8, 0xFF);
+		sprintf(numbuf, "%-3.1d", TheShip->GetFrags());
+		DrawText(x+i+4, gStatusLine+11, numbuf, geneva, STYLE_BOLD, 0xFF, 0xFF, 0xFF);
+	}
+
+	if ( gNumPlayers > 1 ) {
+		char caption[BUFSIZ];
+
+		sprintf(caption, "You are player %d --- displaying player %d",
+					gOurPlayer+1, gDisplayed+1);
+		DrawText(SPRITES_WIDTH, 11, caption, geneva,
+				STYLE_BOLD, 30000>>8, 30000>>8, 0xFF);
+
+		/* Fill in the color by the frag count */
+		screen->FillRect(518, gStatusLine+4, 4, 8, TheShip->Color());
+	}
+
+	screen->DrawRect(152, gStatusLine+4, SHIELD_WIDTH, 8, ourWhite);
+	int fact = ((SHIELD_WIDTH - 2) * TheShip->GetShieldLevel()) / MAX_SHIELD;
+	screen->FillRect(152+1, gStatusLine+4+1, fact, 6, ourGrey);
+	
+	MultFactor = TheShip->GetBonusMult();
+	switch (MultFactor) {
+		case 1:	break;
+		case 2:	screen->QueueBlit(424, gStatusLine+4, gMult2Icon, NOCLIP);
+			break;
+		case 3:	screen->QueueBlit(424, gStatusLine+4, gMult3Icon, NOCLIP);
+			break;
+		case 4:	screen->QueueBlit(424, gStatusLine+4, gMult4Icon, NOCLIP);
+			break;
+		case 5:	screen->QueueBlit(424, gStatusLine+4, gMult5Icon, NOCLIP);
+			break;
+		default:  /* WHAT? */
+			break;
+	}
+
+	if ( TheShip->GetSpecial(MACHINE_GUNS) ) {
+		screen->QueueBlit(438, gStatusLine+4, gAutoFireIcon, NOCLIP);
+	}
+
+	if ( TheShip->GetSpecial(AIR_BRAKES) ) {
+		screen->QueueBlit(454, gStatusLine+4, gAirBrakesIcon, NOCLIP);
+	}
+
+	if ( TheShip->GetSpecial(LUCKY_IRISH) ) {
+		screen->QueueBlit(470, gStatusLine+4, gLuckOfTheIrishIcon, NOCLIP);
+	}
+
+	if ( TheShip->GetSpecial(TRIPLE_FIRE) ) {
+		screen->QueueBlit(486, gStatusLine+4, gTripleFireIcon, NOCLIP);
+	}
+
+	if ( TheShip->GetSpecial(LONG_RANGE) ) {
+		screen->QueueBlit(502, gStatusLine+4, gLongFireIcon, NOCLIP);
+	}
+
+	/* Check for everyone else's new lives */
+	OBJ_LOOP(i, gNumPlayers) {
+		Score = gPlayers[i]->GetScore();
+
+		if ( i == gDisplayed ) {
+			sprintf(numbuf, "%d", Score);
+			DrawText(45, gStatusLine+11, numbuf, geneva, STYLE_BOLD, 0xFF, 0xFF, 0xFF);
+		}
+
+		if (lastScores[i] == Score)
+			continue;
+
+		/* -- See if they got a new life */
+		lastScores[i] = Score;
+		if ((Score - lastLife[i]) >= NEW_LIFE) {
+			gPlayers[i]->IncrLives(1);
+			lastLife[i] = (Score / NEW_LIFE) * NEW_LIFE;
+			if ( i == gOurPlayer )
+				sound->PlaySound(gNewLife, 5);
+		}
+	}
+
+	sprintf(numbuf, "%d", gWave);
+	DrawText(255, gStatusLine+11, numbuf, geneva, STYLE_BOLD, 0xFF, 0xFF, 0xFF);
+
+	sprintf(numbuf, "%-3.1d", TheShip->GetLives());
+	DrawText(319, gStatusLine+11, numbuf, geneva, STYLE_BOLD, 0xFF, 0xFF, 0xFF);
+
+	sprintf(numbuf, "%-7.1d", TheShip->GetBonus());
+	DrawText(384, gStatusLine+11, numbuf, geneva, STYLE_BOLD, 0xFF, 0xFF, 0xFF);
+
 }	/* -- DrawStatus */
 
 
@@ -453,7 +285,6 @@ void NewGame(void)
 	text_height = fontserv->TextHeight(geneva);
 	ourGrey = screen->MapRGB(30000>>8, 30000>>8, 0xFF);
 	ourWhite = screen->MapRGB(0xFF, 0xFF, 0xFF);
-	ourBlack = screen->MapRGB(0x00, 0x00, 0x00);
 
 	/* Fade into game mode */
 	screen->Fade();
@@ -472,8 +303,25 @@ void NewGame(void)
 	NextWave();
 
 	/* Play the game, dammit! */
-	while ( (RunFrame() > 0) && gGameOn )
+	while (gGameOn) {
+		screen->Clear();
+
+		/* -- Draw the star field */
+		for ( i=0; i<MAX_STARS; ++i ) {
+			screen->DrawPoint(gTheStars[i]->xCoord, 
+				gTheStars[i]->yCoord, gTheStars[i]->color);
+		}
+
+		/* Draw the status frame */
+		DrawStatus(false);
+
+		if (!RunFrame()) {
+			gGameOn = 0;
+		}
+		screen->Update();
+
 		DoHouseKeeping();
+	}
 	
 /* -- Do the game over stuff */
 
@@ -545,8 +393,6 @@ static void DoHouseKeeping(void)
 			NextWave();
 	}
 	
-	/* -- Housekeping */
-	DrawStatus(false, false);
 }	/* -- DoHouseKeeping */
 
 
@@ -643,7 +489,7 @@ static void NextWave(void)
 	/* -- Create the ship's sprite */
 	for ( index=gNumPlayers; index--; )
 		gPlayers[index]->NewWave();
-	DrawStatus(true, false);
+	DrawStatus(true);
 	screen->Update();
 
 	/* -- Create some asteroids */
@@ -662,14 +508,6 @@ static void NextWave(void)
 			MakeLargeRock(x, y);
 	}
 
-	/* -- Create the star field */
-	screen->FocusBG();
-	for ( index=0; index<MAX_STARS; ++index ) {
-		screen->DrawPoint(gTheStars[index]->xCoord, 
-			gTheStars[index]->yCoord, gTheStars[index]->color);
-	}
-	screen->Update(1);
-	screen->FocusFG();
 	screen->Fade();
 }	/* -- NextWave */
 
@@ -694,7 +532,7 @@ static int cmp_byfrags(const void *A, const void *B)
 static void DoGameOver(void)
 {
 	SDL_Event event;
-	SDL_Surface *gameover;
+	SDL_Texture *gameover;
 	MFont *newyork;
 	int newyork_height, w, x;
 	int which = -1, i;
@@ -725,7 +563,7 @@ static void DoGameOver(void)
 		delete gSprites[gNumSprites-1];
 
 	/* -- Clear the screen */
-	screen->FillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, ourBlack);
+	screen->Clear();
 
 	/* -- Draw the game over picture */
 	gameover = Load_Title(screen, 128);
@@ -733,8 +571,8 @@ static void DoGameOver(void)
 		error("Can't load 'gameover' title!\n");
 		exit(255);
 	}
-	screen->QueueBlit((SCREEN_WIDTH-gameover->w)/2,
-			((SCREEN_HEIGHT-gameover->h)/2)-80, gameover, NOCLIP);
+	screen->QueueBlit((SCREEN_WIDTH-screen->GetImageWidth(gameover))/2,
+			((SCREEN_HEIGHT-screen->GetImageHeight(gameover))/2)-80, gameover, NOCLIP);
 	screen->FreeImage(gameover);
 
 	/* Show the player ranking */
@@ -803,13 +641,13 @@ static void DoGameOver(void)
 		chars_in_handle = 0;
 
 		while ( screen->PollEvent(&event) ) /* Loop, flushing events */;
-		SDL_EnableUNICODE(1);
+		SDL_StartTextInput();
 		while ( !done ) {
 			screen->WaitEvent(&event);
 
-			/* -- Handle key down's (no UNICODE support) */
-			if ( event.type == SDL_KEYDOWN ) {
-				key = (Uint8)event.key.keysym.unicode;
+			if ( event.type == SDL_TEXTINPUT ) {
+				/* FIXME: No true UNICODE support in font */
+				key = (Uint8)event.text.text[0];
 				switch ( key  ) {
 					case '\0':	// Ignore NUL char
 					case '\033':	// Ignore ESC char
@@ -835,8 +673,6 @@ static void DoGameOver(void)
 							sound->PlaySound(gBonk, 5);
 						break;
 				}
-				screen->FillRect(x, 300-newyork_height+2,
-						w, newyork_height, ourBlack);
 
 				handle[chars_in_handle] = '\0';
 				w = DrawText(x, 300, handle,
@@ -845,7 +681,7 @@ static void DoGameOver(void)
 			}
 		}
 		delete newyork;
-		SDL_EnableUNICODE(0);
+		SDL_StopTextInput();
 
 		/* In case the user just pressed <Return> */
 		handle[chars_in_handle] = '\0';
@@ -879,11 +715,9 @@ static void DoGameOver(void)
 static void DoBonus(void)
 {
 	int i, x, sw, xs, xt;
-	int bonus_width;
-	int score_width;
 	char numbuf[128];
 
-	DrawStatus(false, true);
+	DrawStatus(false);
 	screen->Update();
 
 	/* -- Now do the bonus */
@@ -894,7 +728,7 @@ static void DoBonus(void)
 	screen->Fade();
 
 	/* -- Clear the screen */
-	screen->FillRect(0, 0, SCREEN_WIDTH, gStatusLine-1, ourBlack);
+	screen->Clear();
 	
 
 	/* -- Draw the wave completed message */
@@ -933,7 +767,7 @@ static void DoBonus(void)
 		}
 
 		if (OurShip->GetBonusMult() != 1) {
-			SDL_Surface *sprite;
+			SDL_Texture *sprite;
 
 			sprintf(numbuf, "%-5.1d", OurShip->GetBonus());
 			DrawText(x, 200, numbuf, geneva, STYLE_BOLD,
@@ -952,11 +786,9 @@ static void DoBonus(void)
 	sound->PlaySound(gFunk, 5);
 
 	sprintf(numbuf, "%-5.1d", OurShip->GetBonus());
-	bonus_width = DrawText(x, 200, numbuf, geneva, STYLE_BOLD,
-							0xFF, 0xFF, 0xFF);
+	DrawText(x, 200, numbuf, geneva, STYLE_BOLD, 0xFF, 0xFF, 0xFF);
 	sprintf(numbuf, "%-5.1d", OurShip->GetScore());
-	score_width = DrawText(xt, 220, numbuf, geneva, STYLE_BOLD,
-							0xFF, 0xFF, 0xFF);
+	DrawText(xt, 220, numbuf, geneva, STYLE_BOLD, 0xFF, 0xFF, 0xFF);
 	screen->Update();
 	Delay(60);
 
@@ -995,18 +827,12 @@ static void DoBonus(void)
 				OurShip->IncrBonus(-OurShip->GetBonus());
 			}
 	
-			screen->FillRect(x, 200-text_height+2,
-					bonus_width, text_height, ourBlack);
 			sprintf(numbuf, "%-5.1d", OurShip->GetBonus());
-			bonus_width = DrawText(x, 200, numbuf,
-					geneva, STYLE_BOLD, 0xFF, 0xFF, 0xFF);
-			screen->FillRect(xt, 220-text_height+2,
-					score_width, text_height, ourBlack);
+			DrawText(x, 200, numbuf, geneva, STYLE_BOLD, 0xFF, 0xFF, 0xFF);
 			sprintf(numbuf, "%-5.1d", OurShip->GetScore());
-			score_width = DrawText(xt, 220, numbuf,
-					geneva, STYLE_BOLD, 0xFF, 0xFF, 0xFF);
+			DrawText(xt, 220, numbuf, geneva, STYLE_BOLD, 0xFF, 0xFF, 0xFF);
 
-			DrawStatus(false, true);
+			DrawStatus(false);
 			screen->Update();
 		}
 	}
@@ -1034,15 +860,6 @@ static void TwinkleStars(void)
 	int theStar;
 
 	theStar = FastRandom(MAX_STARS);
-
-	/* -- Draw the star */
-	screen->FocusBG();
-	screen->DrawPoint(gTheStars[theStar]->xCoord, 
-					gTheStars[theStar]->yCoord, ourBlack);
 	SetStar(theStar);
-	screen->DrawPoint(gTheStars[theStar]->xCoord, 
-			gTheStars[theStar]->yCoord, gTheStars[theStar]->color);
-	screen->Update(1);
-	screen->FocusFG();
 }	/* -- TwinkleStars */
 

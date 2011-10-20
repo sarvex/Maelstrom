@@ -118,7 +118,7 @@ int ZapHighScores(void)
 	MFont *chicago;
 	Maclike_Dialog *dialog;
 	int X, Y;
-	SDL_Surface *splash;
+	SDL_Texture *splash;
 	Mac_Button *clear;
 	Mac_Button *cancel;
 
@@ -191,8 +191,8 @@ int GetStartLevel(void)
 	static const char    *Ltext4 = "Lives:";
 	MFont *chicago;
 	Maclike_Dialog *dialog;
-	SDL_Surface *splash;
-	SDL_Surface *text1, *text2, *text3, *text4;
+	SDL_Texture *splash;
+	SDL_Texture *text1, *text2, *text3, *text4;
 	static const char *turbotext = "Turbofunk On";
 	int x, y, X, Y;
 	Mac_Button *doit;

@@ -44,12 +44,6 @@ int RunFrame(void)
 		gNextBoom = gBoomDelay;
 	}
 
-	/* UnBlit all of the sprites and players */
-	OBJ_LOOP(i, gNumPlayers)
-		gPlayers[i]->UnBlitSprite();
-	OBJ_LOOP(i, gNumSprites)
-		gSprites[i]->UnBlitSprite();
-
 	/* Do all hit detection */
 	OBJ_LOOP(j, gNumPlayers) {
 		if ( ! gPlayers[j]->Alive() )

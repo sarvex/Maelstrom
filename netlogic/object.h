@@ -214,7 +214,6 @@ public:
 	virtual int Move(int Frozen);
 
 	virtual void BlitSprite(void);
-	virtual void UnBlitSprite(void);
 
 	/* Sound functions */
 	virtual void HitSound(void);
@@ -242,7 +241,6 @@ protected:
 	int HitPoints;
 	int TTL;
 
-	int onscreen;
 	int phase;
 	int phasetime;
 	int nextphase;

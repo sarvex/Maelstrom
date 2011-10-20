@@ -587,39 +587,6 @@ Player::BlitSprite(void)
 	Object::BlitSprite();
 }
 void 
-Player::UnBlitSprite(void)
-{
-	int i;
-
-	if ( ! Alive() )
-		return;
-
-	/* Erase all old shots */
-	OBJ_LOOP(i, numshots) {
-		int X = (shots[i]->x>>SPRITE_PRECISION);
-		int Y = (shots[i]->y>>SPRITE_PRECISION);
-		screen->Clear(X, Y, SHOT_SIZE, SHOT_SIZE, DOCLIP);
-	}
-	/* Erase the thrust, if necessary */
-	if ( WasThrusting ) {
-		int thrust_x, thrust_y;
-		thrust_x = (x + gThrustOrigins[phase].h)>>SPRITE_PRECISION;
-		thrust_y = (y + gThrustOrigins[phase].v)>>SPRITE_PRECISION;
-		screen->Clear(thrust_x, thrust_y, 16, 16, DOCLIP);
-		if ( ThrustBlit == gThrust1 )
-			ThrustBlit = gThrust2;
-		else
-			ThrustBlit = gThrust1;
-	}
-	if ( WasShielded ) {
-		if ( Sphase )
-			Sphase = 0;
-		else
-			Sphase = 1;
-	}
-	Object::UnBlitSprite();
-}
-void 
 Player::HitSound(void)
 {
 	sound->PlaySound(gSteelHit, 3);
@@ -697,14 +664,14 @@ Uint8 gPlayerShotColors[] = {
 	0xCC, 0xC6, 0xC6, 0xCC,
 	0xF0, 0xCC, 0xCC, 0xF0
 };
-SDL_Surface *gPlayerShot;
+SDL_Texture *gPlayerShot;
 Uint8 gEnemyShotColors[] = {
 	0xDC, 0xDA, 0xDA, 0xDC,
 	0xDA, 0x17, 0x23, 0xDA,
 	0xDA, 0x23, 0x23, 0xDA,
 	0xDC, 0xDA, 0xDA, 0xDC
 };
-SDL_Surface *gEnemyShot;
+SDL_Texture *gEnemyShot;
 
 Uint8 gPlayerColors[MAX_PLAYERS][3] = {
 	{ 0x00, 0x00, 0xFF },		/* Player 1 */

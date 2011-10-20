@@ -8,7 +8,7 @@
 #include "SDL_FrameBuf.h"
 
 /* Functions exported from load.cpp */
-extern SDL_Surface *Load_Title(FrameBuf *screen, int title_id);
-extern SDL_Surface *GetCIcon(FrameBuf *screen, short cicn_id);
+extern SDL_Texture *Load_Title(FrameBuf *screen, int title_id);
+extern SDL_Texture *GetCIcon(FrameBuf *screen, short cicn_id);
 
 #endif /* _load_h */

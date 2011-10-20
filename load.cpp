@@ -8,10 +8,11 @@
 #include "myerror.h"
 
 
-SDL_Surface *Load_Title(FrameBuf *screen, int title_id)
+SDL_Texture *Load_Title(FrameBuf *screen, int title_id)
 {
 	char file[256];
-	SDL_Surface *bmp, *title;
+	SDL_Surface *bmp;
+	SDL_Texture *title;
 	
 	/* Open the title file -- we know its colormap is our global one */
 	sprintf(file, "Images/Maelstrom_Titles#%d.bmp", title_id);
@@ -26,10 +27,10 @@ SDL_Surface *Load_Title(FrameBuf *screen, int title_id)
 	return(title);
 }
 
-SDL_Surface *GetCIcon(FrameBuf *screen, short cicn_id)
+SDL_Texture *GetCIcon(FrameBuf *screen, short cicn_id)
 {
 	char file[256];
-	SDL_Surface *cicn;
+	SDL_Texture *cicn;
 	SDL_RWops *cicn_src;
 	Uint8 *pixels, *mask;
 	Uint16 w, h;

@@ -194,8 +194,6 @@ Maclike_Dialog:: Add_Dialog(Mac_Dialog *dialog)
 void
 Maclike_Dialog:: Run(int expand_steps)
 {
-	SDL_Surface *savedfg;
-	SDL_Surface *savedbg;
 	SDL_Event event;
 	struct rect_elem *relem;
 	struct image_elem *ielem;
@@ -204,11 +202,6 @@ Maclike_Dialog:: Run(int expand_steps)
 	int i, done;
 	int maxX, maxY;
 	double XX, YY, H, Hstep, V, Vstep;
-
-	/* Save the area behind the dialog box */
-	savedfg = Screen->GrabArea(X, Y, Width, Height);
-	Screen->FocusBG();
-	savedbg = Screen->GrabArea(X, Y, Width, Height);
 
 	/* Show the dialog box with the nice Mac border */
 	black = Screen->MapRGB(0x00, 0x00, 0x00);
@@ -229,7 +222,6 @@ Maclike_Dialog:: Run(int expand_steps)
 	Screen->DrawLine(maxX-2, Y+3, maxX-2, maxY-2, light);
 	Screen->DrawRect(X+3, Y+3, Width-6, Height-6, black);
 	Screen->FillRect(X+4, Y+4, Width-8, Height-8, white);
-	Screen->FocusFG();
 
 	/* Allow the dialog to expand slowly */
 	XX = (double)(X+Width/2);
@@ -269,8 +261,7 @@ Maclike_Dialog:: Run(int expand_steps)
 							ielem->image, NOCLIP);
 	}
 	for ( delem = dialog_list.next; delem; delem = delem->next ) {
-		delem->dialog->Map(X+4, Y+4, Screen,
-					0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00);
+		delem->dialog->Map(X+4, Y+4, Screen);
 		delem->dialog->Show();
 	}
 	Screen->Update();
@@ -292,19 +283,5 @@ Maclike_Dialog:: Run(int expand_steps)
 		(delem->dialog)->HandleKeyPress(event.key.keysym, &done);
 				break;
 		}
-	}
-
-	/* Replace the old section of screen */
-	if ( savedbg ) {
-		Screen->FocusBG();
-		Screen->QueueBlit(X, Y, savedbg, NOCLIP);
-		Screen->Update();
-		Screen->FocusFG();
-		Screen->FreeImage(savedbg);
-	}
-	if ( savedfg ) {
-		Screen->QueueBlit(X, Y, savedfg, NOCLIP);
-		Screen->Update();
-		Screen->FreeImage(savedfg);
 	}
 }

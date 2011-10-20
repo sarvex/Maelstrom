@@ -31,7 +31,6 @@ void DoAbout(void)
 
 		/* Rotate any sprites */
 		for ( i=0; i<numsprites; ++i ) {
-			objects[i]->UnBlitSprite();
 			objects[i]->Move(0);
 			objects[i]->BlitSprite();
 		}
@@ -72,7 +71,7 @@ void DoAbout(void)
 
 		/* -- Handle updates */
 		if ( drawscreen && !done ) {
-			SDL_Surface *title;
+			SDL_Texture *title;
 			int   width, height;
 			int   xOff,  yOff;
 
@@ -171,7 +170,7 @@ void DoAbout(void)
 			}
 			if ( idOn == 135 ) {
 				MFont *font;
-				SDL_Surface *text1, *text2;
+				SDL_Texture *text1, *text2;
 
 				/* Put in the right credits / mask the old... */
 				clr = screen->MapRGB(0x00, 0x00, 0x00);
@@ -188,7 +187,7 @@ void DoAbout(void)
 					font, STYLE_NORM, 0xFF, 0xFF, 0xFF);
 				screen->QueueBlit(xOff+178, yOff+298,
 								text1, NOCLIP);
-				screen->QueueBlit(xOff+178+text1->w, yOff+298,
+				screen->QueueBlit(xOff+178+screen->GetImageWidth(text1), yOff+298,
 								text2, NOCLIP);
 				fontserv->FreeText(text1);
 				fontserv->FreeText(text2);
