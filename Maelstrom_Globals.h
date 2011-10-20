@@ -26,8 +26,12 @@ extern FrameBuf *screen;
 
 /* Boolean type */
 typedef Uint8 Bool;
+#ifndef true
 #define true	1
+#endif
+#ifndef false
 #define false	0
+#endif
 
 // Functions from main.cc
 extern void   PrintUsage(void);
