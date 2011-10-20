@@ -15,6 +15,8 @@ Maelstrom_SOURCES =		\
 	dialog.h		\
 	fastrand.cpp		\
 	fastrand.h		\
+	hashtable.c		\
+	hashtable.h		\
 	init.cpp		\
 	load.cpp		\
 	load.h			\
