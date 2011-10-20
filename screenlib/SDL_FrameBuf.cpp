@@ -23,7 +23,7 @@
 */
 
 #include <stdio.h>
-#include "../physfsrwops.h"
+#include "physfsrwops.h"
 
 #include "SDL_FrameBuf.h"
 #include "pixel.h"

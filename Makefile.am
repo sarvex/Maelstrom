@@ -15,8 +15,6 @@ Maelstrom_SOURCES =		\
 	dialog.h		\
 	fastrand.cpp		\
 	fastrand.h		\
-	hashtable.c		\
-	hashtable.h		\
 	init.cpp		\
 	load.cpp		\
 	load.h			\
@@ -26,8 +24,6 @@ Maelstrom_SOURCES =		\
 	myerror.h		\
 	netscore.cpp		\
 	netscore.h		\
-	physfsrwops.c		\
-	physfsrwops.h		\
 	public_key.h		\
 	rect.cpp		\
 	rect.h			\
@@ -42,7 +38,7 @@ Maelstrom_LDADD = 			\
 	maclib/libSDLmac.a		\
 	@MATHLIB@ @INETLIB@ @ICONOBJ@
 
-SUBDIRS = $(LOGIC) screenlib maclib
+SUBDIRS = $(LOGIC) screenlib maclib utils
 
 EXTRA_DIST =			\
 	autogen.sh		\
