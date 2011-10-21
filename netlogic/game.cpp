@@ -327,7 +327,7 @@ void NewGame(void)
 
 	DoGameOver();
 	screen->ShowCursor();
-	delete geneva;
+	fontserv->FreeFont(geneva);
 }	/* -- NewGame */
 
 
@@ -405,6 +405,9 @@ static void NextWave(void)
 	int	NewRoids;
 	short	temp;
 
+	/* Flush the font text cache */
+	fontserv->FlushCache();
+	
 	gEnemySprite = NULL;
 
 	/* -- Initialize some variables */
@@ -592,7 +595,7 @@ static void DoGameOver(void)
 			DrawText(160, 380+i*newyork_height, buffer,
 				newyork, STYLE_NORM, 30000>>8, 30000>>8, 0xFF);
 		}
-		delete newyork;
+		fontserv->FreeFont(newyork);
 	}
 	screen->Update();
 
@@ -680,7 +683,7 @@ static void DoGameOver(void)
 				screen->Update();
 			}
 		}
-		delete newyork;
+		fontserv->FreeFont(newyork);
 		SDL_StopTextInput();
 
 		/* In case the user just pressed <Return> */

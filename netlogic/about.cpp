@@ -191,7 +191,7 @@ void DoAbout(void)
 								text2, NOCLIP);
 				fontserv->FreeText(text1);
 				fontserv->FreeText(text2);
-				delete font;
+				fontserv->FreeFont(font);
 			}
 			screen->Update();
 			screen->Fade();

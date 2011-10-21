@@ -156,7 +156,7 @@ int ZapHighScores(void)
 
 	/* Clean up and return */
 	screen->FreeImage(splash);
-	delete chicago;
+	fontserv->FreeFont(chicago);
 	delete dialog;
 	if ( do_clear ) {
 		memset(hScores, 0, sizeof(hScores));
@@ -252,7 +252,7 @@ int GetStartLevel(void)
 	fontserv->FreeText(text2);
 	fontserv->FreeText(text3);
 	fontserv->FreeText(text4);
-	delete chicago;
+	fontserv->FreeFont(chicago);
 	delete dialog;
 	if ( do_level ) {
 		if ( ! startlives || (startlives > 40) )

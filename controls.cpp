@@ -260,7 +260,7 @@ void ConfigureControls(void)
 	}
 	if ( (splash = Load_Title(screen, 100)) == NULL ) {
 		error("Can't load configuration splash!\n");
-		delete chicago;
+		fontserv->FreeFont(chicago);
 		return;
 	}
 	X=(SCREEN_WIDTH-CTL_DIALOG_WIDTH)/2;
@@ -322,7 +322,7 @@ void ConfigureControls(void)
 	for ( i=0; i<NUM_CTLS; ++i ) {
 		fontserv->FreeText(keynames[i]);
 	}
-	delete chicago;
+	fontserv->FreeFont(chicago);
 	delete dialog;
 	if ( valid ) {
 		memcpy(&controls, &newcontrols, sizeof(controls));
@@ -546,7 +546,7 @@ void ShowDawn(void)
 	screen->FreeImage(splash);
 	for ( i=0; i<6; ++i )
 		fontserv->FreeText(text[i]);
-	delete chicago;
+	fontserv->FreeFont(chicago);
 	delete dialog;
 	return;
 }

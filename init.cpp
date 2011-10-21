@@ -121,7 +121,7 @@ void DoIntroScreen(void)
 				Yoff+20-text->h/2, text, NOCLIP);
 		fontserv->FreeText(text);
 	}
-	delete geneva;
+	fontserv->FreeFont(geneva);
 
 	screen->Update();
 }	// -- DoIntroScreen

@@ -31,6 +31,7 @@
 
 #include "SDL_types.h"
 #include "bitesex.h"
+#include "hashtable.h"
 #include "Mac_FontServ.h"
 
 #define copy_short(S, D)	memcpy(&S, D, 2); D += 2;
@@ -71,12 +72,22 @@ struct FOND {
 	/* The Kerning Table */
 };
 
+static void
+hash_nuke_string_texture(const void *key, const void *value, void *data)
+{
+	FrameBuf *screen = (FrameBuf *)data;
+
+	delete[] (char*)key;
+	screen->FreeImage((SDL_Texture *)value);
+}
 
 FontServ:: FontServ(FrameBuf *_screen, const char *fontfile)
 {
 	screen = _screen;
 	fontres = new Mac_Resource(fontfile);
-	text_allocated = 0;
+	fonts = NULL;
+	strings = hash_create(screen, hash_hash_string, hash_keymatch_string, hash_nuke_string_texture);
+ 
 	if ( fontres->Error() ) {
 		SetError("Couldn't load resources from %s", fontfile);
 		return;
@@ -90,11 +101,13 @@ FontServ:: FontServ(FrameBuf *_screen, const char *fontfile)
 
 FontServ:: ~FontServ()
 {
-	if ( text_allocated != 0 ) {
-		fprintf(stderr,
-			"FontServ: Warning: %d text surfaces extant\n",
-							text_allocated);
+	while (fonts) {
+		MFont *next = fonts->next;
+		delete fonts;
+		fonts = next;
 	}
+	hash_destroy(strings);
+
 	delete fontres;
 }
 
@@ -109,8 +122,22 @@ FontServ:: NewFont(const char *fontname, int ptsize)
 	int nchars;		/* number of chars including 'missing char' */
 	int nwords;		/* bit image size, in words */
 	int i, swapfont;
-	MFont *font;
+	MFont *prev, *font;
 
+	/* First see if we can find the font in our cache */
+	prev = NULL;
+	for (font = fonts; font; prev = font, font = font->next) {
+		if (strcmp(fontname, font->name) == 0 && ptsize == font->ptsize) {
+			/* Move this font to the front so it's found faster */
+			if (prev) {
+				prev->next = font->next;
+				font->next = fonts;
+				fonts = font;
+			}
+			return font;
+		}
+	}
+	
 	/* Get the font family */
 	fond = fontres->Resource("FOND", fontname);
 	if ( fond == NULL ) {
@@ -152,6 +179,8 @@ FontServ:: NewFont(const char *fontname, int ptsize)
 
 	/* Now, Fent.ID is the ID of the correct NFNT resource */
 	font = new MFont;
+	font->name = fontname;
+	font->ptsize = ptsize;
 	font->nfnt = fontres->Resource("NFNT", Fent.ID);
 	if ( font->nfnt == NULL ) {
 		delete font;
@@ -205,7 +234,19 @@ FontServ:: NewFont(const char *fontname, int ptsize)
 		byteswap(font->locTable, nchars+1);
 		byteswap((Uint16 *)font->owTable, nchars);
 	}
+
+	/* Save this font in the cache */
+	font->next = fonts;
+	fonts = font;
+
 	return(font);
+}
+
+void
+FontServ:: FreeFont(MFont *font)
+{
+	/* We'll likely be asked for this again soon, leave it alone */
+	return;
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -263,6 +304,8 @@ SDL_Texture *
 FontServ:: TextImage(const char *text, MFont *font, Uint8 style,
 			SDL_Color foreground, SDL_Color background)
 {
+	char *key, *keycopy;
+	int keysize;
 	int width, height;
 	SDL_Texture *image;
 	Uint32 *bitmap;
@@ -276,6 +319,14 @@ FontServ:: TextImage(const char *text, MFont *font, Uint8 style,
 	int bold_offset, boldness;
 	int ascii, i, y;
 	int bit;
+
+	/* First see if we can find it in our cache */
+	keysize = strlen(font->name)+1+8+1+strlen(text)+1;
+	key = SDL_stack_alloc(char, keysize);
+	sprintf(key, "%s:%d:%s", font->name, font->ptsize, text);
+	if (hash_find(strings, key, (const void**)&image)) {
+		return image;
+	}
 
 	switch (style) {
 		case STYLE_NORM:	bold_offset = 0;
@@ -327,6 +378,7 @@ FontServ:: TextImage(const char *text, MFont *font, Uint8 style,
 	width = TextWidth(text, font, style);
 	if ( width == 0 ) {
 		SetError("No text to convert");
+		SDL_stack_free(key);
 		return(NULL);
 	}
 	height = (font->header)->fRectHeight;
@@ -381,17 +433,30 @@ FontServ:: TextImage(const char *text, MFont *font, Uint8 style,
 			bitmap[bit_offset++] = color;
 	}
 
-	/* Map the image and return */
+	/* Create the image */
 	image = screen->LoadImage(width, height, bitmap);
-	if (image) {
-		++text_allocated;
-	}
 	delete[] bitmap;
+
+	/* Add it to our cache */
+	keycopy = new char[keysize];
+	strcpy(keycopy, key);
+	hash_insert(strings, keycopy, image);
+	SDL_stack_free(key);
+
 	return(image);
 }
+
 void
 FontServ:: FreeText(SDL_Texture *text)
 {
-	--text_allocated;
-	screen->FreeImage(text);
+	/* We'll likely be asked for this again soon, leave it alone */
+	return;
+}
+
+void
+FontServ:: FlushCache(void)
+{
+	/* We'll flush any strings in the cache and leave the fonts around */
+	hash_destroy(strings);
+	strings = hash_create(screen, hash_hash_string, hash_keymatch_string, hash_nuke_string_texture);
 }

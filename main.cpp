@@ -448,27 +448,21 @@ int DrawText(int x, int y, const char *text, MFont *font, Uint8 style,
 /* -- Draw the current sound volume */
 static void DrawSoundLevel(void)
 {
-	static int need_init=1;
-	static MFont *geneva;
-	static char text[12];
-	static int xOff, yOff;
+	MFont *geneva;
+	char text[12];
+	int xOff, yOff;
 
-	if ( need_init ) {
-		if ( (geneva = fontserv->NewFont("Geneva", 9)) == NULL ) {
-			error("Can't use Geneva font! -- Exiting.\n");
-			exit(255);
-		}
-		xOff = (SCREEN_WIDTH - 512) / 2;
-		yOff = (SCREEN_HEIGHT - 384) / 2;
-		need_init = 0;
-	} else {
-		DrawText(xOff+309-7, yOff+240-6, text, geneva, STYLE_BOLD,
-							0x00, 0x00, 0x00);
+	if ( (geneva = fontserv->NewFont("Geneva", 9)) == NULL ) {
+		error("Can't use Geneva font! -- Exiting.\n");
+		exit(255);
 	}
+
+	xOff = (SCREEN_WIDTH - 512) / 2;
+	yOff = (SCREEN_HEIGHT - 384) / 2;
 	sprintf(text, "%d", gSoundLevel);
 	DrawText(xOff+309-7, yOff+240-6, text, geneva, STYLE_BOLD,
 						30000>>8, 30000>>8, 0xFF);
-	screen->Update();
+	fontserv->FreeFont(geneva);
 }	/* -- DrawSoundLevel */
 
 
@@ -576,7 +570,7 @@ void DrawMainScreen(void)
 		DrawText(wRt-sw, botDiv+42+(index*18), buffer, 
 						font, STYLE_BOLD, R, G, B);
 	}
-	delete font;
+	fontserv->FreeFont(font);
 
 	DrawText(xOff+5, botDiv+46+(10*18)+3, "Last Score: ", 
 					bigfont, STYLE_NORM, 0xFF, 0xFF, 0xFF);
@@ -584,7 +578,7 @@ void DrawMainScreen(void)
 	sw = fontserv->TextWidth("Last Score: ", bigfont, STYLE_NORM);
 	DrawText(xOff+5+sw, botDiv+46+(index*18)+3, buffer, 
 					bigfont, STYLE_NORM, 0xFF, 0xFF, 0xFF);
-	delete bigfont;
+	fontserv->FreeFont(bigfont);
 
 	/* -- Draw the Instructions */
 	offset = 34;
@@ -636,7 +630,7 @@ void DrawMainScreen(void)
 
 	DrawText(xOff+20, yOff+151, VERSION_STRING,
 				font, STYLE_NORM, 0xFF, 0xFF, 0xFF);
-	delete font;
+	fontserv->FreeFont(font);
 
 	DrawSoundLevel();
 
@@ -658,14 +652,14 @@ static void DrawKey(MPoint *pt, const char *key, const char *text, void (*callba
 		error("Can't use Geneva font! -- Exiting.\n");
 		exit(255);
 	}
+
 	screen->QueueBlit(pt->h, pt->v, gKeyIcon);
-	screen->Update();
 
 	DrawText(pt->h+14, pt->v+20, key, geneva, STYLE_BOLD, 0xFF, 0xFF, 0xFF);
 	DrawText(pt->h+13, pt->v+19, key, geneva, STYLE_BOLD, 0x00, 0x00, 0x00);
 	DrawText(pt->h+gKeyIcon->w+3, pt->v+19, text,
 					geneva, STYLE_BOLD, 0xFF, 0xFF, 0x00);
-	delete geneva;
+	fontserv->FreeFont(geneva);
 
 	buttons.Add_Button(pt->h, pt->v, gKeyIcon->w, gKeyIcon->h, callback);
 }	/* -- DrawKey */
@@ -673,30 +667,22 @@ static void DrawKey(MPoint *pt, const char *key, const char *text, void (*callba
 
 void Message(const char *message)
 {
-	static MFont *font;
-	static int xOff;
-	static char *last_message;
+	MFont *font;
+	int xOff;
 
-	if ( ! last_message ) { 	/* Initialize everything */
-		/* This was taken from the DrawMainScreen function */
-		xOff = (SCREEN_WIDTH - 512) / 2;
+	if (!message) {
+		return;
+	}
 
-		if ( (font = fontserv->NewFont("New York", 14)) == NULL ) {
-			error("Can't use New York(14) font! -- Exiting.\n");
-			exit(255);
-		}
-	} else {
-		DrawText(xOff, 25, last_message, font, STYLE_BOLD, 0, 0, 0);
-		delete[] last_message;
+	if ( (font = fontserv->NewFont("New York", 14)) == NULL ) {
+		error("Can't use New York(14) font! -- Exiting.\n");
+		exit(255);
 	}
-	if ( message ) {
-		DrawText(xOff, 25, message, font, STYLE_BOLD, 0xCC,0xCC,0xCC);
-		last_message = new char[strlen(message)+1];
-		strcpy(last_message, message);
-	} else {
-		last_message = new char[1];
-		last_message[0] = '\0';
-	}
-	screen->Update();
+
+	/* This was taken from the DrawMainScreen function */
+	xOff = (SCREEN_WIDTH - 512) / 2;
+	DrawText(xOff, 25, message, font, STYLE_BOLD, 0xCC,0xCC,0xCC);
+
+	fontserv->FreeFont(font);
 }
 

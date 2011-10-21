@@ -73,7 +73,12 @@ struct FontHdr {
                rowWords;        /* Row width of bit image in words */
 };
 
-typedef struct {
+typedef struct MFont {
+	/* Data useful for caching */
+	const char *name;
+	int ptsize;
+	struct MFont *next;
+
 	struct FontHdr *header;		/* The NFNT header! */
 
 	/* Variable-length tables */
@@ -85,6 +90,8 @@ typedef struct {
 	Mac_ResData *nfnt;
 } MFont;
 
+struct HashTable;
+
 class FontServ {
 
 public:
@@ -94,8 +101,9 @@ public:
 	FontServ(FrameBuf *screen, const char *fontfile);
 	~FontServ();
 	
-	/* The font returned by NewFont() should be delete'd */
+	/* The font returned by NewFont() should be freed with FreeFont() */
 	MFont  *NewFont(const char *fontname, int ptsize);
+	void FreeFont(MFont *font);
 
 	/* Determine the final width/height of a text block (in pixels) */
 	Uint16	TextWidth(const char *text, MFont *font, Uint8 style);
@@ -118,6 +126,8 @@ public:
 	}
 	void FreeText(SDL_Texture *text);
 
+	void FlushCache();
+
 	/* Returns NULL if everything is okay, or an error message if not */
 	char *Error(void) {
 		return(errstr);
@@ -126,7 +136,8 @@ public:
 private:
 	FrameBuf *screen;
 	Mac_Resource *fontres;
-	int text_allocated;
+	MFont *fonts;
+	HashTable *strings;
 
 	/* Useful for getting error feedback */
 	void SetError(const char *fmt, ...) {
