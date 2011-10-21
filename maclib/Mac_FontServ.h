@@ -113,16 +113,15 @@ public:
 	   The text should be freed with FreeText() after it is used.
 	 */
 	SDL_Texture *TextImage(const char *text, MFont *font, Uint8 style,
-				SDL_Color background, SDL_Color foreground);
+						SDL_Color foreground);
 	SDL_Texture *TextImage(const char *text, MFont *font, Uint8 style,
 						Uint8 R, Uint8 G, Uint8 B) {
-		SDL_Color background = { 0xFF, 0xFF, 0xFF, 0 };
 		SDL_Color foreground;
 
 		foreground.r = R;
 		foreground.g = G;
 		foreground.b = B;
-		return(TextImage(text, font, style, foreground, background));
+		return(TextImage(text, font, style, foreground));
 	}
 	void FreeText(SDL_Texture *text);
 

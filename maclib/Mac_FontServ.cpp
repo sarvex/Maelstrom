@@ -301,8 +301,7 @@ FontServ:: TextHeight(MFont *font)
 		((scanline[(i)/16] >> (15 - (i)%16)) & 1)
 
 SDL_Texture *
-FontServ:: TextImage(const char *text, MFont *font, Uint8 style,
-			SDL_Color foreground, SDL_Color background)
+FontServ:: TextImage(const char *text, MFont *font, Uint8 style, SDL_Color fg)
 {
 	char *key, *keycopy;
 	int keysize;
@@ -325,6 +324,7 @@ FontServ:: TextImage(const char *text, MFont *font, Uint8 style,
 	key = SDL_stack_alloc(char, keysize);
 	sprintf(key, "%s:%d:%s", font->name, font->ptsize, text);
 	if (hash_find(strings, key, (const void**)&image)) {
+		SDL_SetTextureColorMod(image, fg.r, fg.g, fg.b);
 		return image;
 	}
 
@@ -385,7 +385,7 @@ FontServ:: TextImage(const char *text, MFont *font, Uint8 style,
 
 	/* Allocate the text pixels */
 	bitmap = new Uint32[width*height];
-	color = screen->MapRGB(foreground.r, foreground.g, foreground.b);
+	color = screen->MapRGB(0xFF, 0xFF, 0xFF);
 
 	/* Print the individual characters */
 	/* Note: this could probably be optimized.. eh, who cares. :) */
@@ -436,6 +436,7 @@ FontServ:: TextImage(const char *text, MFont *font, Uint8 style,
 	/* Create the image */
 	image = screen->LoadImage(width, height, bitmap);
 	delete[] bitmap;
+	SDL_SetTextureColorMod(image, fg.r, fg.g, fg.b);
 
 	/* Add it to our cache */
 	keycopy = new char[keysize];
