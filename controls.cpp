@@ -178,34 +178,27 @@ static int Cancel_callback(void) {
 }
 static void BoxKeyPress(const SDL_Keysym &key, int *doneflag)
 {
-	SDL_Color black = { 0x00, 0x00, 0x00, 0 };
-	SDL_Color white = { 0xFF, 0xFF, 0xFF, 0 };
 	int i;
+	SDL_Keycode sym = key.sym;
 	char keyname[128];
 
-	if ( key.sym == *checkboxes[currentbox].control )
+	if ( sym == *checkboxes[currentbox].control )
 		return;
 
 	/* Make sure the key isn't in use! */
 	for ( i=0; i<NUM_CTLS; ++i ) {
-		if ( key.sym == *checkboxes[i].control ) {
-			key.sym = (SDLKey)*checkboxes[currentbox].control;
+		if ( sym == *checkboxes[i].control ) {
+			sym = *checkboxes[currentbox].control;
 
 			/* Clear the current text */
-			fontserv->InvertText(keynames[currentbox]);
-			screen->QueueBlit(
-				X+96+(BOX_WIDTH-keynames[currentbox]->w)/2, 
-				Y+75+SP+checkboxes[currentbox].yoffset,
-						keynames[currentbox], NOCLIP);
-			screen->Update();
 			fontserv->FreeText(keynames[currentbox]);
 
 			/* Blit the new message */
 			strcpy(keyname, "That key is in use!");
 			keynames[currentbox] = fontserv->TextImage(keyname,
-					chicago, STYLE_NORM, black, white);
+					chicago, STYLE_NORM, 0x00, 0x00, 0x00);
 			screen->QueueBlit(
-				X+96+(BOX_WIDTH-keynames[currentbox]->w)/2, 
+				X+96+(BOX_WIDTH-screen->GetImageWidth(keynames[currentbox]))/2, 
 				Y+75+SP+checkboxes[currentbox].yoffset,
 					keynames[currentbox], NOCLIP);
 			screen->Update();
@@ -215,19 +208,14 @@ static void BoxKeyPress(const SDL_Keysym &key, int *doneflag)
 	}
 
 	/* Clear the current text */
-	fontserv->InvertText(keynames[currentbox]);
-	screen->QueueBlit(X+96+(BOX_WIDTH-keynames[currentbox]->w)/2, 
-				Y+75+SP+checkboxes[currentbox].yoffset,
-						keynames[currentbox], NOCLIP);
-	screen->Update();
 	fontserv->FreeText(keynames[currentbox]);
 
 	/* Display the new key */
-	*checkboxes[currentbox].control = key.sym;
+	*checkboxes[currentbox].control = sym;
 	KeyName(*checkboxes[currentbox].control, keyname);
-	keynames[currentbox] = fontserv->TextImage(keyname, chicago, STYLE_NORM,
-								black, white);
-	screen->QueueBlit(X+96+(BOX_WIDTH-keynames[currentbox]->w)/2, 
+	keynames[currentbox] = fontserv->TextImage(keyname,
+					chicago, STYLE_NORM, 0x00, 0x00, 0x00);
+	screen->QueueBlit(X+96+(BOX_WIDTH-screen->GetImageWidth(keynames[currentbox]))/2, 
 				Y+75+SP+checkboxes[currentbox].yoffset,
 						keynames[currentbox], NOCLIP);
 	screen->Update();
@@ -301,7 +289,7 @@ void ConfigureControls(void)
 			dialog->Add_Rectangle(92, 71+checkboxes[i].yoffset,
 						BOX_WIDTH, BOX_HEIGHT, black);
 			dialog->Add_Image(keynames[i],
-					92+(BOX_WIDTH-keynames[i]->w)/2, 
+					92+(BOX_WIDTH-screen->GetImageWidth(keynames[i]))/2, 
 						71+SP+checkboxes[i].yoffset);
 		}
 	}
@@ -333,7 +321,7 @@ void ConfigureControls(void)
 
 static void HandleEvent(SDL_Event *event)
 {
-	SDLKey key;
+	SDL_Keycode key;
 
 	switch (event->type) {
 #ifdef SDL_INIT_JOYSTICK
@@ -524,16 +512,16 @@ void ShowDawn(void)
 									screen);
 	x = y = 19;
 	dialog->Add_Image(splash, x, y);
-	x += (splash->w+26);
+	x += (screen->GetImageWidth(splash)+26);
 	text[0] = fontserv->TextImage(D_text[0], chicago, STYLE_NORM,
 							0x00, 0x00, 0x00);
 	dialog->Add_Image(text[0], x, y);
 	for ( i=1; i<6; ++i ) {
-		y += (text[i-1]->h+2);
+		y += (screen->GetImageHeight(text[i-1])+2);
 		text[i] = fontserv->TextImage(D_text[i], chicago, STYLE_NORM,
 							0x00, 0x00, 0x00);
 		dialog->Add_Image(text[i], x, y);
-		x += (text[i]->w+2);
+		x += (screen->GetImageWidth(text[i])+2);
 	}
 	OK = new Mac_DefaultButton(210, 160, 90, BUTTON_HEIGHT,
 						"OK", chicago, fontserv, NULL);

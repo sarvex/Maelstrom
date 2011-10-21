@@ -119,12 +119,29 @@ public:
 		const char *text, MFont *font, FontServ *fontserv, 
 				int (*callback)(void));
 	virtual ~Mac_Button() {
-		SDL_FreeSurface(button);
+		if ( label ) {
+			Fontserv->FreeText(label);
+		}
+		if ( button[0] ) {
+			Screen->FreeImage(button[0]);
+		}
+		if ( button[1] ) {
+			Screen->FreeImage(button[1]);
+		}
 	}
 
 	virtual void Map(int Xoff, int Yoff, FrameBuf *screen) {
 		/* Do the normal dialog mapping */
 		Mac_Dialog::Map(Xoff, Yoff, screen);
+
+		/* Create the button images */
+		int pitch = (Width+3)&3;
+		Uint8 *image_bits = new Uint8[Height*pitch];
+		Bevel_Button(image_bits, pitch);
+		button[0] = Screen->LoadImage(Width, Height, image_bits);
+		Invert_Button(image_bits, pitch);
+		button[1] = Screen->LoadImage(Width, Height, image_bits);
+		delete[] image_bits;
 
 		/* Set up the button sensitivity */
 		sensitive.x = X;
@@ -133,7 +150,7 @@ public:
 		sensitive.h = Height;
 	}
 	virtual void Show(void) {
-		Screen->QueueBlit(X, Y, button, NOCLIP);
+		Screen->QueueBlit(X, Y, button[0], NOCLIP);
 	}
 
 	virtual void HandleButtonPress(int x, int y, int button, int *doneflag) {
@@ -143,58 +160,59 @@ public:
 
 protected:
 	int Width, Height;
-	SDL_Surface *button;
+	FontServ *Fontserv;
+	SDL_Texture *label;
+	SDL_Texture *button[2];
+	bool active;
 	SDL_Rect sensitive;
 	int (*Callback)(void);
 
-	virtual void Bevel_Button(SDL_Surface *image) {
-		Uint16 h;
-		Uint8 *image_bits;
+	void Bevel_Button(Uint8 *image_bits, int pitch) {
+		int h;
 
-		image_bits = (Uint8 *)image->pixels;
+		memset(image_bits, 0, Height*pitch);
 
 		/* Bevel upper corners */
-		memset(image_bits+3, 0x01, image->w-6);
-		image_bits += image->pitch;
-		memset(image_bits+1, 0x01, 2);
-		memset(image_bits+image->w-3, 0x01, 2);
-		image_bits += image->pitch;
-		memset(image_bits+1, 0x01, 1);
-		memset(image_bits+image->w-2, 0x01, 1);
-		image_bits += image->pitch;
+		memset(image_bits+3, 0xFF, Width-6);
+		image_bits += pitch;
+		memset(image_bits+1, 0xFF, 2);
+		memset(image_bits+Width-3, 0xFF, 2);
+		image_bits += pitch;
+		memset(image_bits+1, 0xFF, 1);
+		memset(image_bits+Width-2, 0xFF, 1);
+		image_bits += pitch;
 
 		/* Draw sides */
-		for ( h=3; h<(image->h-3); ++h ) {
-			image_bits[0] = 0x01;
-			image_bits[image->w-1] = 0x01;
-			image_bits += image->pitch;
+		for ( h=3; h<(Height-3); ++h ) {
+			image_bits[0] = 0xFF;
+			image_bits[Width-1] = 0xFF;
+			image_bits += pitch;
 		}
 
 		/* Bevel bottom corners */
-		memset(image_bits+1, 0x01, 1);
-		memset(image_bits+image->w-2, 0x01, 1);
-		image_bits += image->pitch;
-		memset(image_bits+1, 0x01, 2);
-		memset(image_bits+image->w-3, 0x01, 2);
-		image_bits += image->pitch;
-		memset(image_bits+3, 0x01, image->w-6);
+		memset(image_bits+1, 0xFF, 1);
+		memset(image_bits+Width-2, 0xFF, 1);
+		image_bits += pitch;
+		memset(image_bits+1, 0xFF, 2);
+		memset(image_bits+Width-3, 0xFF, 2);
+		image_bits += pitch;
+		memset(image_bits+3, 0xFF, Width-6);
 	}
-	virtual void InvertImage(void) {
+	void Invert_Button(Uint8 *image_bits, int pitch) {
 		int i;
 		Uint8 *buf;
 
-		for ( i=button->h*button->pitch, buf=(Uint8 *)button->pixels;
-							i > 0; --i, ++buf ) {
-			*buf = !*buf;
+		for ( i=Height*pitch, buf=image_bits; i > 0; --i, ++buf ) {
+			*buf = ~*buf;
 		}
 	}
 	virtual void ActivateButton(int *doneflag) {
 		/* Flash the button */
-		InvertImage();
+		active = true;
 		Show();
 		Screen->Update();
 		SDL_Delay(50);
-		InvertImage();
+		active = false;
 		Show();
 		Screen->Update();
 		/* Run the callback */
@@ -439,7 +457,7 @@ private:
 		Screen->DrawLine(x+8, y+10, x+9, y+10, Fg);
 		Screen->DrawLine(x+4, y+11, x+7, y+11, Fg);
 	}
-	void Spot(int x, int y);
+	void Spot(int x, int y)
 	{
 		x += 8;
 		y += 8;
@@ -625,11 +643,11 @@ private:
 		if ( entry->hilite ) {
 			clear = Fg;
 			entry->text = Fontserv->TextImage(entry->variable,
-				Font, STYLE_NORM, background, foreground);
+				Font, STYLE_NORM, background);
 		} else {
 			clear = Bg;
 			entry->text = Fontserv->TextImage(entry->variable,
-				Font, STYLE_NORM, foreground, background);
+				Font, STYLE_NORM, foreground);
 		}
 		Screen->FillRect(entry->x, entry->y,
 					entry->width, entry->height, clear);
@@ -828,11 +846,11 @@ private:
 		if ( entry->hilite ) {
 			clear = Fg;
 			entry->text = Fontserv->TextImage(buf,
-				Font, STYLE_NORM, background, foreground);
+				Font, STYLE_NORM, background);
 		} else {
 			clear = Bg;
 			entry->text = Fontserv->TextImage(buf,
-				Font, STYLE_NORM, foreground, background);
+				Font, STYLE_NORM, foreground);
 		}
 		entry->end = Screen->GetImageWidth(entry->text);
 		Screen->FillRect(entry->x, entry->y,

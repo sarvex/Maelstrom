@@ -18,40 +18,14 @@ Mac_Button::Mac_Button(int x, int y, int width, int height,
 				const char *text, MFont *font, FontServ *fontserv, 
 				int (*callback)(void)) : Mac_Dialog(x, y)
 {
-	SDL_Surface *textb;
-	SDL_Rect dstrect;
-
 	/* Set private variables */
 	Width = width;
 	Height = height;
-
-	/* Build image of the button */
-	button = SDL_CreateRGBSurface(SDL_SWSURFACE, Width, Height,
-						8, 0, 0, 0, 0);
-	if ( button == NULL ) {
-		SetError("%s", SDL_GetError());
-		return;
-	}
-	button->format->palette->colors[0].r = 0xFF;
-	button->format->palette->colors[0].g = 0xFF;
-	button->format->palette->colors[0].b = 0xFF;
-	button->format->palette->colors[1].r = 0x00;
-	button->format->palette->colors[1].g = 0x00;
-	button->format->palette->colors[1].b = 0x00;
-	textb = fontserv->TextImage(text, font, STYLE_NORM,
-					0x00, 0x00, 0x00);
-	if ( textb != NULL ) {
-		if ( (textb->w <= button->w) && 
-					(textb->h <= button->h) ) {
-			dstrect.x = (button->w-textb->w)/2;
-			dstrect.y = (button->h-textb->h)/2;
-			dstrect.w = textb->w;
-			dstrect.h = textb->h;
-			SDL_BlitSurface(textb, NULL, button, &dstrect);
-		}
-		fontserv->FreeText(textb);
-	}
-	Bevel_Button(button);
+	Fontserv = fontserv;
+	label = fontserv->TextImage(text, font, STYLE_NORM, R_FG, G_FG, B_FG);
+	button[0] = NULL;
+	button[1] = NULL;
+	active = false;
 
 	/* Set the callback */
 	Callback = callback;
@@ -70,7 +44,7 @@ Mac_CheckBox::Mac_CheckBox(int *toggle, int x, int y, const char *text,
 {
 	/* Create the text label */
 	Fontserv = fontserv;
-	label = Fontserv->TextImage(text, font, STYLE_NORM, 0, 0, 0);
+	label = Fontserv->TextImage(text, font, STYLE_NORM, R_FG, G_FG, B_FG);
 
 	/* Set the checkbox variable */
 	checkval = toggle;
@@ -164,7 +138,7 @@ Maclike_Dialog:: Add_Rectangle(int x, int y, int w, int h, Uint32 color)
 }
 
 void
-Maclike_Dialog:: Add_Image(SDL_Surface *image, int x, int y)
+Maclike_Dialog:: Add_Image(SDL_Texture *image, int x, int y)
 {
 	struct image_elem *ielem;
 	
