@@ -89,7 +89,7 @@ int SelectMovieRect(void)
 
 }
 #endif
-extern int RunFrame(void);	/* The heart of blit.cc */
+extern int RunFrame(void);	/* The heart of blit.cpp */
 
 // Global variables set in this file...
 int	gGameOn;

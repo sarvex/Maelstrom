@@ -9,7 +9,7 @@ Name: %{name}
 Version: %{version}
 Release: %{release}
 Source0: %{name}-%{version}.tar.gz
-URL: http://www.devolution.com/~slouken/Maelstrom/
+URL: http://www.libsdl.org/projects/Maelstrom/
 Copyright: GPL
 Group: Games
 BuildRoot: /var/tmp/%{name}-buildroot

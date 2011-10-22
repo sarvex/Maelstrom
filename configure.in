@@ -61,7 +61,7 @@ if test x$have_SDL_net = xyes; then
 else
     AC_MSG_ERROR([*** Can't find the SDL_net library
 The SDL_net library can be found at:
-http://www.devolution.com/~slouken/SDL/projects/SDL_net/
+http://www.libsdl.org/projects/SDL_net/
 ])
 fi
 

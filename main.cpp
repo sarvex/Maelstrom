@@ -6,7 +6,7 @@
 /* Ported to Linux  (Spring 1995)				 */
 /* Ported to Win95  (Fall   1996) -- not releasable		 */
 /* Ported to SDL    (Fall   1997)                                */
-/* By Sam Lantinga  (slouken@devolution.com)			 */
+/* By Sam Lantinga  (slouken@libsdl.org)			 */
 /* 								 */
 /* ------------------------------------------------------------- */
 

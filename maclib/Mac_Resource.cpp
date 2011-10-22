@@ -17,9 +17,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
     Sam Lantinga
-    5635-34 Springhouse Dr.
-    Pleasanton, CA 94588 (USA)
-    slouken@devolution.com
+    slouken@libsdl.org
 */
 
 /* These are routines to parse a Macintosh Resource Fork file
