@@ -175,12 +175,7 @@ void DoAbout(void)
 				/* Put in the right credits / mask the old... */
 				clr = screen->MapRGB(0x00, 0x00, 0x00);
 				screen->FillRect(xOff+166,yOff+282,338,62,clr);
-				font = fontserv->NewFont("New York", 18);
-				if ( font == NULL ) {
-					error(
-				"Can't use New York(18) font! -- Exiting.\n");
-					exit(255);
-				}
+				font = fonts[NEWYORK_18];
 				text1 = fontserv->TextImage("Port to Linux:   ",
 					font, STYLE_NORM, 0xFF, 0xFF, 0x55);
 				text2 = fontserv->TextImage("Sam Lantinga",
@@ -191,7 +186,6 @@ void DoAbout(void)
 								text2, NOCLIP);
 				fontserv->FreeText(text1);
 				fontserv->FreeText(text2);
-				fontserv->FreeFont(font);
 			}
 			screen->Update();
 			screen->Fade();

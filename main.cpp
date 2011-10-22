@@ -448,21 +448,14 @@ int DrawText(int x, int y, const char *text, MFont *font, Uint8 style,
 /* -- Draw the current sound volume */
 static void DrawSoundLevel(void)
 {
-	MFont *geneva;
 	char text[12];
 	int xOff, yOff;
-
-	if ( (geneva = fontserv->NewFont("Geneva", 9)) == NULL ) {
-		error("Can't use Geneva font! -- Exiting.\n");
-		exit(255);
-	}
 
 	xOff = (SCREEN_WIDTH - 512) / 2;
 	yOff = (SCREEN_HEIGHT - 384) / 2;
 	sprintf(text, "%d", gSoundLevel);
-	DrawText(xOff+309-7, yOff+240-6, text, geneva, STYLE_BOLD,
+	DrawText(xOff+309-7, yOff+240-6, text, fonts[GENEVA_9], STYLE_BOLD,
 						30000>>8, 30000>>8, 0xFF);
-	fontserv->FreeFont(geneva);
 }	/* -- DrawSoundLevel */
 
 
@@ -522,11 +515,8 @@ void DrawMainScreen(void)
 
 	/* -- Draw the high scores */
 
-	/* -- First the headings  -- fontserv() isn't elegant, but hey.. */
-	if ( (bigfont = fontserv->NewFont("New York", 18)) == NULL ) {
-		error("Can't use New York (18) font! -- Exiting.\n");
-		exit(255);
-	}
+	/* -- First the headings */
+	bigfont = fonts[NEWYORK_18];
 	DrawText(xOff+5, botDiv+22, "Name", bigfont, STYLE_ULINE,
 						0xFF, 0xFF, 0x00);
 	sRt = xOff+185;
@@ -540,10 +530,7 @@ void DrawMainScreen(void)
 
 	/* -- Now the scores */
 	LoadScores();
-	if ( (font = fontserv->NewFont("New York", 14)) == NULL ) {
-		error("Can't use New York (14) font! -- Exiting.\n");
-		exit(255);
-	}
+	font = fonts[NEWYORK_14];
 
 	for (index = 0; index < 10; index++) {
 		Uint8 R, G, B;
@@ -568,7 +555,6 @@ void DrawMainScreen(void)
 		DrawText(wRt-sw, botDiv+42+(index*18), buffer, 
 						font, STYLE_BOLD, R, G, B);
 	}
-	fontserv->FreeFont(font);
 
 	DrawText(xOff+5, botDiv+46+(10*18)+3, "Last Score: ", 
 					bigfont, STYLE_NORM, 0xFF, 0xFF, 0xFF);
@@ -576,7 +562,6 @@ void DrawMainScreen(void)
 	sw = fontserv->TextWidth("Last Score: ", bigfont, STYLE_NORM);
 	DrawText(xOff+5+sw, botDiv+46+(index*18)+3, buffer, 
 					bigfont, STYLE_NORM, 0xFF, 0xFF, 0xFF);
-	fontserv->FreeFont(bigfont);
 
 	/* -- Draw the Instructions */
 	offset = 34;
@@ -607,10 +592,7 @@ void DrawMainScreen(void)
 	pt.v += offset;
 	DrawKey(&pt, "0", " ", DecrementSound);
 
-	if ( (font = fontserv->NewFont("Geneva", 9)) == NULL ) {
-		error("Can't use Geneva font! -- Exiting.\n");
-		exit(255);
-	}
+	font = fonts[GENEVA_9];
 	DrawText(pt.h+screen->GetImageWidth(gKeyIcon)+3, pt.v+19, "-",
 				font, STYLE_NORM, 0xFF, 0xFF, 0x00);
 
@@ -628,7 +610,6 @@ void DrawMainScreen(void)
 
 	DrawText(xOff+20, yOff+151, VERSION_STRING,
 				font, STYLE_NORM, 0xFF, 0xFF, 0xFF);
-	fontserv->FreeFont(font);
 
 	DrawSoundLevel();
 
@@ -644,20 +625,14 @@ void DrawMainScreen(void)
 
 static void DrawKey(MPoint *pt, const char *key, const char *text, void (*callback)(void))
 {
-	MFont *geneva;
-
-	if ( (geneva = fontserv->NewFont("Geneva", 9)) == NULL ) {
-		error("Can't use Geneva font! -- Exiting.\n");
-		exit(255);
-	}
+	MFont *font = fonts[GENEVA_9];
 
 	screen->QueueBlit(pt->h, pt->v, gKeyIcon);
 
-	DrawText(pt->h+14, pt->v+20, key, geneva, STYLE_BOLD, 0xFF, 0xFF, 0xFF);
-	DrawText(pt->h+13, pt->v+19, key, geneva, STYLE_BOLD, 0x00, 0x00, 0x00);
+	DrawText(pt->h+14, pt->v+20, key, font, STYLE_BOLD, 0xFF, 0xFF, 0xFF);
+	DrawText(pt->h+13, pt->v+19, key, font, STYLE_BOLD, 0x00, 0x00, 0x00);
 	DrawText(pt->h+screen->GetImageWidth(gKeyIcon)+3, pt->v+19, text,
-					geneva, STYLE_BOLD, 0xFF, 0xFF, 0x00);
-	fontserv->FreeFont(geneva);
+					font, STYLE_BOLD, 0xFF, 0xFF, 0x00);
 
 	buttons.Add_Button(pt->h, pt->v, screen->GetImageWidth(gKeyIcon), screen->GetImageHeight(gKeyIcon), callback);
 }	/* -- DrawKey */
@@ -665,22 +640,14 @@ static void DrawKey(MPoint *pt, const char *key, const char *text, void (*callba
 
 void Message(const char *message)
 {
-	MFont *font;
 	int xOff;
 
 	if (!message) {
 		return;
 	}
 
-	if ( (font = fontserv->NewFont("New York", 14)) == NULL ) {
-		error("Can't use New York(14) font! -- Exiting.\n");
-		exit(255);
-	}
-
 	/* This was taken from the DrawMainScreen function */
 	xOff = (SCREEN_WIDTH - 512) / 2;
-	DrawText(xOff, 25, message, font, STYLE_BOLD, 0xCC,0xCC,0xCC);
-
-	fontserv->FreeFont(font);
+	DrawText(xOff, 25, message, fonts[NEWYORK_14], STYLE_BOLD,
+						0xCC, 0xCC, 0xCC);
 }
-

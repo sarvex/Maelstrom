@@ -116,7 +116,7 @@ Object *gEnemySprite;
 int	gWhenEnemy;
 
 // Local global variables;
-static MFont *geneva=NULL;
+static MFont *geneva;
 static Uint32 ourGrey, ourWhite;
 static int text_height;
 
@@ -278,10 +278,7 @@ void NewGame(void)
 	}
 
 	/* Load the font and colors we use everywhere */
-	if ( (geneva = fontserv->NewFont("Geneva", 9)) == NULL ) {
-		error("Can't use Geneva font! -- Exiting.\n");
-		exit(255);
-	}
+	geneva = fonts[GENEVA_9];
 	text_height = fontserv->TextHeight(geneva);
 	ourGrey = screen->MapRGB(30000>>8, 30000>>8, 0xFF);
 	ourWhite = screen->MapRGB(0xFF, 0xFF, 0xFF);
@@ -327,7 +324,6 @@ void NewGame(void)
 
 	DoGameOver();
 	screen->ShowCursor();
-	fontserv->FreeFont(geneva);
 }	/* -- NewGame */
 
 
@@ -405,9 +401,6 @@ static void NextWave(void)
 	int	NewRoids;
 	short	temp;
 
-	/* Flush the font text cache */
-	fontserv->FlushCache();
-	
 	gEnemySprite = NULL;
 
 	/* -- Initialize some variables */
@@ -580,10 +573,7 @@ static void DoGameOver(void)
 
 	/* Show the player ranking */
 	if ( gNumPlayers > 1 ) {
-		if ( (newyork = fontserv->NewFont("New York", 18)) == NULL ) {
-                        error("Can't use New York font! -- Exiting.\n");
-                        exit(255);
-                }
+		newyork = fonts[NEWYORK_18];
 		newyork_height = fontserv->TextHeight(newyork);
 		for ( i=0; i<gNumPlayers; ++i ) {
 			char buffer[BUFSIZ], num1[12], num2[12];
@@ -595,7 +585,6 @@ static void DoGameOver(void)
 			DrawText(160, 380+i*newyork_height, buffer,
 				newyork, STYLE_NORM, 30000>>8, 30000>>8, 0xFF);
 		}
-		fontserv->FreeFont(newyork);
 	}
 	screen->Update();
 
@@ -628,10 +617,7 @@ static void DoGameOver(void)
 		}
 
 		/* -- Draw the "Enter your name" string */
-		if ( (newyork = fontserv->NewFont("New York", 18)) == NULL ) {
-                        error("Can't use New York font! -- Exiting.\n");
-                        exit(255);
-                }
+		newyork = fonts[NEWYORK_18];
 		newyork_height = fontserv->TextHeight(newyork);
 		x = (SCREEN_WIDTH-(fontserv->TextWidth("Enter your name: ",
 						newyork, STYLE_NORM)*2))/2;
@@ -683,7 +669,6 @@ static void DoGameOver(void)
 				screen->Update();
 			}
 		}
-		fontserv->FreeFont(newyork);
 		SDL_StopTextInput();
 
 		/* In case the user just pressed <Return> */

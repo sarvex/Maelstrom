@@ -130,13 +130,9 @@ int ZapHighScores(void)
 	X=179;
 	Y=89;
 #endif
-	if ( (chicago = fontserv->NewFont("Chicago", 12)) == NULL ) {
-		error("Can't use Chicago font!\n");
-		return(0);
-	}
+	chicago = fonts[CHICAGO_12];
 	if ( (splash = Load_Title(screen, 102)) == NULL ) {
 		error("Can't load score zapping splash!\n");
-		delete chicago;
 		return(0);
 	}
 	dialog = new Maclike_Dialog(X, Y, CLR_DIALOG_WIDTH, CLR_DIALOG_HEIGHT,
@@ -156,7 +152,6 @@ int ZapHighScores(void)
 
 	/* Clean up and return */
 	screen->FreeImage(splash);
-	fontserv->FreeFont(chicago);
 	delete dialog;
 	if ( do_clear ) {
 		memset(hScores, 0, sizeof(hScores));
@@ -202,13 +197,9 @@ int GetStartLevel(void)
 	int startlevel=10, startlives=5, turbofunk=0;
 
 	/* Set up all the components of the dialog box */
-	if ( (chicago = fontserv->NewFont("Chicago", 12)) == NULL ) {
-		error("Can't use Chicago font!\n");
-		return(0);
-	}
+	chicago = fonts[CHICAGO_12];
 	if ( (splash = GetCIcon(screen, 103)) == NULL ) {
 		error("Can't load alien level splash!\n");
-		delete chicago;
 		return(0);
 	}
 	X=(SCREEN_WIDTH-LVL_DIALOG_WIDTH)/2;
@@ -252,7 +243,6 @@ int GetStartLevel(void)
 	fontserv->FreeText(text2);
 	fontserv->FreeText(text3);
 	fontserv->FreeText(text4);
-	fontserv->FreeFont(chicago);
 	delete dialog;
 	if ( do_level ) {
 		if ( ! startlives || (startlives > 40) )

@@ -164,7 +164,6 @@ static struct {
 
 static int X=0;
 static int Y=0;
-static MFont *chicago;
 static SDL_Texture *keynames[NUM_CTLS];
 static int currentbox, valid;
 
@@ -196,7 +195,7 @@ static void BoxKeyPress(const SDL_Keysym &key, int *doneflag)
 			/* Blit the new message */
 			strcpy(keyname, "That key is in use!");
 			keynames[currentbox] = fontserv->TextImage(keyname,
-					chicago, STYLE_NORM, 0x00, 0x00, 0x00);
+					fonts[CHICAGO_12], STYLE_NORM, 0x00, 0x00, 0x00);
 			screen->QueueBlit(
 				X+96+(BOX_WIDTH-screen->GetImageWidth(keynames[currentbox]))/2, 
 				Y+75+SP+checkboxes[currentbox].yoffset,
@@ -214,7 +213,7 @@ static void BoxKeyPress(const SDL_Keysym &key, int *doneflag)
 	*checkboxes[currentbox].control = sym;
 	KeyName(*checkboxes[currentbox].control, keyname);
 	keynames[currentbox] = fontserv->TextImage(keyname,
-					chicago, STYLE_NORM, 0x00, 0x00, 0x00);
+					fonts[CHICAGO_12], STYLE_NORM, 0x00, 0x00, 0x00);
 	screen->QueueBlit(X+96+(BOX_WIDTH-screen->GetImageWidth(keynames[currentbox]))/2, 
 				Y+75+SP+checkboxes[currentbox].yoffset,
 						keynames[currentbox], NOCLIP);
@@ -230,6 +229,7 @@ void ConfigureControls(void)
 		"ESC aborts the game.";
 	SDL_Texture *text1, *text2;
 #endif
+	MFont *chicago;
 	Uint32 black;
 	int i;
 	char keyname[128];
@@ -242,13 +242,9 @@ void ConfigureControls(void)
 
 	/* Set up all the components of the dialog box */
 	black = screen->MapRGB(0x00, 0x00, 0x00);
-	if ( (chicago = fontserv->NewFont("Chicago", 12)) == NULL ) {
-		error("Can't use Chicago font!\n");
-		return;
-	}
+	chicago = fonts[CHICAGO_12];
 	if ( (splash = Load_Title(screen, 100)) == NULL ) {
 		error("Can't load configuration splash!\n");
-		fontserv->FreeFont(chicago);
 		return;
 	}
 	X=(SCREEN_WIDTH-CTL_DIALOG_WIDTH)/2;
@@ -310,7 +306,6 @@ void ConfigureControls(void)
 	for ( i=0; i<NUM_CTLS; ++i ) {
 		fontserv->FreeText(keynames[i]);
 	}
-	fontserv->FreeFont(chicago);
 	delete dialog;
 	if ( valid ) {
 		memcpy(&controls, &newcontrols, sizeof(controls));
@@ -500,10 +495,7 @@ void ShowDawn(void)
 	X=160;
 	Y=73;
 #endif
-	if ( (chicago = fontserv->NewFont("Chicago", 12)) == NULL ) {
-		error("Can't use Chicago font!\n");
-		return;
-	}
+	chicago = fonts[CHICAGO_12];
 	if ( (splash = GetCIcon(screen, 103)) == NULL ) {
 		error("Can't load alien dawn splash!\n");
 		return;
@@ -534,7 +526,6 @@ void ShowDawn(void)
 	screen->FreeImage(splash);
 	for ( i=0; i<6; ++i )
 		fontserv->FreeText(text[i]);
-	fontserv->FreeFont(chicago);
 	delete dialog;
 	return;
 }

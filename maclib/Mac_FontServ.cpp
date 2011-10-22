@@ -85,7 +85,6 @@ FontServ:: FontServ(FrameBuf *_screen, const char *fontfile)
 {
 	screen = _screen;
 	fontres = new Mac_Resource(fontfile);
-	fonts = NULL;
 	strings = hash_create(screen, hash_hash_string, hash_keymatch_string, hash_nuke_string_texture);
  
 	if ( fontres->Error() ) {
@@ -101,11 +100,6 @@ FontServ:: FontServ(FrameBuf *_screen, const char *fontfile)
 
 FontServ:: ~FontServ()
 {
-	while (fonts) {
-		MFont *next = fonts->next;
-		delete fonts;
-		fonts = next;
-	}
 	hash_destroy(strings);
 
 	delete fontres;
@@ -124,20 +118,6 @@ FontServ:: NewFont(const char *fontname, int ptsize)
 	int i, swapfont;
 	MFont *prev, *font;
 
-	/* First see if we can find the font in our cache */
-	prev = NULL;
-	for (font = fonts; font; prev = font, font = font->next) {
-		if (strcmp(fontname, font->name) == 0 && ptsize == font->ptsize) {
-			/* Move this font to the front so it's found faster */
-			if (prev) {
-				prev->next = font->next;
-				font->next = fonts;
-				fonts = font;
-			}
-			return font;
-		}
-	}
-	
 	/* Get the font family */
 	fond = fontres->Resource("FOND", fontname);
 	if ( fond == NULL ) {
@@ -235,18 +215,13 @@ FontServ:: NewFont(const char *fontname, int ptsize)
 		byteswap((Uint16 *)font->owTable, nchars);
 	}
 
-	/* Save this font in the cache */
-	font->next = fonts;
-	fonts = font;
-
 	return(font);
 }
 
 void
 FontServ:: FreeFont(MFont *font)
 {
-	/* We'll likely be asked for this again soon, leave it alone */
-	return;
+	delete font;
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -452,12 +427,4 @@ FontServ:: FreeText(SDL_Texture *text)
 {
 	/* We'll likely be asked for this again soon, leave it alone */
 	return;
-}
-
-void
-FontServ:: FlushCache(void)
-{
-	/* We'll flush any strings in the cache and leave the fonts around */
-	hash_destroy(strings);
-	strings = hash_create(screen, hash_hash_string, hash_keymatch_string, hash_nuke_string_texture);
 }

@@ -74,11 +74,8 @@ struct FontHdr {
 };
 
 typedef struct MFont {
-	/* Data useful for caching */
 	const char *name;
 	int ptsize;
-	struct MFont *next;
-
 	struct FontHdr *header;		/* The NFNT header! */
 
 	/* Variable-length tables */
@@ -125,8 +122,6 @@ public:
 	}
 	void FreeText(SDL_Texture *text);
 
-	void FlushCache();
-
 	/* Returns NULL if everything is okay, or an error message if not */
 	char *Error(void) {
 		return(errstr);
@@ -135,7 +130,6 @@ public:
 private:
 	FrameBuf *screen;
 	Mac_Resource *fontres;
-	MFont *fonts;
 	HashTable *strings;
 
 	/* Useful for getting error feedback */

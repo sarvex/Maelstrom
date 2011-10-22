@@ -13,6 +13,7 @@
 // Global variables set in this file...
 Sound    *sound = NULL;
 FontServ *fontserv = NULL;
+MFont    *fonts[NUM_FONTS];
 FrameBuf *screen = NULL;
 
 Sint32	gLastHigh;
@@ -76,7 +77,6 @@ void DoSplash(void)
 
 void DoIntroScreen(void)
 {
-	MFont  *geneva;
 	SDL_Texture *intro, *text;
 	Uint16  Yoff, Xoff;
 	Uint32  clr, ltClr, ltrClr;
@@ -112,19 +112,13 @@ void DoIntroScreen(void)
 
 /* -- Draw the loading message */
 
-	geneva = fontserv->NewFont("Geneva", 9);
-	if ( geneva == NULL ) {
-		error("Warning: %s\n", fontserv->Error());
-		return;
-	}
-	text = fontserv->TextImage("Loading...", geneva, STYLE_BOLD,
+	text = fontserv->TextImage("Loading...", fonts[GENEVA_9], STYLE_BOLD,
 						0xFF, 0xFF, 0x00);
 	if ( text ) {
 		screen->QueueBlit(SCREEN_WIDTH/2-screen->GetImageWidth(text)/2,
 				Yoff+20-screen->GetImageHeight(text)/2, text, NOCLIP);
 		fontserv->FreeText(text);
 	}
-	fontserv->FreeFont(geneva);
 
 	screen->Update();
 }	// -- DoIntroScreen
@@ -696,8 +690,15 @@ static void BuildVelocityTable(void)
 */
 extern "C" void CleanUp(void)
 {
+	int i;
+
 	HaltLogic();
 	if ( fontserv ) {
+		for ( i = 0; i < NUM_FONTS; ++i ) {
+			if ( fonts[i] ) {
+				fontserv->FreeFont(fonts[i]);
+			}
+		}
 		delete fontserv;
 		fontserv = NULL;
 	}
@@ -770,11 +771,22 @@ int DoInitializations(Uint32 video_flags)
 	atexit(CleanUp);		// Need to reset this under X11 DGA
 	SDL_FreeSurface(icon);
 
-	/* Load the Font Server */
+	/* Load the Font Server and fonts */
 	fontserv = new FontServ(screen, "Maelstrom Fonts");
 	if ( fontserv->Error() ) {
 		error("Fatal: %s\n", fontserv->Error());
 		return(-1);
+	}
+	memset(fonts, 0, sizeof(fonts));
+	fonts[CHICAGO_12] = fontserv->NewFont("Chicago", 12);
+	fonts[GENEVA_9] = fontserv->NewFont("Geneva", 9);
+	fonts[NEWYORK_14] = fontserv->NewFont("New York", 14);
+	fonts[NEWYORK_18] = fontserv->NewFont("New York", 18);
+	for ( i = 0; i < NUM_FONTS; ++i ) {
+		if ( !fonts[i] ) {
+			error("Fatal: Couldn't load fonts");
+			return(-1);
+		}
 	}
 
 	/* Load the Sound Server and initialize sound */

@@ -17,6 +17,14 @@
 
 // The Font Server :)
 extern FontServ *fontserv;
+enum {
+	CHICAGO_12,
+	GENEVA_9,
+	NEWYORK_14,
+	NEWYORK_18,
+	NUM_FONTS
+};
+extern MFont *fonts[NUM_FONTS];
 
 // The Sound Server *grin*
 extern Sound *sound;
