@@ -249,6 +249,9 @@ FrameBuf:: LoadImage(int w, int h, Uint8 *pixels, Uint8 *mask)
 	}
 
 	texture = LoadImage(w, h, artwork);
+	if ( mask ) {
+		SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+	}
 	delete[] artwork;
 	return(texture);
 }
