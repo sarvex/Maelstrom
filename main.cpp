@@ -493,6 +493,7 @@ void DrawMainScreen(void)
 	ltrClr = screen->MapRGB(50000>>8, 50000>>8, 0xFF);
 
 	screen->Clear();
+
 	/* -- Draw the screen frame */
 	screen->DrawRect(xOff-1, yOff-1, width+2, height+2, clr);
 	screen->DrawRect(xOff-2, yOff-2, width+4, height+4, clr);
@@ -509,9 +510,6 @@ void DrawMainScreen(void)
 	screen->DrawLine(rightDiv, 263+yOff, xOff+width, 263+yOff, ltClr);
 	/* -- Draw the title image */
 	screen->QueueBlit(xOff+5, yOff+5, title, NOCLIP);
-	screen->Update();
-	screen->FreeImage(title);
-
 
 	/* -- Draw the high scores */
 
@@ -616,6 +614,8 @@ void DrawMainScreen(void)
 	/* Always drawing while faded out -- fade in */
 	screen->Update();
 	screen->Fade();
+	screen->FreeImage(title);
+
 }	/* -- DrawMainScreen */
 
 
