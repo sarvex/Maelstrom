@@ -28,7 +28,9 @@ Maelstrom_SOURCES =		\
 	rect.cpp		\
 	rect.h			\
 	scores.cpp		\
-	scores.h
+	scores.h		\
+	UIElements.cpp		\
+	UIElements.h
 
 LOGIC = netlogic
 

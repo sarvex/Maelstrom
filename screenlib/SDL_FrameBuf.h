@@ -30,23 +30,23 @@
 */
 
 #include <stdio.h>
-#include <string.h>
-#include <stdarg.h>
 
 #include "SDL.h"
+#include "ErrorBase.h"
+#include "UIArea.h"
 
 typedef enum {
 	DOCLIP,
 	NOCLIP
 } clipval;
 
-class FrameBuf {
+class FrameBuf : public UIArea {
 
 public:
 	FrameBuf();
 	int Init(int width, int height, Uint32 window_flags, Uint32 render_flags,
 			SDL_Color *colors = NULL, SDL_Surface *icon = NULL);
-	~FrameBuf();
+	virtual ~FrameBuf();
 
 	/* Setup routines */
 	/* Set the image palette -- 256 entries */
@@ -87,18 +87,6 @@ public:
 		SDL_RenderPresent(renderer);
 	}
 	void Fade(void);		/* Fade screen out, then in */
-
-	/* Informational routines */
-	int Width(void) {
-		int w, h;
-		SDL_GetWindowSize(window, &w, &h);
-		return w;
-	}
-	int Height(void) {
-		int w, h;
-		SDL_GetWindowSize(window, &w, &h);
-		return h;
-	}
 
 	/* Drawing routines */
 	void Clear(int x, int y, int w, int h) {
@@ -166,11 +154,6 @@ public:
 		SDL_SetWindowTitle(window, caption);
 	}
 
-	/* Error message routine */
-	char *Error(void) {
-		return(errstr);
-	}
-
 private:
 	/* The current display */
 	SDL_Window *window;
@@ -186,18 +169,6 @@ private:
 		b = (color >>  0) & 0xFF;
 		SDL_SetRenderDrawColor(renderer, r, g, b, 0xFF);
 	}
-
-	/* Error message */
-	void SetError(const char *fmt, ...) {
-		va_list ap;
-
-		va_start(ap, fmt);
-		vsprintf(errbuf, fmt, ap);
-		va_end(ap);
-		errstr = errbuf;
-        }
-	char *errstr;
-	char  errbuf[1024];
 };
 
 #endif /* _SDL_FrameBuf_h */

@@ -33,12 +33,11 @@
 #define MAX(A, B)	((A > B) ? A : B)
 
 /* Constructors cannot fail. :-/ */
-FrameBuf:: FrameBuf()
+FrameBuf:: FrameBuf() : UIArea()
 {
 	/* Initialize various variables to null state */
 	window = NULL;
 	renderer = NULL;
-	errstr = NULL;
 	faded = 0;
 }
 
@@ -64,11 +63,12 @@ FrameBuf:: Init(int width, int height, Uint32 window_flags, Uint32 render_flags,
 		SDL_SetWindowIcon(window, icon);
 	}
 
+	/* Set the UI area */
+	m_rect.w = width;
+	m_rect.h = height;
+
 	/* Set the blit clipping rectangle */
-	clip.x = 0;
-	clip.y = 0;
-	clip.w = width;
-	clip.h = height;
+	clip = m_rect;
 
 	/* Copy the image colormap */
 	if ( colors ) {

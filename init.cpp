@@ -8,6 +8,7 @@
 #include "load.h"
 #include "colortable.h"
 #include "fastrand.h"
+#include "UIElements.h"
 
 
 // Global variables set in this file...
@@ -15,6 +16,7 @@ Sound    *sound = NULL;
 FontServ *fontserv = NULL;
 MFont    *fonts[NUM_FONTS];
 FrameBuf *screen = NULL;
+UIManager ui;
 
 Sint32	gLastHigh;
 Uint32	gLastDrawn;
@@ -782,6 +784,7 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 			return(-1);
 		}
 	}
+	UIPanel::SetElementFactory(CreateMaelstromUIElement);
 
 	/* Load the Sound Server and initialize sound */
 	sound = new Sound("Maelstrom Sounds", gSoundLevel);
