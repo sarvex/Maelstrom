@@ -135,13 +135,16 @@ public:
 		Mac_Dialog::Map(Xoff, Yoff, screen);
 
 		/* Create the button images */
-		int pitch = (Width+3)&3;
+		int pitch = (Width+3)&~3;
 		Uint8 *image_bits = new Uint8[Height*pitch];
 		Bevel_Button(image_bits, pitch);
 		button[0] = Screen->LoadImage(Width, Height, image_bits);
 		Invert_Button(image_bits, pitch);
 		button[1] = Screen->LoadImage(Width, Height, image_bits);
 		delete[] image_bits;
+
+		labelX = X + (Width - Screen->GetImageWidth(label))/2;
+		labelY = Y + (Height - Screen->GetImageHeight(label))/2;
 
 		/* Set up the button sensitivity */
 		sensitive.x = X;
@@ -151,6 +154,7 @@ public:
 	}
 	virtual void Show(void) {
 		Screen->QueueBlit(X, Y, button[0], NOCLIP);
+		Screen->QueueBlit(labelX, labelY, label, NOCLIP);
 	}
 
 	virtual void HandleButtonPress(int x, int y, int button, int *doneflag) {
@@ -160,6 +164,7 @@ public:
 
 protected:
 	int Width, Height;
+	int labelX, labelY;
 	FontServ *Fontserv;
 	SDL_Texture *label;
 	SDL_Texture *button[2];
