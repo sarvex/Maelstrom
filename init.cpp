@@ -69,6 +69,7 @@ void DoSplash(void)
 		error("Can't load Ambrosia splash title! (ID=%d)\n", 999);
 		return;
         }
+	screen->Clear();
 	screen->QueueBlit(SCREEN_WIDTH/2-screen->GetImageWidth(splash)/2,
 			  SCREEN_HEIGHT/2-screen->GetImageHeight(splash)/2, splash, NOCLIP);
 	screen->Update();
@@ -763,6 +764,8 @@ int DoInitializations(Uint32 video_flags)
 		return(-1);
 	}
 	screen->SetCaption("Maelstrom");
+	screen->Clear();
+	screen->Update();
 	atexit(CleanUp);		// Need to reset this under X11 DGA
 	SDL_FreeSurface(icon);
 
@@ -807,8 +810,6 @@ int DoInitializations(Uint32 video_flags)
 	screen->ClipBlit(&gClipRect);
 
 	/* Do the Ambrosia Splash screen */
-	screen->Clear();
-	screen->Update();
 	screen->Fade();
 	DoSplash();
 	screen->Fade();
