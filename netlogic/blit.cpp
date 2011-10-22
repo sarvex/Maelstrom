@@ -115,7 +115,6 @@ int RunFrame(void)
 		gSprites[i]->BlitSprite();
 	OBJ_LOOP(i, gNumPlayers)
 		gPlayers[i]->BlitSprite();
-	screen->Update();
 
 	/* Make sure someone is still playing... */
 	for ( i=0, PlayersLeft=0; i < gNumPlayers; ++i ) {
@@ -125,7 +124,6 @@ int RunFrame(void)
 	if ( gNumPlayers > 1 ) {
 		OBJ_LOOP(i, gNumPlayers)
 			gPlayers[i]->ShowDot();
-		screen->Update();
 	}
 
 #ifdef SERIOUS_DEBUG
@@ -147,7 +145,6 @@ printf("\n");
 #endif /* SERIOUS_DEBUG */
 
 	/* Timing handling -- Delay the FRAME_DELAY */
-	screen->Update();
 	if ( ! gNoDelay ) {
 		Uint32 ticks;
 		while ( ((ticks=Ticks)-gLastDrawn) < FRAME_DELAY ) {
