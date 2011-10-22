@@ -56,6 +56,7 @@ UIArea::UIArea() : ErrorBase()
 	m_rect.y = 0;
 	m_rect.w = 0;
 	m_rect.h = 0;
+	m_shown = true;
 }
 
 bool
@@ -63,6 +64,16 @@ UIArea::Load(rapidxml::xml_node<> *node)
 {
 	rapidxml::xml_node<> *child;
 	rapidxml::xml_attribute<> *attr;
+
+	attr = node->first_attribute("shown", 0, false);
+	if (attr) {
+		const char *value = attr->value();
+		if (*value == '0' || *value == 'f' || *value == 'F') {
+			m_shown = false;
+		} else {
+			m_shown = true;
+		}
+	}
 
 	child = node->first_node("size", 0, false);
 	if (child) {

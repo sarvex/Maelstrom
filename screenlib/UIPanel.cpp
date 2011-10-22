@@ -158,7 +158,9 @@ void
 UIPanel::Draw()
 {
 	for (unsigned i = 0; i < m_elements.length(); ++i) {
-		m_elements[i]->Draw(m_screen);
+		if (m_elements[i]->IsShown()) {
+			m_elements[i]->Draw(m_screen);
+		}
 	}
 }
 

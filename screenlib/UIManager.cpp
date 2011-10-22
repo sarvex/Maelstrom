@@ -39,7 +39,9 @@ void
 UIManager::Draw()
 {
 	for (unsigned i = 0; i < m_panels.length(); ++i) {
-		m_panels[i]->Draw();
+		if (m_panels[i]->IsShown()) {
+			m_panels[i]->Draw();
+		}
 	}
 }
 

@@ -88,8 +88,19 @@ public:
 	}
 	void GetAnchorLocation(AnchorLocation spot, int *x, int *y) const;
 
+	void Show() {
+		m_shown = true;
+	}
+	void Hide() {
+		m_shown = false;
+	}
+	bool IsShown() const {
+		return m_shown;
+	}
+
 protected:
 	SDL_Rect m_rect;
+	bool m_shown;
 };
 
 #endif // _UIArea_h
