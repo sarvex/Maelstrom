@@ -28,7 +28,6 @@
 #include "../utils/rapidxml.h"
 #include "../utils/array.h"
 
-#include "ErrorBase.h"
 #include "UIArea.h"
 
 class FrameBuf;
@@ -48,6 +47,9 @@ public:
 	UIPanel(FrameBuf *screen, const char *name = "");
 	virtual ~UIPanel();
 
+	FrameBuf *GetScreen() const {
+		return m_screen;
+	}
 	const char *GetName() const {
 		return m_name;
 	}

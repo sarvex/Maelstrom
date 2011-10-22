@@ -27,7 +27,6 @@
 
 #include "../utils/rapidxml.h"
 
-#include "ErrorBase.h"
 #include "UIArea.h"
 
 class FrameBuf;
@@ -43,15 +42,16 @@ public:
 		return m_name;
 	}
 
-	bool Load(rapidxml::xml_node<> *node);
+	virtual bool Load(rapidxml::xml_node<> *node);
 
 	virtual UIArea *GetAnchorElement(const char *name);
 
-	virtual void Draw(FrameBuf *) { }
+	virtual void Draw() { }
 	virtual bool HandleEvent(const SDL_Event &event) { return false; }
 
 protected:
 	char *m_name;
+	FrameBuf *m_screen;
 	UIPanel *m_panel;
 };
 

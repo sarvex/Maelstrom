@@ -94,7 +94,7 @@ UIArea::Load(rapidxml::xml_node<> *node)
 		AnchorLocation anchorTo = TOPLEFT;
 		int x, y;
 
-		attr = node->first_attribute("anchorElement", 0, false);
+		attr = child->first_attribute("anchorElement", 0, false);
 		anchorElement = GetAnchorElement(attr ? attr->value() : NULL);
 		if (!anchorElement) {
 			SetError("Element 'anchor' couldn't find anchor element %s",
@@ -102,11 +102,11 @@ UIArea::Load(rapidxml::xml_node<> *node)
 			return false;
 		}
 
-		attr = node->first_attribute("anchorFrom", 0, false);
+		attr = child->first_attribute("anchorFrom", 0, false);
 		if (attr) {
 			anchorFrom = ParseAnchorLocation(attr->value());
 		}
-		attr = node->first_attribute("anchorTo", 0, false);
+		attr = child->first_attribute("anchorTo", 0, false);
 		if (attr) {
 			anchorTo = ParseAnchorLocation(attr->value());
 		}

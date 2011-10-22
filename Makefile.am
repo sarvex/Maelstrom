@@ -29,6 +29,10 @@ Maelstrom_SOURCES =		\
 	rect.h			\
 	scores.cpp		\
 	scores.h		\
+	UIElementTexture.cpp	\
+	UIElementTexture.h	\
+	UIElementTitle.cpp	\
+	UIElementTitle.h	\
 	UIElements.cpp		\
 	UIElements.h
 

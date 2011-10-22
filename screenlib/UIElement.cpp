@@ -28,6 +28,7 @@ UIElement::UIElement(UIPanel *panel, const char *name) : UIArea()
 	m_name = new char[strlen(name)+1];
 	strcpy(m_name, name);
 
+	m_screen = panel->GetScreen();
 	m_panel = panel;
 }
 

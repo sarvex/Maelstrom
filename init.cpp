@@ -64,18 +64,13 @@ static int LoadSmallSprite(Mac_Resource *spriteres,
 /* Put up an Ambrosia Software splash screen */
 void DoSplash(void)
 {
-	SDL_Texture *splash;
+	UIPanel panel(screen);
 
-	splash = Load_Title(screen, 999);
-	if ( splash == NULL ) {
-		error("Can't load Ambrosia splash title! (ID=%d)\n", 999);
-		return;
-        }
 	screen->Clear();
-	screen->QueueBlit(SCREEN_WIDTH/2-screen->GetImageWidth(splash)/2,
-			  SCREEN_HEIGHT/2-screen->GetImageHeight(splash)/2, splash, NOCLIP);
+	if (panel.Load("splash.xml")) {
+		panel.Draw();
+	}
 	screen->Update();
-	screen->FreeImage(splash);
 }
 
 /* ----------------------------------------------------------------- */

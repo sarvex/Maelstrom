@@ -89,13 +89,14 @@ UIPanel::Load(const char *file)
 
 	rapidxml::xml_node<> *node = doc.first_node();
 	rapidxml::xml_node<> *child;
+	rapidxml::xml_attribute<> *attr;
 	if (strcmp(node->name(), "UIPanel") != 0) {
 		SetError("Parse error: UIPanel root element expected");
 		delete[] buffer;
 		return false;
 	}
-	child = node->first_node("name", 0, false);
-	if (child) {
+	attr = node->first_attribute("name", 0, false);;
+	if (attr) {
 		const char *name = node->value();
 		delete[] m_name;
 		m_name = new char[strlen(name)+1];
@@ -132,6 +133,7 @@ UIPanel::LoadElements(rapidxml::xml_node<> *node)
 		}
 		AddElement(element);
 	}
+	return true;
 }
 
 UIArea *
@@ -159,7 +161,7 @@ UIPanel::Draw()
 {
 	for (unsigned i = 0; i < m_elements.length(); ++i) {
 		if (m_elements[i]->IsShown()) {
-			m_elements[i]->Draw(m_screen);
+			m_elements[i]->Draw();
 		}
 	}
 }
