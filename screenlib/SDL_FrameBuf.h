@@ -55,7 +55,7 @@ public:
 	void SetPalette(SDL_Color *colors);
 	/* Map an RGB value to a color pixel */
 	Uint32 MapRGB(Uint8 R, Uint8 G, Uint8 B) {
-		return (0xFF0000 | ((Uint32)R << 16) | ((Uint32)G << 8) | B);
+		return (0xFF000000 | ((Uint32)R << 16) | ((Uint32)G << 8) | B);
 	}
 	/* Set the blit clipping rectangle */
 	void   ClipBlit(SDL_Rect *cliprect) {

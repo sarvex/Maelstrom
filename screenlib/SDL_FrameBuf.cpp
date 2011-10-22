@@ -26,7 +26,6 @@
 #include "physfsrwops.h"
 
 #include "SDL_FrameBuf.h"
-#include "pixel.h"
 
 
 #define LOWER_PREC(X)	((X)/16)	/* Lower the precision of a value */
