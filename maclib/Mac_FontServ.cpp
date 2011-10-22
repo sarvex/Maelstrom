@@ -413,6 +413,7 @@ FontServ:: TextImage(const char *text, MFont *font, Uint8 style, SDL_Color fg)
 	image = screen->LoadImage(width, height, bitmap);
 	delete[] bitmap;
 	SDL_SetTextureColorMod(image, fg.r, fg.g, fg.b);
+	SDL_SetTextureBlendMode(image, SDL_BLENDMODE_BLEND);
 
 	/* Add it to our cache */
 	keycopy = new char[keysize];
