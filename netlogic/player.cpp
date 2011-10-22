@@ -572,6 +572,7 @@ Player::BlitSprite(void)
 	if ( AutoShield || (ShieldOn && (ShieldLevel > 0)) ) {
 		screen->QueueBlit(x>>SPRITE_PRECISION, y>>SPRITE_PRECISION,
 						gShieldBlit->sprite[Sphase]);
+		Sphase = !Sphase;
 	}
 	/* Draw the thrust, if necessary */
 	if ( Thrusting && ! NoThrust ) {
@@ -581,8 +582,12 @@ Player::BlitSprite(void)
 		screen->QueueBlit(thrust_x>>SPRITE_PRECISION,
 					thrust_y>>SPRITE_PRECISION,
 						ThrustBlit->sprite[phase]);
+		if ( ThrustBlit == gThrust1 )
+			ThrustBlit = gThrust2;
+		else
+			ThrustBlit = gThrust1;
 	}
-	
+
 	/* Draw our ship */
 	Object::BlitSprite();
 }
