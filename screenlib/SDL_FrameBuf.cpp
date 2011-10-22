@@ -133,16 +133,23 @@ void
 FrameBuf:: Fade(void)
 {
 	const int max = 32;
+	Uint16 ramp[256];   
 
 	for ( int j = 1; j <= max; j++ ) {
 		int v = faded ? j : max - j + 1;
-		SDL_SetWindowBrightness(window, (float)v / max);
+		for ( int i = 0; i < 256; i++ ) {
+			ramp[i] = (i * v / max) << 8;
+		}
+		SDL_SetWindowGammaRamp(window, ramp, ramp, ramp);
 		SDL_Delay(10);
 	}
 	faded = !faded;
 
         if ( faded ) {
-		SDL_SetWindowBrightness(window, 0.0f);
+		for ( int i = 0; i < 256; i++ ) {
+			ramp[i] = 0;
+		}
+		SDL_SetWindowGammaRamp(window, ramp, ramp, ramp);
 	}
 } 
 
