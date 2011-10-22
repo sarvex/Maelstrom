@@ -713,7 +713,7 @@ void CleanUp(void)
 
 /* ----------------------------------------------------------------- */
 /* -- Perform some initializations and report failure if we choke */
-int DoInitializations(Uint32 video_flags)
+int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 {
 	int i;
 	SDL_Surface *icon;
@@ -755,7 +755,7 @@ int DoInitializations(Uint32 video_flags)
 
 	/* Initialize the screen */
 	screen = new FrameBuf;
-	if (screen->Init(SCREEN_WIDTH, SCREEN_HEIGHT, video_flags,
+	if (screen->Init(SCREEN_WIDTH, SCREEN_HEIGHT, window_flags, render_flags,
 					colors[gGammaCorrect], icon) < 0){
 		error("Fatal: %s\n", screen->Error());
 		return(-1);

@@ -46,7 +46,7 @@ class FrameBuf {
 
 public:
 	FrameBuf();
-	int Init(int width, int height, Uint32 flags,
+	int Init(int width, int height, Uint32 window_flags, Uint32 render_flags,
 			SDL_Color *colors = NULL, SDL_Surface *icon = NULL);
 	~FrameBuf();
 

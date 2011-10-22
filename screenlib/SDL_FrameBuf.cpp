@@ -45,17 +45,17 @@ FrameBuf:: FrameBuf()
 }
 
 int
-FrameBuf:: Init(int width, int height, Uint32 flags,
+FrameBuf:: Init(int width, int height, Uint32 window_flags, Uint32 render_flags,
 		SDL_Color *colors, SDL_Surface *icon)
 {
-	window = SDL_CreateWindow(NULL, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, flags);
+	window = SDL_CreateWindow(NULL, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, window_flags);
 	if (!window) {
 		SetError("Couldn't create %dx%d window: %s", 
 					width, height, SDL_GetError());
 		return(-1);
 	}
 
-	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
+	renderer = SDL_CreateRenderer(window, -1, render_flags);
 	if (!renderer) {
 		SetError("Couldn't create renderer: %s", SDL_GetError());
 		return(-1);

@@ -17,7 +17,7 @@
 #include "checksum.h"
 
 /* External functions used in this file */
-extern int DoInitializations(Uint32 video_flags);		/* init.cpp */
+extern int DoInitializations(Uint32 window_flags, Uint32 render_flags);	/* init.cpp */
 extern void CleanUp(void);
 
 static const char *Version =
@@ -125,21 +125,16 @@ static void RunSpeedTest(void)
 	Uint32 then, now;
 	int i, frame, x=((640/2)-16), y=((480/2)-16), onscreen=0;
 
-	screen->Clear();
 	then = SDL_GetTicks();
 	for ( i=0; i<test_reps; ++i ) {
 		for ( frame=0; frame<SHIP_FRAMES; ++frame ) {
-			if ( onscreen ) {
-				screen->Clear(x, y, 32, 32);
-			} else {
-				onscreen = 1;
-			}
+			screen->Clear();
 			screen->QueueBlit(x, y, gPlayerShip->sprite[frame]);
 			screen->Update();
 		}
 	}
 	now = SDL_GetTicks();
-	mesg("Graphics speed test took %d microseconds per cycle.\r\n",
+	mesg("Graphics speed test took %d milliseconds per cycle.\r\n",
 						((now-then)/test_reps));
 }
 
@@ -172,7 +167,8 @@ int main(int argc, char *argv[])
 	/* Command line flags */
 	int doprinthigh = 0;
 	int speedtest = 0;
-	Uint32 video_flags = 0;
+	Uint32 window_flags = 0;
+	Uint32 render_flags = SDL_RENDERER_PRESENTVSYNC;
 
 	/* Normal variables */
 	SDL_Event event;
@@ -208,14 +204,14 @@ int main(int argc, char *argv[])
 
 	/* Parse command line arguments */
 #ifdef __MACOSX__
-	//video_flags |= SDL_WINDOW_FULLSCREEN;
+	//window_flags |= SDL_WINDOW_FULLSCREEN;
 #endif
 	for ( progname=argv[0]; --argc; ++argv ) {
 		if ( strcmp(argv[1], "-fullscreen") == 0 ) {
-			video_flags |= SDL_WINDOW_FULLSCREEN;
+			window_flags |= SDL_WINDOW_FULLSCREEN;
 		} else
 		if ( strcmp(argv[1], "-windowed") == 0 ) {
-			video_flags &= ~SDL_WINDOW_FULLSCREEN;
+			window_flags &= ~SDL_WINDOW_FULLSCREEN;
 		} else
 		if ( strcmp(argv[1], "-gamma") == 0 ) {
 			int gammacorrect;
@@ -269,9 +265,10 @@ int main(int argc, char *argv[])
 			doprinthigh = 1;
 		else if ( strcmp(argv[1], "-netscores") == 0 )
 			gNetScores = 1;
-		else if ( strcmp(argv[1], "-speedtest") == 0 )
+		else if ( strcmp(argv[1], "-speedtest") == 0 ) {
 			speedtest = 1;
-		else if ( LogicParseArgs(&argv, &argc) == 0 ) {
+			render_flags &= ~SDL_RENDERER_PRESENTVSYNC;
+		} else if ( LogicParseArgs(&argv, &argc) == 0 ) {
 			/* LogicParseArgs() took care of everything */;
 		} else if ( strcmp(argv[1], "-version") == 0 ) {
 			error("%s", Version);
@@ -292,7 +289,7 @@ int main(int argc, char *argv[])
 		exit(1);
 
 	/* Initialize everything. :) */
-	if ( DoInitializations(video_flags) < 0 ) {
+	if ( DoInitializations(window_flags, render_flags) < 0 ) {
 		/* An error message was already printed */
 		exit(1);
 	}
