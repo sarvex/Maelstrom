@@ -360,6 +360,7 @@ FontServ:: TextImage(const char *text, MFont *font, Uint8 style, SDL_Color fg)
 
 	/* Allocate the text pixels */
 	bitmap = new Uint32[width*height];
+	memset(bitmap, 0, width*height*sizeof(Uint32));
 	color = screen->MapRGB(0xFF, 0xFF, 0xFF);
 
 	/* Print the individual characters */
