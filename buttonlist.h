@@ -35,8 +35,10 @@ public:
 		for ( belem=button_list.next; belem; belem=belem->next ) {
 			if ( (x >= belem->x1) && (x <= belem->x2) &&
 			     (y >= belem->y1) && (y <= belem->y2) ) {
-				if ( belem->callback )
+				if ( belem->callback ) {
 					(*belem->callback)();
+					return;
+				}
 			}
 		}
 	}

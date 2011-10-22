@@ -34,7 +34,7 @@ int	gNoDelay;
 static ButtonList buttons;
 
 // Local functions in this file...
-static void DrawMainScreen(void);
+static void DrawMainScreen(bool fade);
 static void DrawSoundLevel(void);
 static void DrawKey(MPoint *pt, const char *ch, const char *str, void (*callback)(void));
 
@@ -77,7 +77,7 @@ static void IncrementSound(void)
 		sound->PlaySound(gNewLife, 5);
 
 		/* -- Draw the new sound level */
-		DrawSoundLevel();
+		DrawMainScreen(false);
 	}
 }
 static void DecrementSound(void)
@@ -87,7 +87,7 @@ static void DecrementSound(void)
 		sound->PlaySound(gNewLife, 5);
 
 		/* -- Draw the new sound level */
-		DrawSoundLevel();
+		DrawMainScreen(false);
 	}
 }
 static void SetSoundLevel(int volume)
@@ -100,7 +100,7 @@ static void SetSoundLevel(int volume)
 	sound->PlaySound(gNewLife, 5);
 
 	/* -- Draw the new sound level */
-	DrawSoundLevel();
+	DrawMainScreen(false);
 }
 
 static void RunZapScores(void)
@@ -312,7 +312,7 @@ int main(int argc, char *argv[])
 		
 		/* Update the screen if necessary */
 		if ( gUpdateBuffer )
-			DrawMainScreen();
+			DrawMainScreen(true);
 
 		/* -- Get an event */
 		screen->WaitEvent(&event);
@@ -461,7 +461,7 @@ static void DrawSoundLevel(void)
 /* ----------------------------------------------------------------- */
 /* -- Draw the main screen */
 
-void DrawMainScreen(void)
+void DrawMainScreen(bool fade)
 {
 	SDL_Texture *title;
 	MFont  *font, *bigfont;
@@ -611,9 +611,10 @@ void DrawMainScreen(void)
 
 	DrawSoundLevel();
 
-	/* Always drawing while faded out -- fade in */
 	screen->Update();
-	screen->Fade();
+	if (fade) {
+		screen->Fade();
+	}
 	screen->FreeImage(title);
 
 }	/* -- DrawMainScreen */
