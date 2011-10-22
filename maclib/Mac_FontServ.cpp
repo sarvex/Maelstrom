@@ -391,7 +391,7 @@ FontServ:: TextImage(const char *text, MFont *font, Uint8 style, SDL_Color fg)
 				src_scanline = font->bitImage + 
 						y*(font->header)->rowWords;
 				for ( bit = 0; bit<glyph_width; ++bit ) {
-					bitmap[dst_offset+bit+boldness] =
+					bitmap[dst_offset+bit+boldness] |=
 				  		GETBIT(src_scanline, glyph_line_offset+bit)*color;
 				}
 			}
