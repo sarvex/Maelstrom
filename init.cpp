@@ -44,8 +44,11 @@ SDL_Texture *gAutoFireIcon, *gAirBrakesIcon, *gMult2Icon, *gMult3Icon;
 SDL_Texture *gMult4Icon, *gMult5Icon, *gLuckOfTheIrishIcon, *gLongFireIcon;
 SDL_Texture *gTripleFireIcon, *gKeyIcon, *gShieldIcon;
 
+// Local variables set in this file...
+static SDL_Texture *intro;
+
 // Local functions used in this file.
-static void DrawLoadBar(int first);
+static void DrawLoadBar(int stage);
 static int InitSprites(void);
 static int LoadBlits(Mac_Resource *spriteres);
 static int LoadCICNS(void);
@@ -75,19 +78,15 @@ void DoSplash(void)
 /* ----------------------------------------------------------------- */
 /* -- Put up our intro splash screen */
 
-void DoIntroScreen(void)
+void DoIntroScreen(int first)
 {
-	SDL_Texture *intro, *text;
+	SDL_Texture *text;
 	Uint16  Yoff, Xoff;
 	Uint32  clr, ltClr, ltrClr;
 	int introW, introH;
 
-	intro = Load_Title(screen, 130);
-	if ( intro == NULL ) {
-		error("Can't load intro title! (ID=%d)\n", 130);
-		return;
-	}
-	
+	DropEvents();
+
 	// -- Draw a border
 	clr = screen->MapRGB(30000>>8, 30000>>8, 0xFF);
 	ltClr = screen->MapRGB(40000>>8, 40000>>8, 0xFF);
@@ -108,7 +107,6 @@ void DoIntroScreen(void)
 	Yoff += introH;
 	screen->QueueBlit(SCREEN_WIDTH/2-introW/2, SCREEN_HEIGHT/2-introH/2,
 								intro, NOCLIP);
-	screen->FreeImage(intro);
 
 /* -- Draw the loading message */
 
@@ -120,7 +118,9 @@ void DoIntroScreen(void)
 		fontserv->FreeText(text);
 	}
 
-	screen->Update();
+	if (first) {
+		screen->Update();
+	}
 }	// -- DoIntroScreen
 
 
@@ -129,34 +129,29 @@ void DoIntroScreen(void)
 
 #define	MAX_BAR	26
 
-static void DrawLoadBar(int first)
+static void DrawLoadBar(int stage)
 {
-	static int stage;
 	Uint32 black, clr;
 	int fact;
 
-	DropEvents();
-	if (first) {
-		stage = 1;
-	
-		black = screen->MapRGB(0x00, 0x00, 0x00);
-		screen->DrawRect((SCREEN_WIDTH-200)/2, 
-				   ((SCREEN_HEIGHT-10)/2)+185, 200, 10, black);
-		clr = screen->MapRGB(0xFF, 0xFF, 0xFF);
-		screen->DrawRect(((SCREEN_WIDTH-200)/2)+1, 
-				   ((SCREEN_HEIGHT-10)/2)+185+1, 
-							200-2, 10-2, clr);
-		clr = screen->MapRGB(0x8F, 0x8F, 0xFF);
-		screen->FillRect(((SCREEN_WIDTH-200)/2)+1+1, 
-				   ((SCREEN_HEIGHT-10)/2)+185+1+1, 
-							200-2-2, 10-2-2, clr);
-	}
+	DoIntroScreen(0);
+
+	black = screen->MapRGB(0x00, 0x00, 0x00);
+	screen->DrawRect((SCREEN_WIDTH-200)/2, 
+			   ((SCREEN_HEIGHT-10)/2)+185, 200, 10, black);
+	clr = screen->MapRGB(0xFF, 0xFF, 0xFF);
+	screen->DrawRect(((SCREEN_WIDTH-200)/2)+1, 
+			   ((SCREEN_HEIGHT-10)/2)+185+1, 
+						200-2, 10-2, clr);
+	clr = screen->MapRGB(0x8F, 0x8F, 0xFF);
+	screen->FillRect(((SCREEN_WIDTH-200)/2)+1+1, 
+			   ((SCREEN_HEIGHT-10)/2)+185+1+1, 
+						200-2-2, 10-2-2, clr);
 	clr = screen->MapRGB(0x6F, 0x6F, 0xFF);
 	fact = ((200-2-2) * stage) / MAX_BAR;
 	screen->FillRect(((SCREEN_WIDTH-200)/2)+1+1, 
 			 ((SCREEN_HEIGHT-10)/2)+185+1+1, fact, 10-2-2, clr);
 	screen->Update();
-	stage++;
 }	/* -- DrawLoadBar */
 
 
@@ -825,8 +820,13 @@ int DoInitializations(Uint32 video_flags)
 	}
 
 	/* -- Throw up our intro screen */
+	intro = Load_Title(screen, 130);
+	if ( intro == NULL ) {
+		error("Can't load intro title! (ID=%d)\n", 130);
+		return(-1);
+	}
 	screen->Fade();
-	DoIntroScreen();
+	DoIntroScreen(1);
 	sound->PlaySound(gPrizeAppears, 1);
 	screen->Fade();
 
@@ -860,6 +860,8 @@ int DoInitializations(Uint32 video_flags)
 	/* -- Set up the velocity tables */
 	BuildVelocityTable();
 
+	screen->FreeImage(intro);
+
 	return(0);
 }	/* -- DoInitializations */
 
@@ -869,159 +871,160 @@ int DoInitializations(Uint32 video_flags)
 
 static int LoadBlits(Mac_Resource *spriteres)
 {
+	int stage = 1;
 
-	DrawLoadBar(1);
+	DrawLoadBar(stage++);
 
 /* -- Load in the thrusters */
 
 	if ( LoadSmallSprite(spriteres, &gThrust1, 400, SHIP_FRAMES) < 0 )
 		return(-1);
-	DrawLoadBar(0);
+	DrawLoadBar(stage++);
 
 	if ( LoadSmallSprite(spriteres, &gThrust2, 500, SHIP_FRAMES) < 0 )
 		return(-1);
-	DrawLoadBar(0);
+	DrawLoadBar(stage++);
 
 /* -- Load in the player's ship */
 
 	if ( LoadSprite(spriteres, &gPlayerShip, 200, SHIP_FRAMES) < 0 )
 		return(-1);
-	DrawLoadBar(0);
+	DrawLoadBar(stage++);
 
 /* -- Load in the large rock */
 
 	if ( LoadSprite(spriteres, &gRock1R, 500, 60) < 0 )
 		return(-1);
 	BackwardsSprite(&gRock1L, gRock1R);
-	DrawLoadBar(0);
+	DrawLoadBar(stage++);
 
 /* -- Load in the medium rock */
 
 	if ( LoadSprite(spriteres, &gRock2R, 400, 40) < 0 )
 		return(-1);
 	BackwardsSprite(&gRock2L, gRock2R);
-	DrawLoadBar(0);
+	DrawLoadBar(stage++);
 
 /* -- Load in the small rock */
 
 	if ( LoadSmallSprite(spriteres, &gRock3R, 300, 20) < 0 )
 		return(-1);
 	BackwardsSprite(&gRock3L, gRock3R);
-	DrawLoadBar(0);
+	DrawLoadBar(stage++);
 
 /* -- Load in the explosion */
 
 	if ( LoadSprite(spriteres, &gExplosion, 600, 12) < 0 )
 		return(-1);
-	DrawLoadBar(0);
+	DrawLoadBar(stage++);
 
 /* -- Load in the 2x multiplier */
 
 	if ( LoadSprite(spriteres, &gMult[0], 2000, 1) < 0 )
 		return(-1);
-	DrawLoadBar(0);
+	DrawLoadBar(stage++);
 
 /* -- Load in the 3x multiplier */
 
 	if ( LoadSprite(spriteres, &gMult[1], 2002, 1) < 0 )
 		return(-1);
-	DrawLoadBar(0);
+	DrawLoadBar(stage++);
 
 /* -- Load in the 4x multiplier */
 
 	if ( LoadSprite(spriteres, &gMult[2], 2004, 1) < 0 )
 		return(-1);
-	DrawLoadBar(0);
+	DrawLoadBar(stage++);
 
 /* -- Load in the 5x multiplier */
 
 	if ( LoadSprite(spriteres, &gMult[3], 2006, 1) < 0 )
 		return(-1);
-	DrawLoadBar(0);
+	DrawLoadBar(stage++);
 
 /* -- Load in the steel asteroid */
 
 	if ( LoadSprite(spriteres, &gSteelRoidL, 700, 40) < 0 )
 		return(-1);
 	BackwardsSprite(&gSteelRoidR, gSteelRoidL);
-	DrawLoadBar(0);
+	DrawLoadBar(stage++);
 
 /* -- Load in the prize */
 
 	if ( LoadSprite(spriteres, &gPrize, 800, 30) < 0 )
 		return(-1);
-	DrawLoadBar(0);
+	DrawLoadBar(stage++);
 
 /* -- Load in the bonus */
 
 	if ( LoadSprite(spriteres, &gBonusBlit, 900, 10) < 0 )
 		return(-1);
-	DrawLoadBar(0);
+	DrawLoadBar(stage++);
 
 /* -- Load in the bonus */
 
 	if ( LoadSprite(spriteres, &gPointBlit, 1000, 6) < 0 )
 		return(-1);
-	DrawLoadBar(0);
+	DrawLoadBar(stage++);
 
 /* -- Load in the vortex */
 
 	if ( LoadSprite(spriteres, &gVortexBlit, 1100, 10) < 0 )
 		return(-1);
-	DrawLoadBar(0);
+	DrawLoadBar(stage++);
 
 /* -- Load in the homing mine */
 
 	if ( LoadSprite(spriteres, &gMineBlitR, 1200, 40) < 0 )
 		return(-1);
 	BackwardsSprite(&gMineBlitL, gMineBlitR);
-	DrawLoadBar(0);
+	DrawLoadBar(stage++);
 
 /* -- Load in the shield */
 
 	if ( LoadSprite(spriteres, &gShieldBlit, 1300, 2) < 0 )
 		return(-1);
-	DrawLoadBar(0);
+	DrawLoadBar(stage++);
 
 /* -- Load in the nova */
 
 	if ( LoadSprite(spriteres, &gNova, 1400, 18) < 0 )
 		return(-1);
-	DrawLoadBar(0);
+	DrawLoadBar(stage++);
 
 /* -- Load in the ship explosion */
 
 	if ( LoadSprite(spriteres, &gShipExplosion, 1500, 21) < 0 )
 		return(-1);
-	DrawLoadBar(0);
+	DrawLoadBar(stage++);
 
 /* -- Load in the shrapnel */
 
 	if ( LoadSprite(spriteres, &gShrapnel1, 1800, 50) < 0 )
 		return(-1);
-	DrawLoadBar(0);
+	DrawLoadBar(stage++);
 
 	if ( LoadSprite(spriteres, &gShrapnel2, 1900, 42) < 0 )
 		return(-1);
-	DrawLoadBar(0);
+	DrawLoadBar(stage++);
 
 /* -- Load in the damaged ship */
 
 	if ( LoadSprite(spriteres, &gDamagedShip, 1600, 10) < 0 )
 		return(-1);
-	DrawLoadBar(0);
+	DrawLoadBar(stage++);
 
 /* -- Load in the enemy ship */
 
 	if ( LoadSprite(spriteres, &gEnemyShip, 1700, 40) < 0 )
 		return(-1);
-	DrawLoadBar(0);
+	DrawLoadBar(stage++);
 
 /* -- Load in the enemy ship */
 
 	if ( LoadSprite(spriteres, &gEnemyShip2, 2100, 40) < 0 )
 		return(-1);
-	DrawLoadBar(0);
+	DrawLoadBar(stage++);
 
 	return(0);
 }	/* -- LoadBlits */
