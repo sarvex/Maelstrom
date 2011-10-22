@@ -752,20 +752,6 @@ int DoInitializations(Uint32 video_flags)
 	}
 #endif
 
-	/* Load the Font Server */
-	fontserv = new FontServ(screen, "Maelstrom Fonts");
-	if ( fontserv->Error() ) {
-		error("Fatal: %s\n", fontserv->Error());
-		return(-1);
-	}
-
-	/* Load the Sound Server and initialize sound */
-	sound = new Sound("Maelstrom Sounds", gSoundLevel);
-	if ( sound->Error() ) {
-		error("Fatal: %s\n", sound->Error());
-		return(-1);
-	}
-
 	/* Load the Maelstrom icon */
 	icon = SDL_LoadBMP_RW(PHYSFSRWOPS_openRead("icon.bmp"), 1);
 	if ( icon == NULL ) {
@@ -783,6 +769,20 @@ int DoInitializations(Uint32 video_flags)
 	screen->SetCaption("Maelstrom");
 	atexit(CleanUp);		// Need to reset this under X11 DGA
 	SDL_FreeSurface(icon);
+
+	/* Load the Font Server */
+	fontserv = new FontServ(screen, "Maelstrom Fonts");
+	if ( fontserv->Error() ) {
+		error("Fatal: %s\n", fontserv->Error());
+		return(-1);
+	}
+
+	/* Load the Sound Server and initialize sound */
+	sound = new Sound("Maelstrom Sounds", gSoundLevel);
+	if ( sound->Error() ) {
+		error("Fatal: %s\n", sound->Error());
+		return(-1);
+	}
 
 	/* -- We want to access the FULL screen! */
 	SetRect(&gScrnRect, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
