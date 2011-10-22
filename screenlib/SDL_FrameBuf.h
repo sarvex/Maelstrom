@@ -58,7 +58,9 @@ public:
 		return (0xFF0000 | ((Uint32)R << 16) | ((Uint32)G << 8) | B);
 	}
 	/* Set the blit clipping rectangle */
-	void   ClipBlit(SDL_Rect *cliprect);
+	void   ClipBlit(SDL_Rect *cliprect) {
+		clip = *cliprect;
+	}
 
 	/* Event Routines */
 	int PollEvent(SDL_Event *event) {

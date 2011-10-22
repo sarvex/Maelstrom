@@ -65,8 +65,8 @@ void DoSplash(void)
 		error("Can't load Ambrosia splash title! (ID=%d)\n", 999);
 		return;
         }
-	screen->QueueBlit(SCREEN_WIDTH/2-splash->w/2,
-			  SCREEN_HEIGHT/2-splash->h/2, splash, NOCLIP);
+	screen->QueueBlit(SCREEN_WIDTH/2-screen->GetImageWidth(splash)/2,
+			  SCREEN_HEIGHT/2-screen->GetImageHeight(splash)/2, splash, NOCLIP);
 	screen->Update();
 	screen->FreeImage(splash);
 }
@@ -80,6 +80,7 @@ void DoIntroScreen(void)
 	SDL_Texture *intro, *text;
 	Uint16  Yoff, Xoff;
 	Uint32  clr, ltClr, ltrClr;
+	int introW, introH;
 
 	intro = Load_Title(screen, 130);
 	if ( intro == NULL ) {
@@ -93,17 +94,19 @@ void DoIntroScreen(void)
 	ltrClr = screen->MapRGB(50000>>8, 50000>>8, 0xFF);
 
 	screen->Clear();
-	Xoff = (SCREEN_WIDTH-intro->w)/2;
-	Yoff = (SCREEN_HEIGHT-intro->h)/2;
-	screen->DrawRect(Xoff-1, Yoff-1, intro->w+2, intro->h+2, clr);
-	screen->DrawRect(Xoff-2, Yoff-2, intro->w+4, intro->h+4, clr);
-	screen->DrawRect(Xoff-3, Yoff-3, intro->w+6, intro->h+6, ltClr);
-	screen->DrawRect(Xoff-4, Yoff-4, intro->w+8, intro->h+8, ltClr);
-	screen->DrawRect(Xoff-5, Yoff-5, intro->w+10, intro->h+10, ltrClr);
-	screen->DrawRect(Xoff-6, Yoff-6, intro->w+12, intro->h+12, ltClr);
-	screen->DrawRect(Xoff-7, Yoff-7, intro->w+14, intro->h+14, clr);
-	Yoff += intro->h;
-	screen->QueueBlit(SCREEN_WIDTH/2-intro->w/2, SCREEN_HEIGHT/2-intro->h/2,
+	introW = screen->GetImageWidth(intro);
+	introH = screen->GetImageHeight(intro);
+	Xoff = (SCREEN_WIDTH-introW)/2;
+	Yoff = (SCREEN_HEIGHT-introH)/2;
+	screen->DrawRect(Xoff-1, Yoff-1, introW+2, introH+2, clr);
+	screen->DrawRect(Xoff-2, Yoff-2, introW+4, introH+4, clr);
+	screen->DrawRect(Xoff-3, Yoff-3, introW+6, introH+6, ltClr);
+	screen->DrawRect(Xoff-4, Yoff-4, introW+8, introH+8, ltClr);
+	screen->DrawRect(Xoff-5, Yoff-5, introW+10, introH+10, ltrClr);
+	screen->DrawRect(Xoff-6, Yoff-6, introW+12, introH+12, ltClr);
+	screen->DrawRect(Xoff-7, Yoff-7, introW+14, introH+14, clr);
+	Yoff += introH;
+	screen->QueueBlit(SCREEN_WIDTH/2-introW/2, SCREEN_HEIGHT/2-introH/2,
 								intro, NOCLIP);
 	screen->FreeImage(intro);
 
@@ -117,8 +120,8 @@ void DoIntroScreen(void)
 	text = fontserv->TextImage("Loading...", geneva, STYLE_BOLD,
 						0xFF, 0xFF, 0x00);
 	if ( text ) {
-		screen->QueueBlit(SCREEN_WIDTH/2-text->w/2,
-				Yoff+20-text->h/2, text, NOCLIP);
+		screen->QueueBlit(SCREEN_WIDTH/2-screen->GetImageWidth(text)/2,
+				Yoff+20-screen->GetImageHeight(text)/2, text, NOCLIP);
 		fontserv->FreeText(text);
 	}
 	fontserv->FreeFont(geneva);
@@ -750,7 +753,7 @@ int DoInitializations(Uint32 video_flags)
 #endif
 
 	/* Load the Font Server */
-	fontserv = new FontServ("Maelstrom Fonts");
+	fontserv = new FontServ(screen, "Maelstrom Fonts");
 	if ( fontserv->Error() ) {
 		error("Fatal: %s\n", fontserv->Error());
 		return(-1);

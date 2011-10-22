@@ -217,10 +217,10 @@ int GetStartLevel(void)
 								screen);
 	x = y = 14;
 	dialog->Add_Image(splash, x, y);
-	x += (splash->w+14);
+	x += (screen->GetImageWidth(splash)+14);
 	text1 = fontserv->TextImage(Ltext1,chicago,STYLE_NORM,0x00,0x00,0x00);
 	dialog->Add_Image(text1, x, y);
-	y += (text1->h+2);
+	y += (screen->GetImageHeight(text1)+2);
 	text2 = fontserv->TextImage(Ltext2, chicago, STYLE_NORM,
 							0x00, 0x00, 0x00);
 	dialog->Add_Image(text2, x, y);
@@ -234,10 +234,10 @@ int GetStartLevel(void)
 	numeric_entry = new Mac_NumericEntry(X, Y, chicago, fontserv);
 	numeric_entry->Add_Entry(78, 60, 3, 1, &startlevel);
 	text3 = fontserv->TextImage(Ltext3,chicago,STYLE_NORM,0x00,0x00,0x00);
-	dialog->Add_Image(text3, 78-text3->w-2, 60+3);
+	dialog->Add_Image(text3, 78-screen->GetImageWidth(text3)-2, 60+3);
 	numeric_entry->Add_Entry(78, 86, 3, 0, &startlives);
 	text4 = fontserv->TextImage(Ltext4,chicago,STYLE_NORM,0x00,0x00,0x00);
-	dialog->Add_Image(text4, 78-text3->w-2, 86+3);
+	dialog->Add_Image(text4, 78-screen->GetImageWidth(text3)-2, 86+3);
 	dialog->Add_Dialog(numeric_entry);
 	checkbox = new Mac_CheckBox(&turbofunk, 136, 64, turbotext,
 						chicago, fontserv);

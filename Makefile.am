@@ -36,6 +36,7 @@ Maelstrom_LDADD = 			\
 	$(LOGIC)/liblogic.a		\
 	screenlib/libSDLscreen.a	\
 	maclib/libSDLmac.a		\
+	utils/libutils.a		\
 	@MATHLIB@ @INETLIB@ @ICONOBJ@
 
 SUBDIRS = $(LOGIC) screenlib maclib utils

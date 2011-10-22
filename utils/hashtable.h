@@ -19,6 +19,10 @@
 #ifndef _hashtable_h
 #define _hashtable_h
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // Hashtables...
 
 typedef struct HashTable HashTable;
@@ -36,5 +40,9 @@ int hash_find(const HashTable *table, const void *key, const void **_value);
 
 unsigned hash_hash_string(const void *sym, void *unused);
 int hash_keymatch_string(const void *a, const void *b, void *unused);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // _hashtable_h

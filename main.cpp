@@ -429,15 +429,15 @@ int main(int argc, char *argv[])
 int DrawText(int x, int y, const char *text, MFont *font, Uint8 style,
 					Uint8 R, Uint8 G, Uint8 B)
 {
-	SDL_Surface *textimage;
+	SDL_Texture *textimage;
 	int width;
 
 	textimage = fontserv->TextImage(text, font, style, R, G, B);
 	if ( textimage == NULL ) {
 		width = 0;
 	} else {
-		screen->QueueBlit(x, y-textimage->h+2, textimage, NOCLIP);
-		width = textimage->w;
+		screen->QueueBlit(x, y-screen->GetImageHeight(textimage)+2, textimage, NOCLIP);
+		width = screen->GetImageWidth(textimage);
 		fontserv->FreeText(textimage);
 	}
 	return(width);
@@ -471,7 +471,7 @@ static void DrawSoundLevel(void)
 
 void DrawMainScreen(void)
 {
-	SDL_Surface *title;
+	SDL_Texture *title;
 	MFont  *font, *bigfont;
 	MPoint  pt;
 	Uint16	width, height;
@@ -499,7 +499,6 @@ void DrawMainScreen(void)
 	ltClr = screen->MapRGB(40000>>8, 40000>>8, 0xFF);
 	ltrClr = screen->MapRGB(50000>>8, 50000>>8, 0xFF);
 
-	screen->Lock();
 	screen->Clear();
 	/* -- Draw the screen frame */
 	screen->DrawRect(xOff-1, yOff-1, width+2, height+2, clr);
@@ -510,13 +509,12 @@ void DrawMainScreen(void)
 	screen->DrawRect(xOff-6, yOff-6, width+12, height+12, ltClr);
 	screen->DrawRect(xOff-7, yOff-7, width+14, height+14, clr);
 	/* -- Draw the dividers */
-	botDiv = yOff + 5 + title->h + 5;
-	rightDiv = xOff + 5 + title->w + 5;
+	botDiv = yOff + 5 + screen->GetImageHeight(title) + 5;
+	rightDiv = xOff + 5 + screen->GetImageWidth(title) + 5;
 	screen->DrawLine(rightDiv, yOff, rightDiv, yOff+height, ltClr);
 	screen->DrawLine(xOff, botDiv, rightDiv, botDiv, ltClr);
 	screen->DrawLine(rightDiv, 263+yOff, xOff+width, 263+yOff, ltClr);
 	/* -- Draw the title image */
-	screen->Unlock();
 	screen->QueueBlit(xOff+5, yOff+5, title, NOCLIP);
 	screen->Update();
 	screen->FreeImage(title);
@@ -613,7 +611,7 @@ void DrawMainScreen(void)
 		error("Can't use Geneva font! -- Exiting.\n");
 		exit(255);
 	}
-	DrawText(pt.h+gKeyIcon->w+3, pt.v+19, "-",
+	DrawText(pt.h+screen->GetImageWidth(gKeyIcon)+3, pt.v+19, "-",
 				font, STYLE_NORM, 0xFF, 0xFF, 0x00);
 
 	pt.h = rightDiv + 50;
@@ -657,11 +655,11 @@ static void DrawKey(MPoint *pt, const char *key, const char *text, void (*callba
 
 	DrawText(pt->h+14, pt->v+20, key, geneva, STYLE_BOLD, 0xFF, 0xFF, 0xFF);
 	DrawText(pt->h+13, pt->v+19, key, geneva, STYLE_BOLD, 0x00, 0x00, 0x00);
-	DrawText(pt->h+gKeyIcon->w+3, pt->v+19, text,
+	DrawText(pt->h+screen->GetImageWidth(gKeyIcon)+3, pt->v+19, text,
 					geneva, STYLE_BOLD, 0xFF, 0xFF, 0x00);
 	fontserv->FreeFont(geneva);
 
-	buttons.Add_Button(pt->h, pt->v, gKeyIcon->w, gKeyIcon->h, callback);
+	buttons.Add_Button(pt->h, pt->v, screen->GetImageWidth(gKeyIcon), screen->GetImageHeight(gKeyIcon), callback);
 }	/* -- DrawKey */
 
 
