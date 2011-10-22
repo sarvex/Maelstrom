@@ -17,7 +17,8 @@
 #include "checksum.h"
 
 /* External functions used in this file */
-extern int DoInitializations(Uint32 video_flags);		/* init.cc */
+extern int DoInitializations(Uint32 video_flags);		/* init.cpp */
+extern void CleanUp(void);
 
 static const char *Version =
 "Maelstrom v1.4.3 (GPL version 4.0.0) -- 10/08/2011 by Sam Lantinga\n";
@@ -298,6 +299,7 @@ int main(int argc, char *argv[])
 
 	if ( speedtest ) {
 		RunSpeedTest();
+		CleanUp();
 		exit(0);
 	}
 
@@ -485,6 +487,7 @@ void DrawMainScreen(void)
 	title = Load_Title(screen, 129);
 	if ( title == NULL ) {
 		error("Can't load 'title' title! (ID=%d)\n", 129);
+		CleanUp();
 		exit(255);
         }
 

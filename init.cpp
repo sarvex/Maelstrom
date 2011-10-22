@@ -684,7 +684,7 @@ static void BuildVelocityTable(void)
    of the program at any time, including itself if interrupted during
    cleanup.  *sigh*  reentrant multi-threading can be a pain. :)
 */
-extern "C" void CleanUp(void)
+void CleanUp(void)
 {
 	int i;
 
@@ -718,7 +718,6 @@ int DoInitializations(Uint32 video_flags)
 	int i;
 	SDL_Surface *icon;
 
-	/* Make sure we clean up properly at exit */
 	Uint32 init_flags = (SDL_INIT_VIDEO|SDL_INIT_AUDIO);
 #ifdef SDL_INIT_JOYSTICK
 	init_flags |= SDL_INIT_JOYSTICK;
@@ -730,8 +729,6 @@ int DoInitializations(Uint32 video_flags)
 			return(-1);
 		}
 	}
-	atexit(CleanUp);
-	signal(SIGSEGV, exit);
 
 	// -- Initialize some variables
 	gLastHigh = -1;
@@ -766,7 +763,6 @@ int DoInitializations(Uint32 video_flags)
 	screen->SetCaption("Maelstrom");
 	screen->Clear();
 	screen->Update();
-	atexit(CleanUp);		// Need to reset this under X11 DGA
 	SDL_FreeSurface(icon);
 
 	/* Load the Font Server and fonts */
