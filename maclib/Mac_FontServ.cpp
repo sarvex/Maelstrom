@@ -295,9 +295,9 @@ FontServ:: TextImage(const char *text, MFont *font, Uint8 style, SDL_Color fg)
 	int bit;
 
 	/* First see if we can find it in our cache */
-	keysize = strlen(font->name)+1+8+1+strlen(text)+1;
+	keysize = strlen(font->name)+1+2+1+1+1+strlen(text)+1;
 	key = SDL_stack_alloc(char, keysize);
-	sprintf(key, "%s:%d:%s", font->name, font->ptsize, text);
+	sprintf(key, "%s:%d:%d:%s", font->name, font->ptsize, '0'+style, text);
 	if (hash_find(strings, key, (const void**)&image)) {
 		SDL_SetTextureColorMod(image, fg.r, fg.g, fg.b);
 		return image;
