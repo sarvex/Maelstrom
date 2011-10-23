@@ -46,6 +46,8 @@ public:
 
 	virtual UIArea *GetAnchorElement(const char *name);
 
+	virtual void SetText(const char *text) { }
+
 	virtual void Draw() { }
 	virtual bool HandleEvent(const SDL_Event &event) { return false; }
 
