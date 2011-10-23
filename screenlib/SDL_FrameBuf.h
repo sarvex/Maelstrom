@@ -86,6 +86,16 @@ public:
 	void Update() {
 		SDL_RenderPresent(renderer);
 	}
+	void FadeOut(void) {
+		if (!faded) {
+			Fade();
+		}
+	}
+	void FadeIn(void) {
+		if (faded) {
+			Fade();
+		}
+	}
 	void Fade(void);		/* Fade screen out, then in */
 
 	/* Drawing routines */
