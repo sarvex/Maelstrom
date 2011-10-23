@@ -65,7 +65,9 @@ static int LoadSmallSprite(Mac_Resource *spriteres,
 void DoSplash(void)
 {
 	UIPanel *panel;
+	int i;
 
+	screen->FadeOut();
 	screen->Clear();
 
 	panel = ui->LoadPanel("splash");
@@ -75,8 +77,15 @@ void DoSplash(void)
 	}
 	screen->Update();
 
+	for ( i=0; i<5; ++i ) {
+		if ( DropEvents() ) {
+			break;
+		}
+		Delay(60);
+	}
+
 	if (panel) {
-		delete panel;
+		ui->DeletePanel(panel);
 	}
 }
 
@@ -817,15 +826,7 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 	screen->ClipBlit(&gClipRect);
 
 	/* Do the Ambrosia Splash screen */
-	screen->Fade();
 	DoSplash();
-	screen->Fade();
-	for ( i=0; i<5; ++i ) {
-		if ( DropEvents() ) {
-			break;
-		}
-		Delay(60);
-	}
 
 	/* -- Throw up our intro screen */
 	intro = Load_Title(screen, 130);
@@ -833,10 +834,9 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 		error("Can't load intro title! (ID=%d)\n", 130);
 		return(-1);
 	}
-	screen->Fade();
 	DoIntroScreen(1);
 	sound->PlaySound(gPrizeAppears, 1);
-	screen->Fade();
+	screen->FadeIn();
 
 	/* -- Load in our sprites and other needed resources */
 	{

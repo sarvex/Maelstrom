@@ -20,6 +20,7 @@
     slouken@libsdl.org
 */
 
+#include "SDL_FrameBuf.h"
 #include "UIManager.h"
 #include "UIPanel.h"
 
@@ -69,8 +70,22 @@ void
 UIManager::ShowPanel(UIPanel *panel)
 {
 	if (panel && !m_visible.find(panel)) {
+		/* If this is fullscreen, then hide any previous fullscreen panel */
+		if (panel->IsFullscreen()) {
+			for (unsigned int i = m_visible.length(); i--; ) {
+				if (m_visible[i]->IsFullscreen()) {
+					m_visible[i]->Hide();
+					m_screen->FadeOut();
+					break;
+				}
+			}
+		}
+
 		m_visible.add(panel);
 		panel->Show();
+		if (panel->IsFullscreen()) {
+			m_screen->FadeIn();
+		}
 	}
 }
 
@@ -79,6 +94,27 @@ UIManager::HidePanel(UIPanel *panel)
 {
 	if (panel && m_visible.remove(panel)) {
 		panel->Hide();
+		if (panel->IsFullscreen()) {
+			m_screen->FadeOut();
+
+			for (unsigned int i = m_visible.length(); i--; ) {
+				if (m_visible[i]->IsFullscreen()) {
+					m_visible[i]->Show();
+					m_screen->FadeIn();
+					break;
+				}
+			}
+		}
+
+	}
+}
+
+void
+UIManager::DeletePanel(UIPanel *panel)
+{
+	if (panel) {
+		HidePanel(panel);
+		delete panel;
 	}
 }
 

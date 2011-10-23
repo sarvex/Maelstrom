@@ -68,6 +68,10 @@ public:
 	void HidePanel(const char *name) {
 		HidePanel(GetPanel(name));
 	}
+	void DeletePanel(UIPanel *panel);
+	void DeletePanel(const char *name) {
+		DeletePanel(GetPanel(name));
+	}
 
 	void Draw();
 	bool HandleEvent(const SDL_Event &event);
