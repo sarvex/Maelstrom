@@ -47,6 +47,9 @@ public:
 	const char *GetName() const {
 		return m_name;
 	}
+	bool IsFullscreen() const {
+		return m_fullscreen;
+	}
 
 	bool Load(const char *file);
 
@@ -67,6 +70,7 @@ protected:
 	UIManager *m_ui;
 	FrameBuf *m_screen;
 	char *m_name;
+	bool m_fullscreen;
 	array<UIElement *> m_elements;
 
 	bool LoadElements(rapidxml::xml_node<> *node);

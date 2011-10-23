@@ -38,6 +38,7 @@ UIPanel::UIPanel(UIManager *ui, const char *name) : UIArea()
 	m_rect.w = m_screen->Width();
 	m_rect.h = m_screen->Height();
 	m_shown = false;
+	m_fullscreen = true;
 
 	m_ui->AddPanel(this);
 }
@@ -96,6 +97,13 @@ UIPanel::Load(const char *file)
 	rapidxml::xml_node<> *node = doc.first_node();
 	rapidxml::xml_node<> *child;
 	rapidxml::xml_attribute<> *attr;
+	attr = node->first_attribute("fullscreen", 0, false);
+	if (attr) {
+		const char *value = attr->value();
+		if (*value == '0' || *value == 'f' || *value == 'F') {
+			m_fullscreen = false;
+		}
+	}
 	if (strcmp(node->name(), "UIPanel") != 0) {
 		SetError("Parse error: UIPanel root element expected");
 		delete[] buffer;

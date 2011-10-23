@@ -86,7 +86,13 @@ void
 UIManager::Draw()
 {
 	for (unsigned i = 0; i < m_visible.length(); ++i) {
-		m_visible[i]->Draw();
+		UIPanel *panel = m_visible[i];
+
+		panel->Draw();
+
+		if (panel->IsFullscreen()) {
+			break;
+		}
 	}
 }
 
@@ -94,8 +100,13 @@ bool
 UIManager::HandleEvent(const SDL_Event &event)
 {
 	for (unsigned i = m_visible.length(); i--; ) {
-		if (m_visible[i]->HandleEvent(event)) {
+		UIPanel *panel = m_visible[i];
+
+		if (panel->HandleEvent(event)) {
 			return true;
+		}
+		if (panel->IsFullscreen()) {
+			break;
 		}
 	}
 	return false;
