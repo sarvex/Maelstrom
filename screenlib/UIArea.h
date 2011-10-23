@@ -80,6 +80,10 @@ public:
 		m_rect.h = h;
 		CalculateAnchor();
 	}
+	bool ContainsPoint(int x, int y) const {
+		return (x >= m_rect.x && x < m_rect.x+m_rect.w &&
+		        y >= m_rect.y && y < m_rect.y+m_rect.h);
+	}
 
 	FrameBuf *GetScreen() const {
 		return m_screen;

@@ -44,7 +44,7 @@
 		</Label>
 
 		<!-- Loading Bar -->
-		<Rectangle name="loadingBar">
+		<Rectangle>
 			<Color r="0x00" g="0x00" b="0x00"/>
 			<Size w="200" h="10"/>
 			<Anchor anchorFrom="CENTER" anchorTo="CENTER" y="185"/>

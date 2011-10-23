@@ -46,14 +46,14 @@ SDL_Texture *GetCIcon(FrameBuf *screen, short cicn_id)
 	w = SDL_ReadBE16(cicn_src);
 	h = SDL_ReadBE16(cicn_src);
         pixels = new Uint8[w*h];
-        if ( SDL_RWread(cicn_src, pixels, 1, w*h) != (w*h) ) {
+        if ( SDL_RWread(cicn_src, pixels, 1, w*h) != size_t(w*h) ) {
 		error("GetCIcon(%hd): Corrupt CICN!\n", cicn_id);
 		delete[] pixels;
 		SDL_RWclose(cicn_src);
 		return(NULL);
 	}
         mask = new Uint8[(w/8)*h];
-        if ( SDL_RWread(cicn_src, mask, 1, (w/8)*h) != ((w/8)*h) ) {
+        if ( SDL_RWread(cicn_src, mask, 1, (w/8)*h) != size_t((w/8)*h) ) {
 		error("GetCIcon(%hd): Corrupt CICN!\n", cicn_id);
 		delete[] pixels;
 		delete[] mask;

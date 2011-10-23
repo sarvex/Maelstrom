@@ -71,7 +71,6 @@ void KeyName(SDL_Keycode keycode, char *namebuf)
 static FILE *OpenData(const char *mode, char **fname)
 {
 	static char datafile[BUFSIZ];
-	const char *home;
 	FILE *data;
 
 	if ( fname ) {

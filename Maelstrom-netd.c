@@ -130,7 +130,7 @@ void CheckNewGame(void)
 			sprintf(message,
 				"There are %d, not %d players in this game",
 					numplayers, players[i].numplayers);
-			SendError(i, buffer);
+			SendError(i, (char*)buffer);
 		}
 	}
 
@@ -184,7 +184,7 @@ void I_Crashed(int sig)
 	exit(sig);
 }
 
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
 	int netfd, i, slot;
 	struct sockaddr_in serv_addr;
@@ -258,7 +258,8 @@ printf("Waiting for players...\n");
 
 		/* Check for new players first */
 		if ( FD_ISSET(netfd, &fdset) ) {
-			int sockfd, clilen;
+			int sockfd;
+			socklen_t clilen;
 
 			for ( i=0; i<MAX_CONNECTIONS; ++i ) {
 				if ( players[i].state == UNCONNECTED )

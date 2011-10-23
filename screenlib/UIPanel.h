@@ -41,6 +41,9 @@ public:
 	UIPanel(UIManager *ui, const char *name);
 	virtual ~UIPanel();
 
+	UIManager *GetUI() const {
+		return m_ui;
+	}
 	const char *GetName() const {
 		return m_name;
 	}

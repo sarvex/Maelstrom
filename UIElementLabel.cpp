@@ -30,6 +30,7 @@ static Uint8 ParseStyle(const char *text)
 	} else if (strcasecmp(text, "italic") == 0) {
 		style = STYLE_ITALIC;
 	}
+	return style;
 }
 
 bool
