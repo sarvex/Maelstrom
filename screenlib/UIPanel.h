@@ -31,20 +31,14 @@
 #include "UIArea.h"
 
 class FrameBuf;
-class UIElement;
+class UIManager;
 class UIPanel;
-
-typedef UIElement *(*UIElementFactory)(UIPanel *panel, const char *name);
+class UIElement;
 
 class UIPanel : public UIArea
 {
 public:
-	static void SetElementFactory(UIElementFactory function) {
-		s_elementFactory = function;
-	}
-
-public:
-	UIPanel(FrameBuf *screen, const char *name = "");
+	UIPanel(UIManager *ui, const char *name);
 	virtual ~UIPanel();
 
 	FrameBuf *GetScreen() const {
@@ -70,14 +64,12 @@ public:
 	bool HandleEvent(const SDL_Event &event);
 
 protected:
+	UIManager *m_ui;
 	FrameBuf *m_screen;
 	char *m_name;
 	array<UIElement *> m_elements;
 
 	bool LoadElements(rapidxml::xml_node<> *node);
-
-protected:
-	static UIElementFactory s_elementFactory;
 };
 
 #endif // _UIPanel_h

@@ -24,22 +24,28 @@
 
 #include "SDL_FrameBuf.h"
 #include "UIPanel.h"
+#include "UIManager.h"
 #include "UIElement.h"
 
-UIElementFactory UIPanel::s_elementFactory;
 
-UIPanel::UIPanel(FrameBuf *screen, const char *name) : UIArea()
+UIPanel::UIPanel(UIManager *ui, const char *name) : UIArea()
 {
-	m_screen = screen;
+	m_ui = ui;
+	m_screen = ui->GetScreen();
 	m_name = new char[strlen(name)+1];
 	strcpy(m_name, name);
 
-	m_rect.w = screen->Width();
-	m_rect.h = screen->Height();
+	m_rect.w = m_screen->Width();
+	m_rect.h = m_screen->Height();
+	m_shown = false;
+
+	m_ui->AddPanel(this);
 }
 
 UIPanel::~UIPanel()
 {
+	m_ui->RemovePanel(this);
+
 	delete[] m_name;
 
 	for (unsigned i = 0; i < m_elements.length(); ++i) {
@@ -56,7 +62,7 @@ UIPanel::Load(const char *file)
 
 	ClearError();
 
-	if (!s_elementFactory) {
+	if (!m_ui->GetElementFactory()) {
 		SetError("No panel element factory set");
 		return false;
 	}
@@ -95,13 +101,6 @@ UIPanel::Load(const char *file)
 		delete[] buffer;
 		return false;
 	}
-	attr = node->first_attribute("name", 0, false);;
-	if (attr) {
-		const char *name = node->value();
-		delete[] m_name;
-		m_name = new char[strlen(name)+1];
-		strcpy(m_name, name);
-	}
 	if (!UIArea::Load(node)) {
 		delete[] buffer;
 		return false;
@@ -121,7 +120,7 @@ bool
 UIPanel::LoadElements(rapidxml::xml_node<> *node)
 {
 	for (node = node->first_node(); node; node = node->next_sibling()) {
-		UIElement *element = s_elementFactory(this, node->name());
+		UIElement *element = (m_ui->GetElementFactory())(this, node->name());
 		if (!element) {
 			SetError("Couldn't find handler for element %s", node->name());
 			return false;

@@ -24,28 +24,59 @@
 #define _UIManager_h
 
 #include "SDL.h"
-#include "array.h"
+#include "../utils/array.h"
+#include "ErrorBase.h"
 
+class FrameBuf;
 class UIPanel;
+class UIElement;
 
-class UIManager
+typedef UIElement *(*UIElementFactory)(UIPanel *panel, const char *name);
+
+class UIManager : public ErrorBase
 {
 public:
-	UIManager() { }
+	UIManager(FrameBuf *screen, UIElementFactory factory);
+	~UIManager();
 
-	void AddPanel(UIPanel *panel) {
-		m_panels.add(panel);
+	FrameBuf *GetScreen() const {
+		return m_screen;
 	}
+	UIElementFactory GetElementFactory() const {
+		return m_elementFactory;
+	}
+
+	UIPanel *LoadPanel(const char *name);
 	UIPanel *GetPanel(const char *name);
+
+	/* These are called by the UIPanel class */
+	void AddPanel(UIPanel *panel) {
+		if (!m_panels.find(panel)) {
+			m_panels.add(panel);
+		}
+	}
 	void RemovePanel(UIPanel *panel) {
+		m_visible.remove(panel);
 		m_panels.remove(panel);
+	}
+
+	void ShowPanel(UIPanel *panel);
+	void ShowPanel(const char *name) {
+		ShowPanel(GetPanel(name));
+	}
+	void HidePanel(UIPanel *panel);
+	void HidePanel(const char *name) {
+		HidePanel(GetPanel(name));
 	}
 
 	void Draw();
 	bool HandleEvent(const SDL_Event &event);
 
 protected:
+	FrameBuf *m_screen;
+	UIElementFactory m_elementFactory;
 	array<UIPanel *> m_panels;
+	array<UIPanel *> m_visible;
 };
 
 #endif // _UIManager_h

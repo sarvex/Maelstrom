@@ -24,6 +24,36 @@
 #include "UIPanel.h"
 
 
+UIManager::UIManager(FrameBuf *screen, UIElementFactory factory) : ErrorBase()
+{
+	m_screen = screen;
+	m_elementFactory = factory;
+}
+
+UIManager::~UIManager()
+{
+	/* Deleting the panels will remove them from the manager */
+	while (m_panels.length() > 0) {
+		delete m_panels[m_panels.length()-1];
+	}
+}
+
+UIPanel *
+UIManager::LoadPanel(const char *name)
+{
+	UIPanel *panel;
+	char file[1024];
+
+	sprintf(file, "%s.xml", name);
+	panel = new UIPanel(this, name);
+	if (!panel->Load(file)) {
+		SetError("%s", panel->Error());
+		delete panel;
+		return false;
+	}
+	return panel;
+}
+
 UIPanel *
 UIManager::GetPanel(const char *name)
 {
@@ -36,20 +66,35 @@ UIManager::GetPanel(const char *name)
 }
 
 void
+UIManager::ShowPanel(UIPanel *panel)
+{
+	if (panel && !m_visible.find(panel)) {
+		m_visible.add(panel);
+		panel->Show();
+	}
+}
+
+void
+UIManager::HidePanel(UIPanel *panel)
+{
+	if (panel && m_visible.remove(panel)) {
+		panel->Hide();
+	}
+}
+
+void
 UIManager::Draw()
 {
-	for (unsigned i = 0; i < m_panels.length(); ++i) {
-		if (m_panels[i]->IsShown()) {
-			m_panels[i]->Draw();
-		}
+	for (unsigned i = 0; i < m_visible.length(); ++i) {
+		m_visible[i]->Draw();
 	}
 }
 
 bool
 UIManager::HandleEvent(const SDL_Event &event)
 {
-	for (unsigned i = m_panels.length(); i--; ) {
-		if (m_panels[i]->HandleEvent(event)) {
+	for (unsigned i = m_visible.length(); i--; ) {
+		if (m_visible[i]->HandleEvent(event)) {
 			return true;
 		}
 	}

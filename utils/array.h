@@ -16,6 +16,14 @@ public:
 	array() : m_len(0), m_max(1), m_data((T*)malloc(sizeof(T))) { }
 	~array() { free(m_data); }
 
+	bool find(const T& item) {
+		for (unsigned i = 0; i < m_len; ++i) {
+			if (m_data[i] == item) {
+				return true;
+			}
+		}
+		return false;
+	}
 	void add(const T& item) {
 		resize(m_len+1);
 		m_data[m_len++] = item;

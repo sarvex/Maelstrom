@@ -16,7 +16,7 @@ Sound    *sound = NULL;
 FontServ *fontserv = NULL;
 MFont    *fonts[NUM_FONTS];
 FrameBuf *screen = NULL;
-UIManager ui;
+UIManager *ui = NULL;
 
 Sint32	gLastHigh;
 Uint32	gLastDrawn;
@@ -64,13 +64,20 @@ static int LoadSmallSprite(Mac_Resource *spriteres,
 /* Put up an Ambrosia Software splash screen */
 void DoSplash(void)
 {
-	UIPanel panel(screen);
+	UIPanel *panel;
 
 	screen->Clear();
-	if (panel.Load("splash.xml")) {
-		panel.Draw();
+
+	panel = ui->LoadPanel("splash");
+	if (panel) {
+		ui->ShowPanel(panel);
+		ui->Draw();
 	}
 	screen->Update();
+
+	if (panel) {
+		delete panel;
+	}
 }
 
 /* ----------------------------------------------------------------- */
@@ -686,6 +693,10 @@ void CleanUp(void)
 	int i;
 
 	HaltLogic();
+	if ( ui ) {
+		delete ui;
+		ui = NULL;
+	}
 	if ( fontserv ) {
 		for ( i = 0; i < NUM_FONTS; ++i ) {
 			if ( fonts[i] ) {
@@ -695,13 +706,13 @@ void CleanUp(void)
 		delete fontserv;
 		fontserv = NULL;
 	}
-	if ( sound ) {
-		delete sound;
-		sound = NULL;
-	}
 	if ( screen ) {
 		delete screen;
 		screen = NULL;
+	}
+	if ( sound ) {
+		delete sound;
+		sound = NULL;
 	}
 	SaveControls();
 	PHYSFS_deinit();
@@ -779,7 +790,9 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 			return(-1);
 		}
 	}
-	UIPanel::SetElementFactory(CreateMaelstromUIElement);
+
+	/* Create the UI manager */
+	ui = new UIManager(screen, CreateMaelstromUIElement);
 
 	/* Load the Sound Server and initialize sound */
 	sound = new Sound("Maelstrom Sounds", gSoundLevel);
