@@ -76,7 +76,7 @@ public:
 		DeletePanel(GetPanel(name));
 	}
 
-	void Draw();
+	void Draw(bool fullUpdate = true);
 	bool HandleEvent(const SDL_Event &event);
 
 protected:

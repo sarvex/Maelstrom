@@ -165,6 +165,7 @@ UIManager::ShowPanel(UIPanel *panel)
 		m_visible.add(panel);
 		panel->Show();
 		if (panel->IsFullscreen()) {
+			Draw();
 			m_screen->FadeIn();
 		}
 	}
@@ -181,6 +182,7 @@ UIManager::HidePanel(UIPanel *panel)
 			for (unsigned int i = m_visible.length(); i--; ) {
 				if (m_visible[i]->IsFullscreen()) {
 					m_visible[i]->Show();
+					Draw();
 					m_screen->FadeIn();
 					break;
 				}
@@ -200,8 +202,11 @@ UIManager::DeletePanel(UIPanel *panel)
 }
 
 void
-UIManager::Draw()
+UIManager::Draw(bool fullUpdate)
 {
+	if (fullUpdate) {
+		m_screen->Clear();
+	}
 	for (unsigned i = 0; i < m_visible.length(); ++i) {
 		UIPanel *panel = m_visible[i];
 
@@ -210,6 +215,9 @@ UIManager::Draw()
 		if (panel->IsFullscreen()) {
 			break;
 		}
+	}
+	if (fullUpdate) {
+		m_screen->Update();
 	}
 }
 

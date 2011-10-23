@@ -62,37 +62,6 @@ static int LoadSmallSprite(Mac_Resource *spriteres,
 /* Put up an Ambrosia Software splash screen */
 void DoSplash(void)
 {
-	UIPanel *panel;
-	Uint32 start;
-	int i;
-
-	screen->FadeOut();
-	screen->Clear();
-
-	panel = ui->LoadPanel(PANEL_SPLASH);
-	if (panel) {
-		ui->ShowPanel(panel);
-		ui->Draw();
-	}
-	screen->Update();
-
-	start = SDL_GetTicks();
-
-	/* Load the UI panels while we're showing the splash screen */
-	if (!ui->LoadPanels()) {
-		fprintf(stderr, "Warning: Couldn't load panels: %s\n", ui->Error());
-	}
-
-	while ((SDL_GetTicks() - start) < 5000) {
-		if ( DropEvents() ) {
-			break;
-		}
-		SDL_Delay(100);
-	}
-
-	if (panel) {
-		ui->DeletePanel(panel);
-	}
 }
 
 /* ----------------------------------------------------------------- */
@@ -111,10 +80,7 @@ static void DrawLoadBar(int stage)
 		fact = (FULL_WIDTH * stage) / MAX_BAR;
 		progress->SetWidth(fact);
 	}
-
-	screen->Clear();
 	ui->Draw();
-	screen->Update();
 }	/* -- DrawLoadBar */
 
 
@@ -677,6 +643,8 @@ void CleanUp(void)
 /* -- Perform some initializations and report failure if we choke */
 int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 {
+	UIPanel *panel;
+	Uint32 start;
 	int i;
 	SDL_Surface *icon;
 
@@ -772,14 +740,45 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 	screen->ClipBlit(&gClipRect);
 
 	/* Do the Ambrosia Splash screen */
-	DoSplash();
+	screen->FadeOut();
+	ui->LoadPanel(PANEL_SPLASH);
+	ui->ShowPanel(PANEL_SPLASH);
+	ui->Draw();
+
+	start = SDL_GetTicks();
+
+	/* Preload some of our data while the splash screen is up */
+
+	/* -- Load in the prize CICN's */
+	if ( LoadCICNS() < 0 )
+		return(-1);
+
+	/* -- Load the rest of the UI panels */
+	if (!ui->LoadPanels()) {
+		error("Couldn't load panels: %s\n", ui->Error());
+		return(-1);
+	}
+
+	/* -- Create the stars array */
+	InitStars();
+
+	/* -- Set up the velocity tables */
+	BuildVelocityTable();
+
+	/* Wait for the splash time to finish, or a keypress */
+	while ((SDL_GetTicks() - start) < 5000) {
+		if ( DropEvents() ) {
+			break;
+		}
+		SDL_Delay(100);
+	}
+
+	ui->DeletePanel(PANEL_SPLASH);
 
 	/* -- Throw up our intro screen */
 	ui->ShowPanel(PANEL_LOADING);
 	sound->PlaySound(gPrizeAppears, 1);
-	screen->Clear();
 	ui->Draw();
-	screen->Update();
 
 	/* -- Load in our sprites and other needed resources */
 	{
@@ -800,16 +799,6 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 	/* -- Initialize the sprite manager - after we load blits and shots! */
 	if ( InitSprites() < 0 )
 		return(-1);
-
-	/* -- Load in the prize CICN's */
-	if ( LoadCICNS() < 0 )
-		return(-1);
-
-	/* -- Create the stars array */
-	InitStars();
-
-	/* -- Set up the velocity tables */
-	BuildVelocityTable();
 
 	ui->DeletePanel(PANEL_LOADING);
 

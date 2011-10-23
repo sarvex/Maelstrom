@@ -302,7 +302,6 @@ int main(int argc, char *argv[])
 
 	gRunning = true;
 	sound->PlaySound(gNovaBoom, 5);
-	screen->Fade();		/* Fade-out */
 	Delay(SOUND_DELAY);
 	gUpdateBuffer = true;
 	while ( sound->Playing() )
