@@ -25,9 +25,8 @@
 #include "UIPanel.h"
 
 
-UIManager::UIManager(FrameBuf *screen, UIElementFactory factory) : ErrorBase()
+UIManager::UIManager(FrameBuf *screen, UIElementFactory factory) : UIArea(screen)
 {
-	m_screen = screen;
 	m_elementFactory = factory;
 }
 

@@ -28,10 +28,9 @@
 #include "UIElement.h"
 
 
-UIPanel::UIPanel(UIManager *ui, const char *name) : UIArea()
+UIPanel::UIPanel(UIManager *ui, const char *name) : UIArea(ui->GetScreen())
 {
 	m_ui = ui;
-	m_screen = ui->GetScreen();
 	m_name = new char[strlen(name)+1];
 	strcpy(m_name, name);
 
@@ -147,7 +146,7 @@ UIArea *
 UIPanel::GetAnchorElement(const char *name)
 {
 	if (!name) {
-		return m_screen;
+		return m_ui;
 	}
 	return NULL;
 }

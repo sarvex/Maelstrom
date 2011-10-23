@@ -50,8 +50,9 @@ static AnchorLocation ParseAnchorLocation(const char *text)
 
 }
 
-UIArea::UIArea() : ErrorBase()
+UIArea::UIArea(FrameBuf *screen) : ErrorBase()
 {
+	m_screen = screen;
 	m_rect.x = 0;
 	m_rect.y = 0;
 	m_rect.w = 0;

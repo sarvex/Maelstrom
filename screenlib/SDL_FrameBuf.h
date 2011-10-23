@@ -33,14 +33,13 @@
 
 #include "SDL.h"
 #include "ErrorBase.h"
-#include "UIArea.h"
 
 typedef enum {
 	DOCLIP,
 	NOCLIP
 } clipval;
 
-class FrameBuf : public UIArea {
+class FrameBuf : public ErrorBase {
 
 public:
 	FrameBuf();
@@ -73,6 +72,14 @@ public:
 		} else {
 			SDL_SetWindowFullscreen(window, SDL_TRUE);
 		}
+	}
+
+	/* Information routines */
+	int Width() const {
+		return rect.w;
+	}
+	int Height() const {
+		return rect.h;
 	}
 
 	/* Blit and update routines */
@@ -170,6 +177,7 @@ private:
 	SDL_Renderer *renderer;
 	Uint32 image_map[256];
 	int faded;
+	SDL_Rect rect;
 	SDL_Rect clip;
 
 	void UpdateDrawColor(Uint32 color) {

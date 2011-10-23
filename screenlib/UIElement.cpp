@@ -23,12 +23,11 @@
 #include "UIPanel.h"
 #include "UIElement.h"
 
-UIElement::UIElement(UIPanel *panel, const char *name) : UIArea()
+UIElement::UIElement(UIPanel *panel, const char *name) : UIArea(panel->GetScreen())
 {
 	m_name = new char[strlen(name)+1];
 	strcpy(m_name, name);
 
-	m_screen = panel->GetScreen();
 	m_panel = panel;
 }
 

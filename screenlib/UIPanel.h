@@ -41,9 +41,6 @@ public:
 	UIPanel(UIManager *ui, const char *name);
 	virtual ~UIPanel();
 
-	FrameBuf *GetScreen() const {
-		return m_screen;
-	}
 	const char *GetName() const {
 		return m_name;
 	}
@@ -68,7 +65,6 @@ public:
 
 protected:
 	UIManager *m_ui;
-	FrameBuf *m_screen;
 	char *m_name;
 	bool m_fullscreen;
 	array<UIElement *> m_elements;

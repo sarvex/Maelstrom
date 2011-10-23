@@ -51,7 +51,6 @@ public:
 
 protected:
 	char *m_name;
-	FrameBuf *m_screen;
 	UIPanel *m_panel;
 };
 

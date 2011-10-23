@@ -25,7 +25,7 @@
 
 #include "SDL.h"
 #include "../utils/array.h"
-#include "ErrorBase.h"
+#include "UIArea.h"
 
 class FrameBuf;
 class UIPanel;
@@ -33,7 +33,7 @@ class UIElement;
 
 typedef UIElement *(*UIElementFactory)(UIPanel *panel, const char *name);
 
-class UIManager : public ErrorBase
+class UIManager : public UIArea
 {
 public:
 	UIManager(FrameBuf *screen, UIElementFactory factory);
@@ -77,7 +77,6 @@ public:
 	bool HandleEvent(const SDL_Event &event);
 
 protected:
-	FrameBuf *m_screen;
 	UIElementFactory m_elementFactory;
 	array<UIPanel *> m_panels;
 	array<UIPanel *> m_visible;
