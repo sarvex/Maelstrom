@@ -115,14 +115,18 @@ UIPanel *
 UIManager::LoadPanel(const char *name)
 {
 	UIPanel *panel;
-	char file[1024];
 
-	sprintf(file, "%s/%s.xml", m_loadPath, name);
-	panel = new UIPanel(this, name);
-	if (!panel->Load(file)) {
-		SetError("%s", panel->Error());
-		delete panel;
-		return false;
+	panel = GetPanel(name);
+	if (!name) {
+		char file[1024];
+
+		sprintf(file, "%s/%s.xml", m_loadPath, name);
+		panel = new UIPanel(this, name);
+		if (!panel->Load(file)) {
+			SetError("%s", panel->Error());
+			delete panel;
+			return false;
+		}
 	}
 	return panel;
 }
