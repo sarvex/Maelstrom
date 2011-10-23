@@ -46,6 +46,7 @@ public:
 		return m_elementFactory;
 	}
 
+	void SetLoadPath(const char *path);
 	UIPanel *LoadPanel(const char *name);
 	UIPanel *GetPanel(const char *name);
 
@@ -78,6 +79,7 @@ public:
 
 protected:
 	UIElementFactory m_elementFactory;
+	char *m_loadPath;
 	array<UIPanel *> m_panels;
 	array<UIPanel *> m_visible;
 };

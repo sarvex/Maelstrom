@@ -802,6 +802,7 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 
 	/* Create the UI manager */
 	ui = new UIManager(screen, CreateMaelstromUIElement);
+	ui->SetLoadPath("UI");
 
 	/* Load the Sound Server and initialize sound */
 	sound = new Sound("Maelstrom Sounds", gSoundLevel);

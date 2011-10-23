@@ -28,6 +28,8 @@
 UIManager::UIManager(FrameBuf *screen, UIElementFactory factory) : UIArea(screen)
 {
 	m_elementFactory = factory;
+	m_loadPath = new char[2];
+	strcpy(m_loadPath, ".");
 }
 
 UIManager::~UIManager()
@@ -38,13 +40,21 @@ UIManager::~UIManager()
 	}
 }
 
+void
+UIManager::SetLoadPath(const char *path)
+{
+	delete[] m_loadPath;
+	m_loadPath = new char[strlen(path)+1];
+	strcpy(m_loadPath, path);
+}
+
 UIPanel *
 UIManager::LoadPanel(const char *name)
 {
 	UIPanel *panel;
 	char file[1024];
 
-	sprintf(file, "%s.xml", name);
+	sprintf(file, "%s/%s.xml", m_loadPath, name);
 	panel = new UIPanel(this, name);
 	if (!panel->Load(file)) {
 		SetError("%s", panel->Error());
