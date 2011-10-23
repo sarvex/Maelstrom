@@ -20,6 +20,7 @@
     slouken@libsdl.org
 */
 
+#include "SDL_FrameBuf.h"
 #include "UIPanel.h"
 #include "UIElement.h"
 
@@ -36,9 +37,39 @@ UIElement::~UIElement()
 	delete[] m_name;
 }
 
+Uint32
+UIElement::LoadColor(rapidxml::xml_node<> *node) const
+{
+	Uint8 r, g, b;
+	rapidxml::xml_attribute<> *attr;
+
+	attr = node->first_attribute("r", 0, false);
+	if (attr) {
+		r = (Uint8)strtol(attr->value(), NULL, 0);
+	}
+	attr = node->first_attribute("g", 0, false);
+	if (attr) {
+		g = (Uint8)strtol(attr->value(), NULL, 0);
+	}
+	attr = node->first_attribute("b", 0, false);
+	if (attr) {
+		b = (Uint8)strtol(attr->value(), NULL, 0);
+	}
+	return m_screen->MapRGB(r, g, b);
+}
+
 bool
 UIElement::Load(rapidxml::xml_node<> *node)
 {
+	rapidxml::xml_attribute<> *attr;
+
+	attr = node->first_attribute("name", 0, false);
+	if (attr) {
+		delete[] m_name;
+		m_name = new char[strlen(attr->value())+1];
+		strcpy(m_name, attr->value());
+	}
+
 	return UIArea::Load(node);
 }
 

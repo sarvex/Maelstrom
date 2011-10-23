@@ -52,6 +52,9 @@ public:
 	virtual bool HandleEvent(const SDL_Event &event) { return false; }
 
 protected:
+	Uint32 LoadColor(rapidxml::xml_node<> *node) const;
+
+protected:
 	char *m_name;
 	UIPanel *m_panel;
 };

@@ -50,6 +50,7 @@ public:
 	bool LoadPanels();
 	UIPanel *LoadPanel(const char *name);
 	UIPanel *GetPanel(const char *name);
+	UIPanel *GetCurrentPanel();
 
 	/* These are called by the UIPanel class */
 	void AddPanel(UIPanel *panel) {

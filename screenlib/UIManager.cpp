@@ -138,6 +138,15 @@ UIManager::GetPanel(const char *name)
 	return NULL;
 }
 
+UIPanel *
+UIManager::GetCurrentPanel()
+{
+	if (m_visible.length() > 0) {
+		return m_visible[m_visible.length()-1];
+	}
+	return NULL;
+}
+
 void
 UIManager::ShowPanel(UIPanel *panel)
 {

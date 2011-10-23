@@ -9,6 +9,7 @@
 #include "colortable.h"
 #include "fastrand.h"
 #include "UIElements.h"
+#include "screenlib/UIElement.h"
 
 
 // Global variables set in this file...
@@ -45,9 +46,6 @@ BlitPtr	gThrust1, gThrust2, gShrapnel1, gShrapnel2;
 SDL_Texture *gAutoFireIcon, *gAirBrakesIcon, *gMult2Icon, *gMult3Icon;
 SDL_Texture *gMult4Icon, *gMult5Icon, *gLuckOfTheIrishIcon, *gLongFireIcon;
 SDL_Texture *gTripleFireIcon, *gKeyIcon, *gShieldIcon;
-
-// Local variables set in this file...
-static SDL_Texture *intro;
 
 // Local functions used in this file.
 static void DrawLoadBar(int stage);
@@ -98,81 +96,24 @@ void DoSplash(void)
 }
 
 /* ----------------------------------------------------------------- */
-/* -- Put up our intro splash screen */
-
-void DoIntroScreen(int first)
-{
-	SDL_Texture *text;
-	Uint16  Yoff, Xoff;
-	Uint32  clr, ltClr, ltrClr;
-	int introW, introH;
-
-	DropEvents();
-
-	// -- Draw a border
-	clr = screen->MapRGB(30000>>8, 30000>>8, 0xFF);
-	ltClr = screen->MapRGB(40000>>8, 40000>>8, 0xFF);
-	ltrClr = screen->MapRGB(50000>>8, 50000>>8, 0xFF);
-
-	screen->Clear();
-	introW = screen->GetImageWidth(intro);
-	introH = screen->GetImageHeight(intro);
-	Xoff = (SCREEN_WIDTH-introW)/2;
-	Yoff = (SCREEN_HEIGHT-introH)/2;
-	screen->DrawRect(Xoff-1, Yoff-1, introW+2, introH+2, clr);
-	screen->DrawRect(Xoff-2, Yoff-2, introW+4, introH+4, clr);
-	screen->DrawRect(Xoff-3, Yoff-3, introW+6, introH+6, ltClr);
-	screen->DrawRect(Xoff-4, Yoff-4, introW+8, introH+8, ltClr);
-	screen->DrawRect(Xoff-5, Yoff-5, introW+10, introH+10, ltrClr);
-	screen->DrawRect(Xoff-6, Yoff-6, introW+12, introH+12, ltClr);
-	screen->DrawRect(Xoff-7, Yoff-7, introW+14, introH+14, clr);
-	Yoff += introH;
-	screen->QueueBlit(SCREEN_WIDTH/2-introW/2, SCREEN_HEIGHT/2-introH/2,
-								intro, NOCLIP);
-
-/* -- Draw the loading message */
-
-	text = fontserv->TextImage("Loading...", fonts[GENEVA_9], STYLE_BOLD,
-						0xFF, 0xFF, 0x00);
-	if ( text ) {
-		screen->QueueBlit(SCREEN_WIDTH/2-screen->GetImageWidth(text)/2,
-				Yoff+20-screen->GetImageHeight(text)/2, text, NOCLIP);
-		fontserv->FreeText(text);
-	}
-
-	if (first) {
-		screen->Update();
-	}
-}	// -- DoIntroScreen
-
-
-/* ----------------------------------------------------------------- */
 /* -- Draw a loading status bar */
 
 #define	MAX_BAR	26
 
 static void DrawLoadBar(int stage)
 {
-	Uint32 black, clr;
+	UIElement *progress;
 	int fact;
+	const int FULL_WIDTH = 196;
 
-	DoIntroScreen(0);
+	progress = ui->GetCurrentPanel()->GetElement("progress");
+	if (progress) {
+		fact = (FULL_WIDTH * stage) / MAX_BAR;
+		progress->SetWidth(fact);
+	}
 
-	black = screen->MapRGB(0x00, 0x00, 0x00);
-	screen->DrawRect((SCREEN_WIDTH-200)/2, 
-			   ((SCREEN_HEIGHT-10)/2)+185, 200, 10, black);
-	clr = screen->MapRGB(0xFF, 0xFF, 0xFF);
-	screen->DrawRect(((SCREEN_WIDTH-200)/2)+1, 
-			   ((SCREEN_HEIGHT-10)/2)+185+1, 
-						200-2, 10-2, clr);
-	clr = screen->MapRGB(0x8F, 0x8F, 0xFF);
-	screen->FillRect(((SCREEN_WIDTH-200)/2)+1+1, 
-			   ((SCREEN_HEIGHT-10)/2)+185+1+1, 
-						200-2-2, 10-2-2, clr);
-	clr = screen->MapRGB(0x6F, 0x6F, 0xFF);
-	fact = ((200-2-2) * stage) / MAX_BAR;
-	screen->FillRect(((SCREEN_WIDTH-200)/2)+1+1, 
-			 ((SCREEN_HEIGHT-10)/2)+185+1+1, fact, 10-2-2, clr);
+	screen->Clear();
+	ui->Draw();
 	screen->Update();
 }	/* -- DrawLoadBar */
 
@@ -715,11 +656,7 @@ void CleanUp(void)
 		ui = NULL;
 	}
 	if ( fontserv ) {
-		for ( i = 0; i < NUM_FONTS; ++i ) {
-			if ( fonts[i] ) {
-				fontserv->FreeFont(fonts[i]);
-			}
-		}
+		/* This will free the allocated fonts */
 		delete fontserv;
 		fontserv = NULL;
 	}
@@ -838,14 +775,11 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 	DoSplash();
 
 	/* -- Throw up our intro screen */
-	intro = Load_Title(screen, 130);
-	if ( intro == NULL ) {
-		error("Can't load intro title! (ID=%d)\n", 130);
-		return(-1);
-	}
-	DoIntroScreen(1);
+	ui->ShowPanel(PANEL_LOADING);
 	sound->PlaySound(gPrizeAppears, 1);
-	screen->FadeIn();
+	screen->Clear();
+	ui->Draw();
+	screen->Update();
 
 	/* -- Load in our sprites and other needed resources */
 	{
@@ -877,7 +811,7 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 	/* -- Set up the velocity tables */
 	BuildVelocityTable();
 
-	screen->FreeImage(intro);
+	ui->DeletePanel(PANEL_LOADING);
 
 	return(0);
 }	/* -- DoInitializations */

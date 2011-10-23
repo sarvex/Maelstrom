@@ -110,6 +110,15 @@ public:
 	SDL_Texture *TextImage(const char *text, MFont *font, Uint8 style,
 						SDL_Color foreground);
 	SDL_Texture *TextImage(const char *text, MFont *font, Uint8 style,
+						Uint32 rgb) {
+		SDL_Color foreground;
+
+		foreground.r = (rgb >> 16) & 0xFF;
+		foreground.g = (rgb >>  8) & 0xFF;
+		foreground.b = (rgb >>  0) & 0xFF;
+		return(TextImage(text, font, style, foreground));
+	}
+	SDL_Texture *TextImage(const char *text, MFont *font, Uint8 style,
 						Uint8 R, Uint8 G, Uint8 B) {
 		SDL_Color foreground;
 

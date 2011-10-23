@@ -53,6 +53,11 @@ static AnchorLocation ParseAnchorLocation(const char *text)
 UIArea::UIArea(FrameBuf *screen) : ErrorBase()
 {
 	m_screen = screen;
+	m_anchor.element = NULL;
+	m_anchor.anchorFrom = TOPLEFT;
+	m_anchor.anchorTo = TOPLEFT;
+	m_anchor.offsetX = 0;
+	m_anchor.offsetY = 0;
 	m_rect.x = 0;
 	m_rect.y = 0;
 	m_rect.w = 0;
@@ -80,24 +85,21 @@ UIArea::Load(rapidxml::xml_node<> *node)
 	if (child) {
 		attr = child->first_attribute("w", 0, false);
 		if (attr) {
-			m_rect.w = atoi(attr->value());
+			m_rect.w = SDL_atoi(attr->value());
 		}
 		attr = child->first_attribute("h", 0, false);
 		if (attr) {
-			m_rect.h = atoi(attr->value());
+			m_rect.h = SDL_atoi(attr->value());
 		}
 	}
 
 	child = node->first_node("anchor", 0, false);
 	if (child) {
-		UIArea *anchorElement;
-		AnchorLocation anchorFrom = TOPLEFT;
-		AnchorLocation anchorTo = TOPLEFT;
 		int x, y;
 
-		attr = child->first_attribute("anchorElement", 0, false);
-		anchorElement = GetAnchorElement(attr ? attr->value() : NULL);
-		if (!anchorElement) {
+		attr = child->first_attribute("anchor", 0, false);
+		m_anchor.element = GetAnchorElement(attr ? attr->value() : NULL);
+		if (!m_anchor.element) {
 			SetError("Element 'anchor' couldn't find anchor element %s",
 				attr ? attr->value() : "NULL");
 			return false;
@@ -105,46 +107,23 @@ UIArea::Load(rapidxml::xml_node<> *node)
 
 		attr = child->first_attribute("anchorFrom", 0, false);
 		if (attr) {
-			anchorFrom = ParseAnchorLocation(attr->value());
+			m_anchor.anchorFrom = ParseAnchorLocation(attr->value());
 		}
 		attr = child->first_attribute("anchorTo", 0, false);
 		if (attr) {
-			anchorTo = ParseAnchorLocation(attr->value());
-		}
-		anchorElement->GetAnchorLocation(anchorTo, &x, &y);
-
-		switch (anchorFrom & X_MASK) {
-			case X_CENTER:
-				x -= Width() / 2;
-				break;
-			case X_RIGHT:
-				x -= Width();
-				break;
-			default:
-				break;
-		}
-		switch (anchorFrom & Y_MASK) {
-			case Y_CENTER:
-				y -= Height() / 2;
-				break;
-			case Y_BOTTOM:
-				y -= Height();
-				break;
-			default:
-				break;
+			m_anchor.anchorTo = ParseAnchorLocation(attr->value());
 		}
 
 		attr = child->first_attribute("x", 0, false);
 		if (attr) {
-			x += atoi(attr->value());
+			m_anchor.offsetX = SDL_atoi(attr->value());
 		}
 		attr = child->first_attribute("y", 0, false);
 		if (attr) {
-			y += atoi(attr->value());
+			m_anchor.offsetY = SDL_atoi(attr->value());
 		}
 
-		m_rect.x = x;
-		m_rect.y = y;
+		CalculateAnchor();
 	}
 
 	return true;
@@ -179,4 +158,39 @@ UIArea::GetAnchorLocation(AnchorLocation spot, int *x, int *y) const
 		default:
 			assert(0);
 	}
+}
+
+void
+UIArea::CalculateAnchor()
+{
+	int x, y;
+
+	if (!m_anchor.element) {
+		return;
+	}
+	m_anchor.element->GetAnchorLocation(m_anchor.anchorTo, &x, &y);
+
+	switch (m_anchor.anchorFrom & X_MASK) {
+		case X_CENTER:
+			x -= Width() / 2;
+			break;
+		case X_RIGHT:
+			x -= Width();
+			break;
+		default:
+			break;
+	}
+	switch (m_anchor.anchorFrom & Y_MASK) {
+		case Y_CENTER:
+			y -= Height() / 2;
+			break;
+		case Y_BOTTOM:
+			y -= Height();
+			break;
+		default:
+			break;
+	}
+
+	m_rect.x = x + m_anchor.offsetX;
+	m_rect.y = y + m_anchor.offsetY;
 }

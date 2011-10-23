@@ -19,9 +19,13 @@ UIElementTexture::~UIElementTexture()
 void
 UIElementTexture::SetTexture(SDL_Texture *texture)
 {
+	if (m_texture) {
+		m_screen->FreeImage(m_texture);
+	}
 	m_texture = texture;
 	m_rect.w = m_screen->GetImageWidth(texture);
 	m_rect.h = m_screen->GetImageHeight(texture);
+	CalculateAnchor();
 }
 
 void

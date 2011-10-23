@@ -70,6 +70,15 @@ public:
 	void SetSize(int w, int h) {
 		m_rect.w = w;
 		m_rect.h = h;
+		CalculateAnchor();
+	}
+	void SetWidth(int w) {
+		m_rect.w = w;
+		CalculateAnchor();
+	}
+	void SetHeight(int h) {
+		m_rect.h = h;
+		CalculateAnchor();
 	}
 
 	FrameBuf *GetScreen() const {
@@ -103,7 +112,16 @@ public:
 	}
 
 protected:
+	void CalculateAnchor();
+
+protected:
 	FrameBuf *m_screen;
+	struct {
+		UIArea *element;
+		AnchorLocation anchorFrom;
+		AnchorLocation anchorTo;
+		int offsetX, offsetY;
+	} m_anchor;
 	SDL_Rect m_rect;
 	bool m_shown;
 };
