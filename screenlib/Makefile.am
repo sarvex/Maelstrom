@@ -9,6 +9,8 @@ libSDLscreen_a_SOURCES =	\
 	UIArea.h		\
 	UIElement.cpp		\
 	UIElement.h		\
+	UIElementTexture.cpp	\
+	UIElementTexture.h	\
 	UIManager.cpp		\
 	UIManager.h		\
 	UIPanel.cpp		\

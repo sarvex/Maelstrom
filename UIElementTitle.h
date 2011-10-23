@@ -1,7 +1,7 @@
 #ifndef _UIElementTitle_h
 #define _UIElementTitle_h
 
-#include "UIElementTexture.h"
+#include "screenlib/UIElementTexture.h"
 
 
 class UIElementTitle : public UIElementTexture
