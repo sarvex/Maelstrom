@@ -88,6 +88,15 @@ extern int	gNumSprites;
 // in scores.cc :
 extern Bool	gNetScores;
 
+// UI panel definitions...
+#define PANEL_SPLASH	"splash"
+#define PANEL_LOADING	"loading"
+#define PANEL_MAIN	"main"
+#define PANEL_GAME	"game"
+#define PANEL_GAMEOVER	"gameover"
+#define PANEL_ABOUT	"about"
+#define PANEL_CONTROLS	"controls"
+
 // Sound resource definitions...
 #define gShotSound	100
 #define gMultiplier	101

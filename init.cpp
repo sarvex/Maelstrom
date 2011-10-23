@@ -65,23 +65,31 @@ static int LoadSmallSprite(Mac_Resource *spriteres,
 void DoSplash(void)
 {
 	UIPanel *panel;
+	Uint32 start;
 	int i;
 
 	screen->FadeOut();
 	screen->Clear();
 
-	panel = ui->LoadPanel("splash");
+	panel = ui->LoadPanel(PANEL_SPLASH);
 	if (panel) {
 		ui->ShowPanel(panel);
 		ui->Draw();
 	}
 	screen->Update();
 
-	for ( i=0; i<5; ++i ) {
+	start = SDL_GetTicks();
+
+	/* Load the UI panels while we're showing the splash screen */
+	if (!ui->LoadPanels()) {
+		fprintf(stderr, "Warning: Couldn't load panels: %s\n", ui->Error());
+	}
+
+	while ((SDL_GetTicks() - start) < 5000) {
 		if ( DropEvents() ) {
 			break;
 		}
-		Delay(60);
+		SDL_Delay(100);
 	}
 
 	if (panel) {

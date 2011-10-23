@@ -20,6 +20,8 @@
     slouken@libsdl.org
 */
 
+#include <physfs.h>
+
 #include "SDL_FrameBuf.h"
 #include "UIManager.h"
 #include "UIPanel.h"
@@ -46,6 +48,67 @@ UIManager::SetLoadPath(const char *path)
 	delete[] m_loadPath;
 	m_loadPath = new char[strlen(path)+1];
 	strcpy(m_loadPath, path);
+}
+
+static const char *GetLine(char *&text)
+{
+	while (*text == '\r' || *text == '\n') {
+		++text;
+	}
+	if (!*text) {
+		return NULL;
+	}
+
+	const char *line = text;
+	while (*text && *text != '\r' && *text != '\n') {
+		++text;
+	}
+	if (*text) {
+		*text++ = '\0';
+	}
+	return line;
+}
+
+bool
+UIManager::LoadPanels()
+{
+	char file[1024];
+	PHYSFS_File *fp;
+	PHYSFS_sint64 size;
+	char *buffer, *spot;
+	const char *line;
+
+	sprintf(file, "%s/UI.lst", m_loadPath);
+	fp = PHYSFS_openRead(file);
+	if (!fp) {
+		SetError("Couldn't open %s: %s", file, PHYSFS_getLastError());
+		return false;
+	}
+
+	size = PHYSFS_fileLength(fp);
+	buffer = new char[size+1];
+	if (PHYSFS_readBytes(fp, buffer, size) != size) {
+		SetError("Couldn't read from %s: %s", file, PHYSFS_getLastError());
+		PHYSFS_close(fp);
+		delete[] buffer;
+		return false;
+	}
+	buffer[size] = '\0';
+	PHYSFS_close(fp);
+
+	spot = buffer;
+	while ((line = GetLine(spot)) != NULL) {
+		if (*line == '#') {
+			continue;
+		}
+		if (!LoadPanel(line)) {
+			delete[] buffer;
+			return false;
+		}
+	}
+
+	delete[] buffer;
+	return true;
 }
 
 UIPanel *
