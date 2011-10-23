@@ -20,8 +20,6 @@
     slouken@libsdl.org
 */
 
-#include <physfs.h>
-
 #include "SDL_FrameBuf.h"
 #include "UIManager.h"
 #include "UIPanel.h"
@@ -69,55 +67,13 @@ static const char *GetLine(char *&text)
 	return line;
 }
 
-bool
-UIManager::LoadPanels()
-{
-	char file[1024];
-	PHYSFS_File *fp;
-	PHYSFS_sint64 size;
-	char *buffer, *spot;
-	const char *line;
-
-	sprintf(file, "%s/UI.lst", m_loadPath);
-	fp = PHYSFS_openRead(file);
-	if (!fp) {
-		SetError("Couldn't open %s: %s", file, PHYSFS_getLastError());
-		return false;
-	}
-
-	size = PHYSFS_fileLength(fp);
-	buffer = new char[size+1];
-	if (PHYSFS_readBytes(fp, buffer, size) != size) {
-		SetError("Couldn't read from %s: %s", file, PHYSFS_getLastError());
-		PHYSFS_close(fp);
-		delete[] buffer;
-		return false;
-	}
-	buffer[size] = '\0';
-	PHYSFS_close(fp);
-
-	spot = buffer;
-	while ((line = GetLine(spot)) != NULL) {
-		if (*line == '#') {
-			continue;
-		}
-		if (!LoadPanel(line)) {
-			delete[] buffer;
-			return false;
-		}
-	}
-
-	delete[] buffer;
-	return true;
-}
-
 UIPanel *
 UIManager::LoadPanel(const char *name)
 {
 	UIPanel *panel;
 
-	panel = GetPanel(name);
-	if (!name) {
+	panel = GetPanel(name, false);
+	if (!panel) {
 		char file[1024];
 
 		sprintf(file, "%s/%s.xml", m_loadPath, name);
@@ -132,12 +88,15 @@ UIManager::LoadPanel(const char *name)
 }
 
 UIPanel *
-UIManager::GetPanel(const char *name)
+UIManager::GetPanel(const char *name, bool allowLoad)
 {
 	for (unsigned i = 0; i < m_panels.length(); ++i) {
 		if (strcmp(name, m_panels[i]->GetName()) == 0) {
 			return m_panels[i];
 		}
+	}
+	if (allowLoad) {
+		return LoadPanel(name);
 	}
 	return NULL;
 }

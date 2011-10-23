@@ -47,9 +47,8 @@ public:
 	}
 
 	void SetLoadPath(const char *path);
-	bool LoadPanels();
 	UIPanel *LoadPanel(const char *name);
-	UIPanel *GetPanel(const char *name);
+	UIPanel *GetPanel(const char *name, bool allowLoad = true);
 	UIPanel *GetCurrentPanel();
 
 	/* These are called by the UIPanel class */

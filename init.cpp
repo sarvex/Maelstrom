@@ -741,7 +741,6 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 
 	/* Do the Ambrosia Splash screen */
 	screen->FadeOut();
-	ui->LoadPanel(PANEL_SPLASH);
 	ui->ShowPanel(PANEL_SPLASH);
 	ui->Draw();
 
@@ -752,12 +751,6 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 	/* -- Load in the prize CICN's */
 	if ( LoadCICNS() < 0 )
 		return(-1);
-
-	/* -- Load the rest of the UI panels */
-	if (!ui->LoadPanels()) {
-		error("Couldn't load panels: %s\n", ui->Error());
-		return(-1);
-	}
 
 	/* -- Create the stars array */
 	InitStars();
