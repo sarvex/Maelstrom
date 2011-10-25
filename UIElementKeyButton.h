@@ -20,6 +20,7 @@ public:
 
 protected:
 	SDL_Texture *m_text;
+	SDL_Texture *m_textShadow;
 
 protected:
 	static UIElementType s_elementType;

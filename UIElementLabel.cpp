@@ -11,14 +11,15 @@ UIElementLabel::UIElementLabel(UIPanel *panel, const char *name) :
 	m_font = NULL;
 	m_style = STYLE_NORM;
 	m_color = m_screen->MapRGB(0xFF, 0xFF, 0xFF);
+	m_text = NULL;
 	m_texture = NULL;
-#ifdef UI_DEBUG
-m_text = NULL;
-#endif
 }
 
 UIElementLabel::~UIElementLabel()
 {
+	if (m_text) {
+		delete[] m_text;
+	}
 	if (m_texture) {
 		fontserv->FreeText(m_texture);
 	}
@@ -94,14 +95,20 @@ printf("Label: '%s' %d,%d\n", m_text, m_rect.x, m_rect.y);
 void
 UIElementLabel::SetText(const char *text)
 {
+	if (m_text && strcmp(text, m_text) == 0) {
+		return;
+	}
+
+	if (m_text) {
+		delete[] m_text;
+	}
 	if (m_texture) {
 		fontserv->FreeText(m_texture);
 	}
 
-#ifdef UI_DEBUG
-m_text = strdup(text);
-#endif
-	m_texture = fontserv->TextImage(text, m_font, m_style, m_color);
+	m_text = new char[strlen(text)+1];
+	strcpy(m_text, text);
+	m_texture = fontserv->TextImage(m_text, m_font, m_style, m_color);
 	m_rect.w = m_screen->GetImageWidth(m_texture);
 	m_rect.h = m_screen->GetImageHeight(m_texture);
 	CalculateAnchor();
@@ -114,10 +121,20 @@ printf("Label: '%s' %d,%d\n", m_text, m_rect.x, m_rect.y);
 void
 UIElementLabel::SetTextColor(Uint8 R, Uint8 G, Uint8 B)
 {
-	if (m_texture) {
-		SDL_SetTextureColorMod(m_texture, R, G, B);
+	Uint32 color;
+
+	color = m_screen->MapRGB(R, G, B);
+	if (color == m_color) {
+		return;
 	}
-	m_color = m_screen->MapRGB(R, G, B);
+	m_color = color;
+
+	if (m_text) {
+		if (m_texture) {
+			fontserv->FreeText(m_texture);
+		}
+		m_texture = fontserv->TextImage(m_text, m_font, m_style, m_color);
+	}
 }
 
 void

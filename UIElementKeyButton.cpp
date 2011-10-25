@@ -8,12 +8,16 @@ UIElementKeyButton::UIElementKeyButton(UIPanel *panel, const char *name) :
 	UIElementButton(panel, name)
 {
 	m_text = NULL;
+	m_textShadow = NULL;
 }
 
 UIElementKeyButton::~UIElementKeyButton()
 {
 	if (m_text) {
 		fontserv->FreeText(m_text);
+	}
+	if (m_textShadow) {
+		fontserv->FreeText(m_textShadow);
 	}
 }
 
@@ -29,6 +33,8 @@ UIElementKeyButton::Load(rapidxml::xml_node<> *node)
 
 	if (m_hotkey != SDLK_UNKNOWN) {
 		m_text = fontserv->TextImage(SDL_GetKeyName(m_hotkey),
+				fonts[GENEVA_9], STYLE_BOLD, 0x00, 0x00, 0x00);
+		m_textShadow = fontserv->TextImage(SDL_GetKeyName(m_hotkey),
 				fonts[GENEVA_9], STYLE_BOLD, 0xFF, 0xFF, 0xFF);
 	}
 	return true;
@@ -42,8 +48,6 @@ UIElementKeyButton::Draw()
 printf("KeyButton: %s at %d,%d\n", SDL_GetKeyName(m_hotkey), m_rect.x+14, m_rect.y+10);
 printf("KeyButton: %s at %d,%d\n", SDL_GetKeyName(m_hotkey), m_rect.x+13, m_rect.y+9);
 #endif
-	SDL_SetTextureColorMod(m_text, 0xFF, 0xFF, 0xFF);
-	m_screen->QueueBlit(m_rect.x+14, m_rect.y+10, m_text, NOCLIP);
-	SDL_SetTextureColorMod(m_text, 0x00, 0x00, 0x00);
+	m_screen->QueueBlit(m_rect.x+14, m_rect.y+10, m_textShadow, NOCLIP);
 	m_screen->QueueBlit(m_rect.x+13, m_rect.y+9, m_text, NOCLIP);
 }

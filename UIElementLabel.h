@@ -26,8 +26,8 @@ protected:
 	MFont *m_font;
 	Uint8 m_style;
 	Uint32 m_color;
+	char *m_text;
 	SDL_Texture *m_texture;
-char *m_text;
 
 protected:
 	static UIElementType s_elementType;

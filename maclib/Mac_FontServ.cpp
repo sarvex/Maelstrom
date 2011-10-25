@@ -295,11 +295,10 @@ FontServ:: TextImage(const char *text, MFont *font, Uint8 style, SDL_Color fg)
 	int bit;
 
 	/* First see if we can find it in our cache */
-	keysize = strlen(font->name)+1+2+1+1+1+strlen(text)+1;
+	keysize = strlen(font->name)+1+2+1+1+1+6+1+strlen(text)+1;
 	key = SDL_stack_alloc(char, keysize);
-	sprintf(key, "%s:%d:%c:%s", font->name, font->ptsize, '0'+style, text);
+	sprintf(key, "%s:%d:%c:%2.2x%2.2x%2.2x:%s", font->name, font->ptsize, '0'+style, fg.r, fg.g, fg.b, text);
 	if (hash_find(strings, key, (const void**)&image)) {
-		SDL_SetTextureColorMod(image, fg.r, fg.g, fg.b);
 		return image;
 	}
 
@@ -361,7 +360,7 @@ FontServ:: TextImage(const char *text, MFont *font, Uint8 style, SDL_Color fg)
 	/* Allocate the text pixels */
 	bitmap = new Uint32[width*height];
 	memset(bitmap, 0, width*height*sizeof(Uint32));
-	color = screen->MapRGB(0xFF, 0xFF, 0xFF);
+	color = screen->MapRGB(fg.r, fg.g, fg.b);
 
 	/* Print the individual characters */
 	/* Note: this could probably be optimized.. eh, who cares. :) */
@@ -412,7 +411,6 @@ FontServ:: TextImage(const char *text, MFont *font, Uint8 style, SDL_Color fg)
 	/* Create the image */
 	image = screen->LoadImage(width, height, bitmap);
 	delete[] bitmap;
-	SDL_SetTextureColorMod(image, fg.r, fg.g, fg.b);
 	SDL_SetTextureBlendMode(image, SDL_BLENDMODE_BLEND);
 
 	/* Add it to our cache */
