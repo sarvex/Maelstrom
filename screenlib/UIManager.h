@@ -28,20 +28,25 @@
 #include "UIArea.h"
 
 class FrameBuf;
+class UIManager;
 class UIPanel;
 class UIElement;
 
+typedef UIPanel *(*UIPanelFactory)(UIManager *ui, const char *type, const char *name, const char *delegate);
 typedef UIElement *(*UIElementFactory)(UIPanel *panel, const char *name);
 typedef void (*UISoundCallback)(void *, int soundID);
 
 class UIManager : public UIArea
 {
 public:
-	UIManager(FrameBuf *screen, UIElementFactory factory);
+	UIManager(FrameBuf *screen, UIPanelFactory panelFactory, UIElementFactory elementFactory);
 	~UIManager();
 
 	FrameBuf *GetScreen() const {
 		return m_screen;
+	}
+	UIPanelFactory GetPanelFactory() const {
+		return m_panelFactory;
 	}
 	UIElementFactory GetElementFactory() const {
 		return m_elementFactory;
@@ -90,6 +95,7 @@ public:
 	bool HandleEvent(const SDL_Event &event);
 
 protected:
+	UIPanelFactory m_panelFactory;
 	UIElementFactory m_elementFactory;
 	UISoundCallback m_soundCallback;
 	void *m_soundCallbackParam;

@@ -38,8 +38,10 @@ class UIManager;
 class UIPanelDelegate
 {
 public:
+	virtual bool OnLoad() { return true; }
 	virtual void OnShow() { }
 	virtual void OnHide() { }
+	virtual void OnTick() { }
 	virtual void OnDraw() { }
 };
 
@@ -59,7 +61,7 @@ public:
 		return m_fullscreen;
 	}
 
-	bool Load(const char *file);
+	bool Load(rapidxml::xml_node<> *node);
 
 	virtual UIArea *GetAnchorElement(const char *name);
 

@@ -20,8 +20,6 @@
     slouken@libsdl.org
 */
 
-#include <physfs.h>
-
 #include "SDL_FrameBuf.h"
 #include "UIPanel.h"
 #include "UIManager.h"
@@ -60,48 +58,11 @@ UIPanel::~UIPanel()
 }
 
 bool
-UIPanel::Load(const char *file)
+UIPanel::Load(rapidxml::xml_node<> *node)
 {
-	PHYSFS_File *fp;
-	PHYSFS_sint64 size;
-	char *buffer;
-
-	ClearError();
-
-	if (!m_ui->GetElementFactory()) {
-		SetError("No panel element factory set");
-		return false;
-	}
-
-	fp = PHYSFS_openRead(file);
-	if (!fp) {
-		SetError("Couldn't open %s: %s", file, PHYSFS_getLastError());
-		return false;
-	}
-
-	size = PHYSFS_fileLength(fp);
-	buffer = new char[size+1];
-	if (PHYSFS_readBytes(fp, buffer, size) != size) {
-		SetError("Couldn't read from %s: %s", file, PHYSFS_getLastError());
-		PHYSFS_close(fp);
-		delete[] buffer;
-		return false;
-	}
-	buffer[size] = '\0';
-	PHYSFS_close(fp);
-
-	rapidxml::xml_document<> doc;
-	try {
-		doc.parse<0>(buffer);
-	} catch (rapidxml::parse_error e) {
-		SetError("Parse error: %s", e.what());
-		delete[] buffer;
-		return false;
-	}
-
-	rapidxml::xml_node<> *node = doc.first_node();
 	rapidxml::xml_node<> *child;
 	rapidxml::xml_attribute<> *attr;
+
 	attr = node->first_attribute("fullscreen", 0, false);
 	if (attr) {
 		const char *value = attr->value();
@@ -117,24 +78,21 @@ UIPanel::Load(const char *file)
 	if (attr) {
 		m_leaveSound = atoi(attr->value());
 	}
-	if (strcmp(node->name(), "UIPanel") != 0) {
-		SetError("Parse error: UIPanel root element expected");
-		delete[] buffer;
-		return false;
-	}
 	if (!UIArea::Load(node)) {
-		delete[] buffer;
 		return false;
 	}
 	child = node->first_node("elements", 0, false);
 	if (child) {
 		if (!LoadElements(child)) {
-			delete[] buffer;
 			return false;
 		}
 	}
-	delete[] buffer;
-	return true;
+
+	if (m_delegate) {
+		return m_delegate->OnLoad();
+	} else {
+		return true;
+	}
 }
 
 bool
@@ -143,13 +101,11 @@ UIPanel::LoadElements(rapidxml::xml_node<> *node)
 	for (node = node->first_node(); node; node = node->next_sibling()) {
 		UIElement *element = (m_ui->GetElementFactory())(this, node->name());
 		if (!element) {
-			SetError("Couldn't find handler for element %s", node->name());
-			return false;
+			fprintf(stderr, "Warning: Couldn't find handler for element %s\n", node->name());
 		}
 		if (!element->Load(node)) {
-			SetError("Couldn't load element %s: %s", node->name(), element->Error());
+			fprintf(stderr, "Warning: Couldn't load element %s: %s\n", node->name(), element->Error());
 			delete element;
-			return false;
 		}
 		AddElement(element);
 	}
@@ -215,6 +171,9 @@ UIPanel::Hide()
 void
 UIPanel::Draw()
 {
+	if (m_delegate) {
+		m_delegate->OnTick();
+	}
 	for (unsigned i = 0; i < m_elements.length(); ++i) {
 		if (m_elements[i]->IsShown()) {
 			m_elements[i]->Draw();

@@ -10,21 +10,21 @@
 
 
 UIElement *
-CreateMaelstromUIElement(UIPanel *panel, const char *name)
+CreateMaelstromUIElement(UIPanel *panel, const char *type)
 {
-	if (strcasecmp(name, "Line") == 0) {
+	if (strcasecmp(type, "Line") == 0) {
 		return new UIElementLine(panel);
-	} else if (strcasecmp(name, "Rectangle") == 0) {
+	} else if (strcasecmp(type, "Rectangle") == 0) {
 		return new UIElementRect(panel);
-	} else if (strcasecmp(name, "Label") == 0) {
+	} else if (strcasecmp(type, "Label") == 0) {
 		return new UIElementLabel(panel);
-	} else if (strcasecmp(name, "Button") == 0) {
+	} else if (strcasecmp(type, "Button") == 0) {
 		return new UIElementButton(panel);
-	} else if (strcasecmp(name, "KeyButton") == 0) {
+	} else if (strcasecmp(type, "KeyButton") == 0) {
 		return new UIElementKeyButton(panel);
-	} else if (strcasecmp(name, "Icon") == 0) {
+	} else if (strcasecmp(type, "Icon") == 0) {
 		return new UIElementIcon(panel);
-	} else if (strcasecmp(name, "Title") == 0) {
+	} else if (strcasecmp(type, "Title") == 0) {
 		return new UIElementTitle(panel);
 	}
 	return NULL;

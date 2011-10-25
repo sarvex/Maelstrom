@@ -8,6 +8,7 @@
 #include "load.h"
 #include "colortable.h"
 #include "fastrand.h"
+#include "UIPanels.h"
 #include "UIElements.h"
 #include "screenlib/UIElement.h"
 
@@ -721,7 +722,7 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 	}
 
 	/* Create the UI manager */
-	ui = new UIManager(screen, CreateMaelstromUIElement);
+	ui = new UIManager(screen, CreateMaelstromUIPanel, CreateMaelstromUIElement);
 	ui->SetSoundCallback(PlayUISound, NULL);
 	ui->SetLoadPath("UI");
 

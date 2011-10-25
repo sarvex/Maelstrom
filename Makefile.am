@@ -38,7 +38,9 @@ Maelstrom_SOURCES =		\
 	UIElementTitle.cpp	\
 	UIElementTitle.h	\
 	UIElements.cpp		\
-	UIElements.h
+	UIElements.h		\
+	UIPanels.cpp		\
+	UIPanels.h
 
 LOGIC = netlogic
 

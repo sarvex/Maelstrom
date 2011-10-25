@@ -20,14 +20,17 @@
     slouken@libsdl.org
 */
 
+#include <physfs.h>
+
 #include "SDL_FrameBuf.h"
 #include "UIManager.h"
 #include "UIPanel.h"
 
 
-UIManager::UIManager(FrameBuf *screen, UIElementFactory factory) : UIArea(screen)
+UIManager::UIManager(FrameBuf *screen, UIPanelFactory panelFactory, UIElementFactory elementFactory) : UIArea(screen)
 {
-	m_elementFactory = factory;
+	m_panelFactory = panelFactory;
+	m_elementFactory = elementFactory;
 	m_soundCallback = NULL;
 	m_soundCallbackParam = NULL;
 	m_loadPath = new char[2];
@@ -77,14 +80,63 @@ UIManager::LoadPanel(const char *name)
 	panel = GetPanel(name, false);
 	if (!panel) {
 		char file[1024];
+		PHYSFS_File *fp;
+		PHYSFS_sint64 size;
+		char *buffer;
+
+		if (!GetPanelFactory()) {
+			fprintf(stderr, "Error: No panel factory set\n");
+			return NULL;
+		}
+		if (!GetElementFactory()) {
+			fprintf(stderr, "Error: No element factory set\n");
+			return NULL;
+		}
 
 		sprintf(file, "%s/%s.xml", m_loadPath, name);
-		panel = new UIPanel(this, name);
-		if (!panel->Load(file)) {
-			SetError("%s", panel->Error());
-			delete panel;
-			return false;
+		fp = PHYSFS_openRead(file);
+		if (!fp) {
+			fprintf(stderr, "Warning: Couldn't open %s: %s\n",
+						file, PHYSFS_getLastError());
+			return NULL;
 		}
+
+		size = PHYSFS_fileLength(fp);
+		buffer = new char[size+1];
+		if (PHYSFS_readBytes(fp, buffer, size) != size) {
+			fprintf(stderr, "Warning: Couldn't read from %s: %s\n",
+						file, PHYSFS_getLastError());
+			PHYSFS_close(fp);
+			delete[] buffer;
+			return NULL;
+		}
+		buffer[size] = '\0';
+		PHYSFS_close(fp);
+
+		rapidxml::xml_document<> doc;
+		try {
+			doc.parse<0>(buffer);
+		} catch (rapidxml::parse_error e) {
+			fprintf(stderr, "Warning: Couldn't parse %s: error: %s\n",
+						file, e.what());
+			delete[] buffer;
+			return NULL;
+		}
+
+		rapidxml::xml_node<> *node = doc.first_node();
+		rapidxml::xml_attribute<> *attr;
+		attr = node->first_attribute("delegate", 0, false);
+		panel = (GetPanelFactory())(this, node->name(), name, attr ? attr->value() : NULL);
+		if (panel) {
+			if (!panel->Load(node)) {
+				fprintf(stderr, "Warning: Couldn't load %s: %s\n",
+							file, panel->Error());
+				delete[] buffer;
+				delete panel;
+				return NULL;
+			}
+		}
+		delete[] buffer;
 	}
 	return panel;
 }
