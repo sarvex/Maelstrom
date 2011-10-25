@@ -157,7 +157,8 @@ FontServ:: NewFont(const char *fontname, int ptsize)
 
 	/* Now, Fent.ID is the ID of the correct NFNT resource */
 	font = new MFont;
-	font->name = fontname;
+	font->name = new char[strlen(fontname)+1];
+	strcpy(font->name, fontname);
 	font->ptsize = ptsize;
 	font->nfnt = fontres->Resource("NFNT", Fent.ID);
 	if ( font->nfnt == NULL ) {
@@ -219,6 +220,7 @@ FontServ:: NewFont(const char *fontname, int ptsize)
 void
 FontServ:: FreeFont(MFont *font)
 {
+	delete[] font->name;
 	delete font;
 }
 
@@ -295,7 +297,7 @@ FontServ:: TextImage(const char *text, MFont *font, Uint8 style, SDL_Color fg)
 	/* First see if we can find it in our cache */
 	keysize = strlen(font->name)+1+2+1+1+1+strlen(text)+1;
 	key = SDL_stack_alloc(char, keysize);
-	sprintf(key, "%s:%d:%d:%s", font->name, font->ptsize, '0'+style, text);
+	sprintf(key, "%s:%d:%c:%s", font->name, font->ptsize, '0'+style, text);
 	if (hash_find(strings, key, (const void**)&image)) {
 		SDL_SetTextureColorMod(image, fg.r, fg.g, fg.b);
 		return image;

@@ -72,7 +72,7 @@ struct FontHdr {
 };
 
 typedef struct MFont {
-	const char *name;
+	char *name;
 	int ptsize;
 	struct FontHdr *header;		/* The NFNT header! */
 

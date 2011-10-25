@@ -31,6 +31,7 @@ UIElementKeyButton::Load(rapidxml::xml_node<> *node)
 		m_text = fontserv->TextImage(SDL_GetKeyName(m_hotkey),
 				fonts[GENEVA_9], STYLE_BOLD, 0xFF, 0xFF, 0xFF);
 	}
+	return true;
 }
 
 void
