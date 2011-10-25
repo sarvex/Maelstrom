@@ -25,10 +25,10 @@
 #include "UIElementButton.h"
 
 
-class SimpleButtonCallback : public UIButtonCallback
+class SimpleButtonDelegate : public UIButtonDelegate
 {
 public:
-	SimpleButtonCallback(void (*callback)(void)) {
+	SimpleButtonDelegate(void (*callback)(void)) {
 		m_callback = callback;
 	}
 
@@ -52,7 +52,8 @@ UIElementButton::UIElementButton(UIPanel *panel, const char *name) :
 	m_mousePressed = false;
 	m_clickSound = 0;
 	m_clickPanel = NULL;
-	m_callback = NULL;
+	m_delegate = NULL;
+	m_deleteDelegate = false;
 }
 
 UIElementButton::~UIElementButton()
@@ -60,9 +61,7 @@ UIElementButton::~UIElementButton()
 	if (m_clickPanel) {
 		delete[] m_clickPanel;
 	}
-	if (m_callback) {
-		delete m_callback;
-	}
+	SetButtonDelegate(NULL);
 }
 
 bool
@@ -212,22 +211,23 @@ UIElementButton::OnClick()
 	if (m_clickPanel) {
 		m_panel->GetUI()->ShowPanel(m_clickPanel);
 	}
-	if (m_callback) {
-		m_callback->OnClick();
+	if (m_delegate) {
+		m_delegate->OnClick();
 	}
 }
 
 void
 UIElementButton::SetClickCallback(void (*callback)(void))
 {
-	SetClickCallback(new SimpleButtonCallback(callback));
+	SetButtonDelegate(new SimpleButtonDelegate(callback));
 }
 
 void
-UIElementButton::SetClickCallback(UIButtonCallback *callback)
+UIElementButton::SetButtonDelegate(UIButtonDelegate *delegate, bool autodelete)
 {
-	if (m_callback) {
-		delete m_callback;
+	if (m_delegate && m_deleteDelegate) {
+		delete m_delegate;
 	}
-	m_callback = callback;
+	m_delegate = delegate;
+	m_deleteDelegate = autodelete;
 }

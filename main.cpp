@@ -120,10 +120,10 @@ static void RunScreenshot(void)
 	screen->ScreenDump("ScoreDump", 64, 48, 298, 384);
 }
 
-class SetVolumeCallback : public UIButtonCallback
+class SetVolumeDelegate : public UIButtonDelegate
 {
 public:
-	SetVolumeCallback(int volume) : m_volume(volume) { }
+	SetVolumeDelegate(int volume) : m_volume(volume) { }
 
 	virtual void OnClick() {
 		SetSoundLevel(m_volume);
@@ -436,39 +436,39 @@ void SetupMainScreen()
 
 	button = panel->GetElement<UIElementButton>("SetVolume0");
 	if (button) {
-		button->SetClickCallback(new SetVolumeCallback(0));
+		button->SetButtonDelegate(new SetVolumeDelegate(0));
 	}
 	button = panel->GetElement<UIElementButton>("SetVolume1");
 	if (button) {
-		button->SetClickCallback(new SetVolumeCallback(1));
+		button->SetButtonDelegate(new SetVolumeDelegate(1));
 	}
 	button = panel->GetElement<UIElementButton>("SetVolume2");
 	if (button) {
-		button->SetClickCallback(new SetVolumeCallback(2));
+		button->SetButtonDelegate(new SetVolumeDelegate(2));
 	}
 	button = panel->GetElement<UIElementButton>("SetVolume3");
 	if (button) {
-		button->SetClickCallback(new SetVolumeCallback(3));
+		button->SetButtonDelegate(new SetVolumeDelegate(3));
 	}
 	button = panel->GetElement<UIElementButton>("SetVolume4");
 	if (button) {
-		button->SetClickCallback(new SetVolumeCallback(4));
+		button->SetButtonDelegate(new SetVolumeDelegate(4));
 	}
 	button = panel->GetElement<UIElementButton>("SetVolume5");
 	if (button) {
-		button->SetClickCallback(new SetVolumeCallback(5));
+		button->SetButtonDelegate(new SetVolumeDelegate(5));
 	}
 	button = panel->GetElement<UIElementButton>("SetVolume6");
 	if (button) {
-		button->SetClickCallback(new SetVolumeCallback(6));
+		button->SetButtonDelegate(new SetVolumeDelegate(6));
 	}
 	button = panel->GetElement<UIElementButton>("SetVolume7");
 	if (button) {
-		button->SetClickCallback(new SetVolumeCallback(7));
+		button->SetButtonDelegate(new SetVolumeDelegate(7));
 	}
 	button = panel->GetElement<UIElementButton>("SetVolume8");
 	if (button) {
-		button->SetClickCallback(new SetVolumeCallback(8));
+		button->SetButtonDelegate(new SetVolumeDelegate(8));
 	}
 
 	DrawMainScreen();

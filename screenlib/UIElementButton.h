@@ -25,10 +25,10 @@
 
 #include "UIElement.h"
 
-class UIButtonCallback
+class UIButtonDelegate
 {
 public:
-	virtual void OnClick() = 0;
+	virtual void OnClick() { }
 };
 
 class UIElementButton : public UIElement
@@ -52,9 +52,9 @@ public:
 	virtual void OnMouseUp() { }
 	virtual void OnClick();
 
-	/* This class owns this callback object and will delete it */
+	/* Setting a click callback sets a simplified delegate */
 	void SetClickCallback(void (*callback)(void));
-	void SetClickCallback(UIButtonCallback *callback);
+	void SetButtonDelegate(UIButtonDelegate *delegate, bool autodelete = true);
 
 protected:
 	SDL_Keycode m_hotkey;
@@ -63,7 +63,8 @@ protected:
 	bool m_mousePressed;
 	int m_clickSound;
 	char *m_clickPanel;
-	UIButtonCallback *m_callback;
+	UIButtonDelegate *m_delegate;
+	bool m_deleteDelegate;
 
 protected:
 	bool ShouldHandleKey(SDL_Keycode key);
