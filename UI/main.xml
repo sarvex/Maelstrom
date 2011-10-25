@@ -4,6 +4,9 @@
 			<Anchor anchorFrom="TOPLEFT" anchorTo="CENTER" x="-251" y="-187"/>
 		</Title>
 
+		<!-- Catch-all button to bonk when a key is pressed -->
+		<Button hotkey="any" clickSound="108"/>
+
 		<!-- screen frame -->
 		<Rectangle>
 			<Color r="0x75" g="0x75" b="0xFF"/>
@@ -203,35 +206,35 @@
 		</Label>
 
 		<!-- Instructions -->
-		<KeyButton name="PlayButton" hotkey="P">
+		<KeyButton name="PlayButton" hotkey="P" clickSound="114">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPRIGHT" anchor="vertical_divider" x="9" y="10"/>
 		</KeyButton>
 		<Label fontName="Geneva" fontSize="9" fontStyle="BOLD" text=" Start playing Maelstrom">
 			<Color r="0xFF" g="0xFF" b="0x00"/>
 			<Anchor anchorFrom="BOTTOMLEFT" anchorTo="TOPRIGHT" anchor="PlayButton" x="3" y="21"/>
 		</Label>
-		<KeyButton name="ControlsButton" hotkey="C">
+		<KeyButton name="ControlsButton" hotkey="C" clickSound="119">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="PlayButton" y="34"/>
 		</KeyButton>
 		<Label fontName="Geneva" fontSize="9" fontStyle="BOLD" text=" Configure the game controls">
 			<Color r="0xFF" g="0xFF" b="0x00"/>
 			<Anchor anchorFrom="BOTTOMLEFT" anchorTo="TOPRIGHT" anchor="ControlsButton" x="3" y="21"/>
 		</Label>
-		<KeyButton name="ZapButton" hotkey="Z">
+		<KeyButton name="ZapButton" hotkey="Z" clickSound="107">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="ControlsButton" y="34"/>
 		</KeyButton>
 		<Label fontName="Geneva" fontSize="9" fontStyle="BOLD" text=" Zap the high scores">
 			<Color r="0xFF" g="0xFF" b="0x00"/>
 			<Anchor anchorFrom="BOTTOMLEFT" anchorTo="TOPRIGHT" anchor="ZapButton" x="3" y="21"/>
 		</Label>
-		<KeyButton name="AboutButton" hotkey="A">
+		<KeyButton name="AboutButton" hotkey="A" clickSound="122">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="ZapButton" y="34"/>
 		</KeyButton>
 		<Label fontName="Geneva" fontSize="9" fontStyle="BOLD" text=" About Maelstrom...">
 			<Color r="0xFF" g="0xFF" b="0x00"/>
 			<Anchor anchorFrom="BOTTOMLEFT" anchorTo="TOPRIGHT" anchor="AboutButton" x="3" y="21"/>
 		</Label>
-		<KeyButton name="QuitButton" hotkey="Q">
+		<KeyButton name="QuitButton" hotkey="Q" clickSound="106">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="AboutButton" y="68"/>
 		</KeyButton>
 		<Label fontName="Geneva" fontSize="9" fontStyle="BOLD" text=" Quit Maelstrom">
@@ -255,8 +258,8 @@
 
 		<!-- Hidden action buttons -->
 		<Button name="ToggleFullscreen" hotkey="ALT-Return"/>
-		<Button name="Cheat" hotkey="L"/>
-		<Button name="Special" hotkey="X"/>
+		<Button name="Cheat" hotkey="L" clickSound="124"/>
+		<Button name="Special" hotkey="X" clickSound="128"/>
 		<Button name="Screenshot" hotkey="F3"/>
 		<Button name="SetVolume0" hotkey="0"/>
 		<Button name="SetVolume1" hotkey="1"/>

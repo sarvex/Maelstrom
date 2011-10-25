@@ -61,8 +61,12 @@ protected:
 	int m_hotkeyMod;
 	bool m_mouseInside;
 	bool m_mousePressed;
+	int m_clickSound;
 	char *m_clickPanel;
 	UIButtonCallback *m_callback;
+
+protected:
+	bool ShouldHandleKey(SDL_Keycode key);
 
 protected:
 	static UIElementType s_elementType;

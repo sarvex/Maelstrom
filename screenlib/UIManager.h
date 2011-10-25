@@ -32,6 +32,7 @@ class UIPanel;
 class UIElement;
 
 typedef UIElement *(*UIElementFactory)(UIPanel *panel, const char *name);
+typedef void (*UISoundCallback)(void *, int soundID);
 
 class UIManager : public UIArea
 {
@@ -75,11 +76,23 @@ public:
 		DeletePanel(GetPanel(name));
 	}
 
+	void SetSoundCallback(UISoundCallback callback, void *param) {
+		m_soundCallback = callback;
+		m_soundCallbackParam = param;
+	}
+	void PlaySound(int soundID) {
+		if (m_soundCallback) {
+			m_soundCallback(m_soundCallbackParam, soundID);
+		}
+	}
+			
 	void Draw(bool fullUpdate = true);
 	bool HandleEvent(const SDL_Event &event);
 
 protected:
 	UIElementFactory m_elementFactory;
+	UISoundCallback m_soundCallback;
+	void *m_soundCallbackParam;
 	char *m_loadPath;
 	array<UIPanel *> m_panels;
 	array<UIPanel *> m_visible;

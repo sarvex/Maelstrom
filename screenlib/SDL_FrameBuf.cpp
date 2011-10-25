@@ -131,7 +131,7 @@ void
 FrameBuf:: Fade(void)
 {
 // Temporary for development
-//return;
+return;
 	const int max = 32;
 	Uint16 ramp[256];   
 

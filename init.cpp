@@ -641,6 +641,12 @@ void CleanUp(void)
 	SDL_Quit();
 }
 
+/* This function is called by the UI to play menu sounds */
+static void PlayUISound(void*, int soundID)
+{
+	sound->PlaySound(soundID, 5);
+}
+
 /* ----------------------------------------------------------------- */
 /* -- Perform some initializations and report failure if we choke */
 int DoInitializations(Uint32 window_flags, Uint32 render_flags)
@@ -716,6 +722,7 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 
 	/* Create the UI manager */
 	ui = new UIManager(screen, CreateMaelstromUIElement);
+	ui->SetSoundCallback(PlayUISound, NULL);
 	ui->SetLoadPath("UI");
 
 	/* Load the Sound Server and initialize sound */
@@ -771,7 +778,6 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 
 	/* -- Throw up our intro screen */
 	ui->ShowPanel(PANEL_LOADING);
-	sound->PlaySound(gPrizeAppears, 1);
 	ui->Draw();
 
 	/* -- Load in our sprites and other needed resources */

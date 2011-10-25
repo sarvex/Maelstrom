@@ -40,14 +40,10 @@ static void DrawMainScreen(void);
 static void RunDoAbout(void)
 {
 	gNoDelay = 0;
-	Delay(SOUND_DELAY);
-	sound->PlaySound(gNovaAppears, 5);
 	DoAbout();
 }
 static void RunConfigureControls(void)
 {
-	Delay(SOUND_DELAY);
-	sound->PlaySound(gHomingAppears, 5);
 	ConfigureControls();
 }
 static void RunPlayGame(void)
@@ -55,14 +51,10 @@ static void RunPlayGame(void)
 	gStartLives = 3;
 	gStartLevel = 1;
 	gNoDelay = 0;
-	sound->PlaySound(gNewLife, 5);
-	Delay(SOUND_DELAY);
 	NewGame();
 }
 static void RunQuitGame(void)
 {
-	Delay(SOUND_DELAY);
-	sound->PlaySound(gMultiplierGone, 5);
 	while ( sound->Playing() )
 		Delay(SOUND_DELAY);
 	gRunning = false;
@@ -101,8 +93,6 @@ static void SetSoundLevel(int volume)
 }
 static void RunZapScores(void)
 {
-	Delay(SOUND_DELAY);
-	sound->PlaySound(gMultShotSound, 5);
 	if ( ZapHighScores() ) {
 		/* Fade the screen and redisplay scores */
 		screen->Fade();
@@ -117,8 +107,6 @@ static void RunToggleFullscreen(void)
 }
 static void RunCheat(void)
 {
-	Delay(SOUND_DELAY);
-	sound->PlaySound(gLuckySound, 5);
 	gStartLevel = GetStartLevel();
 	if ( gStartLevel > 0 ) {
 		Delay(SOUND_DELAY);
@@ -126,12 +114,6 @@ static void RunCheat(void)
 		Delay(SOUND_DELAY);
 		NewGame();
 	}
-}
-static void RunSpecial(void)
-{
-	Delay(SOUND_DELAY);
-	sound->PlaySound(gEnemyAppears, 5);
-	ShowDawn();
 }
 static void RunScreenshot(void)
 {
@@ -336,11 +318,10 @@ int main(int argc, char *argv[])
 
 	SetupMainScreen();
 
+	DropEvents();
 	gRunning = true;
-	sound->PlaySound(gNovaBoom, 5);
-	Delay(SOUND_DELAY);
-	while ( sound->Playing() )
-		Delay(SOUND_DELAY);
+//	while ( sound->Playing() )
+//		Delay(SOUND_DELAY);
 	ui->ShowPanel(PANEL_MAIN);
 
 	while ( gRunning ) {
@@ -355,26 +336,6 @@ int main(int argc, char *argv[])
 		if ( ui->HandleEvent(event) )
 			continue;
 
-		/* -- Handle it! */
-		if ( event.type == SDL_KEYDOWN ) {
-			switch (event.key.keysym.sym) {
-
-				// Ignore Shift, Ctrl, Alt keys
-				case SDLK_LSHIFT:
-				case SDLK_RSHIFT:
-				case SDLK_LCTRL:
-				case SDLK_RCTRL:
-				case SDLK_LALT:
-				case SDLK_RALT:
-					break;
-
-				// Dink! :-)
-				default:
-					Delay(SOUND_DELAY);
-					sound->PlaySound(gSteelHit, 5);
-					break;
-			}
-		} else
 		/* -- Handle window close requests */
 		if ( event.type == SDL_QUIT ) {
 			RunQuitGame();
@@ -466,7 +427,7 @@ void SetupMainScreen()
 	}
 	button = panel->GetElement<UIElementButton>("Special");
 	if (button) {
-		button->SetClickCallback(RunSpecial);
+		button->SetClickCallback(ShowDawn);
 	}
 	button = panel->GetElement<UIElementButton>("Screenshot");
 	if (button) {

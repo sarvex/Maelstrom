@@ -1,4 +1,4 @@
-<UIPanel>
+<UIPanel enterSound="111" leaveSound="123">
 	<Elements>
 		<Title name="image" id="130">
 			<Anchor anchorFrom="CENTER" anchorTo="CENTER"/>

@@ -50,6 +50,7 @@ UIElementButton::UIElementButton(UIPanel *panel, const char *name) :
 	m_hotkeyMod = KMOD_NONE;
 	m_mouseInside = false;
 	m_mousePressed = false;
+	m_clickSound = 0;
 	m_clickPanel = NULL;
 	m_callback = NULL;
 }
@@ -90,20 +91,54 @@ UIElementButton::Load(rapidxml::xml_node<> *node)
 			value = hyphen+1;
 		}
 
-		m_hotkey = SDL_GetKeyFromName(value);
-		if (m_hotkey == SDLK_UNKNOWN) {
-			SetError("Couldn't interpret hotkey value '%s'", value);
-			return false;
+		if (strcmp(value, "any") == 0) {
+			/* This will be a catch-all button */
+			m_hotkey = ~0;
+		} else {
+			m_hotkey = SDL_GetKeyFromName(value);
+			if (m_hotkey == SDLK_UNKNOWN) {
+				SetError("Couldn't interpret hotkey value '%s'", value);
+				return false;
+			}
 		}
 	}
 
-	attr = node->first_attribute("clickActivatePanel", 0, false);
+	attr = node->first_attribute("clickSound", 0, false);
+	if (attr) {
+		m_clickSound = atoi(attr->value());
+	}
+	attr = node->first_attribute("clickPanel", 0, false);
 	if (attr) {
 		const char *value = attr->value();
 		m_clickPanel = new char[strlen(value)+1];
 		strcpy(m_clickPanel, value);
 	}
 	return UIElement::Load(node);
+}
+
+bool
+UIElementButton::ShouldHandleKey(SDL_Keycode key)
+{
+	if (key == m_hotkey) {
+		return true;
+	}
+	if (m_hotkey == ~0) {
+		switch (key) {
+			// Ignore modifier keys
+			case SDLK_LSHIFT:
+			case SDLK_RSHIFT:
+			case SDLK_LCTRL:
+			case SDLK_RCTRL:
+			case SDLK_LALT:
+			case SDLK_RALT:
+			case SDLK_LGUI:
+			case SDLK_RGUI:
+				return false;
+			default:
+				return true;
+		}
+	}
+	return false;
 }
 
 bool
@@ -144,7 +179,8 @@ UIElementButton::HandleEvent(const SDL_Event &event)
 		return true;
 	}
 
-	if (event.type == SDL_KEYDOWN && event.key.keysym.sym == m_hotkey) {
+	if (event.type == SDL_KEYDOWN &&
+	    ShouldHandleKey(event.key.keysym.sym)) {
 		if (!m_mousePressed) {
 			m_mousePressed = true;
 			OnMouseDown();
@@ -152,7 +188,8 @@ UIElementButton::HandleEvent(const SDL_Event &event)
 		return true;
 	}
 
-	if (event.type == SDL_KEYUP && event.key.keysym.sym == m_hotkey) {
+	if (event.type == SDL_KEYUP &&
+	    ShouldHandleKey(event.key.keysym.sym)) {
 		if (!m_hotkeyMod || (event.key.keysym.mod & m_hotkeyMod)) {
 			if (m_mousePressed) {
 				m_mousePressed = false;
@@ -169,11 +206,14 @@ UIElementButton::HandleEvent(const SDL_Event &event)
 void
 UIElementButton::OnClick()
 {
-	if (m_callback) {
-		m_callback->OnClick();
+	if (m_clickSound) {
+		m_panel->GetUI()->PlaySound(m_clickSound);
 	}
 	if (m_clickPanel) {
 		m_panel->GetUI()->ShowPanel(m_clickPanel);
+	}
+	if (m_callback) {
+		m_callback->OnClick();
 	}
 }
 

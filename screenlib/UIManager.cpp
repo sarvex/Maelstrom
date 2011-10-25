@@ -28,6 +28,8 @@
 UIManager::UIManager(FrameBuf *screen, UIElementFactory factory) : UIArea(screen)
 {
 	m_elementFactory = factory;
+	m_soundCallback = NULL;
+	m_soundCallbackParam = NULL;
 	m_loadPath = new char[2];
 	strcpy(m_loadPath, ".");
 }

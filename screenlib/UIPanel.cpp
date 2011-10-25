@@ -38,6 +38,8 @@ UIPanel::UIPanel(UIManager *ui, const char *name) : UIArea(ui->GetScreen())
 	m_rect.h = m_screen->Height();
 	m_shown = false;
 	m_fullscreen = true;
+	m_enterSound = 0;
+	m_leaveSound = 0;
 
 	m_ui->AddPanel(this);
 }
@@ -103,6 +105,14 @@ UIPanel::Load(const char *file)
 			m_fullscreen = false;
 		}
 	}
+	attr = node->first_attribute("enterSound", 0, false);
+	if (attr) {
+		m_enterSound = atoi(attr->value());
+	}
+	attr = node->first_attribute("leaveSound", 0, false);
+	if (attr) {
+		m_leaveSound = atoi(attr->value());
+	}
 	if (strcmp(node->name(), "UIPanel") != 0) {
 		SetError("Parse error: UIPanel root element expected");
 		delete[] buffer;
@@ -160,6 +170,24 @@ UIPanel::GetElement(const char *name)
 		}
 	}
 	return NULL;
+}
+
+void
+UIPanel::Show()
+{
+	if (m_enterSound) {
+		m_ui->PlaySound(m_enterSound);
+	}
+	UIArea::Show();
+}
+
+void
+UIPanel::Hide()
+{
+	if (m_leaveSound) {
+		m_ui->PlaySound(m_leaveSound);
+	}
+	UIArea::Hide();
 }
 
 void

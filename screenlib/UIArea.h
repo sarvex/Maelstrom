@@ -105,10 +105,10 @@ public:
 	}
 	void GetAnchorLocation(AnchorLocation spot, int *x, int *y) const;
 
-	void Show() {
+	virtual void Show() {
 		m_shown = true;
 	}
-	void Hide() {
+	virtual void Hide() {
 		m_shown = false;
 	}
 	bool IsShown() const {

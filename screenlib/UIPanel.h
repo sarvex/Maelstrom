@@ -70,6 +70,9 @@ public:
 		m_elements.remove(element);
 	}
 
+	virtual void Show();
+	virtual void Hide();
+
 	void Draw();
 	bool HandleEvent(const SDL_Event &event);
 
@@ -77,6 +80,8 @@ protected:
 	UIManager *m_ui;
 	char *m_name;
 	bool m_fullscreen;
+	int m_enterSound;
+	int m_leaveSound;
 	array<UIElement *> m_elements;
 
 	UIElement *GetElement(const char *name);
