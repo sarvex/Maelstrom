@@ -35,6 +35,14 @@ class FrameBuf;
 class UIManager;
 
 
+class UIPanelDelegate
+{
+public:
+	virtual void OnShow() { }
+	virtual void OnHide() { }
+	virtual void OnDraw() { }
+};
+
 class UIPanel : public UIArea
 {
 public:
@@ -70,6 +78,8 @@ public:
 		m_elements.remove(element);
 	}
 
+	void SetPanelDelegate(UIPanelDelegate *delegate, bool autodelete = true);
+
 	virtual void Show();
 	virtual void Hide();
 
@@ -82,8 +92,11 @@ protected:
 	bool m_fullscreen;
 	int m_enterSound;
 	int m_leaveSound;
+	UIPanelDelegate *m_delegate;
+	bool m_deleteDelegate;
 	array<UIElement *> m_elements;
 
+protected:
 	UIElement *GetElement(const char *name);
 
 	bool LoadElements(rapidxml::xml_node<> *node);

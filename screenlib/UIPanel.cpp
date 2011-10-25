@@ -40,6 +40,8 @@ UIPanel::UIPanel(UIManager *ui, const char *name) : UIArea(ui->GetScreen())
 	m_fullscreen = true;
 	m_enterSound = 0;
 	m_leaveSound = 0;
+	m_delegate = NULL;
+	m_deleteDelegate = false;
 
 	m_ui->AddPanel(this);
 }
@@ -47,6 +49,8 @@ UIPanel::UIPanel(UIManager *ui, const char *name) : UIArea(ui->GetScreen())
 UIPanel::~UIPanel()
 {
 	m_ui->RemovePanel(this);
+
+	SetPanelDelegate(NULL);
 
 	delete[] m_name;
 
@@ -173,12 +177,26 @@ UIPanel::GetElement(const char *name)
 }
 
 void
+UIPanel::SetPanelDelegate(UIPanelDelegate *delegate, bool autodelete)
+{
+	if (m_delegate && m_deleteDelegate) {
+		delete m_delegate;
+	}
+	m_delegate = delegate;
+	m_deleteDelegate = autodelete;
+}
+
+void
 UIPanel::Show()
 {
 	if (m_enterSound) {
 		m_ui->PlaySound(m_enterSound);
 	}
 	UIArea::Show();
+
+	if (m_delegate) {
+		m_delegate->OnShow();
+	}
 }
 
 void
@@ -188,6 +206,10 @@ UIPanel::Hide()
 		m_ui->PlaySound(m_leaveSound);
 	}
 	UIArea::Hide();
+
+	if (m_delegate) {
+		m_delegate->OnHide();
+	}
 }
 
 void
@@ -197,6 +219,9 @@ UIPanel::Draw()
 		if (m_elements[i]->IsShown()) {
 			m_elements[i]->Draw();
 		}
+	}
+	if (m_delegate) {
+		m_delegate->OnDraw();
 	}
 }
 

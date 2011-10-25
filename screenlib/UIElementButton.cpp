@@ -58,10 +58,11 @@ UIElementButton::UIElementButton(UIPanel *panel, const char *name) :
 
 UIElementButton::~UIElementButton()
 {
+	SetButtonDelegate(NULL);
+
 	if (m_clickPanel) {
 		delete[] m_clickPanel;
 	}
-	SetButtonDelegate(NULL);
 }
 
 bool
