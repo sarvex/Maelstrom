@@ -11,7 +11,6 @@
 /* ------------------------------------------------------------- */
 
 #include "Maelstrom_Globals.h"
-#include "buttonlist.h"
 #include "load.h"
 #include "fastrand.h"
 #include "checksum.h"
