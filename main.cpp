@@ -39,8 +39,7 @@ static void DrawMainScreen(void);
 // Main Menu actions:
 static void RunDoAbout(void)
 {
-	gNoDelay = 0;
-	DoAbout();
+	ui->ShowPanel(PANEL_ABOUT);
 }
 static void RunConfigureControls(void)
 {

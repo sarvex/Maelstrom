@@ -29,6 +29,8 @@ void DoAbout(void)
 	ltClr = screen->MapRGB(40000>>8, 40000>>8, 0xFF);
 	ltrClr = screen->MapRGB(50000>>8, 50000>>8, 0xFF);
 
+	gNoDelay = 0;
+
 	while ( ! done ) {
 		/* -- Handle updates */
 		if ( next_screen ) {

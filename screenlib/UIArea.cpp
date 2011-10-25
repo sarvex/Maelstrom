@@ -93,6 +93,15 @@ UIArea::Load(rapidxml::xml_node<> *node)
 		}
 	}
 
+	child = node->first_node("sizeParent", 0, false);
+	if (child) {
+		UIArea *parent;
+
+		parent = GetAnchorElement(NULL);
+		m_rect.w = parent->Width();
+		m_rect.h = parent->Height();
+	}
+
 	child = node->first_node("anchor", 0, false);
 	if (child) {
 		int x, y;

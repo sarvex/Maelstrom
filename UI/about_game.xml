@@ -1,0 +1,49 @@
+<UIPanel>
+	<Elements>
+		<Title name="image" id="134">
+			<Anchor anchorFrom="CENTER" anchorTo="CENTER"/>
+		</Title>
+		<Rectangle>
+			<Color r="0x75" g="0x75" b="0xFF"/>
+			<Size w="514" h="386"/>
+			<Anchor anchorFrom="CENTER" anchorTo="CENTER"/>
+		</Rectangle>
+		<Rectangle>
+			<Color r="0x75" g="0x75" b="0xFF"/>
+			<Size w="516" h="388"/>
+			<Anchor anchorFrom="CENTER" anchorTo="CENTER"/>
+		</Rectangle>
+		<Rectangle>
+			<Color r="0x9C" g="0x9C" b="0xFF"/>
+			<Size w="518" h="390"/>
+			<Anchor anchorFrom="CENTER" anchorTo="CENTER"/>
+		</Rectangle>
+		<Rectangle>
+			<Color r="0x9C" g="0x9C" b="0xFF"/>
+			<Size w="520" h="392"/>
+			<Anchor anchorFrom="CENTER" anchorTo="CENTER"/>
+		</Rectangle>
+		<Rectangle>
+			<Color r="0xC3" g="0xC3" b="0xFF"/>
+			<Size w="522" h="394"/>
+			<Anchor anchorFrom="CENTER" anchorTo="CENTER"/>
+		</Rectangle>
+		<Rectangle>
+			<Color r="0x9C" g="0x9C" b="0xFF"/>
+			<Size w="524" h="396"/>
+			<Anchor anchorFrom="CENTER" anchorTo="CENTER"/>
+		</Rectangle>
+		<Rectangle>
+			<Color r="0x75" g="0x75" b="0xFF"/>
+			<Size w="526" h="398"/>
+			<Anchor anchorFrom="CENTER" anchorTo="CENTER"/>
+		</Rectangle>
+
+		<!-- Buttons -->
+		<Button hotkey="any" clickPanel="main" clickSound="106"/>
+		<Button hotkey="Return" clickPanel="about_credits" clickSound="102">
+			<SizeParent/>
+			<Anchor anchorFrom="CENTER" anchorTo="CENTER"/>
+		</Button>
+	</Elements>
+</UIPanel>

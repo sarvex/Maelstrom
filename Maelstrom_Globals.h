@@ -99,7 +99,7 @@ extern Bool	gNetScores;
 #define PANEL_MAIN	"main"
 #define PANEL_GAME	"game"
 #define PANEL_GAMEOVER	"gameover"
-#define PANEL_ABOUT	"about"
+#define PANEL_ABOUT	"about_story"
 #define PANEL_CONTROLS	"controls"
 
 // Sound resource definitions...

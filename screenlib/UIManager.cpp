@@ -120,8 +120,7 @@ UIManager::ShowPanel(UIPanel *panel)
 		if (panel->IsFullscreen()) {
 			for (unsigned int i = m_visible.length(); i--; ) {
 				if (m_visible[i]->IsFullscreen()) {
-					m_visible[i]->Hide();
-					m_screen->FadeOut();
+					HidePanel(m_visible[i]);
 					break;
 				}
 			}
