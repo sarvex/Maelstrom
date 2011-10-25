@@ -2,6 +2,9 @@
 #include "SDL_FrameBuf.h"
 #include "UIElementLine.h"
 
+UIElementType UIElementLine::s_elementType;
+
+
 UIElementLine::UIElementLine(UIPanel *panel, const char *name) :
 	UIElement(panel, name)
 {
@@ -24,5 +27,8 @@ UIElementLine::Load(rapidxml::xml_node<> *node)
 void
 UIElementLine::Draw()
 {
+#ifdef UI_DEBUG
+printf("Line::Draw() %d,%d %dx%d\n", m_rect.x, m_rect.y, m_rect.w, m_rect.h);
+#endif
 	m_screen->DrawLine(m_rect.x, m_rect.y, m_rect.x+m_rect.w-1, m_rect.y+m_rect.h-1, m_color);
 }

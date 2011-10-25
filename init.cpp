@@ -71,11 +71,15 @@ void DoSplash(void)
 
 static void DrawLoadBar(int stage)
 {
-	UIElement *progress;
+	UIPanel *panel;
+	UIElement *progress = NULL;
 	int fact;
 	const int FULL_WIDTH = 196;
 
-	progress = ui->GetCurrentPanel()->GetElement("progress");
+	panel = ui->GetCurrentPanel();
+	if (panel) {
+		progress = panel->GetElement<UIElement>("progress");
+	}
 	if (progress) {
 		fact = (FULL_WIDTH * stage) / MAX_BAR;
 		progress->SetWidth(fact);

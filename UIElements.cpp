@@ -1,7 +1,9 @@
 
 #include "UIElements.h"
+#include "screenlib/UIElementButton.h"
 #include "screenlib/UIElementLine.h"
 #include "screenlib/UIElementRect.h"
+#include "UIElementKeyButton.h"
 #include "UIElementLabel.h"
 #include "UIElementTitle.h"
 
@@ -15,8 +17,12 @@ CreateMaelstromUIElement(UIPanel *panel, const char *name)
 		return new UIElementRect(panel);
 	} else if (strcasecmp(name, "Label") == 0) {
 		return new UIElementLabel(panel);
+	} else if (strcasecmp(name, "Button") == 0) {
+		return new UIElementButton(panel);
 	} else if (strcasecmp(name, "Title") == 0) {
 		return new UIElementTitle(panel);
+	} else if (strcasecmp(name, "KeyButton") == 0) {
+		return new UIElementKeyButton(panel);
 	}
 	return NULL;
 }

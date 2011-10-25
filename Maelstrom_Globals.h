@@ -5,6 +5,8 @@
 #include "Mac_FontServ.h"
 #include "Mac_Sound.h"
 #include "Mac_Compat.h"
+#include "UIManager.h"
+#include "UIPanel.h"
 
 #include "Maelstrom.h"
 
@@ -31,6 +33,9 @@ extern Sound *sound;
 
 // The SCREEN!! :)
 extern FrameBuf *screen;
+
+// The UI system
+extern UIManager *ui;
 
 /* Boolean type */
 typedef Uint8 Bool;

@@ -20,56 +20,53 @@
     slouken@libsdl.org
 */
 
-#ifndef _UIElement_h
-#define _UIElement_h
+#ifndef _UIElementButton_h
+#define _UIElementButton_h
 
-#include "SDL.h"
+#include "UIElement.h"
 
-#include "../utils/rapidxml.h"
-
-#include "UIArea.h"
-
-class FrameBuf;
-class UIPanel;
-
-typedef int UIElementType;
-
-class UIElement : public UIArea
+class UIButtonCallback
 {
 public:
-	UIElement(UIPanel *panel, const char *name = "");
-	virtual ~UIElement();
+	virtual void OnClick() = 0;
+};
 
-	/* This is used for type-safe casting */
+class UIElementButton : public UIElement
+{
+public:
+	UIElementButton(UIPanel *panel, const char *name = "");
+	virtual ~UIElementButton();
+
 	virtual bool IsA(UIElementType type) {
-		return type == GetType();
-	}
-
-	const char *GetName() const {
-		return m_name;
+		return UIElement::IsA(type) || type == GetType();
 	}
 
 	virtual bool Load(rapidxml::xml_node<> *node);
 
-	virtual UIArea *GetAnchorElement(const char *name);
+	virtual bool HandleEvent(const SDL_Event &event);
 
-	virtual void Draw() { }
-	virtual bool HandleEvent(const SDL_Event &event) { return false; }
+	/* These should be overridden by inherited classes */
+	virtual void OnMouseEnter() { }
+	virtual void OnMouseLeave() { }
+	virtual void OnMouseDown() { }
+	virtual void OnMouseUp() { }
+	virtual void OnClick();
+
+	/* This class owns this callback object and will delete it */
+	void SetClickCallback(void (*callback)(void));
+	void SetClickCallback(UIButtonCallback *callback);
 
 protected:
-	Uint32 LoadColor(rapidxml::xml_node<> *node) const;
+	SDL_Keycode m_hotkey;
+	int m_hotkeyMod;
+	bool m_mouseInside;
+	bool m_mousePressed;
+	char *m_clickPanel;
+	UIButtonCallback *m_callback;
 
 protected:
-	char *m_name;
-	UIPanel *m_panel;
-
-protected:
-	static UIElementType s_elementTypeIndex;
 	static UIElementType s_elementType;
 
-	static UIElementType GenerateType() {
-		return ++s_elementTypeIndex;
-	}
 public:
 	static UIElementType GetType() {
 		if (!s_elementType) {
@@ -79,4 +76,4 @@ public:
 	}
 };
 
-#endif // _UIElement_h
+#endif // _UIElementButton_h

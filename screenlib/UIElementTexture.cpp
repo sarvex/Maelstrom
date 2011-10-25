@@ -2,6 +2,8 @@
 #include "UIElementTexture.h"
 #include "screenlib/SDL_FrameBuf.h"
 
+UIElementType UIElementTexture::s_elementType;
+
 
 UIElementTexture::UIElementTexture(UIPanel *panel, const char *name) :
 	UIElement(panel, name)

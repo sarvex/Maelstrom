@@ -2,6 +2,8 @@
 #include "UIElementTitle.h"
 #include "load.h"
 
+UIElementType UIElementTitle::s_elementType;
+
 
 UIElementTitle::UIElementTitle(UIPanel *panel, const char *name) :
 	UIElementTexture(panel, name)

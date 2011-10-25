@@ -2,6 +2,9 @@
 #include "SDL_FrameBuf.h"
 #include "UIElementRect.h"
 
+UIElementType UIElementRect::s_elementType;
+
+
 UIElementRect::UIElementRect(UIPanel *panel, const char *name) :
 	UIElement(panel, name)
 {

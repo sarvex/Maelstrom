@@ -24,6 +24,10 @@
 #include "UIPanel.h"
 #include "UIElement.h"
 
+UIElementType UIElement::s_elementTypeIndex;
+UIElementType UIElement::s_elementType;
+
+
 UIElement::UIElement(UIPanel *panel, const char *name) : UIArea(panel->GetScreen())
 {
 	m_name = new char[strlen(name)+1];
@@ -79,5 +83,5 @@ UIElement::GetAnchorElement(const char *name)
 	if (!name) {
 		return m_panel;
 	}
-	return m_panel->GetElement(name);
+	return m_panel->GetElement<UIElement>(name);
 }

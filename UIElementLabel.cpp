@@ -2,6 +2,8 @@
 #include "UIElementLabel.h"
 #include "Maelstrom_Globals.h"
 
+UIElementType UIElementLabel::s_elementType;
+
 
 UIElementLabel::UIElementLabel(UIPanel *panel, const char *name) :
 	UIElement(panel, name)
@@ -10,6 +12,9 @@ UIElementLabel::UIElementLabel(UIPanel *panel, const char *name) :
 	m_style = STYLE_NORM;
 	m_color = m_screen->MapRGB(0xFF, 0xFF, 0xFF);
 	m_texture = NULL;
+#ifdef UI_DEBUG
+m_text = NULL;
+#endif
 }
 
 UIElementLabel::~UIElementLabel()
@@ -76,7 +81,14 @@ UIElementLabel::Load(rapidxml::xml_node<> *node)
 		SetText(attr->value());
 	}
 
+#ifdef UI_DEBUG
+	bool value = UIElement::Load(node);
+if (m_text)
+printf("Label: '%s' %d,%d\n", m_text, m_rect.x, m_rect.y);
+	return value;
+#else
 	return UIElement::Load(node);
+#endif
 }
 
 void
@@ -86,10 +98,26 @@ UIElementLabel::SetText(const char *text)
 		fontserv->FreeText(m_texture);
 	}
 
+#ifdef UI_DEBUG
+m_text = strdup(text);
+#endif
 	m_texture = fontserv->TextImage(text, m_font, m_style, m_color);
 	m_rect.w = m_screen->GetImageWidth(m_texture);
 	m_rect.h = m_screen->GetImageHeight(m_texture);
 	CalculateAnchor();
+#ifdef UI_DEBUG
+if (m_rect.x)
+printf("Label: '%s' %d,%d\n", m_text, m_rect.x, m_rect.y);
+#endif
+}
+
+void
+UIElementLabel::SetTextColor(Uint8 R, Uint8 G, Uint8 B)
+{
+	if (m_texture) {
+		SDL_SetTextureColorMod(m_texture, R, G, B);
+	}
+	m_color = m_screen->MapRGB(R, G, B);
 }
 
 void

@@ -16,6 +16,9 @@
 #include "fastrand.h"
 #include "checksum.h"
 
+#include "UIElementLabel.h"
+#include "UIElementKeyButton.h"
+
 /* External functions used in this file */
 extern int DoInitializations(Uint32 window_flags, Uint32 render_flags);	/* init.cpp */
 extern void CleanUp(void);
@@ -30,13 +33,9 @@ Bool	gUpdateBuffer;
 Bool	gRunning;
 int	gNoDelay;
 
-// Local variables in this file...
-static ButtonList buttons;
-
 // Local functions in this file...
-static void DrawMainScreen(bool fade);
-static void DrawSoundLevel(void);
-static void DrawKey(MPoint *pt, const char *ch, const char *str, void (*callback)(void));
+static void SetupMainScreen(void);
+static void DrawMainScreen(void);
 
 // Main Menu actions:
 static void RunDoAbout(void)
@@ -60,7 +59,6 @@ static void RunPlayGame(void)
 	sound->PlaySound(gNewLife, 5);
 	Delay(SOUND_DELAY);
 	NewGame();
-	Message(NULL);		/* Clear any messages */
 }
 static void RunQuitGame(void)
 {
@@ -77,7 +75,7 @@ static void IncrementSound(void)
 		sound->PlaySound(gNewLife, 5);
 
 		/* -- Draw the new sound level */
-		DrawMainScreen(false);
+		gUpdateBuffer = true;
 	}
 }
 static void DecrementSound(void)
@@ -87,7 +85,7 @@ static void DecrementSound(void)
 		sound->PlaySound(gNewLife, 5);
 
 		/* -- Draw the new sound level */
-		DrawMainScreen(false);
+		gUpdateBuffer = true;
 	}
 }
 static void SetSoundLevel(int volume)
@@ -100,9 +98,8 @@ static void SetSoundLevel(int volume)
 	sound->PlaySound(gNewLife, 5);
 
 	/* -- Draw the new sound level */
-	DrawMainScreen(false);
+	gUpdateBuffer = true;
 }
-
 static void RunZapScores(void)
 {
 	Delay(SOUND_DELAY);
@@ -115,6 +112,44 @@ static void RunZapScores(void)
 		gUpdateBuffer = true;
 	}
 }
+static void RunToggleFullscreen(void)
+{
+	screen->ToggleFullScreen();
+}
+static void RunCheat(void)
+{
+	Delay(SOUND_DELAY);
+	sound->PlaySound(gLuckySound, 5);
+	gStartLevel = GetStartLevel();
+	if ( gStartLevel > 0 ) {
+		Delay(SOUND_DELAY);
+		sound->PlaySound(gNewLife, 5);
+		Delay(SOUND_DELAY);
+		NewGame();
+	}
+}
+static void RunSpecial(void)
+{
+	Delay(SOUND_DELAY);
+	sound->PlaySound(gEnemyAppears, 5);
+	ShowDawn();
+}
+static void RunScreenshot(void)
+{
+	screen->ScreenDump("ScoreDump", 64, 48, 298, 384);
+}
+
+class SetVolumeCallback : public UIButtonCallback
+{
+public:
+	SetVolumeCallback(int volume) : m_volume(volume) { }
+
+	virtual void OnClick() {
+		SetSoundLevel(m_volume);
+	}
+private:
+	int m_volume;
+};
 
 /* ----------------------------------------------------------------- */
 /* -- Run a graphics speed test.                                     */
@@ -300,97 +335,30 @@ int main(int argc, char *argv[])
 		exit(0);
 	}
 
+	SetupMainScreen();
+
 	gRunning = true;
 	sound->PlaySound(gNovaBoom, 5);
 	Delay(SOUND_DELAY);
-	gUpdateBuffer = true;
 	while ( sound->Playing() )
 		Delay(SOUND_DELAY);
+	ui->ShowPanel(PANEL_MAIN);
 
 	while ( gRunning ) {
 		
 		/* Update the screen if necessary */
 		if ( gUpdateBuffer )
-			DrawMainScreen(true);
+			DrawMainScreen();
 
 		/* -- Get an event */
 		screen->WaitEvent(&event);
 
+		if ( ui->HandleEvent(event) )
+			continue;
+
 		/* -- Handle it! */
 		if ( event.type == SDL_KEYDOWN ) {
 			switch (event.key.keysym.sym) {
-
-				/* -- Toggle fullscreen */
-				case SDLK_RETURN:
-					if ( event.key.keysym.mod & KMOD_ALT )
-						screen->ToggleFullScreen();
-					break;
-
-				/* -- About the game...*/
-				case SDLK_a:
-					RunDoAbout();
-					break;
-
-				/* -- Configure the controls */
-				case SDLK_c:
-					RunConfigureControls();
-					break;
-
-				/* -- Start the game */
-				case SDLK_p:
-					RunPlayGame();
-					break;
-
-				/* -- Start the game */
-				case SDLK_l:
-					Delay(SOUND_DELAY);
-					sound->PlaySound(gLuckySound, 5);
-					gStartLevel = GetStartLevel();
-					if ( gStartLevel > 0 ) {
-						Delay(SOUND_DELAY);
-						sound->PlaySound(gNewLife, 5);
-						Delay(SOUND_DELAY);
-						NewGame();
-					}
-					break;
-
-				/* -- Let them leave */
-				case SDLK_q:
-					RunQuitGame();
-					break;
-
-				/* -- Set the volume */
-				/* (SDLK_0 - SDLK_8 are contiguous) */
-				case SDLK_0:
-				case SDLK_1:
-				case SDLK_2:
-				case SDLK_3:
-				case SDLK_4:
-				case SDLK_5:
-				case SDLK_6:
-				case SDLK_7:
-				case SDLK_8:
-					SetSoundLevel(event.key.keysym.sym
-								- SDLK_0);
-					break;
-
-				/* -- Give 'em a little taste of the peppers */
-				case SDLK_x:
-					Delay(SOUND_DELAY);
-					sound->PlaySound(gEnemyAppears, 5);
-					ShowDawn();
-					break;
-
-				/* -- Zap the high scores */
-				case SDLK_z:
-					RunZapScores();
-					break;
-						
-				/* -- Create a screen dump of high scores */
-				case SDLK_F3:
-					screen->ScreenDump("ScoreDump",
-							64, 48, 298, 384);
-					break;
 
 				// Ignore Shift, Ctrl, Alt keys
 				case SDLK_LSHIFT:
@@ -407,11 +375,6 @@ int main(int argc, char *argv[])
 					sound->PlaySound(gSteelHit, 5);
 					break;
 			}
-		} else
-		/* -- Handle mouse clicks */
-		if ( event.type == SDL_MOUSEBUTTONDOWN ) {
-			buttons.Activate_Button(event.button.x, 
-						event.button.y);
 		} else
 		/* -- Handle window close requests */
 		if ( event.type == SDL_QUIT ) {
@@ -434,6 +397,9 @@ int DrawText(int x, int y, const char *text, MFont *font, Uint8 style,
 	if ( textimage == NULL ) {
 		width = 0;
 	} else {
+#ifdef UI_DEBUG
+printf("DrawText: %d,%d '%s'\n", x, y-screen->GetImageHeight(textimage)+2, text);
+#endif
 		screen->QueueBlit(x, y-screen->GetImageHeight(textimage)+2, textimage, NOCLIP);
 		width = screen->GetImageWidth(textimage);
 		fontserv->FreeText(textimage);
@@ -443,93 +409,128 @@ int DrawText(int x, int y, const char *text, MFont *font, Uint8 style,
 
 
 /* ----------------------------------------------------------------- */
-/* -- Draw the current sound volume */
-static void DrawSoundLevel(void)
-{
-	char text[12];
-	int xOff, yOff;
+/* -- Setup the main screen */
 
-	xOff = (SCREEN_WIDTH - 512) / 2;
-	yOff = (SCREEN_HEIGHT - 384) / 2;
-	sprintf(text, "%d", gSoundLevel);
-	DrawText(xOff+309-7, yOff+240-6, text, fonts[GENEVA_9], STYLE_BOLD,
-						30000>>8, 30000>>8, 0xFF);
-}	/* -- DrawSoundLevel */
+void SetupMainScreen()
+{
+	UIPanel *panel;
+	UIElementLabel *label;
+	UIElementButton *button;
+
+	panel = ui->GetPanel("main");
+	if (!panel) {
+		return;
+	}
+
+	/* Set the version */
+	label = panel->GetElement<UIElementLabel>("version");
+	if (label) {
+		label->SetText(VERSION_STRING);
+	}
+
+	/* Hook up the action click callbacks */
+	button = panel->GetElement<UIElementButton>("PlayButton");
+	if (button) {
+		button->SetClickCallback(RunPlayGame);
+	}
+	button = panel->GetElement<UIElementButton>("ControlsButton");
+	if (button) {
+		button->SetClickCallback(RunConfigureControls);
+	}
+	button = panel->GetElement<UIElementButton>("ZapButton");
+	if (button) {
+		button->SetClickCallback(RunZapScores);
+	}
+	button = panel->GetElement<UIElementButton>("AboutButton");
+	if (button) {
+		button->SetClickCallback(RunDoAbout);
+	}
+	button = panel->GetElement<UIElementButton>("QuitButton");
+	if (button) {
+		button->SetClickCallback(RunQuitGame);
+	}
+	button = panel->GetElement<UIElementButton>("VolumeDownButton");
+	if (button) {
+		button->SetClickCallback(DecrementSound);
+	}
+	button = panel->GetElement<UIElementButton>("VolumeUpButton");
+	if (button) {
+		button->SetClickCallback(IncrementSound);
+	}
+	button = panel->GetElement<UIElementButton>("ToggleFullscreen");
+	if (button) {
+		button->SetClickCallback(RunToggleFullscreen);
+	}
+	button = panel->GetElement<UIElementButton>("Cheat");
+	if (button) {
+		button->SetClickCallback(RunCheat);
+	}
+	button = panel->GetElement<UIElementButton>("Special");
+	if (button) {
+		button->SetClickCallback(RunSpecial);
+	}
+	button = panel->GetElement<UIElementButton>("Screenshot");
+	if (button) {
+		button->SetClickCallback(RunScreenshot);
+	}
+
+	button = panel->GetElement<UIElementButton>("SetVolume0");
+	if (button) {
+		button->SetClickCallback(new SetVolumeCallback(0));
+	}
+	button = panel->GetElement<UIElementButton>("SetVolume1");
+	if (button) {
+		button->SetClickCallback(new SetVolumeCallback(1));
+	}
+	button = panel->GetElement<UIElementButton>("SetVolume2");
+	if (button) {
+		button->SetClickCallback(new SetVolumeCallback(2));
+	}
+	button = panel->GetElement<UIElementButton>("SetVolume3");
+	if (button) {
+		button->SetClickCallback(new SetVolumeCallback(3));
+	}
+	button = panel->GetElement<UIElementButton>("SetVolume4");
+	if (button) {
+		button->SetClickCallback(new SetVolumeCallback(4));
+	}
+	button = panel->GetElement<UIElementButton>("SetVolume5");
+	if (button) {
+		button->SetClickCallback(new SetVolumeCallback(5));
+	}
+	button = panel->GetElement<UIElementButton>("SetVolume6");
+	if (button) {
+		button->SetClickCallback(new SetVolumeCallback(6));
+	}
+	button = panel->GetElement<UIElementButton>("SetVolume7");
+	if (button) {
+		button->SetClickCallback(new SetVolumeCallback(7));
+	}
+	button = panel->GetElement<UIElementButton>("SetVolume8");
+	if (button) {
+		button->SetClickCallback(new SetVolumeCallback(8));
+	}
+
+	DrawMainScreen();
+}
 
 
 /* ----------------------------------------------------------------- */
 /* -- Draw the main screen */
 
-void DrawMainScreen(bool fade)
+void DrawMainScreen()
 {
-	SDL_Texture *title;
-	MFont  *font, *bigfont;
-	MPoint  pt;
-	Uint16	width, height;
-	Uint16  xOff, yOff, botDiv, rightDiv;
-	Uint16  index, sRt, wRt, sw;
-	Uint32  clr, ltClr, ltrClr;
-	char buffer[128];
-	int offset;
+	UIPanel *panel;
+	UIElementLabel *label;
+	char name[32];
+	char text[128];
 
-	gUpdateBuffer = false;
-	buttons.Delete_Buttons();
+	panel = ui->GetPanel("main");
+	if (!panel) {
+		return;
+	}
 
-	width = 512;
-	height = 384;
-	xOff = (SCREEN_WIDTH - width) / 2;
-	yOff = (SCREEN_HEIGHT - height) / 2;
-
-	title = Load_Title(screen, 129);
-	if ( title == NULL ) {
-		error("Can't load 'title' title! (ID=%d)\n", 129);
-		CleanUp();
-		exit(255);
-        }
-
-	clr = screen->MapRGB(30000>>8, 30000>>8, 0xFF);
-	ltClr = screen->MapRGB(40000>>8, 40000>>8, 0xFF);
-	ltrClr = screen->MapRGB(50000>>8, 50000>>8, 0xFF);
-
-	screen->Clear();
-
-	/* -- Draw the screen frame */
-	screen->DrawRect(xOff-1, yOff-1, width+2, height+2, clr);
-	screen->DrawRect(xOff-2, yOff-2, width+4, height+4, clr);
-	screen->DrawRect(xOff-3, yOff-3, width+6, height+6, ltClr);
-	screen->DrawRect(xOff-4, yOff-4, width+8, height+8, ltClr);
-	screen->DrawRect(xOff-5, yOff-5, width+10, height+10, ltrClr);
-	screen->DrawRect(xOff-6, yOff-6, width+12, height+12, ltClr);
-	screen->DrawRect(xOff-7, yOff-7, width+14, height+14, clr);
-	/* -- Draw the dividers */
-	botDiv = yOff + 5 + screen->GetImageHeight(title) + 5;
-	rightDiv = xOff + 5 + screen->GetImageWidth(title) + 5;
-	screen->DrawLine(rightDiv, yOff, rightDiv, yOff+height, ltClr);
-	screen->DrawLine(xOff, botDiv, rightDiv, botDiv, ltClr);
-	screen->DrawLine(rightDiv, 263+yOff, xOff+width, 263+yOff, ltClr);
-	/* -- Draw the title image */
-	screen->QueueBlit(xOff+5, yOff+5, title, NOCLIP);
-
-	/* -- Draw the high scores */
-
-	/* -- First the headings */
-	bigfont = fonts[NEWYORK_18];
-	DrawText(xOff+5, botDiv+22, "Name", bigfont, STYLE_ULINE,
-						0xFF, 0xFF, 0x00);
-	sRt = xOff+185;
-	DrawText(sRt, botDiv+22, "Score", bigfont, STYLE_ULINE,
-						0xFF, 0xFF, 0x00);
-	sRt += fontserv->TextWidth("Score", bigfont, STYLE_ULINE);
-	wRt = xOff+245;
-	DrawText(wRt, botDiv+22, "Wave", bigfont, STYLE_ULINE,
-						0xFF, 0xFF, 0x00);
-	wRt += fontserv->TextWidth("Wave", bigfont, STYLE_ULINE)-10;
-
-	/* -- Now the scores */
-	LoadScores();
-	font = fonts[NEWYORK_14];
-
-	for (index = 0; index < 10; index++) {
+	for (int index = 0; index < 10; index++) {
 		Uint8 R, G, B;
 
 		if ( gLastHigh == index ) {
@@ -541,105 +542,50 @@ void DrawMainScreen(bool fade)
 			G = 30000>>8;
 			B = 30000>>8;
 		}
-		DrawText(xOff+5, botDiv+42+(index*18), hScores[index].name,
-						font, STYLE_BOLD, R, G, B);
-		sprintf(buffer, "%u", hScores[index].score);
-		sw = fontserv->TextWidth(buffer, font, STYLE_BOLD);
-		DrawText(sRt-sw, botDiv+42+(index*18), buffer, 
-						font, STYLE_BOLD, R, G, B);
-		sprintf(buffer, "%u", hScores[index].wave);
-		sw = fontserv->TextWidth(buffer, font, STYLE_BOLD);
-		DrawText(wRt-sw, botDiv+42+(index*18), buffer, 
-						font, STYLE_BOLD, R, G, B);
+
+		sprintf(name, "name_%d", index);
+		label = panel->GetElement<UIElementLabel>(name);
+		if (label) {
+			label->SetTextColor(R, G, B);
+			label->SetText(hScores[index].name);
+		}
+
+		sprintf(name, "score_%d", index);
+		label = panel->GetElement<UIElementLabel>(name);
+		if (label) {
+			label->SetTextColor(R, G, B);
+			sprintf(text, "%d", hScores[index].score);
+			label->SetText(text);
+		}
+
+		sprintf(name, "wave_%d", index);
+		label = panel->GetElement<UIElementLabel>(name);
+		if (label) {
+			label->SetTextColor(R, G, B);
+			sprintf(text, "%d", hScores[index].wave);
+			label->SetText(text);
+		}
 	}
 
-	DrawText(xOff+5, botDiv+46+(10*18)+3, "Last Score: ", 
-					bigfont, STYLE_NORM, 0xFF, 0xFF, 0xFF);
-	sprintf(buffer, "%d", GetScore());
-	sw = fontserv->TextWidth("Last Score: ", bigfont, STYLE_NORM);
-	DrawText(xOff+5+sw, botDiv+46+(index*18)+3, buffer, 
-					bigfont, STYLE_NORM, 0xFF, 0xFF, 0xFF);
-
-	/* -- Draw the Instructions */
-	offset = 34;
-
-	pt.h = rightDiv + 10;
-	pt.v = yOff + 10;
-	DrawKey(&pt, "P", " Start playing Maelstrom", RunPlayGame);
-
-	pt.h = rightDiv + 10;
-	pt.v += offset;
-	DrawKey(&pt, "C", " Configure the game controls", RunConfigureControls);
-
-	pt.h = rightDiv + 10;
-	pt.v += offset;
-	DrawKey(&pt, "Z", " Zap the high scores", RunZapScores);
-
-	pt.h = rightDiv + 10;
-	pt.v += offset;
-	DrawKey(&pt, "A", " About Maelstrom...", RunDoAbout);
-
-	pt.v += offset;
-
-	pt.h = rightDiv + 10;
-	pt.v += offset;
-	DrawKey(&pt, "Q", " Quit Maelstrom", RunQuitGame);
-
-	pt.h = rightDiv + 10;
-	pt.v += offset;
-	DrawKey(&pt, "0", " ", DecrementSound);
-
-	font = fonts[GENEVA_9];
-	DrawText(pt.h+screen->GetImageWidth(gKeyIcon)+3, pt.v+19, "-",
-				font, STYLE_NORM, 0xFF, 0xFF, 0x00);
-
-	pt.h = rightDiv + 50;
-	DrawKey(&pt, "8", " Set Sound Volume", IncrementSound);
-
-/* -- Draw the credits */
-
-	DrawText(xOff+5+68, yOff+5+127, "Port to Linux by Sam Lantinga",
-				font, STYLE_BOLD, 0xFF, 0xFF, 0x00);
-	DrawText(rightDiv+10, yOff+259, "©1992-4 Ambrosia Software, Inc.",
-				font, STYLE_BOLD, 0xFF, 0xFF, 0xFF);
-
-/* -- Draw the version number */
-
-	DrawText(xOff+20, yOff+151, VERSION_STRING,
-				font, STYLE_NORM, 0xFF, 0xFF, 0xFF);
-
-	DrawSoundLevel();
-
-	screen->Update();
-	if (fade) {
-		screen->Fade();
+	label = panel->GetElement<UIElementLabel>("last_score");
+	if (label) {
+		sprintf(text, "%d", GetScore());
+		label->SetText(text);
 	}
-	screen->FreeImage(title);
 
-}	/* -- DrawMainScreen */
+	label = panel->GetElement<UIElementLabel>("volume");
+	if (label) {
+		sprintf(text, "%d", gSoundLevel);
+		label->SetText(text);
+	}
 
-
-
-/* ----------------------------------------------------------------- */
-/* -- Draw the key and its function */
-
-static void DrawKey(MPoint *pt, const char *key, const char *text, void (*callback)(void))
-{
-	MFont *font = fonts[GENEVA_9];
-
-	screen->QueueBlit(pt->h, pt->v, gKeyIcon);
-
-	DrawText(pt->h+14, pt->v+20, key, font, STYLE_BOLD, 0xFF, 0xFF, 0xFF);
-	DrawText(pt->h+13, pt->v+19, key, font, STYLE_BOLD, 0x00, 0x00, 0x00);
-	DrawText(pt->h+screen->GetImageWidth(gKeyIcon)+3, pt->v+19, text,
-					font, STYLE_BOLD, 0xFF, 0xFF, 0x00);
-
-	buttons.Add_Button(pt->h, pt->v, screen->GetImageWidth(gKeyIcon), screen->GetImageHeight(gKeyIcon), callback);
-}	/* -- DrawKey */
+	ui->Draw();
+}
 
 
 void Message(const char *message)
 {
+// FIXME: This totally doesn't work anymore, but that may not matter if we're cutting network support.
 	int xOff;
 
 	if (!message) {

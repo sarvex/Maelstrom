@@ -1,8 +1,8 @@
 #ifndef _UIElements_h
 #define _UIElements_h
 
-#include "screenlib/UIManager.h"
-#include "screenlib/UIPanel.h"
+class UIPanel;
+class UIElement;
 
 UIElement *CreateMaelstromUIElement(UIPanel *panel, const char *name);
 

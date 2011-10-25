@@ -29,11 +29,11 @@
 #include "../utils/array.h"
 
 #include "UIArea.h"
+#include "UIElement.h"
 
 class FrameBuf;
 class UIManager;
-class UIPanel;
-class UIElement;
+
 
 class UIPanel : public UIArea
 {
@@ -58,7 +58,14 @@ public:
 	void AddElement(UIElement *element) {
 		m_elements.add(element);
 	}
-	UIElement *GetElement(const char *name);
+	template <typename T>
+	T *GetElement(const char *name) {
+		UIElement *element = GetElement(name);
+		if (element && element->IsA(T::GetType())) {
+			return (T*)element;
+		}
+		return NULL;
+	}
 	void RemoveElement(UIElement *element) {
 		m_elements.remove(element);
 	}
@@ -71,6 +78,8 @@ protected:
 	char *m_name;
 	bool m_fullscreen;
 	array<UIElement *> m_elements;
+
+	UIElement *GetElement(const char *name);
 
 	bool LoadElements(rapidxml::xml_node<> *node);
 };
