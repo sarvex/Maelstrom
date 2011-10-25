@@ -14,6 +14,7 @@
 #include "load.h"
 #include "fastrand.h"
 #include "checksum.h"
+#include "about.h"
 
 #include "UIElementLabel.h"
 #include "UIElementKeyButton.h"
@@ -325,23 +326,26 @@ int main(int argc, char *argv[])
 
 	while ( gRunning ) {
 		
-		/* Update the screen if necessary */
+		/* -- Update the screen if necessary */
 		if ( gUpdateBuffer )
 			DrawMainScreen();
 
-		/* -- Get an event */
-		screen->WaitEvent(&event);
+		ui->Draw();
 
-		if ( ui->HandleEvent(event) )
-			continue;
+		/* -- Get events */
+		while ( screen->PollEvent(&event) ) {
+			if ( ui->HandleEvent(event) )
+				continue;
 
-		/* -- Handle window close requests */
-		if ( event.type == SDL_QUIT ) {
-			RunQuitGame();
+			/* -- Handle window close requests */
+			if ( event.type == SDL_QUIT ) {
+				RunQuitGame();
+			}
 		}
+		Delay(FRAME_DELAY);
 	}
-	screen->Fade();
-	Delay(60);
+
+	ui->HidePanel(PANEL_MAIN);
 	return(0);
 }	/* -- main */
 
@@ -376,7 +380,7 @@ void SetupMainScreen()
 	UIElementLabel *label;
 	UIElementButton *button;
 
-	panel = ui->GetPanel("main");
+	panel = ui->GetPanel(PANEL_MAIN);
 	if (!panel) {
 		return;
 	}
@@ -471,6 +475,13 @@ void SetupMainScreen()
 	}
 
 	DrawMainScreen();
+
+
+	/* Hook up functionality for other panels */
+	panel = ui->GetPanel("about_game");
+	if (panel) {
+		panel->SetPanelDelegate(new AboutPanelDelegate);
+	}
 }
 
 

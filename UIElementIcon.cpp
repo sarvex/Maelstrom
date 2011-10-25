@@ -1,17 +1,17 @@
 
-#include "UIElementTitle.h"
+#include "UIElementIcon.h"
 #include "load.h"
 
-UIElementType UIElementTitle::s_elementType;
+UIElementType UIElementIcon::s_elementType;
 
 
-UIElementTitle::UIElementTitle(UIPanel *panel, const char *name) :
+UIElementIcon::UIElementIcon(UIPanel *panel, const char *name) :
 	UIElementTexture(panel, name)
 {
 }
 
 bool
-UIElementTitle::Load(rapidxml::xml_node<> *node)
+UIElementIcon::Load(rapidxml::xml_node<> *node)
 {
 	rapidxml::xml_attribute<> *attr;
 
@@ -21,9 +21,9 @@ UIElementTitle::Load(rapidxml::xml_node<> *node)
 		return false;
 	}
 
-	SDL_Texture *texture = Load_Title(m_screen, atoi(attr->value()));
+	SDL_Texture *texture = GetCIcon(m_screen, atoi(attr->value()));
 	if (!texture) {
-		SetError("Unable to load title %d", atoi(attr->value()));
+		SetError("Unable to load icon %d", atoi(attr->value()));
 		return false;
 	}
 	SetTexture(texture);
