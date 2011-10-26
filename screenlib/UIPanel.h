@@ -33,16 +33,21 @@
 
 class FrameBuf;
 class UIManager;
-
+class UIPanel;
 
 class UIPanelDelegate
 {
 public:
+	UIPanelDelegate(UIPanel *panel) { m_panel = panel; }
+
 	virtual bool OnLoad() { return true; }
 	virtual void OnShow() { }
 	virtual void OnHide() { }
 	virtual void OnTick() { }
 	virtual void OnDraw() { }
+
+protected:
+	UIPanel *m_panel;
 };
 
 class UIPanel : public UIArea

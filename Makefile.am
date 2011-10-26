@@ -20,6 +20,7 @@ Maelstrom_SOURCES =		\
 	load.h			\
 	logic.h			\
 	main.cpp		\
+	main.h			\
 	myerror.cpp		\
 	myerror.h		\
 	netscore.cpp		\

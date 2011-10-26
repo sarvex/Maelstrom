@@ -4,7 +4,7 @@
 #include "about.h"
 
 
-AboutPanelDelegate::AboutPanelDelegate()
+AboutPanelDelegate::AboutPanelDelegate(UIPanel *panel) : UIPanelDelegate(panel)
 {
 	numsprites = 0;
 }

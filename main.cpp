@@ -15,6 +15,7 @@
 #include "fastrand.h"
 #include "checksum.h"
 #include "about.h"
+#include "main.h"
 
 #include "UIElementLabel.h"
 #include "UIElementKeyButton.h"
@@ -33,9 +34,6 @@ Bool	gUpdateBuffer;
 Bool	gRunning;
 int	gNoDelay;
 
-// Local functions in this file...
-static void SetupMainScreen(void);
-static void DrawMainScreen(void);
 
 // Main Menu actions:
 static void RunDoAbout(void)
@@ -316,8 +314,6 @@ int main(int argc, char *argv[])
 		exit(0);
 	}
 
-	SetupMainScreen();
-
 	DropEvents();
 	gRunning = true;
 //	while ( sound->Playing() )
@@ -325,10 +321,6 @@ int main(int argc, char *argv[])
 	ui->ShowPanel(PANEL_MAIN);
 
 	while ( gRunning ) {
-		
-		/* -- Update the screen if necessary */
-		if ( gUpdateBuffer )
-			DrawMainScreen();
 
 		ui->Draw();
 
@@ -374,124 +366,117 @@ printf("DrawText: %d,%d '%s'\n", x, y-screen->GetImageHeight(textimage)+2, text)
 /* ----------------------------------------------------------------- */
 /* -- Setup the main screen */
 
-void SetupMainScreen()
+bool
+MainPanelDelegate::OnLoad()
 {
-	UIPanel *panel;
 	UIElementLabel *label;
 	UIElementButton *button;
 
-	panel = ui->GetPanel(PANEL_MAIN);
-	if (!panel) {
-		return;
-	}
-
 	/* Set the version */
-	label = panel->GetElement<UIElementLabel>("version");
+	label = m_panel->GetElement<UIElementLabel>("version");
 	if (label) {
 		label->SetText(VERSION_STRING);
 	}
 
 	/* Hook up the action click callbacks */
-	button = panel->GetElement<UIElementButton>("PlayButton");
+	button = m_panel->GetElement<UIElementButton>("PlayButton");
 	if (button) {
 		button->SetClickCallback(RunPlayGame);
 	}
-	button = panel->GetElement<UIElementButton>("ControlsButton");
+	button = m_panel->GetElement<UIElementButton>("ControlsButton");
 	if (button) {
 		button->SetClickCallback(RunConfigureControls);
 	}
-	button = panel->GetElement<UIElementButton>("ZapButton");
+	button = m_panel->GetElement<UIElementButton>("ZapButton");
 	if (button) {
 		button->SetClickCallback(RunZapScores);
 	}
-	button = panel->GetElement<UIElementButton>("AboutButton");
+	button = m_panel->GetElement<UIElementButton>("AboutButton");
 	if (button) {
 		button->SetClickCallback(RunDoAbout);
 	}
-	button = panel->GetElement<UIElementButton>("QuitButton");
+	button = m_panel->GetElement<UIElementButton>("QuitButton");
 	if (button) {
 		button->SetClickCallback(RunQuitGame);
 	}
-	button = panel->GetElement<UIElementButton>("VolumeDownButton");
+	button = m_panel->GetElement<UIElementButton>("VolumeDownButton");
 	if (button) {
 		button->SetClickCallback(DecrementSound);
 	}
-	button = panel->GetElement<UIElementButton>("VolumeUpButton");
+	button = m_panel->GetElement<UIElementButton>("VolumeUpButton");
 	if (button) {
 		button->SetClickCallback(IncrementSound);
 	}
-	button = panel->GetElement<UIElementButton>("ToggleFullscreen");
+	button = m_panel->GetElement<UIElementButton>("ToggleFullscreen");
 	if (button) {
 		button->SetClickCallback(RunToggleFullscreen);
 	}
-	button = panel->GetElement<UIElementButton>("Cheat");
+	button = m_panel->GetElement<UIElementButton>("Cheat");
 	if (button) {
 		button->SetClickCallback(RunCheat);
 	}
-	button = panel->GetElement<UIElementButton>("Special");
+	button = m_panel->GetElement<UIElementButton>("Special");
 	if (button) {
 		button->SetClickCallback(ShowDawn);
 	}
-	button = panel->GetElement<UIElementButton>("Screenshot");
+	button = m_panel->GetElement<UIElementButton>("Screenshot");
 	if (button) {
 		button->SetClickCallback(RunScreenshot);
 	}
 
-	button = panel->GetElement<UIElementButton>("SetVolume0");
+	button = m_panel->GetElement<UIElementButton>("SetVolume0");
 	if (button) {
 		button->SetButtonDelegate(new SetVolumeDelegate(0));
 	}
-	button = panel->GetElement<UIElementButton>("SetVolume1");
+	button = m_panel->GetElement<UIElementButton>("SetVolume1");
 	if (button) {
 		button->SetButtonDelegate(new SetVolumeDelegate(1));
 	}
-	button = panel->GetElement<UIElementButton>("SetVolume2");
+	button = m_panel->GetElement<UIElementButton>("SetVolume2");
 	if (button) {
 		button->SetButtonDelegate(new SetVolumeDelegate(2));
 	}
-	button = panel->GetElement<UIElementButton>("SetVolume3");
+	button = m_panel->GetElement<UIElementButton>("SetVolume3");
 	if (button) {
 		button->SetButtonDelegate(new SetVolumeDelegate(3));
 	}
-	button = panel->GetElement<UIElementButton>("SetVolume4");
+	button = m_panel->GetElement<UIElementButton>("SetVolume4");
 	if (button) {
 		button->SetButtonDelegate(new SetVolumeDelegate(4));
 	}
-	button = panel->GetElement<UIElementButton>("SetVolume5");
+	button = m_panel->GetElement<UIElementButton>("SetVolume5");
 	if (button) {
 		button->SetButtonDelegate(new SetVolumeDelegate(5));
 	}
-	button = panel->GetElement<UIElementButton>("SetVolume6");
+	button = m_panel->GetElement<UIElementButton>("SetVolume6");
 	if (button) {
 		button->SetButtonDelegate(new SetVolumeDelegate(6));
 	}
-	button = panel->GetElement<UIElementButton>("SetVolume7");
+	button = m_panel->GetElement<UIElementButton>("SetVolume7");
 	if (button) {
 		button->SetButtonDelegate(new SetVolumeDelegate(7));
 	}
-	button = panel->GetElement<UIElementButton>("SetVolume8");
+	button = m_panel->GetElement<UIElementButton>("SetVolume8");
 	if (button) {
 		button->SetButtonDelegate(new SetVolumeDelegate(8));
 	}
 
-	DrawMainScreen();
+	gUpdateBuffer = true;
+
+	return true;
 }
 
-
-/* ----------------------------------------------------------------- */
-/* -- Draw the main screen */
-
-void DrawMainScreen()
+void
+MainPanelDelegate::OnTick()
 {
-	UIPanel *panel;
 	UIElementLabel *label;
 	char name[32];
 	char text[128];
 
-	panel = ui->GetPanel("main");
-	if (!panel) {
+	if (!gUpdateBuffer) {
 		return;
 	}
+	gUpdateBuffer = false;
 
 	for (int index = 0; index < 10; index++) {
 		Uint8 R, G, B;
@@ -507,14 +492,14 @@ void DrawMainScreen()
 		}
 
 		sprintf(name, "name_%d", index);
-		label = panel->GetElement<UIElementLabel>(name);
+		label = m_panel->GetElement<UIElementLabel>(name);
 		if (label) {
 			label->SetTextColor(R, G, B);
 			label->SetText(hScores[index].name);
 		}
 
 		sprintf(name, "score_%d", index);
-		label = panel->GetElement<UIElementLabel>(name);
+		label = m_panel->GetElement<UIElementLabel>(name);
 		if (label) {
 			label->SetTextColor(R, G, B);
 			sprintf(text, "%d", hScores[index].score);
@@ -522,7 +507,7 @@ void DrawMainScreen()
 		}
 
 		sprintf(name, "wave_%d", index);
-		label = panel->GetElement<UIElementLabel>(name);
+		label = m_panel->GetElement<UIElementLabel>(name);
 		if (label) {
 			label->SetTextColor(R, G, B);
 			sprintf(text, "%d", hScores[index].wave);
@@ -530,19 +515,17 @@ void DrawMainScreen()
 		}
 	}
 
-	label = panel->GetElement<UIElementLabel>("last_score");
+	label = m_panel->GetElement<UIElementLabel>("last_score");
 	if (label) {
 		sprintf(text, "%d", GetScore());
 		label->SetText(text);
 	}
 
-	label = panel->GetElement<UIElementLabel>("volume");
+	label = m_panel->GetElement<UIElementLabel>("volume");
 	if (label) {
 		sprintf(text, "%d", gSoundLevel);
 		label->SetText(text);
 	}
-
-	ui->Draw();
 }
 
 

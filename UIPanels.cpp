@@ -1,14 +1,17 @@
 
 #include "screenlib/UIPanel.h"
 #include "UIPanels.h"
+#include "main.h"
 #include "netlogic/about.h"
 
 
 static UIPanelDelegate *
-CreateMaelstromUIDelegate(const char *delegate)
+CreateMaelstromUIDelegate(UIPanel *panel, const char *delegate)
 {
-	if (strcasecmp(delegate, "AboutPanel") == 0) {
-		return new AboutPanelDelegate();
+	if (strcasecmp(delegate, "MainPanel") == 0) {
+		return new MainPanelDelegate(panel);
+	} else if (strcasecmp(delegate, "AboutPanel") == 0) {
+		return new AboutPanelDelegate(panel);
 	} else {
 		fprintf(stderr, "Warning: Couldn't find delegate '%s'\n", delegate);
 		return NULL;
@@ -27,7 +30,7 @@ CreateMaelstromUIPanel(UIManager *ui, const char *type, const char *name, const 
 	}
 
 	if (panel && delegate && *delegate) {
-		panel->SetPanelDelegate(CreateMaelstromUIDelegate(delegate));
+		panel->SetPanelDelegate(CreateMaelstromUIDelegate(panel, delegate));
 	}
 
 	return panel;
