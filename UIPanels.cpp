@@ -3,6 +3,7 @@
 #include "UIPanels.h"
 #include "main.h"
 #include "netlogic/about.h"
+#include "netlogic/game.h"
 
 
 static UIPanelDelegate *
@@ -12,6 +13,8 @@ CreateMaelstromUIDelegate(UIPanel *panel, const char *delegate)
 		return new MainPanelDelegate(panel);
 	} else if (strcasecmp(delegate, "AboutPanel") == 0) {
 		return new AboutPanelDelegate(panel);
+	} else if (strcasecmp(delegate, "GamePanel") == 0) {
+		return new GamePanelDelegate(panel);
 	} else {
 		fprintf(stderr, "Warning: Couldn't find delegate '%s'\n", delegate);
 		return NULL;

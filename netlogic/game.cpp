@@ -5,6 +5,7 @@
 #include "netplay.h"
 #include "make.h"
 #include "load.h"
+#include "game.h"
 
 
 #ifdef MOVIE_SUPPORT
@@ -89,7 +90,6 @@ int SelectMovieRect(void)
 
 }
 #endif
-extern int RunFrame(void);	/* The heart of blit.cpp */
 
 // Global variables set in this file...
 int	gGameOn;
@@ -277,15 +277,49 @@ void NewGame(void)
 		}
 	}
 
+	ui->ShowPanel(PANEL_GAME);
+
+	/* Play the game, dammit! */
+	while (gGameOn) {
+		ui->Draw();
+
+		/* Timing handling -- Delay the FRAME_DELAY */
+		if ( ! gNoDelay ) {
+			Uint32 ticks;
+			while ( ((ticks=Ticks)-gLastDrawn) < FRAME_DELAY ) {
+				SDL_Delay(1);
+			}
+			gLastDrawn = ticks;
+		}
+	}
+	
+	ui->HidePanel(PANEL_GAME);
+
+/* -- Do the game over stuff */
+
+	screen->HideCursor();
+	DoGameOver();
+	screen->ShowCursor();
+
+	ui->ShowPanel(PANEL_MAIN);
+}	/* -- NewGame */
+
+bool
+GamePanelDelegate::OnLoad()
+{
 	/* Load the font and colors we use everywhere */
 	geneva = fonts[GENEVA_9];
 	text_height = fontserv->TextHeight(geneva);
 	ourGrey = screen->MapRGB(30000>>8, 30000>>8, 0xFF);
 	ourWhite = screen->MapRGB(0xFF, 0xFF, 0xFF);
 
-	/* Fade into game mode */
-	screen->Fade();
-	screen->HideCursor();
+	return true;
+}
+
+void
+GamePanelDelegate::OnShow()
+{
+	int i;
 
 	/* Initialize some game variables */
 	gGameOn = 1;
@@ -298,50 +332,24 @@ void NewGame(void)
 	gNumSprites = 0;
 
 	NextWave();
+}
 
-	/* Play the game, dammit! */
-	while (gGameOn) {
-		screen->Clear();
+void
+GamePanelDelegate::OnHide()
+{
+}
 
-		/* -- Draw the star field */
-		for ( i=0; i<MAX_STARS; ++i ) {
-			screen->DrawPoint(gTheStars[i]->xCoord, 
-				gTheStars[i]->yCoord, gTheStars[i]->color);
-		}
-
-		/* Draw the status frame */
-		DrawStatus(false);
-
-		if (!RunFrame()) {
-			gGameOn = 0;
-		}
-		screen->Update();
-
-		DoHouseKeeping();
-	}
-	
-/* -- Do the game over stuff */
-
-	DoGameOver();
-	screen->ShowCursor();
-}	/* -- NewGame */
-
-
-/* ----------------------------------------------------------------- */
-/* -- Do some housekeeping! */
-
-static void DoHouseKeeping(void)
+void
+GamePanelDelegate::OnTick()
 {
 	/* Don't do anything if we're paused */
 	if ( gPaused ) {
-		/* Give up the CPU for a frame duration */
-		Delay(FRAME_DELAY);
 		return;
 	}
 
 #ifdef MOVIE_SUPPORT
 	if ( gMovie )
-		win->ScreenDump("MovieFrame", &gMovieRect);
+		screen->ScreenDump("MovieFrame", &gMovieRect);
 #endif
 	/* -- Maybe throw a multiplier up on the screen */
 	if (gMultiplierShown && (--gMultiplierShown == 0) )
@@ -388,9 +396,134 @@ static void DoHouseKeeping(void)
 		else if ( --gWhenDone == 0 )
 			NextWave();
 	}
-	
-}	/* -- DoHouseKeeping */
+}
 
+void
+GamePanelDelegate::OnDraw()
+{
+	int i, j, PlayersLeft;
+
+	/* -- Draw the star field */
+	for ( i=0; i<MAX_STARS; ++i ) {
+		screen->DrawPoint(gTheStars[i]->xCoord, 
+			gTheStars[i]->yCoord, gTheStars[i]->color);
+	}
+
+	/* Draw the status frame */
+	DrawStatus(false);
+
+	/* Read in keyboard input for our ship */
+	HandleEvents(0);
+
+	/* Send Sync! signal to all players, and handle keyboard. */
+	if ( SyncNetwork() < 0 ) {
+		error("Game aborted!\n");
+		gGameOn = 0;
+		return;
+	}
+	OBJ_LOOP(i, gNumPlayers)
+		gPlayers[i]->HandleKeys();
+
+	if ( gPaused > 0 )
+		return;
+
+	/* Play the boom sounds */
+	if ( --gNextBoom == 0 ) {
+		if ( gBoomPhase ) {
+			sound->PlaySound(gBoom1, 0);
+			gBoomPhase = 0;
+		} else {
+			sound->PlaySound(gBoom2, 0);
+			gBoomPhase = 1;
+		}
+		gNextBoom = gBoomDelay;
+	}
+
+	/* Do all hit detection */
+	OBJ_LOOP(j, gNumPlayers) {
+		if ( ! gPlayers[j]->Alive() )
+			continue;
+
+		/* This loop looks funny because gNumSprites can change 
+		   dynamically during the loop as sprites are killed/created.
+		   This same logic is used whenever looping where sprites
+		   might be destroyed.
+		*/
+		OBJ_LOOP(i, gNumSprites) {
+			if ( gSprites[i]->HitBy(gPlayers[j]) < 0 ) {
+				delete gSprites[i];
+				gSprites[i] = gSprites[gNumSprites];
+			}
+		}
+		OBJ_LOOP(i, gNumPlayers) {
+			if ( i == j )	// Don't shoot ourselves. :)
+				continue;
+			(void) gPlayers[i]->HitBy(gPlayers[j]);
+		}
+	}
+	if ( gEnemySprite ) {
+		OBJ_LOOP(i, gNumPlayers) {
+			if ( ! gPlayers[i]->Alive() )
+				continue;
+			(void) gPlayers[i]->HitBy(gEnemySprite);
+		}
+		OBJ_LOOP(i, gNumSprites) {
+			if ( gSprites[i] == gEnemySprite )
+				continue;
+			if ( gSprites[i]->HitBy(gEnemySprite) < 0 ) {
+				delete gSprites[i];
+				gSprites[i] = gSprites[gNumSprites];
+			}
+		}
+	}
+
+	/* Handle all the shimmy and the shake. :-) */
+	if ( gShakeTime && (gShakeTime-- > 0) ) {
+		int shakeV;
+
+		OBJ_LOOP(i, gNumPlayers) {
+			shakeV = FastRandom(SHAKE_FACTOR);
+			if ( ! gPlayers[i]->Alive() )
+				continue;
+			gPlayers[i]->Shake(FastRandom(SHAKE_FACTOR));
+		}
+		OBJ_LOOP(i, gNumSprites) {
+			shakeV = FastRandom(SHAKE_FACTOR);
+			gSprites[i]->Shake(FastRandom(SHAKE_FACTOR));
+		}
+	}
+
+	/* Move all of the sprites */
+	OBJ_LOOP(i, gNumPlayers)
+		gPlayers[i]->Move(0);
+	OBJ_LOOP(i, gNumSprites) {
+		if ( gSprites[i]->Move(gFreezeTime) < 0 ) {
+			delete gSprites[i];
+			gSprites[i] = gSprites[gNumSprites];
+		}
+	}
+	if ( gFreezeTime )
+		--gFreezeTime;
+
+	/* Now Blit them all again */
+	OBJ_LOOP(i, gNumSprites)
+		gSprites[i]->BlitSprite();
+	OBJ_LOOP(i, gNumPlayers)
+		gPlayers[i]->BlitSprite();
+
+	/* Make sure someone is still playing... */
+	for ( i=0, PlayersLeft=0; i < gNumPlayers; ++i ) {
+		if ( gPlayers[i]->Kicking() )
+			++PlayersLeft;
+	}
+	if ( gNumPlayers > 1 ) {
+		OBJ_LOOP(i, gNumPlayers)
+			gPlayers[i]->ShowDot();
+	}
+	if ( !PlayersLeft ) {
+		gGameOn = 0;
+	}
+}
 
 /* ----------------------------------------------------------------- */
 /* -- Start the next wave! */
@@ -544,12 +677,10 @@ static void DoGameOver(void)
 		final[i].Score = gPlayers[i]->GetScore();
 		final[i].Frags = gPlayers[i]->GetFrags();
 	}
-#ifndef macintosh
 	if ( gDeathMatch )
 		qsort(final,gNumPlayers,sizeof(struct FinalScore),cmp_byfrags);
 	else
 		qsort(final,gNumPlayers,sizeof(struct FinalScore),cmp_byscore);
-#endif
 
 	screen->Fade();
 	sound->HaltSound();

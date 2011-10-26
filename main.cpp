@@ -461,9 +461,13 @@ MainPanelDelegate::OnLoad()
 		button->SetButtonDelegate(new SetVolumeDelegate(8));
 	}
 
-	gUpdateBuffer = true;
-
 	return true;
+}
+
+void
+MainPanelDelegate::OnShow()
+{
+	gUpdateBuffer = true;
 }
 
 void

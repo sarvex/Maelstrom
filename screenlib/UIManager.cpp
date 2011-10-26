@@ -184,6 +184,9 @@ UIManager::ShowPanel(UIPanel *panel)
 			Draw();
 			m_screen->FadeIn();
 		}
+		if (!panel->IsCursorVisible()) {
+			m_screen->HideCursor();
+		}
 	}
 }
 
@@ -192,19 +195,13 @@ UIManager::HidePanel(UIPanel *panel)
 {
 	if (panel && m_visible.remove(panel)) {
 		panel->Hide();
+
 		if (panel->IsFullscreen()) {
 			m_screen->FadeOut();
-
-			for (unsigned int i = m_visible.length(); i--; ) {
-				if (m_visible[i]->IsFullscreen()) {
-					m_visible[i]->Show();
-					Draw();
-					m_screen->FadeIn();
-					break;
-				}
-			}
 		}
-
+		if (!panel->IsCursorVisible()) {
+			m_screen->ShowCursor();
+		}
 	}
 }
 

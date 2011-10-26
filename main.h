@@ -8,6 +8,7 @@ public:
 	MainPanelDelegate(UIPanel *panel) : UIPanelDelegate(panel) { }
 
 	virtual bool OnLoad();
+	virtual void OnShow();
 	virtual void OnTick();
 };
 

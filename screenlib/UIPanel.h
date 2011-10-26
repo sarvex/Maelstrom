@@ -65,6 +65,9 @@ public:
 	bool IsFullscreen() const {
 		return m_fullscreen;
 	}
+	bool IsCursorVisible() const {
+		return m_cursorVisible;
+	}
 
 	bool Load(rapidxml::xml_node<> *node);
 
@@ -97,6 +100,7 @@ protected:
 	UIManager *m_ui;
 	char *m_name;
 	bool m_fullscreen;
+	bool m_cursorVisible;
 	int m_enterSound;
 	int m_leaveSound;
 	UIPanelDelegate *m_delegate;

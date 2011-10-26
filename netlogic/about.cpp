@@ -4,16 +4,6 @@
 #include "about.h"
 
 
-AboutPanelDelegate::AboutPanelDelegate(UIPanel *panel) : UIPanelDelegate(panel)
-{
-	numsprites = 0;
-}
-
-AboutPanelDelegate::~AboutPanelDelegate()
-{
-	assert(numsprites == 0);
-}
-
 void
 AboutPanelDelegate::OnShow()
 {

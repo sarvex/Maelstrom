@@ -36,6 +36,7 @@ UIPanel::UIPanel(UIManager *ui, const char *name) : UIArea(ui->GetScreen())
 	m_rect.h = m_screen->Height();
 	m_shown = false;
 	m_fullscreen = true;
+	m_cursorVisible = true;
 	m_enterSound = 0;
 	m_leaveSound = 0;
 	m_delegate = NULL;
@@ -68,6 +69,13 @@ UIPanel::Load(rapidxml::xml_node<> *node)
 		const char *value = attr->value();
 		if (*value == '0' || *value == 'f' || *value == 'F') {
 			m_fullscreen = false;
+		}
+	}
+	attr = node->first_attribute("cursor", 0, false);
+	if (attr) {
+		const char *value = attr->value();
+		if (*value == '0' || *value == 'f' || *value == 'F') {
+			m_cursorVisible = false;
 		}
 	}
 	attr = node->first_attribute("enterSound", 0, false);

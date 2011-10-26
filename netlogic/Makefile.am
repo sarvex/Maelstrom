@@ -3,8 +3,8 @@ noinst_LIBRARIES = liblogic.a
 
 liblogic_a_SOURCES =		\
 	about.cpp		\
-	blit.cpp		\
 	game.cpp		\
+	game.h			\
 	globals.h		\
 	logic.cpp		\
 	make.cpp		\
