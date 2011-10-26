@@ -7,10 +7,6 @@
 static UIPanelDelegate *
 CreateMaelstromUIDelegate(const char *delegate)
 {
-	if (!delegate || !*delegate) {
-		return NULL;
-	}
-
 	if (strcasecmp(delegate, "AboutPanel") == 0) {
 		return new AboutPanelDelegate();
 	} else {
@@ -30,7 +26,7 @@ CreateMaelstromUIPanel(UIManager *ui, const char *type, const char *name, const 
 		panel = NULL;
 	}
 
-	if (panel && !delegate || !*delegate) {
+	if (panel && delegate && *delegate) {
 		panel->SetPanelDelegate(CreateMaelstromUIDelegate(delegate));
 	}
 

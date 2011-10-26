@@ -475,13 +475,6 @@ void SetupMainScreen()
 	}
 
 	DrawMainScreen();
-
-
-	/* Hook up functionality for other panels */
-	panel = ui->GetPanel("about_game");
-	if (panel) {
-		panel->SetPanelDelegate(new AboutPanelDelegate);
-	}
 }
 
 

@@ -1,4 +1,4 @@
-<UIPanel>
+<UIPanel delegate="AboutPanel">
 	<Elements>
 		<Title name="image" id="134">
 			<Anchor anchorFrom="CENTER" anchorTo="CENTER"/>
