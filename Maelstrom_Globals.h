@@ -40,6 +40,9 @@ extern FrameBuf *screen;
 // The UI system
 extern UIManager *ui;
 
+// The sprites
+extern Mac_Resource *spriteres;
+
 /* Boolean type */
 typedef Uint8 Bool;
 #ifndef true
@@ -101,6 +104,7 @@ extern Bool	gNetScores;
 #define PANEL_LOADING	"loading"
 #define PANEL_MAIN	"main"
 #define PANEL_GAME	"game"
+#define PANEL_BONUS	"bonus"
 #define PANEL_GAMEOVER	"gameover"
 #define PANEL_ABOUT	"about_story"
 #define PANEL_CONTROLS	"controls"

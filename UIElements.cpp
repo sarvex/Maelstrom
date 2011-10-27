@@ -6,6 +6,7 @@
 #include "UIElementIcon.h"
 #include "UIElementKeyButton.h"
 #include "UIElementLabel.h"
+#include "UIElementSprite.h"
 #include "UIElementTitle.h"
 
 
@@ -24,6 +25,8 @@ CreateMaelstromUIElement(UIPanel *panel, const char *type)
 		return new UIElementKeyButton(panel);
 	} else if (strcasecmp(type, "Icon") == 0) {
 		return new UIElementIcon(panel);
+	} else if (strcasecmp(type, "Sprite") == 0) {
+		return new UIElementSprite(panel);
 	} else if (strcasecmp(type, "Title") == 0) {
 		return new UIElementTitle(panel);
 	}

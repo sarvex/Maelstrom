@@ -569,13 +569,13 @@ Player::BlitSprite(void)
 		screen->QueueBlit(X, Y, gPlayerShot);
 	}
 	/* Draw the shield, if necessary */
-	if ( AutoShield || (ShieldOn && (ShieldLevel > 0)) ) {
+	if ( ! gPaused && (AutoShield || (ShieldOn && (ShieldLevel > 0))) ) {
 		screen->QueueBlit(x>>SPRITE_PRECISION, y>>SPRITE_PRECISION,
 						gShieldBlit->sprite[Sphase]);
 		Sphase = !Sphase;
 	}
 	/* Draw the thrust, if necessary */
-	if ( Thrusting && ! NoThrust ) {
+	if ( ! gPaused && Thrusting && ! NoThrust ) {
 		int thrust_x, thrust_y;
 		thrust_x = x + gThrustOrigins[phase].h;
 		thrust_y = y + gThrustOrigins[phase].v;

@@ -19,9 +19,13 @@ public:
 
 protected:
 	void DrawStatus(Bool first);
+	void DoHousekeeping();
+	void DoBonus();
 	void NextWave();
 
 protected:
+	bool m_showingBonus;
+
 	UIElementLabel *m_score;
 	UIElement *m_shield;
 	UIElementLabel *m_wave;

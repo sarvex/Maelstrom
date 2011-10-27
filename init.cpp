@@ -19,6 +19,7 @@ FontServ *fontserv = NULL;
 MFont    *fonts[NUM_FONTS];
 FrameBuf *screen = NULL;
 UIManager *ui = NULL;
+Mac_Resource *spriteres = NULL;
 
 Sint32	gLastHigh;
 Uint32	gLastDrawn;
@@ -620,6 +621,10 @@ static void BuildVelocityTable(void)
 void CleanUp(void)
 {
 	HaltLogic();
+	if ( spriteres ) {
+		delete spriteres;
+		spriteres = NULL;
+	}
 	if ( ui ) {
 		delete ui;
 		ui = NULL;
@@ -782,16 +787,14 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 	ui->Draw();
 
 	/* -- Load in our sprites and other needed resources */
-	{
-		Mac_Resource spriteres("Maelstrom Sprites");
+	spriteres = new Mac_Resource("Maelstrom Sprites");
 
-		if ( spriteres.Error() ) {
-			error("%s\n", spriteres.Error());
-			return(-1);
-		}
-		if ( LoadBlits(&spriteres) < 0 ) {
-			return(-1);
-		}
+	if ( spriteres->Error() ) {
+		error("%s\n", spriteres->Error());
+		return(-1);
+	}
+	if ( LoadBlits(spriteres) < 0 ) {
+		return(-1);
 	}
 
 	/* -- Create the shots array */
@@ -1037,7 +1040,7 @@ static int LoadSprite(Mac_Resource *spriteres,
 	for (index = 0; index < numFrames; index++) {
 
 		M = spriteres->Resource("ICN#", baseID+index);
-		if ( M== NULL ) {
+		if ( M == NULL ) {
 			error(
 	"LoadSprite(%d+%d): Couldn't load ICN# resource!\n", baseID, index);
 			return(-1);

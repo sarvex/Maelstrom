@@ -129,8 +129,6 @@ static void DoBonus(void);
 
 void NewGame(void)
 {
-	int i;
-
 	/* Send a "NEW_GAME" packet onto the network */
 	if ( gNumPlayers > 1 ) {
 		if ( gOurPlayer == 0 ) {
@@ -177,6 +175,8 @@ GamePanelDelegate::OnLoad()
 
 	/* Load the font and colors we use everywhere */
 	geneva = fonts[GENEVA_9];
+
+	m_showingBonus = false;
 
 	/* Initialize our panel variables */
 	m_score = m_panel->GetElement<UIElementLabel>("score");
@@ -230,80 +230,16 @@ GamePanelDelegate::OnHide()
 void
 GamePanelDelegate::OnTick()
 {
-	/* Don't do anything if we're paused */
-	if ( gPaused ) {
+	int i, j;
+
+	/* -- Read in keyboard input for our ship */
+	HandleEvents(0);
+
+	if ( m_showingBonus ) {
 		return;
 	}
 
-#ifdef MOVIE_SUPPORT
-	if ( gMovie )
-		screen->ScreenDump("MovieFrame", &gMovieRect);
-#endif
-	/* -- Maybe throw a multiplier up on the screen */
-	if (gMultiplierShown && (--gMultiplierShown == 0) )
-		MakeMultiplier();
-	
-	/* -- Maybe throw a prize(!) up on the screen */
-	if (gPrizeShown && (--gPrizeShown == 0) )
-		MakePrize();
-	
-	/* -- Maybe throw a bonus up on the screen */
-	if (gBonusShown && (--gBonusShown == 0) )
-		MakeBonus();
-
-	/* -- Maybe make a nasty enemy fighter? */
-	if (gWhenEnemy && (--gWhenEnemy == 0) )
-		MakeEnemy();
-
-	/* -- Maybe create a transcenfugal vortex */
-	if (gWhenGrav && (--gWhenGrav == 0) )
-		MakeGravity();
-	
-	/* -- Maybe create a recified space vehicle */
-	if (gWhenDamaged && (--gWhenDamaged == 0) )
-		MakeDamagedShip();
-	
-	/* -- Maybe create a autonominous tracking device */
-	if (gWhenHoming && (--gWhenHoming == 0) )
-		MakeHoming();
-	
-	/* -- Maybe make a supercranial destruction thang */
-	if (gWhenNova && (--gWhenNova == 0) )
-		MakeNova();
-
-	/* -- Maybe create a new star ? */
-	if ( --gLastStar == 0 ) {
-		gLastStar = STAR_DELAY;
-		SetStar(FastRandom(MAX_STARS));
-	}
-	
-	/* -- Time for the next wave? */
-	if (gNumRocks == 0) {
-		if ( gWhenDone == 0 )
-			gWhenDone = DEAD_DELAY;
-		else if ( --gWhenDone == 0 )
-			NextWave();
-	}
-}
-
-void
-GamePanelDelegate::OnDraw()
-{
-	int i, j, PlayersLeft;
-
-	/* -- Draw the star field */
-	for ( i=0; i<MAX_STARS; ++i ) {
-		screen->DrawPoint(gTheStars[i]->xCoord, 
-			gTheStars[i]->yCoord, gTheStars[i]->color);
-	}
-
-	/* Draw the status frame */
-	DrawStatus(false);
-
-	/* Read in keyboard input for our ship */
-	HandleEvents(0);
-
-	/* Send Sync! signal to all players, and handle keyboard. */
+	/* -- Send Sync! signal to all players, and handle keyboard. */
 	if ( SyncNetwork() < 0 ) {
 		error("Game aborted!\n");
 		gGameOn = 0;
@@ -312,10 +248,11 @@ GamePanelDelegate::OnDraw()
 	OBJ_LOOP(i, gNumPlayers)
 		gPlayers[i]->HandleKeys();
 
-	if ( gPaused > 0 )
+	if ( gPaused ) {
 		return;
+	}
 
-	/* Play the boom sounds */
+	/* -- Play the boom sounds */
 	if ( --gNextBoom == 0 ) {
 		if ( gBoomPhase ) {
 			sound->PlaySound(gBoom1, 0);
@@ -327,7 +264,7 @@ GamePanelDelegate::OnDraw()
 		gNextBoom = gBoomDelay;
 	}
 
-	/* Do all hit detection */
+	/* -- Do all hit detection */
 	OBJ_LOOP(j, gNumPlayers) {
 		if ( ! gPlayers[j]->Alive() )
 			continue;
@@ -381,7 +318,7 @@ GamePanelDelegate::OnDraw()
 		}
 	}
 
-	/* Move all of the sprites */
+	/* -- Move all of the sprites */
 	OBJ_LOOP(i, gNumPlayers)
 		gPlayers[i]->Move(0);
 	OBJ_LOOP(i, gNumSprites) {
@@ -393,23 +330,37 @@ GamePanelDelegate::OnDraw()
 	if ( gFreezeTime )
 		--gFreezeTime;
 
-	/* Now Blit them all again */
+	DoHousekeeping();
+}
+
+void
+GamePanelDelegate::OnDraw()
+{
+	int i;
+
+	/* Draw the status frame */
+	DrawStatus(false);
+
+	if ( m_showingBonus ) {
+		return;
+	}
+
+	/* -- Draw the star field */
+	for ( i=0; i<MAX_STARS; ++i ) {
+		screen->DrawPoint(gTheStars[i]->xCoord, 
+			gTheStars[i]->yCoord, gTheStars[i]->color);
+	}
+
+	/* -- Blit all the sprites */
 	OBJ_LOOP(i, gNumSprites)
 		gSprites[i]->BlitSprite();
 	OBJ_LOOP(i, gNumPlayers)
 		gPlayers[i]->BlitSprite();
 
-	/* Make sure someone is still playing... */
-	for ( i=0, PlayersLeft=0; i < gNumPlayers; ++i ) {
-		if ( gPlayers[i]->Kicking() )
-			++PlayersLeft;
-	}
+	/* -- Show the player dots */
 	if ( gNumPlayers > 1 ) {
 		OBJ_LOOP(i, gNumPlayers)
 			gPlayers[i]->ShowDot();
-	}
-	if ( !PlayersLeft ) {
-		gGameOn = 0;
 	}
 }
 
@@ -546,6 +497,252 @@ GamePanelDelegate::DrawStatus(Bool first)
 
 }	/* -- DrawStatus */
 
+/* ----------------------------------------------------------------- */
+/* -- Do some housekeeping! */
+
+void
+GamePanelDelegate::DoHousekeeping()
+{
+	int i;
+
+#ifdef MOVIE_SUPPORT
+	if ( gMovie )
+		screen->ScreenDump("MovieFrame", &gMovieRect);
+#endif
+	/* -- Maybe throw a multiplier up on the screen */
+	if (gMultiplierShown && (--gMultiplierShown == 0) )
+		MakeMultiplier();
+	
+	/* -- Maybe throw a prize(!) up on the screen */
+	if (gPrizeShown && (--gPrizeShown == 0) )
+		MakePrize();
+	
+	/* -- Maybe throw a bonus up on the screen */
+	if (gBonusShown && (--gBonusShown == 0) )
+		MakeBonus();
+
+	/* -- Maybe make a nasty enemy fighter? */
+	if (gWhenEnemy && (--gWhenEnemy == 0) )
+		MakeEnemy();
+
+	/* -- Maybe create a transcenfugal vortex */
+	if (gWhenGrav && (--gWhenGrav == 0) )
+		MakeGravity();
+	
+	/* -- Maybe create a recified space vehicle */
+	if (gWhenDamaged && (--gWhenDamaged == 0) )
+		MakeDamagedShip();
+	
+	/* -- Maybe create a autonominous tracking device */
+	if (gWhenHoming && (--gWhenHoming == 0) )
+		MakeHoming();
+	
+	/* -- Maybe make a supercranial destruction thang */
+	if (gWhenNova && (--gWhenNova == 0) )
+		MakeNova();
+
+	/* -- Maybe create a new star ? */
+	if ( --gLastStar == 0 ) {
+		gLastStar = STAR_DELAY;
+		SetStar(FastRandom(MAX_STARS));
+	}
+	
+	/* -- Time for the next wave? */
+	if (gNumRocks == 0) {
+		if ( gWhenDone == 0 )
+			gWhenDone = DEAD_DELAY;
+		else if ( --gWhenDone == 0 )
+			NextWave();
+	}
+
+	/* -- Make sure someone is still playing... */
+	bool PlayersLeft;
+	for ( i=0; i < gNumPlayers; ++i ) {
+		if ( gPlayers[i]->Kicking() ) {
+			PlayersLeft = true;
+			break;
+		}
+	}
+	if ( !PlayersLeft ) {
+		gGameOn = 0;
+	}
+
+}	/* -- DoHousekeeping */
+
+/* ----------------------------------------------------------------- */
+/* -- Do the bonus display */
+
+void
+GamePanelDelegate::DoBonus()
+{
+	UIPanel *panel;
+	UIElement *image;
+	UIElementLabel *label;
+	UIElementLabel *bonus;
+	UIElementLabel *score;
+	int i;
+	char numbuf[128];
+
+	/* -- Now do the bonus */
+	sound->HaltSound();
+
+	panel = ui->GetPanel(PANEL_BONUS);
+	if (!panel) {
+		return;
+	}
+	panel->HideAll();
+
+	/* -- Set the wave completed message */
+	label = panel->GetElement<UIElementLabel>("wave");
+	if (label) {
+		sprintf(numbuf, "Wave %d completed.", gWave);
+		label->SetText(numbuf);
+		label->Show();
+	}
+	label = panel->GetElement<UIElementLabel>("bonus_label");
+	if (label) {
+		label->Show();
+	}
+	label = panel->GetElement<UIElementLabel>("score_label");
+	if (label) {
+		label->Show();
+	}
+		
+	m_showingBonus = true;
+
+	/* Fade out */
+	screen->FadeOut();
+
+	ui->ShowPanel(PANEL_BONUS);
+	ui->Draw();
+
+	/* Fade in */
+	screen->FadeIn();
+	while ( sound->Playing() )
+		Delay(SOUND_DELAY);
+
+	/* -- Count the score down */
+
+	bonus = panel->GetElement<UIElementLabel>("bonus");
+	score = panel->GetElement<UIElementLabel>("score");
+	OBJ_LOOP(i, gNumPlayers) {
+		if ( i != gOurPlayer ) {
+			gPlayers[i]->MultBonus();
+			continue;
+		}
+
+		if (OurShip->GetBonusMult() != 1) {
+			if (bonus) {
+				sprintf(numbuf, "%-5.1d", OurShip->GetBonus());
+				bonus->SetText(numbuf);
+				bonus->Show();
+			}
+			bonus = panel->GetElement<UIElementLabel>("multiplied_bonus");
+
+			OurShip->MultBonus();
+			Delay(SOUND_DELAY);
+			sound->PlaySound(gMultiplier, 5);
+
+			sprintf(numbuf, "multiplier%d", OurShip->GetBonusMult());
+			image = panel->GetElement<UIElement>(numbuf);
+			if (image) {
+				image->Show();
+			}
+
+			ui->Draw();
+			Delay(60);
+		}
+	}
+	Delay(SOUND_DELAY);
+	sound->PlaySound(gFunk, 5);
+
+	if (bonus) {
+		sprintf(numbuf, "%-5.1d", OurShip->GetBonus());
+		bonus->SetText(numbuf);
+		bonus->Show();
+	}
+	if (score) {
+		sprintf(numbuf, "%-5.1d", OurShip->GetScore());
+		score->SetText(numbuf);
+		score->Show();
+	}
+	ui->Draw();
+	Delay(60);
+
+	/* -- Praise them or taunt them as the case may be */
+	if (OurShip->GetBonus() == 0) {
+		Delay(SOUND_DELAY);
+		sound->PlaySound(gNoBonus, 5);
+	}
+	if (OurShip->GetBonus() > 10000) {
+		Delay(SOUND_DELAY);
+		sound->PlaySound(gPrettyGood, 5);
+	}
+	while ( sound->Playing() )
+		Delay(SOUND_DELAY);
+
+	/* -- Count the score down */
+	OBJ_LOOP(i, gNumPlayers) {
+		if ( i != gOurPlayer ) {
+			while ( gPlayers[i]->GetBonus() > 500 ) {
+				gPlayers[i]->IncrScore(500);
+				gPlayers[i]->IncrBonus(-500);
+			}
+			continue;
+		}
+
+		while (OurShip->GetBonus() > 0) {
+			while ( sound->Playing() )
+				Delay(SOUND_DELAY);
+
+			sound->PlaySound(gBonk, 5);
+			if ( OurShip->GetBonus() >= 500 ) {
+				OurShip->IncrScore(500);
+				OurShip->IncrBonus(-500);
+			} else {
+				OurShip->IncrScore(OurShip->GetBonus());
+				OurShip->IncrBonus(-OurShip->GetBonus());
+			}
+	
+			if (bonus) {
+				sprintf(numbuf, "%-5.1d", OurShip->GetBonus());
+				bonus->SetText(numbuf);
+			}
+			if (score) {
+				sprintf(numbuf, "%-5.1d", OurShip->GetScore());
+				score->SetText(numbuf);
+			}
+
+			ui->Draw();
+		}
+	}
+	while ( sound->Playing() )
+		Delay(SOUND_DELAY);
+	HandleEvents(10);
+
+	/* -- Draw the "next wave" message */
+	label = panel->GetElement<UIElementLabel>("next");
+	if (label) {
+		sprintf(numbuf, "Prepare for Wave %d...", gWave+1);
+		label->SetText(numbuf);
+		label->Show();
+	}
+	ui->Draw();
+	HandleEvents(100);
+
+	ui->HidePanel(PANEL_BONUS);
+
+	m_showingBonus = false;
+
+	screen->FadeOut();
+	ui->Draw();
+	screen->FadeIn();
+
+	/* Need to clear one more time since we're about to draw */
+	/* FIXME: This doesn't work */
+	screen->Clear();
+
+}	/* -- DoBonus */
 
 /* ----------------------------------------------------------------- */
 /* -- Start the next wave! */
@@ -624,9 +821,6 @@ GamePanelDelegate::NextWave()
 
 	NewRoids = FastRandom(temp) + (gWave / 5) + 3;
 
-	/* -- Black the screen out and draw the wave */
-	screen->Clear();
-
 	/* -- Kill any existing sprites */
 	while (gNumSprites > 0)
 		delete gSprites[gNumSprites-1];
@@ -642,7 +836,6 @@ GamePanelDelegate::NextWave()
 	for ( index=gNumPlayers; index--; )
 		gPlayers[index]->NewWave();
 	DrawStatus(true);
-	screen->Update();
 
 	/* -- Create some asteroids */
 	for (index = 0; index < NewRoids; index++) {
@@ -660,7 +853,6 @@ GamePanelDelegate::NextWave()
 			MakeLargeRock(x, y);
 	}
 
-	screen->Fade();
 }	/* -- NextWave */
 
 /* ----------------------------------------------------------------- */
@@ -792,7 +984,6 @@ static void DoGameOver(void)
 							sound->PlaySound(gExplosionSound, 5);
 							--chars_in_handle;
 							handle[chars_in_handle] = '\0';
-							label->SetText(handle);
 						}
 						break;
 					default:
@@ -806,10 +997,12 @@ static void DoGameOver(void)
 						sound->PlaySound(gShotSound, 5);
 						handle[chars_in_handle++] = key;
 						handle[chars_in_handle] = '\0';
-						label->SetText(handle);
 					} else
 						sound->PlaySound(gBonk, 5);
 				}
+			}
+			if (label ) {
+				label->SetText(handle);
 			}
 			ui->Draw();
 		}
@@ -837,146 +1030,4 @@ static void DoGameOver(void)
 
 }	/* -- DoGameOver */
 
-
-/* ----------------------------------------------------------------- */
-/* -- Do the bonus display */
-
-static void DoBonus(void)
-{
-	int i, x, sw, xs, xt;
-	char numbuf[128];
-
-	//DrawStatus(false);
-	screen->Update();
-
-	/* -- Now do the bonus */
-	sound->HaltSound();
-	sound->PlaySound(gRiff, 6);
-
-	/* Fade out */
-	screen->Fade();
-
-	/* -- Clear the screen */
-	screen->Clear();
-	
-
-	/* -- Draw the wave completed message */
-	sprintf(numbuf, "Wave %d completed.", gWave);
-	sw = fontserv->TextWidth(numbuf, geneva, STYLE_BOLD);
-	x = (SCREEN_WIDTH - sw) / 2;
-	DrawText(x,  150, numbuf, geneva, STYLE_BOLD, 0xFF, 0xFF, 0x00);
-
-	/* -- Draw the bonus */
-	sw = fontserv->TextWidth("Bonus Score:     ", geneva, STYLE_BOLD);
-	x = ((SCREEN_WIDTH - sw) / 2) - 20;
-	DrawText(x, 200, "Bonus Score:     ", geneva, STYLE_BOLD,
-						30000>>8, 30000>>8, 0xFF);
-	xt = x+sw;
-
-	/* -- Draw the score */
-	sw = fontserv->TextWidth("Score:     ", geneva, STYLE_BOLD);
-	x = ((SCREEN_WIDTH - sw) / 2) - 3;
-	DrawText(x, 220, "Score:     ", geneva, STYLE_BOLD,
-						30000>>8, 30000>>8, 0xFF);
-	xs = x+sw;
-	screen->Update();
-
-	/* Fade in */
-	screen->Fade();
-	while ( sound->Playing() )
-		Delay(SOUND_DELAY);
-
-	/* -- Count the score down */
-	x = xs;
-
-	OBJ_LOOP(i, gNumPlayers) {
-		if ( i != gOurPlayer ) {
-			gPlayers[i]->MultBonus();
-			continue;
-		}
-
-		if (OurShip->GetBonusMult() != 1) {
-			SDL_Texture *sprite;
-
-			sprintf(numbuf, "%-5.1d", OurShip->GetBonus());
-			DrawText(x, 200, numbuf, geneva, STYLE_BOLD,
-							0xFF, 0xFF, 0xFF);
-			x += 75;
-			OurShip->MultBonus();
-			Delay(SOUND_DELAY);
-			sound->PlaySound(gMultiplier, 5);
-			sprite = gMult[OurShip->GetBonusMult()-2]->sprite[0];
-			screen->QueueBlit(xs+34, 180, sprite);
-			screen->Update();
-			Delay(60);
-		}
-	}
-	Delay(SOUND_DELAY);
-	sound->PlaySound(gFunk, 5);
-
-	sprintf(numbuf, "%-5.1d", OurShip->GetBonus());
-	DrawText(x, 200, numbuf, geneva, STYLE_BOLD, 0xFF, 0xFF, 0xFF);
-	sprintf(numbuf, "%-5.1d", OurShip->GetScore());
-	DrawText(xt, 220, numbuf, geneva, STYLE_BOLD, 0xFF, 0xFF, 0xFF);
-	screen->Update();
-	Delay(60);
-
-	/* -- Praise them or taunt them as the case may be */
-	if (OurShip->GetBonus() == 0) {
-		Delay(SOUND_DELAY);
-		sound->PlaySound(gNoBonus, 5);
-	}
-	if (OurShip->GetBonus() > 10000) {
-		Delay(SOUND_DELAY);
-		sound->PlaySound(gPrettyGood, 5);
-	}
-	while ( sound->Playing() )
-		Delay(SOUND_DELAY);
-
-	/* -- Count the score down */
-	OBJ_LOOP(i, gNumPlayers) {
-		if ( i != gOurPlayer ) {
-			while ( gPlayers[i]->GetBonus() > 500 ) {
-				gPlayers[i]->IncrScore(500);
-				gPlayers[i]->IncrBonus(-500);
-			}
-			continue;
-		}
-
-		while (OurShip->GetBonus() > 0) {
-			while ( sound->Playing() )
-				Delay(SOUND_DELAY);
-
-			sound->PlaySound(gBonk, 5);
-			if ( OurShip->GetBonus() >= 500 ) {
-				OurShip->IncrScore(500);
-				OurShip->IncrBonus(-500);
-			} else {
-				OurShip->IncrScore(OurShip->GetBonus());
-				OurShip->IncrBonus(-OurShip->GetBonus());
-			}
-	
-			sprintf(numbuf, "%-5.1d", OurShip->GetBonus());
-			DrawText(x, 200, numbuf, geneva, STYLE_BOLD, 0xFF, 0xFF, 0xFF);
-			sprintf(numbuf, "%-5.1d", OurShip->GetScore());
-			DrawText(xt, 220, numbuf, geneva, STYLE_BOLD, 0xFF, 0xFF, 0xFF);
-
-			//DrawStatus(false);
-			screen->Update();
-		}
-	}
-	while ( sound->Playing() )
-		Delay(SOUND_DELAY);
-	HandleEvents(10);
-
-	/* -- Draw the "next wave" message */
-	sprintf(numbuf, "Prepare for Wave %d...", gWave+1);
-	sw = fontserv->TextWidth(numbuf, geneva, STYLE_BOLD);
-	x = (SCREEN_WIDTH - sw)/2;
-	DrawText(x, 259, numbuf, geneva, STYLE_BOLD, 0xFF, 0xFF, 0x00);
-	screen->Update();
-	HandleEvents(100);
-
-	screen->Fade();
-}	/* -- DoBonus */
 

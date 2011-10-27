@@ -224,10 +224,6 @@ UIManager::Draw(bool fullUpdate)
 		UIPanel *panel = m_visible[i];
 
 		panel->Draw();
-
-		if (panel->IsFullscreen()) {
-			break;
-		}
 	}
 	if (fullUpdate) {
 		m_screen->Update();

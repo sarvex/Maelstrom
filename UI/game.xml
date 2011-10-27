@@ -62,13 +62,13 @@
 			<Anchor anchorFrom="TOPLEFT" anchorTo="BOTTOMLEFT" anchor="status_line" x="424" y="3"/>
 		</Icon>
 		<Icon name="multiplier3" id="131">
-			<Anchor anchorFrom="TOPLEFT" anchorTo="BOTTOMLEFT" anchor="status_line" x="424" y="3"/>
+			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="multiplier2"/>
 		</Icon>
 		<Icon name="multiplier4" id="132">
-			<Anchor anchorFrom="TOPLEFT" anchorTo="BOTTOMLEFT" anchor="status_line" x="424" y="3"/>
+			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="multiplier2"/>
 		</Icon>
 		<Icon name="multiplier5" id="134">
-			<Anchor anchorFrom="TOPLEFT" anchorTo="BOTTOMLEFT" anchor="status_line" x="424" y="3"/>
+			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="multiplier2"/>
 		</Icon>
 
 		<Icon name="autofire" id="128">
