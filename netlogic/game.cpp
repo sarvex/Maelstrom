@@ -164,9 +164,7 @@ void NewGame(void)
 
 /* -- Do the game over stuff */
 
-	screen->HideCursor();
 	DoGameOver();
-	screen->ShowCursor();
 
 	ui->ShowPanel(PANEL_MAIN);
 }	/* -- NewGame */
@@ -222,6 +220,11 @@ GamePanelDelegate::OnShow()
 void
 GamePanelDelegate::OnHide()
 {
+	/* -- Kill any existing sprites */
+	while (gNumSprites > 0)
+		delete gSprites[gNumSprites-1];
+
+	sound->HaltSound();
 }
 
 void
@@ -680,13 +683,12 @@ static int cmp_byfrags(const void *A, const void *B)
 
 static void DoGameOver(void)
 {
+	UIPanel *panel;
+	UIElementLabel *label;
 	SDL_Event event;
-	SDL_Texture *gameover;
-	MFont *newyork;
-	int newyork_height, w, x;
 	int which = -1, i;
 	char handle[20];
-	Uint8 key;
+	char key;
 	int chars_in_handle = 0;
 	Bool done = false;
 
@@ -702,47 +704,31 @@ static void DoGameOver(void)
 	else
 		qsort(final,gNumPlayers,sizeof(struct FinalScore),cmp_byscore);
 
-	screen->Fade();
-	sound->HaltSound();
-
-	/* -- Kill any existing sprites */
-	while (gNumSprites > 0)
-		delete gSprites[gNumSprites-1];
-
-	/* -- Clear the screen */
-	screen->Clear();
-
-	/* -- Draw the game over picture */
-	gameover = Load_Title(screen, 128);
-	if ( gameover == NULL ) {
-		error("Can't load 'gameover' title!\n");
-		exit(255);
+	panel = ui->GetPanel(PANEL_GAMEOVER);
+	if (!panel) {
+		return;
 	}
-	screen->QueueBlit((SCREEN_WIDTH-screen->GetImageWidth(gameover))/2,
-			((SCREEN_HEIGHT-screen->GetImageHeight(gameover))/2)-80, gameover, NOCLIP);
-	screen->FreeImage(gameover);
 
 	/* Show the player ranking */
 	if ( gNumPlayers > 1 ) {
-		newyork = fonts[NEWYORK_18];
-		newyork_height = fontserv->TextHeight(newyork);
 		for ( i=0; i<gNumPlayers; ++i ) {
+			char name[32];
 			char buffer[BUFSIZ], num1[12], num2[12];
 
-			sprintf(num1, "%7.1d", final[i].Score);
-			sprintf(num2, "%3.1d", final[i].Frags);
-			sprintf(buffer, "Player %d: %-.7s Points, %-.3s Frags",
-						final[i].Player, num1, num2);
-			DrawText(160, 380+i*newyork_height, buffer,
-				newyork, STYLE_NORM, 30000>>8, 30000>>8, 0xFF);
+			sprintf(name, "rank%d", 1+i);
+			label = panel->GetElement<UIElementLabel>(name);
+			if (label) {
+				sprintf(num1, "%7.1d", final[i].Score);
+				sprintf(num2, "%3.1d", final[i].Frags);
+				sprintf(buffer, "Player %d: %-.7s Points, %-.3s Frags", final[i].Player, num1, num2);
+				label->SetText(buffer);
+			}
 		}
 	}
-	screen->Update();
 
-	/* -- Play the game over sound */
-	sound->PlaySound(gGameOver, 5);
-	screen->Fade();
+	ui->ShowPanel(PANEL_GAMEOVER);
 
+	/* -- Wait for the game over sound */
 	while( sound->Playing() )
 		Delay(SOUND_DELAY);
 
@@ -758,7 +744,8 @@ static void DoGameOver(void)
 	/* -- They got a high score! */
 	gLastHigh = which;
 
-	if ((which != -1) && (gStartLevel == 1) && (gStartLives == 3) &&
+	label = panel->GetElement<UIElementLabel>("name");
+	if (label && (which != -1) && (gStartLevel == 1) && (gStartLives == 3) &&
 					(gNumPlayers == 1) && !gDeathMatch ) {
 		sound->PlaySound(gBonusShot, 5);
 		for ( i = 8; i >= which ; --i ) {
@@ -767,63 +754,46 @@ static void DoGameOver(void)
 			strcpy(hScores[i+1].name, hScores[i].name);
 		}
 
-		/* -- Draw the "Enter your name" string */
-		newyork = fonts[NEWYORK_18];
-		newyork_height = fontserv->TextHeight(newyork);
-		x = (SCREEN_WIDTH-(fontserv->TextWidth("Enter your name: ",
-						newyork, STYLE_NORM)*2))/2;
-		x += DrawText(x, 300, "Enter your name: ",
-				newyork, STYLE_NORM, 30000>>8, 30000>>8, 0xFF);
-		screen->Update();
-
 		/* -- Let them enter their name */
-		w = 0;
 		chars_in_handle = 0;
+		handle[0] = '\0';
 
 		while ( screen->PollEvent(&event) ) /* Loop, flushing events */;
 		SDL_StartTextInput();
 		while ( !done ) {
 			screen->WaitEvent(&event);
 
-			if ( event.type == SDL_TEXTINPUT ) {
-				/* FIXME: No true UNICODE support in font */
-				key = (Uint8)event.text.text[0];
-				switch ( key  ) {
-					case '\0':	// Ignore NUL char
-					case '\033':	// Ignore ESC char
-					case '\t':	// Ignore TAB too.
-						continue;
-					case '\003':
-					case '\r':
-					case '\n':
+			if ( event.type == SDL_KEYUP ) {
+				switch (event.key.keysym.sym) {
+					case SDLK_RETURN:
 						done = true;
-						continue;
-					case 127:
-					case '\b':
+						break;
+					case SDLK_DELETE:
+					case SDLK_BACKSPACE:
 						if ( chars_in_handle ) {
 							sound->PlaySound(gExplosionSound, 5);
 							--chars_in_handle;
 						}
 						break;
 					default:
-						if ( chars_in_handle < 15 ) {
-							sound->PlaySound(gShotSound, 5);
-							handle[chars_in_handle++] = (char)key;
-						} else
-							sound->PlaySound(gBonk, 5);
 						break;
 				}
-
-				handle[chars_in_handle] = '\0';
-				w = DrawText(x, 300, handle,
-					newyork, STYLE_NORM, 0xFF, 0xFF, 0xFF);
-				screen->Update();
+			} else if ( event.type == SDL_TEXTINPUT ) {
+				/* FIXME: No true UNICODE support in font */
+				key = event.text.text[0];
+				if (key >= ' ' && key <= '~') {
+					if ( chars_in_handle < 15 ) {
+						sound->PlaySound(gShotSound, 5);
+						handle[chars_in_handle++] = key;
+					} else
+						sound->PlaySound(gBonk, 5);
+				}
 			}
+			handle[chars_in_handle] = '\0';
+			label->SetText(handle);
+			ui->Draw();
 		}
 		SDL_StopTextInput();
-
-		/* In case the user just pressed <Return> */
-		handle[chars_in_handle] = '\0';
 
 		hScores[which].wave = gWave;
 		hScores[which].score = OurShip->GetScore();
@@ -843,8 +813,8 @@ static void DoGameOver(void)
 		Delay(SOUND_DELAY);
 	HandleEvents(0);
 
-	screen->Fade();
-	gUpdateBuffer = true;
+	ui->HidePanel(PANEL_GAMEOVER);
+
 }	/* -- DoGameOver */
 
 

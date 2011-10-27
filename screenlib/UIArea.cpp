@@ -71,7 +71,7 @@ UIArea::Load(rapidxml::xml_node<> *node)
 	rapidxml::xml_node<> *child;
 	rapidxml::xml_attribute<> *attr;
 
-	attr = node->first_attribute("shown", 0, false);
+	attr = node->first_attribute("show", 0, false);
 	if (attr) {
 		const char *value = attr->value();
 		if (*value == '0' || *value == 'f' || *value == 'F') {

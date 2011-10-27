@@ -1,0 +1,30 @@
+<UIPanel cursor="false" enterSound="113">
+	<Elements>
+		<Title name="image" id="128">
+			<Anchor anchorFrom="CENTER" anchorTo="CENTER"/>
+		</Title>
+
+		<!-- Multiplayer rankings -->
+		<Label name="rank1" show="false" fontName="New York" fontSize="18">
+			<Color r="0x75" g="0x75" b="0xFF"/>
+			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="image" x="96" y="312"/>
+		</Label>
+		<Label name="rank2" show="false" fontName="New York" fontSize="18">
+			<Color r="0x75" g="0x75" b="0xFF"/>
+			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="rank1"/>
+		</Label>
+		<Label name="rank3" show="false" fontName="New York" fontSize="18">
+			<Color r="0x75" g="0x75" b="0xFF"/>
+			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="rank2"/>
+		</Label>
+
+		<Label name="name_label" show="false" fontName="New York" fontSize="18" text="Enter your name: ">
+			<Color r="0x75" g="0x75" b="0xFF"/>
+			<Anchor anchorFrom="TOP" anchorTo="TOP" anchor="image" y="252"/>
+		</Label>
+		<Label name="name" show="false" fontName="New York" fontSize="18">
+			<Color r="0xFF" g="0xFF" b="0xFF"/>
+			<Anchor anchorFrom="LEFT" anchorTo="RIGHT" anchor="name_label"/>
+		</Label>
+	</Elements>
+</UIPanel>
