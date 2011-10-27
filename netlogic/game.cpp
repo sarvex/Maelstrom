@@ -684,6 +684,7 @@ static int cmp_byfrags(const void *A, const void *B)
 static void DoGameOver(void)
 {
 	UIPanel *panel;
+	UIElement *image;
 	UIElementLabel *label;
 	SDL_Event event;
 	int which = -1, i;
@@ -708,6 +709,12 @@ static void DoGameOver(void)
 	if (!panel) {
 		return;
 	}
+	panel->HideAll();
+
+	image = panel->GetElement<UIElement>("image");
+	if (image) {
+		image->Show();
+	}
 
 	/* Show the player ranking */
 	if ( gNumPlayers > 1 ) {
@@ -722,6 +729,7 @@ static void DoGameOver(void)
 				sprintf(num2, "%3.1d", final[i].Frags);
 				sprintf(buffer, "Player %d: %-.7s Points, %-.3s Frags", final[i].Player, num1, num2);
 				label->SetText(buffer);
+				label->Show();
 			}
 		}
 	}
@@ -744,8 +752,7 @@ static void DoGameOver(void)
 	/* -- They got a high score! */
 	gLastHigh = which;
 
-	label = panel->GetElement<UIElementLabel>("name");
-	if (label && (which != -1) && (gStartLevel == 1) && (gStartLives == 3) &&
+	if ((which != -1) && (gStartLevel == 1) && (gStartLives == 3) &&
 					(gNumPlayers == 1) && !gDeathMatch ) {
 		sound->PlaySound(gBonusShot, 5);
 		for ( i = 8; i >= which ; --i ) {
@@ -757,10 +764,21 @@ static void DoGameOver(void)
 		/* -- Let them enter their name */
 		chars_in_handle = 0;
 		handle[0] = '\0';
+		label = panel->GetElement<UIElementLabel>("name_label");
+		if (label) {
+			label->Show();
+		}
+		label = panel->GetElement<UIElementLabel>("name");
+		if (label) {
+			label->Show();
+		}
+		ui->Draw();
 
 		while ( screen->PollEvent(&event) ) /* Loop, flushing events */;
 		SDL_StartTextInput();
-		while ( !done ) {
+		while ( label && !done ) {
+			bool updated = false;
+
 			screen->WaitEvent(&event);
 
 			if ( event.type == SDL_KEYUP ) {
@@ -773,6 +791,8 @@ static void DoGameOver(void)
 						if ( chars_in_handle ) {
 							sound->PlaySound(gExplosionSound, 5);
 							--chars_in_handle;
+							handle[chars_in_handle] = '\0';
+							label->SetText(handle);
 						}
 						break;
 					default:
@@ -785,12 +805,12 @@ static void DoGameOver(void)
 					if ( chars_in_handle < 15 ) {
 						sound->PlaySound(gShotSound, 5);
 						handle[chars_in_handle++] = key;
+						handle[chars_in_handle] = '\0';
+						label->SetText(handle);
 					} else
 						sound->PlaySound(gBonk, 5);
 				}
 			}
-			handle[chars_in_handle] = '\0';
-			label->SetText(handle);
 			ui->Draw();
 		}
 		SDL_StopTextInput();

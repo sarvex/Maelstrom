@@ -177,6 +177,14 @@ UIPanel::Hide()
 }
 
 void
+UIPanel::HideAll()
+{
+	for (unsigned i = 0; i < m_elements.length(); ++i) {
+		m_elements[i]->Hide();
+	}
+}
+
+void
 UIPanel::Draw()
 {
 	if (m_delegate) {

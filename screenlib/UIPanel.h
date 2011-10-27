@@ -93,6 +93,8 @@ public:
 	virtual void Show();
 	virtual void Hide();
 
+	void HideAll();
+
 	void Draw();
 	bool HandleEvent(const SDL_Event &event);
 
