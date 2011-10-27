@@ -6,6 +6,8 @@
 #include "make.h"
 #include "load.h"
 #include "game.h"
+#include "../UIElementIcon.h"
+#include "../UIElementLabel.h"
 
 
 #ifdef MOVIE_SUPPORT
@@ -117,145 +119,10 @@ int	gWhenEnemy;
 
 // Local global variables;
 static MFont *geneva;
-static Uint32 ourGrey, ourWhite;
-static int text_height;
 
 // Local functions used in the game module of Maelstrom
-static void DoHouseKeeping(void);
-static void NextWave(void);
 static void DoGameOver(void);
 static void DoBonus(void);
-static void TwinkleStars(void);
-
-/* ----------------------------------------------------------------- */
-/* -- Draw the status display */
-
-static void DrawStatus(Bool first)
-{
-	static int lastScores[MAX_PLAYERS], lastLife[MAX_PLAYERS];
-	int Score;
-	int MultFactor;
-	int i, x;
-	char numbuf[128];
-
-/* -- Draw the status display */
-
-	if (first && gWave == 1) {
-		OBJ_LOOP(i, gNumPlayers) {
-			lastLife[i] = lastScores[i] = 0;
-		}
-	}
-
-	screen->DrawLine(0, gStatusLine, SCREEN_WIDTH-1, 
-						gStatusLine, ourWhite);
-	x = 3;
-	i = DrawText(x, gStatusLine+11, "Score:", geneva, STYLE_BOLD,
-					30000>>8, 30000>>8, 0xFF);
-	x += (i+70);
-	i = DrawText(x, gStatusLine+11, "Shield:", geneva, STYLE_BOLD,
-					30000>>8, 30000>>8, 0xFF);
-	x += (i+70);
-	i = DrawText(x, gStatusLine+11, "Wave:", geneva, STYLE_BOLD,
-					30000>>8, 30000>>8, 0xFF);
-	x += (i+30);
-	i = DrawText(x, gStatusLine+11, "Lives:", geneva, STYLE_BOLD,
-					30000>>8, 30000>>8, 0xFF);
-	x += (i+30);
-	DrawText(x, gStatusLine+11, "Bonus:", geneva, STYLE_BOLD,
-					30000>>8, 30000>>8, 0xFF);
-	/* Heh, DOOM style frag count */
-	if ( gNumPlayers > 1 ) {
-		x = 530;
-		i = DrawText(x, gStatusLine+11, "Frags:", geneva,
-				STYLE_BOLD, 30000>>8, 30000>>8, 0xFF);
-		sprintf(numbuf, "%-3.1d", TheShip->GetFrags());
-		DrawText(x+i+4, gStatusLine+11, numbuf, geneva, STYLE_BOLD, 0xFF, 0xFF, 0xFF);
-	}
-
-	if ( gNumPlayers > 1 ) {
-		char caption[BUFSIZ];
-
-		sprintf(caption, "You are player %d --- displaying player %d",
-					gOurPlayer+1, gDisplayed+1);
-		DrawText(SPRITES_WIDTH, 11, caption, geneva,
-				STYLE_BOLD, 30000>>8, 30000>>8, 0xFF);
-
-		/* Fill in the color by the frag count */
-		screen->FillRect(518, gStatusLine+4, 4, 8, TheShip->Color());
-	}
-
-	screen->DrawRect(152, gStatusLine+4, SHIELD_WIDTH, 8, ourWhite);
-	int fact = ((SHIELD_WIDTH - 2) * TheShip->GetShieldLevel()) / MAX_SHIELD;
-	screen->FillRect(152+1, gStatusLine+4+1, fact, 6, ourGrey);
-	
-	MultFactor = TheShip->GetBonusMult();
-	switch (MultFactor) {
-		case 1:	break;
-		case 2:	screen->QueueBlit(424, gStatusLine+4, gMult2Icon, NOCLIP);
-			break;
-		case 3:	screen->QueueBlit(424, gStatusLine+4, gMult3Icon, NOCLIP);
-			break;
-		case 4:	screen->QueueBlit(424, gStatusLine+4, gMult4Icon, NOCLIP);
-			break;
-		case 5:	screen->QueueBlit(424, gStatusLine+4, gMult5Icon, NOCLIP);
-			break;
-		default:  /* WHAT? */
-			break;
-	}
-
-	if ( TheShip->GetSpecial(MACHINE_GUNS) ) {
-		screen->QueueBlit(438, gStatusLine+4, gAutoFireIcon, NOCLIP);
-	}
-
-	if ( TheShip->GetSpecial(AIR_BRAKES) ) {
-		screen->QueueBlit(454, gStatusLine+4, gAirBrakesIcon, NOCLIP);
-	}
-
-	if ( TheShip->GetSpecial(LUCKY_IRISH) ) {
-		screen->QueueBlit(470, gStatusLine+4, gLuckOfTheIrishIcon, NOCLIP);
-	}
-
-	if ( TheShip->GetSpecial(TRIPLE_FIRE) ) {
-		screen->QueueBlit(486, gStatusLine+4, gTripleFireIcon, NOCLIP);
-	}
-
-	if ( TheShip->GetSpecial(LONG_RANGE) ) {
-		screen->QueueBlit(502, gStatusLine+4, gLongFireIcon, NOCLIP);
-	}
-
-	/* Check for everyone else's new lives */
-	OBJ_LOOP(i, gNumPlayers) {
-		Score = gPlayers[i]->GetScore();
-
-		if ( i == gDisplayed ) {
-			sprintf(numbuf, "%d", Score);
-			DrawText(45, gStatusLine+11, numbuf, geneva, STYLE_BOLD, 0xFF, 0xFF, 0xFF);
-		}
-
-		if (lastScores[i] == Score)
-			continue;
-
-		/* -- See if they got a new life */
-		lastScores[i] = Score;
-		if ((Score - lastLife[i]) >= NEW_LIFE) {
-			gPlayers[i]->IncrLives(1);
-			lastLife[i] = (Score / NEW_LIFE) * NEW_LIFE;
-			if ( i == gOurPlayer )
-				sound->PlaySound(gNewLife, 5);
-		}
-	}
-
-	sprintf(numbuf, "%d", gWave);
-	DrawText(255, gStatusLine+11, numbuf, geneva, STYLE_BOLD, 0xFF, 0xFF, 0xFF);
-
-	sprintf(numbuf, "%-3.1d", TheShip->GetLives());
-	DrawText(319, gStatusLine+11, numbuf, geneva, STYLE_BOLD, 0xFF, 0xFF, 0xFF);
-
-	sprintf(numbuf, "%-7.1d", TheShip->GetBonus());
-	DrawText(384, gStatusLine+11, numbuf, geneva, STYLE_BOLD, 0xFF, 0xFF, 0xFF);
-
-}	/* -- DrawStatus */
-
 
 /* ----------------------------------------------------------------- */
 /* -- Start a new game */
@@ -307,11 +174,29 @@ void NewGame(void)
 bool
 GamePanelDelegate::OnLoad()
 {
+	int i;
+	char name[32];
+
 	/* Load the font and colors we use everywhere */
 	geneva = fonts[GENEVA_9];
-	text_height = fontserv->TextHeight(geneva);
-	ourGrey = screen->MapRGB(30000>>8, 30000>>8, 0xFF);
-	ourWhite = screen->MapRGB(0xFF, 0xFF, 0xFF);
+
+	/* Initialize our panel variables */
+	m_score = m_panel->GetElement<UIElementLabel>("score");
+	m_shield = m_panel->GetElement<UIElement>("shield");
+	m_wave = m_panel->GetElement<UIElementLabel>("wave");
+	m_lives = m_panel->GetElement<UIElementLabel>("lives");
+	m_bonus = m_panel->GetElement<UIElementLabel>("bonus");
+
+	for (i = 0; i < SDL_arraysize(m_multiplier); ++i) {
+		sprintf(name, "multiplier%d", 2+i);
+		m_multiplier[i] = m_panel->GetElement<UIElementIcon>(name);
+	}
+
+	m_autofire = m_panel->GetElement<UIElementIcon>("autofire");
+	m_airbrakes = m_panel->GetElement<UIElementIcon>("airbrakes");
+	m_lucky = m_panel->GetElement<UIElementIcon>("lucky");
+	m_triplefire = m_panel->GetElement<UIElementIcon>("triplefire");
+	m_longfire = m_panel->GetElement<UIElementIcon>("longfire");
 
 	return true;
 }
@@ -386,7 +271,7 @@ GamePanelDelegate::OnTick()
 	/* -- Maybe create a new star ? */
 	if ( --gLastStar == 0 ) {
 		gLastStar = STAR_DELAY;
-		TwinkleStars();
+		SetStar(FastRandom(MAX_STARS));
 	}
 	
 	/* -- Time for the next wave? */
@@ -526,9 +411,144 @@ GamePanelDelegate::OnDraw()
 }
 
 /* ----------------------------------------------------------------- */
+/* -- Draw the status display */
+
+void
+GamePanelDelegate::DrawStatus(Bool first)
+{
+	static int lastScores[MAX_PLAYERS], lastLife[MAX_PLAYERS];
+	int Score;
+	int MultFactor;
+	int i, x;
+	char numbuf[128];
+
+/* -- Draw the status display */
+
+	if (first && gWave == 1) {
+		OBJ_LOOP(i, gNumPlayers) {
+			lastLife[i] = lastScores[i] = 0;
+		}
+	}
+
+	/* Heh, DOOM style frag count */
+	if ( gNumPlayers > 1 ) {
+		x = 530;
+		i = DrawText(x, gStatusLine+11, "Frags:", geneva,
+				STYLE_BOLD, 30000>>8, 30000>>8, 0xFF);
+		sprintf(numbuf, "%-3.1d", TheShip->GetFrags());
+		DrawText(x+i+4, gStatusLine+11, numbuf, geneva, STYLE_BOLD, 0xFF, 0xFF, 0xFF);
+	}
+
+	if ( gNumPlayers > 1 ) {
+		char caption[BUFSIZ];
+
+		sprintf(caption, "You are player %d --- displaying player %d",
+					gOurPlayer+1, gDisplayed+1);
+		DrawText(SPRITES_WIDTH, 11, caption, geneva,
+				STYLE_BOLD, 30000>>8, 30000>>8, 0xFF);
+
+		/* Fill in the color by the frag count */
+		screen->FillRect(518, gStatusLine+4, 4, 8, TheShip->Color());
+	}
+
+	int fact = ((SHIELD_WIDTH - 2) * TheShip->GetShieldLevel()) / MAX_SHIELD;
+	if (m_shield) {
+		m_shield->SetWidth(fact);
+	}
+	
+	MultFactor = TheShip->GetBonusMult();
+	for (i = 0; i < SDL_arraysize(m_multiplier); ++i) {
+		if (!m_multiplier[i]) {
+			continue;
+		}
+		if (MultFactor == 2+i) {
+			m_multiplier[i]->Show();
+		} else {
+			m_multiplier[i]->Hide();
+		}
+	}
+
+	if (m_autofire) {
+		if ( TheShip->GetSpecial(MACHINE_GUNS) ) {
+			m_autofire->Show();
+		} else {
+			m_autofire->Hide();
+		}
+	}
+	if (m_airbrakes) {
+		if ( TheShip->GetSpecial(AIR_BRAKES) ) {
+			m_airbrakes->Show();
+		} else {
+			m_airbrakes->Hide();
+		}
+	}
+	if (m_lucky) {
+		if ( TheShip->GetSpecial(LUCKY_IRISH) ) {
+			m_lucky->Show();
+		} else {
+			m_lucky->Hide();
+		}
+	}
+	if (m_triplefire) {
+		if ( TheShip->GetSpecial(TRIPLE_FIRE) ) {
+			m_triplefire->Show();
+		} else {
+			m_triplefire->Hide();
+		}
+	}
+	if (m_longfire) {
+		if ( TheShip->GetSpecial(LONG_RANGE) ) {
+			m_longfire->Show();
+		} else {
+			m_longfire->Hide();
+		}
+	}
+
+	/* Check for everyone else's new lives */
+	OBJ_LOOP(i, gNumPlayers) {
+		Score = gPlayers[i]->GetScore();
+
+		if ( i == gDisplayed && m_score ) {
+			sprintf(numbuf, "%d", Score);
+			m_score->SetText(numbuf);
+		}
+
+		if (lastScores[i] == Score)
+			continue;
+
+		/* -- See if they got a new life */
+		lastScores[i] = Score;
+		if ((Score - lastLife[i]) >= NEW_LIFE) {
+			gPlayers[i]->IncrLives(1);
+			lastLife[i] = (Score / NEW_LIFE) * NEW_LIFE;
+			if ( i == gOurPlayer )
+				sound->PlaySound(gNewLife, 5);
+		}
+	}
+
+	if (m_wave) {
+		sprintf(numbuf, "%d", gWave);
+		m_wave->SetText(numbuf);
+	}
+
+	if (m_lives) {
+		sprintf(numbuf, "%-3.1d", TheShip->GetLives());
+		m_lives->SetText(numbuf);
+	}
+
+	if (m_bonus) {
+		sprintf(numbuf, "%-7.1d", TheShip->GetBonus());
+		m_bonus->SetText(numbuf);
+	}
+
+}	/* -- DrawStatus */
+
+
+/* ----------------------------------------------------------------- */
 /* -- Start the next wave! */
 
-static void NextWave(void)
+void
+GamePanelDelegate::NextWave()
 {
 	int	index, x, y;
 	int	NewRoids;
@@ -836,7 +856,7 @@ static void DoBonus(void)
 	int i, x, sw, xs, xt;
 	char numbuf[128];
 
-	DrawStatus(false);
+	//DrawStatus(false);
 	screen->Update();
 
 	/* -- Now do the bonus */
@@ -951,7 +971,7 @@ static void DoBonus(void)
 			sprintf(numbuf, "%-5.1d", OurShip->GetScore());
 			DrawText(xt, 220, numbuf, geneva, STYLE_BOLD, 0xFF, 0xFF, 0xFF);
 
-			DrawStatus(false);
+			//DrawStatus(false);
 			screen->Update();
 		}
 	}
@@ -969,16 +989,4 @@ static void DoBonus(void)
 
 	screen->Fade();
 }	/* -- DoBonus */
-
-
-/* ----------------------------------------------------------------- */
-/* -- Flash the stars on the screen */
-
-static void TwinkleStars(void)
-{
-	int theStar;
-
-	theStar = FastRandom(MAX_STARS);
-	SetStar(theStar);
-}	/* -- TwinkleStars */
 
