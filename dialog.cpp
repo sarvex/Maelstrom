@@ -197,6 +197,7 @@ Maclike_Dialog:: Run(int expand_steps)
 	Screen->DrawRect(X+3, Y+3, Width-6, Height-6, black);
 	Screen->FillRect(X+4, Y+4, Width-8, Height-8, white);
 
+#if 0
 	/* Allow the dialog to expand slowly */
 	XX = (double)(X+Width/2);
 	YY = (double)(Y+Height/2);
@@ -224,6 +225,7 @@ Maclike_Dialog:: Run(int expand_steps)
 	}
 	Screen->Clear((Uint16)X, (Uint16)Y, (Uint16)Width, (Uint16)Height);
 	Screen->Update();
+#endif
 
 	/* Draw the dialog elements (after the slow expand) */
 	for ( relem = rect_list.next; relem; relem = relem->next ) {
