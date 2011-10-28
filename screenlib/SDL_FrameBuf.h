@@ -88,10 +88,6 @@ public:
 	void QueueBlit(int x, int y, SDL_Texture *src, clipval do_clip = DOCLIP) {
 		int w, h;
 		SDL_QueryTexture(src, NULL, NULL, &w, &h);
-#ifdef UI_DEBUG
-if(w == 32 && h == 32)
-printf("QueueBlit: %d,%d - %dx%d\n", x, y, w, h);
-#endif
 		QueueBlit(x, y, src, 0, 0, w, h, do_clip);
 	}
 	void Update() {
@@ -122,18 +118,12 @@ printf("QueueBlit: %d,%d - %dx%d\n", x, y, w, h);
 		SDL_RenderDrawPoint(renderer, x, y);
 	}
 	void DrawLine(int x1, int y1, int x2, int y2, Uint32 color) {
-#ifdef UI_DEBUG
-printf("DrawLine: %d,%d - %d,%d\n", x1, y1, x2, y2);
-#endif
 		UpdateDrawColor(color);
 		SDL_RenderDrawLine(renderer, x1, y1, x2, y2);
 	}
 	void DrawRect(int x1, int y1, int w, int h, Uint32 color) {
 		UpdateDrawColor(color);
 
-#ifdef UI_DEBUG
-printf("DrawRect: %d,%d - %dx%d\n", x1, y1, w, h);
-#endif
 		SDL_Rect rect;
 		rect.x = x1;
 		rect.y = y1;

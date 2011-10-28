@@ -352,9 +352,6 @@ int DrawText(int x, int y, const char *text, MFont *font, Uint8 style,
 	if ( textimage == NULL ) {
 		width = 0;
 	} else {
-#ifdef UI_DEBUG
-printf("DrawText: %d,%d '%s'\n", x, y-screen->GetImageHeight(textimage)+2, text);
-#endif
 		screen->QueueBlit(x, y-screen->GetImageHeight(textimage)+2, textimage, NOCLIP);
 		width = screen->GetImageWidth(textimage);
 		fontserv->FreeText(textimage);

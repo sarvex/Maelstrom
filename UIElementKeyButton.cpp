@@ -44,10 +44,6 @@ void
 UIElementKeyButton::Draw()
 {
 	m_screen->QueueBlit(m_rect.x, m_rect.y, gKeyIcon, NOCLIP);
-#ifdef UI_DEBUG
-printf("KeyButton: %s at %d,%d\n", SDL_GetKeyName(m_hotkey), m_rect.x+14, m_rect.y+10);
-printf("KeyButton: %s at %d,%d\n", SDL_GetKeyName(m_hotkey), m_rect.x+13, m_rect.y+9);
-#endif
 	m_screen->QueueBlit(m_rect.x+14, m_rect.y+10, m_textShadow, NOCLIP);
 	m_screen->QueueBlit(m_rect.x+13, m_rect.y+9, m_text, NOCLIP);
 }

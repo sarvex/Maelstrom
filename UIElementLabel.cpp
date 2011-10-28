@@ -110,10 +110,6 @@ UIElementLabel::SetText(const char *text)
 	m_rect.w = m_screen->GetImageWidth(m_texture);
 	m_rect.h = m_screen->GetImageHeight(m_texture);
 	CalculateAnchor();
-#ifdef UI_DEBUG
-if (m_rect.x)
-printf("Label: '%s' %d,%d\n", m_text, m_rect.x, m_rect.y);
-#endif
 }
 
 void
