@@ -148,6 +148,9 @@ void NewGame(void)
 	while (gGameOn) {
 		ui->Draw();
 
+		/* -- In case we were faded out in DoBonus() */
+		screen->FadeIn();
+
 		/* Timing handling -- Delay the FRAME_DELAY */
 		if ( ! gNoDelay ) {
 			Uint32 ticks;
@@ -734,12 +737,8 @@ GamePanelDelegate::DoBonus()
 
 	m_showingBonus = false;
 
+	/* Fade out and prepare for drawing the next wave */
 	screen->FadeOut();
-	ui->Draw();
-	screen->FadeIn();
-
-	/* Need to clear one more time since we're about to draw */
-	/* FIXME: This doesn't work */
 	screen->Clear();
 
 }	/* -- DoBonus */
