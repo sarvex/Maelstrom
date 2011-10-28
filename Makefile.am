@@ -5,6 +5,8 @@ bin_PROGRAMS = Maelstrom Maelstrom-netd
 Maelstrom_SOURCES =		\
 	Maelstrom.h		\
 	Maelstrom_Globals.h	\
+	MaelstromUI.cpp		\
+	MaelstromUI.h		\
 	buttonlist.h		\
 	checksum.cpp		\
 	checksum.h		\
@@ -43,11 +45,7 @@ Maelstrom_SOURCES =		\
 	UIElementSprite.cpp	\
 	UIElementSprite.h	\
 	UIElementTitle.cpp	\
-	UIElementTitle.h	\
-	UIElements.cpp		\
-	UIElements.h		\
-	UIPanels.cpp		\
-	UIPanels.h
+	UIElementTitle.h
 
 LOGIC = netlogic
 

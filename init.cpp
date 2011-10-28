@@ -8,8 +8,7 @@
 #include "load.h"
 #include "colortable.h"
 #include "fastrand.h"
-#include "UIPanels.h"
-#include "UIElements.h"
+#include "MaelstromUI.h"
 #include "screenlib/UIElement.h"
 
 
@@ -647,12 +646,6 @@ void CleanUp(void)
 	SDL_Quit();
 }
 
-/* This function is called by the UI to play menu sounds */
-static void PlayUISound(void*, int soundID)
-{
-	sound->PlaySound(soundID, 5);
-}
-
 /* ----------------------------------------------------------------- */
 /* -- Perform some initializations and report failure if we choke */
 int DoInitializations(Uint32 window_flags, Uint32 render_flags)
@@ -726,18 +719,15 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 		}
 	}
 
-	/* Create the UI manager */
-	ui = new UIManager(screen, CreateMaelstromUIPanel, CreateMaelstromUIElement);
-	ui->SetSoundCallback(PlayUISound, NULL);
-	ui->SetLoadPath("UI");
-	ui->LoadTemplates("UITemplates.xml");
-
 	/* Load the Sound Server and initialize sound */
 	sound = new Sound("Maelstrom Sounds", gSoundLevel);
 	if ( sound->Error() ) {
 		error("Fatal: %s\n", sound->Error());
 		return(-1);
 	}
+
+	/* Create the UI manager */
+	ui = new MaelstromUI(screen);
 
 	/* -- We want to access the FULL screen! */
 	SetRect(&gScrnRect, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);

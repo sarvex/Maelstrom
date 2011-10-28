@@ -25,14 +25,13 @@
 #include "SDL_FrameBuf.h"
 #include "UIManager.h"
 #include "UIPanel.h"
+#include "UIElementButton.h"
+#include "UIElementLine.h"
+#include "UIElementRect.h"
 
 
-UIManager::UIManager(FrameBuf *screen, UIPanelFactory panelFactory, UIElementFactory elementFactory) : UIArea(screen)
+UIManager::UIManager(FrameBuf *screen) : UIArea(screen)
 {
-	m_panelFactory = panelFactory;
-	m_elementFactory = elementFactory;
-	m_soundCallback = NULL;
-	m_soundCallbackParam = NULL;
 	m_loadPath = new char[2];
 	strcpy(m_loadPath, ".");
 }
@@ -94,15 +93,6 @@ UIManager::LoadPanel(const char *name)
 		PHYSFS_sint64 size;
 		char *buffer;
 
-		if (!GetPanelFactory()) {
-			fprintf(stderr, "Error: No panel factory set\n");
-			return NULL;
-		}
-		if (!GetElementFactory()) {
-			fprintf(stderr, "Error: No element factory set\n");
-			return NULL;
-		}
-
 		sprintf(file, "%s/%s.xml", m_loadPath, name);
 		fp = PHYSFS_openRead(file);
 		if (!fp) {
@@ -135,17 +125,36 @@ UIManager::LoadPanel(const char *name)
 
 		rapidxml::xml_node<> *node = doc.first_node();
 		rapidxml::xml_attribute<> *attr;
+
+		panel = CreatePanel(node->name(), name);
+		if (!panel) {
+			fprintf(stderr, "Warning: Couldn't create panel %s in %s\n",
+						node->name(), file);
+			delete[] buffer;
+			return NULL;
+		}
+
 		attr = node->first_attribute("delegate", 0, false);
-		panel = (GetPanelFactory())(this, node->name(), name, attr ? attr->value() : NULL);
-		if (panel) {
-			if (!panel->Load(node, GetTemplates()) ||
-			    !panel->FinishLoading()) {
-				fprintf(stderr, "Warning: Couldn't load %s: %s\n",
-							file, panel->Error());
+		if (attr) {
+			UIPanelDelegate *delegate;
+
+			delegate = CreatePanelDelegate(panel, attr->value());
+			if (!delegate) {
+				fprintf(stderr, "Warning: Couldn't find delegate '%s'\n", attr->value());
 				delete[] buffer;
 				delete panel;
 				return NULL;
 			}
+			panel->SetPanelDelegate(delegate);
+		}
+		
+		if (!panel->Load(node, GetTemplates()) ||
+		    !panel->FinishLoading()) {
+			fprintf(stderr, "Warning: Couldn't load %s: %s\n",
+						file, panel->Error());
+			delete[] buffer;
+			delete panel;
+			return NULL;
 		}
 		delete[] buffer;
 	}
@@ -255,4 +264,32 @@ UIManager::HandleEvent(const SDL_Event &event)
 		}
 	}
 	return false;
+}
+
+UIPanel *
+UIManager::CreatePanel(const char *type, const char *name)
+{
+	if (strcasecmp(type, "UIPanel") == 0) {
+		return new UIPanel(this, name);
+	}
+	return NULL;
+}
+
+UIPanelDelegate *
+UIManager::CreatePanelDelegate(UIPanel *panel, const char *delegate)
+{
+	return NULL;
+}
+
+UIElement *
+UIManager::CreateElement(UIPanel *panel, const char *type)
+{
+	if (strcasecmp(type, "Line") == 0) {
+		return new UIElementLine(panel);
+	} else if (strcasecmp(type, "Rectangle") == 0) {
+		return new UIElementRect(panel);
+	} else if (strcasecmp(type, "Button") == 0) {
+		return new UIElementButton(panel);
+	}
+	return NULL;
 }

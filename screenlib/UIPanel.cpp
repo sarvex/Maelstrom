@@ -125,7 +125,7 @@ bool
 UIPanel::LoadElements(rapidxml::xml_node<> *node, const UITemplates *templates)
 {
 	for (node = node->first_node(); node; node = node->next_sibling()) {
-		UIElement *element = (m_ui->GetElementFactory())(this, node->name());
+		UIElement *element = m_ui->CreateElement(this, node->name());
 		if (!element) {
 			fprintf(stderr, "Warning: Couldn't find handler for element %s\n", node->name());
 			continue;

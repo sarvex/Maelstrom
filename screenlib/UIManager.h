@@ -26,31 +26,23 @@
 #include "SDL.h"
 #include "../utils/array.h"
 #include "UIArea.h"
+#include "UIFontInterface.h"
+#include "UISoundInterface.h"
 #include "UITemplates.h"
 
 class FrameBuf;
-class UIManager;
 class UIPanel;
+class UIPanelDelegate;
 class UIElement;
 
-typedef UIPanel *(*UIPanelFactory)(UIManager *ui, const char *type, const char *name, const char *delegate);
-typedef UIElement *(*UIElementFactory)(UIPanel *panel, const char *name);
-typedef void (*UISoundCallback)(void *, int soundID);
-
-class UIManager : public UIArea
+class UIManager : public UIArea, public UIFontInterface, public UISoundInterface
 {
 public:
-	UIManager(FrameBuf *screen, UIPanelFactory panelFactory, UIElementFactory elementFactory);
-	~UIManager();
+	UIManager(FrameBuf *screen);
+	virtual ~UIManager();
 
 	FrameBuf *GetScreen() const {
 		return m_screen;
-	}
-	UIPanelFactory GetPanelFactory() const {
-		return m_panelFactory;
-	}
-	UIElementFactory GetElementFactory() const {
-		return m_elementFactory;
 	}
 	const UITemplates *GetTemplates() const {
 		return &m_templates;
@@ -86,24 +78,15 @@ public:
 		DeletePanel(GetPanel(name));
 	}
 
-	void SetSoundCallback(UISoundCallback callback, void *param) {
-		m_soundCallback = callback;
-		m_soundCallbackParam = param;
-	}
-	void PlaySound(int soundID) {
-		if (m_soundCallback) {
-			m_soundCallback(m_soundCallbackParam, soundID);
-		}
-	}
-			
 	void Draw(bool fullUpdate = true);
 	bool HandleEvent(const SDL_Event &event);
 
+public:
+	virtual UIPanel *CreatePanel(const char *type, const char *name);
+	virtual UIPanelDelegate *CreatePanelDelegate(UIPanel *panel, const char *delegate);
+	virtual UIElement *CreateElement(UIPanel *panel, const char *type);
+
 protected:
-	UIPanelFactory m_panelFactory;
-	UIElementFactory m_elementFactory;
-	UISoundCallback m_soundCallback;
-	void *m_soundCallbackParam;
 	char *m_loadPath;
 	UITemplates m_templates;
 	array<UIPanel *> m_panels;

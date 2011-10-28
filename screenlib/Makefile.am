@@ -17,9 +17,11 @@ libSDLscreen_a_SOURCES =	\
 	UIElementRect.h		\
 	UIElementTexture.cpp	\
 	UIElementTexture.h	\
+	UIFontInterface.h	\
 	UIManager.cpp		\
 	UIManager.h		\
 	UIPanel.cpp		\
 	UIPanel.h		\
+	UISoundInterface.h	\
 	UITemplates.cpp		\
 	UITemplates.h
