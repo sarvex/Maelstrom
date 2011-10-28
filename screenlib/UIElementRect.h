@@ -1,7 +1,7 @@
 #ifndef _UIElementRect_h
 #define _UIElementRect_h
 
-#include "screenlib/UIElement.h"
+#include "UIElement.h"
 
 
 class UIElementRect : public UIElement

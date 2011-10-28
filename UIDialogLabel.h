@@ -1,7 +1,7 @@
 #ifndef _UIDialogLabel_h
 #define _UIDialogLabel_h
 
-#include "UIElementLabel.h"
+#include "screenlib/UIElementLabel.h"
 
 class UIDialogLabel : public UIElementLabel
 {

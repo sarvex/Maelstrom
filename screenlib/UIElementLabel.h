@@ -1,9 +1,9 @@
 #ifndef _UIElementLabel_h
 #define _UIElementLabel_h
 
-#include "screenlib/UIElement.h"
+#include "UIElement.h"
+#include "UIFontInterface.h"
 
-class MFont;
 
 class UIElementLabel : public UIElement
 {
@@ -23,8 +23,9 @@ public:
 	virtual void Draw();
 
 protected:
-	MFont *m_font;
-	Uint8 m_style;
+	char *m_fontName;
+	int m_fontSize;
+	UIFontStyle m_fontStyle;
 	Uint32 m_color;
 	char *m_text;
 	SDL_Texture *m_texture;

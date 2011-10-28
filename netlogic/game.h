@@ -3,7 +3,6 @@
 #define _game_h
 
 class UIElement;
-class UIElementIcon;
 class UIElementLabel;
 class UIElementRect;
 
@@ -33,12 +32,12 @@ protected:
 	UIElementLabel *m_lives;
 	UIElementLabel *m_bonus;
 
-	UIElementIcon *m_multiplier[4];
-	UIElementIcon *m_autofire;
-	UIElementIcon *m_airbrakes;
-	UIElementIcon *m_lucky;
-	UIElementIcon *m_triplefire;
-	UIElementIcon *m_longfire;
+	UIElement *m_multiplier[4];
+	UIElement *m_autofire;
+	UIElement *m_airbrakes;
+	UIElement *m_lucky;
+	UIElement *m_triplefire;
+	UIElement *m_longfire;
 
 	UIElementLabel *m_multiplayerCaption;
 	UIElementRect *m_multiplayerColor;

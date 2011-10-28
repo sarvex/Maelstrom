@@ -1,7 +1,7 @@
 #ifndef _UIElementLine_h
 #define _UIElementLine_h
 
-#include "screenlib/UIElement.h"
+#include "UIElement.h"
 
 
 class UIElementLine : public UIElement

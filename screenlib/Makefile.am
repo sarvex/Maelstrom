@@ -11,6 +11,8 @@ libSDLscreen_a_SOURCES =	\
 	UIElement.h		\
 	UIElementButton.cpp	\
 	UIElementButton.h	\
+	UIElementLabel.cpp	\
+	UIElementLabel.h	\
 	UIElementLine.cpp	\
 	UIElementLine.h		\
 	UIElementRect.cpp	\

@@ -85,8 +85,6 @@ typedef struct MFont {
 	Mac_ResData *nfnt;
 } MFont;
 
-struct HashTable;
-
 class FontServ {
 
 public:
@@ -137,7 +135,6 @@ public:
 private:
 	FrameBuf *screen;
 	Mac_Resource *fontres;
-	HashTable *strings;
 
 	/* Useful for getting error feedback */
 	void SetError(const char *fmt, ...) {

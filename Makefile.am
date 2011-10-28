@@ -40,8 +40,6 @@ Maelstrom_SOURCES =		\
 	UIElementIcon.h		\
 	UIElementKeyButton.cpp	\
 	UIElementKeyButton.h	\
-	UIElementLabel.cpp	\
-	UIElementLabel.h	\
 	UIElementSprite.cpp	\
 	UIElementSprite.h	\
 	UIElementTitle.cpp	\

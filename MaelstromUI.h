@@ -1,5 +1,5 @@
 
-#include "screenlib/UIManager.h"
+#include "Maelstrom_Globals.h"
 
 class HashTable;
 
@@ -12,7 +12,7 @@ public:
 	//
 	// UIFontInterface
 	//
-	virtual SDL_Texture *CreateText(const char *text, const char *fontName, int fontSize, UIFontStyle fontStyle);
+	virtual SDL_Texture *CreateText(const char *text, const char *fontName, int fontSize, UIFontStyle fontStyle, Uint32 color);
 	virtual void FreeText(SDL_Texture *texture);
 
 	//
@@ -29,4 +29,8 @@ public:
 
 protected:
 	HashTable *m_fonts;
+	HashTable *m_strings;
+
+protected:
+	MFont *GetFont(const char *fontName, int fontSize);
 };

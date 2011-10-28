@@ -23,19 +23,19 @@
 #ifndef _UIFontInterface_h
 #define _UIFontInterface_h
 
-enum UIFontStyle {
-	UIFONT_STYLE_NORMAL	= 0x00,
-	UIFONT_STYLE_BOLD	= 0x01,
-	UIFONT_STYLE_UNDERLINE	= 0x02,
-	UIFONT_STYLE_ITALIC	= 0x04,
-};
+#include "SDL.h"
 
-struct SDL_Texture;
+enum UIFontStyle {
+	UIFONT_STYLE_NORMAL,
+	UIFONT_STYLE_BOLD,
+	UIFONT_STYLE_UNDERLINE,
+	UIFONT_STYLE_ITALIC
+};
 
 class UIFontInterface
 {
 public:
-	virtual SDL_Texture *CreateText(const char *text, const char *fontName, int fontSize, UIFontStyle fontStyle) = 0;
+	virtual SDL_Texture *CreateText(const char *text, const char *fontName, int fontSize, UIFontStyle fontStyle, Uint32 color) = 0;
 	virtual void FreeText(SDL_Texture *texture) = 0;
 };
 

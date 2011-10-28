@@ -29,7 +29,6 @@
 
 #include "SDL_types.h"
 #include "bitesex.h"
-#include "hashtable.h"
 #include "Mac_FontServ.h"
 
 #define copy_short(S, D)	memcpy(&S, D, 2); D += 2;
@@ -70,20 +69,10 @@ struct FOND {
 	/* The Kerning Table */
 };
 
-static void
-hash_nuke_string_texture(const void *key, const void *value, void *data)
-{
-	FrameBuf *screen = (FrameBuf *)data;
-
-	delete[] (char*)key;
-	screen->FreeImage((SDL_Texture *)value);
-}
-
 FontServ:: FontServ(FrameBuf *_screen, const char *fontfile)
 {
 	screen = _screen;
 	fontres = new Mac_Resource(fontfile);
-	strings = hash_create(screen, hash_hash_string, hash_keymatch_string, hash_nuke_string_texture);
  
 	if ( fontres->Error() ) {
 		SetError("Couldn't load resources from %s", fontfile);
@@ -98,8 +87,6 @@ FontServ:: FontServ(FrameBuf *_screen, const char *fontfile)
 
 FontServ:: ~FontServ()
 {
-	hash_destroy(strings);
-
 	delete fontres;
 }
 
@@ -294,14 +281,6 @@ FontServ:: TextImage(const char *text, MFont *font, Uint8 style, SDL_Color fg)
 	int ascii, i, y;
 	int bit;
 
-	/* First see if we can find it in our cache */
-	keysize = strlen(font->name)+1+2+1+1+1+6+1+strlen(text)+1;
-	key = SDL_stack_alloc(char, keysize);
-	sprintf(key, "%s:%d:%c:%2.2x%2.2x%2.2x:%s", font->name, font->ptsize, '0'+style, fg.r, fg.g, fg.b, text);
-	if (hash_find(strings, key, (const void**)&image)) {
-		return image;
-	}
-
 	switch (style) {
 		case STYLE_NORM:	bold_offset = 0;
 					break;
@@ -391,7 +370,7 @@ FontServ:: TextImage(const char *text, MFont *font, Uint8 style, SDL_Color fg)
 						y*(font->header)->rowWords;
 				for ( bit = 0; bit<glyph_width; ++bit ) {
 					bitmap[dst_offset+bit+boldness] |=
-				  		GETBIT(src_scanline, glyph_line_offset+bit)*color;
+				  		GETBIT(src_scanline, glyph_line_offset+bit)*0xFFFFFFFF;
 				}
 			}
 #ifdef WIDE_BOLD
@@ -405,19 +384,14 @@ FontServ:: TextImage(const char *text, MFont *font, Uint8 style, SDL_Color fg)
 		y = (height-(font->header)->descent+1);
 		bit_offset = (y*width);
 		for ( bit=0; bit<width; ++bit )
-			bitmap[bit_offset++] = color;
+			bitmap[bit_offset++] = 0xFFFFFFFF;
 	}
 
 	/* Create the image */
 	image = screen->LoadImage(width, height, bitmap);
 	delete[] bitmap;
 	SDL_SetTextureBlendMode(image, SDL_BLENDMODE_BLEND);
-
-	/* Add it to our cache */
-	keycopy = new char[keysize];
-	strcpy(keycopy, key);
-	hash_insert(strings, keycopy, image);
-	SDL_stack_free(key);
+	SDL_SetTextureColorMod(image, fg.r, fg.g, fg.b);
 
 	return(image);
 }
@@ -425,6 +399,5 @@ FontServ:: TextImage(const char *text, MFont *font, Uint8 style, SDL_Color fg)
 void
 FontServ:: FreeText(SDL_Texture *text)
 {
-	/* We'll likely be asked for this again soon, leave it alone */
-	return;
+	screen->FreeImage(text);
 }

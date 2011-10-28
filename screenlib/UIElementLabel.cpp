@@ -8,8 +8,9 @@ UIElementType UIElementLabel::s_elementType;
 UIElementLabel::UIElementLabel(UIPanel *panel, const char *name) :
 	UIElement(panel, name)
 {
-	m_font = NULL;
-	m_style = STYLE_NORM;
+	m_fontName = NULL;
+	m_fontSize = 0;
+	m_fontStyle = UIFONT_STYLE_NORMAL;
 	m_color = m_screen->MapRGB(0xFF, 0xFF, 0xFF);
 	m_text = NULL;
 	m_texture = NULL;
@@ -17,26 +18,27 @@ UIElementLabel::UIElementLabel(UIPanel *panel, const char *name) :
 
 UIElementLabel::~UIElementLabel()
 {
+	if (m_fontName) {
+		SDL_free(m_fontName);
+	}
 	if (m_text) {
-		delete[] m_text;
+		SDL_free(m_text);
 	}
 	if (m_texture) {
-		fontserv->FreeText(m_texture);
+		m_panel->GetUI()->FreeText(m_texture);
 	}
 }
 
-static Uint8 ParseStyle(const char *text)
+static UIFontStyle ParseStyle(const char *text)
 {
-	Uint8 style = STYLE_NORM;
-
 	if (strcasecmp(text, "BOLD") == 0) {
-		style = STYLE_BOLD;
+		return UIFONT_STYLE_BOLD;
 	} else if (strcasecmp(text, "UNDERLINE") == 0) {
-		style = STYLE_ULINE;
+		return UIFONT_STYLE_UNDERLINE;
 	} else if (strcasecmp(text, "ITALIC") == 0) {
-		style = STYLE_ITALIC;
+		return UIFONT_STYLE_UNDERLINE;
 	}
-	return style;
+	return UIFONT_STYLE_NORMAL;
 }
 
 bool
@@ -44,8 +46,6 @@ UIElementLabel::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 {
 	rapidxml::xml_node<> *child;
 	rapidxml::xml_attribute<> *attr;
-	const char *fontName = NULL;
-	int fontSize = 0;
 
 	if (!UIElement::Load(node, templates)) {
 		return false;
@@ -53,28 +53,20 @@ UIElementLabel::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 
 	attr = node->first_attribute("fontName", 0, false);
 	if (attr) {
-		fontName = attr->value();
+		if (m_fontName) {
+			SDL_free(m_fontName);
+		}
+		m_fontName = SDL_strdup(attr->value());
 	}
 
 	attr = node->first_attribute("fontSize", 0, false);
 	if (attr) {
-		fontSize = SDL_atoi(attr->value());
-	}
-
-	if (fontName && fontSize) {
-		m_font = fontserv->NewFont(fontName, fontSize);
-		if (!m_font) {
-			SetError("Element 'Label' couldn't find font %s:%d", fontName, fontSize);
-			return false;
-		}
-	} else if (!m_font) {
-		SetError("Element 'Label' missing attribute 'fontName' or 'fontSize'");
-		return false;
+		m_fontSize = SDL_atoi(attr->value());
 	}
 
 	attr = node->first_attribute("fontStyle", 0, false);
 	if (attr) {
-		m_style = ParseStyle(attr->value());
+		m_fontStyle = ParseStyle(attr->value());
 	}
 
 	child = node->first_node("color", 0, false);
@@ -93,20 +85,27 @@ UIElementLabel::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 void
 UIElementLabel::SetText(const char *text)
 {
-	if (m_text && strcmp(text, m_text) == 0) {
+	SDL_Texture *texture;
+
+	if (!m_fontName || !m_fontSize) {
+		SetError("You must set a font first");
+		return;
+	}
+
+	if (m_text && SDL_strcmp(text, m_text) == 0) {
 		return;
 	}
 
 	if (m_text) {
-		delete[] m_text;
+		SDL_free(m_text);
 	}
 	if (m_texture) {
-		fontserv->FreeText(m_texture);
+		m_panel->GetUI()->FreeText(m_texture);
 	}
 
-	m_text = new char[strlen(text)+1];
-	strcpy(m_text, text);
-	m_texture = fontserv->TextImage(m_text, m_font, m_style, m_color);
+	m_text = SDL_strdup(text);
+	m_texture = m_panel->GetUI()->CreateText(m_text, m_fontName, m_fontSize, m_fontStyle, m_color);
+
 	m_rect.w = m_screen->GetImageWidth(m_texture);
 	m_rect.h = m_screen->GetImageHeight(m_texture);
 	CalculateAnchor();
@@ -125,9 +124,9 @@ UIElementLabel::SetTextColor(Uint8 R, Uint8 G, Uint8 B)
 
 	if (m_text) {
 		if (m_texture) {
-			fontserv->FreeText(m_texture);
+			m_panel->GetUI()->FreeText(m_texture);
 		}
-		m_texture = fontserv->TextImage(m_text, m_font, m_style, m_color);
+		m_texture = m_panel->GetUI()->CreateText(m_text, m_fontName, m_fontSize, m_fontStyle, m_color);
 	}
 }
 

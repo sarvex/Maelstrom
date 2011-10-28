@@ -6,8 +6,7 @@
 #include "make.h"
 #include "load.h"
 #include "game.h"
-#include "../UIElementIcon.h"
-#include "../UIElementLabel.h"
+#include "../screenlib/UIElementLabel.h"
 #include "../screenlib/UIElementRect.h"
 
 
@@ -191,14 +190,14 @@ GamePanelDelegate::OnLoad()
 
 	for (i = 0; i < SDL_arraysize(m_multiplier); ++i) {
 		sprintf(name, "multiplier%d", 2+i);
-		m_multiplier[i] = m_panel->GetElement<UIElementIcon>(name);
+		m_multiplier[i] = m_panel->GetElement<UIElement>(name);
 	}
 
-	m_autofire = m_panel->GetElement<UIElementIcon>("autofire");
-	m_airbrakes = m_panel->GetElement<UIElementIcon>("airbrakes");
-	m_lucky = m_panel->GetElement<UIElementIcon>("lucky");
-	m_triplefire = m_panel->GetElement<UIElementIcon>("triplefire");
-	m_longfire = m_panel->GetElement<UIElementIcon>("longfire");
+	m_autofire = m_panel->GetElement<UIElement>("autofire");
+	m_airbrakes = m_panel->GetElement<UIElement>("airbrakes");
+	m_lucky = m_panel->GetElement<UIElement>("lucky");
+	m_triplefire = m_panel->GetElement<UIElement>("triplefire");
+	m_longfire = m_panel->GetElement<UIElement>("longfire");
 
 	m_multiplayerCaption = m_panel->GetElement<UIElementLabel>("multiplayer_caption");
 	m_multiplayerColor = m_panel->GetElement<UIElementRect>("multiplayer_color");
