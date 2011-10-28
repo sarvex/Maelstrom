@@ -50,6 +50,7 @@ public:
 	}
 
 	virtual bool Load(rapidxml::xml_node<> *node);
+	virtual bool FinishLoading() { return true; }
 
 	virtual UIArea *GetAnchorElement(const char *name);
 

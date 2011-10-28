@@ -26,6 +26,7 @@
 #include "SDL.h"
 #include "../utils/array.h"
 #include "UIArea.h"
+#include "UITemplates.h"
 
 class FrameBuf;
 class UIManager;
@@ -51,8 +52,12 @@ public:
 	UIElementFactory GetElementFactory() const {
 		return m_elementFactory;
 	}
+	rapidxml::xml_node<> *GetTemplateFor(rapidxml::xml_node<> *node) const {
+		return m_templates.GetTemplateFor(node);
+	}
 
 	void SetLoadPath(const char *path);
+	bool LoadTemplates(const char *file);
 	UIPanel *LoadPanel(const char *name);
 	UIPanel *GetPanel(const char *name, bool allowLoad = true);
 	UIPanel *GetCurrentPanel();
@@ -100,6 +105,7 @@ protected:
 	UISoundCallback m_soundCallback;
 	void *m_soundCallbackParam;
 	char *m_loadPath;
+	UITemplates m_templates;
 	array<UIPanel *> m_panels;
 	array<UIPanel *> m_visible;
 };

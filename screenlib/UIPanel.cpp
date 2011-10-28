@@ -96,6 +96,12 @@ UIPanel::Load(rapidxml::xml_node<> *node)
 		}
 	}
 
+	return true;
+}
+
+bool
+UIPanel::FinishLoading()
+{
 	if (m_delegate) {
 		return m_delegate->OnLoad();
 	} else {
@@ -106,12 +112,19 @@ UIPanel::Load(rapidxml::xml_node<> *node)
 bool
 UIPanel::LoadElements(rapidxml::xml_node<> *node)
 {
+	rapidxml::xml_node<> *templateNode;
+
 	for (node = node->first_node(); node; node = node->next_sibling()) {
 		UIElement *element = (m_ui->GetElementFactory())(this, node->name());
 		if (!element) {
 			fprintf(stderr, "Warning: Couldn't find handler for element %s\n", node->name());
 		}
-		if (!element->Load(node)) {
+
+
+		templateNode = m_ui->GetTemplateFor(node);
+		if ((templateNode && !element->Load(templateNode)) ||
+		    !element->Load(node) ||
+		    !element->FinishLoading()) {
 			fprintf(stderr, "Warning: Couldn't load element %s: %s\n", node->name(), element->Error());
 			delete element;
 		}

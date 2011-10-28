@@ -730,6 +730,7 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 	ui = new UIManager(screen, CreateMaelstromUIPanel, CreateMaelstromUIElement);
 	ui->SetSoundCallback(PlayUISound, NULL);
 	ui->SetLoadPath("UI");
+	ui->LoadTemplates("UITemplates.xml");
 
 	/* Load the Sound Server and initialize sound */
 	sound = new Sound("Maelstrom Sounds", gSoundLevel);

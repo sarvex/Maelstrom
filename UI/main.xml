@@ -1,4 +1,4 @@
-<UIPanel delegate="MainPanel">
+<UIPanel template="FramedPanel" delegate="MainPanel">
 	<Elements>
 		<Title name="image" id="129">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="CENTER" x="-251" y="-187"/>
@@ -6,43 +6,6 @@
 
 		<!-- Catch-all button to bonk when a key is pressed -->
 		<Button hotkey="any" clickSound="108"/>
-
-		<!-- screen frame -->
-		<Rectangle>
-			<Color r="0x75" g="0x75" b="0xFF"/>
-			<Size w="514" h="386"/>
-			<Anchor anchorFrom="CENTER" anchorTo="CENTER"/>
-		</Rectangle>
-		<Rectangle>
-			<Color r="0x75" g="0x75" b="0xFF"/>
-			<Size w="516" h="388"/>
-			<Anchor anchorFrom="CENTER" anchorTo="CENTER"/>
-		</Rectangle>
-		<Rectangle>
-			<Color r="0x9C" g="0x9C" b="0xFF"/>
-			<Size w="518" h="390"/>
-			<Anchor anchorFrom="CENTER" anchorTo="CENTER"/>
-		</Rectangle>
-		<Rectangle>
-			<Color r="0x9C" g="0x9C" b="0xFF"/>
-			<Size w="520" h="392"/>
-			<Anchor anchorFrom="CENTER" anchorTo="CENTER"/>
-		</Rectangle>
-		<Rectangle>
-			<Color r="0xC3" g="0xC3" b="0xFF"/>
-			<Size w="522" h="394"/>
-			<Anchor anchorFrom="CENTER" anchorTo="CENTER"/>
-		</Rectangle>
-		<Rectangle>
-			<Color r="0x9C" g="0x9C" b="0xFF"/>
-			<Size w="524" h="396"/>
-			<Anchor anchorFrom="CENTER" anchorTo="CENTER"/>
-		</Rectangle>
-		<Rectangle>
-			<Color r="0x75" g="0x75" b="0xFF"/>
-			<Size w="526" h="398"/>
-			<Anchor anchorFrom="CENTER" anchorTo="CENTER"/>
-		</Rectangle>
 
 		<!-- dividers -->
 		<Line name="vertical_divider">

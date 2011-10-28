@@ -20,4 +20,6 @@ libSDLscreen_a_SOURCES =	\
 	UIManager.cpp		\
 	UIManager.h		\
 	UIPanel.cpp		\
-	UIPanel.h
+	UIPanel.h		\
+	UITemplates.cpp		\
+	UITemplates.h

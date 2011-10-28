@@ -43,6 +43,7 @@ UIManager::~UIManager()
 	while (m_panels.length() > 0) {
 		delete m_panels[m_panels.length()-1];
 	}
+	delete[] m_loadPath;
 }
 
 void
@@ -51,6 +52,15 @@ UIManager::SetLoadPath(const char *path)
 	delete[] m_loadPath;
 	m_loadPath = new char[strlen(path)+1];
 	strcpy(m_loadPath, path);
+}
+
+bool
+UIManager::LoadTemplates(const char *file)
+{
+	char path[1024];
+
+	sprintf(path, "%s/%s", m_loadPath, file);
+	return m_templates.Load(path);
 }
 
 static const char *GetLine(char *&text)
@@ -128,7 +138,12 @@ UIManager::LoadPanel(const char *name)
 		attr = node->first_attribute("delegate", 0, false);
 		panel = (GetPanelFactory())(this, node->name(), name, attr ? attr->value() : NULL);
 		if (panel) {
-			if (!panel->Load(node)) {
+			rapidxml::xml_node<> *templateNode;
+
+			templateNode = GetTemplateFor(node);
+			if ((templateNode && !panel->Load(templateNode)) ||
+			    !panel->Load(node) ||
+			    !panel->FinishLoading()) {
 				fprintf(stderr, "Warning: Couldn't load %s: %s\n",
 							file, panel->Error());
 				delete[] buffer;

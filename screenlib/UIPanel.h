@@ -69,7 +69,8 @@ public:
 		return m_cursorVisible;
 	}
 
-	bool Load(rapidxml::xml_node<> *node);
+	virtual bool Load(rapidxml::xml_node<> *node);
+	virtual bool FinishLoading();
 
 	virtual UIArea *GetAnchorElement(const char *name);
 
