@@ -1,9 +1,9 @@
 <Dialog>
-	<Size w="318" h="194"/>
-	<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" x="160" y="73"/>
+	<Size w="310" h="186"/>
+	<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" x="164" y="77"/>
 	<Elements>
 		<Icon name="icon" id="103">
-			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" x="23" y="23"/>
+			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" x="19" y="19"/>
 		</Icon>
 		<Label name="line1" template="Dialog" text="No eternal reward will forgive us">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPRIGHT" anchor="icon" x="25"/>

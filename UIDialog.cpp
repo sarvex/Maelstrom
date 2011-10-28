@@ -63,8 +63,8 @@ UIDialog::Draw()
 	int maxx, maxy;
 
 	if (m_step < EXPAND_STEPS) {
-		w = 8+((m_rect.w-8)*m_step)/EXPAND_STEPS;
-		h = 8+((m_rect.h-8)*m_step)/EXPAND_STEPS;
+		w = (m_rect.w*m_step)/EXPAND_STEPS;
+		h = (m_rect.h*m_step)/EXPAND_STEPS;
 		x = m_rect.x + m_rect.w/2 - (w/2);
 		y = m_rect.y + m_rect.h/2 - (h/2);
 	} else {
@@ -73,6 +73,12 @@ UIDialog::Draw()
 		x = m_rect.x;
 		y = m_rect.y;
 	}
+
+	/* The border is 4 pixels around the area of the dialog */
+	w += 8;
+	h += 8;
+	x -= 4;
+	y -= 4;
 	maxx = x+w-1;
 	maxy = y+h-1;
 
