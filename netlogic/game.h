@@ -5,6 +5,7 @@
 class UIElement;
 class UIElementIcon;
 class UIElementLabel;
+class UIElementRect;
 
 class GamePanelDelegate : public UIPanelDelegate
 {
@@ -38,6 +39,11 @@ protected:
 	UIElementIcon *m_lucky;
 	UIElementIcon *m_triplefire;
 	UIElementIcon *m_longfire;
+
+	UIElementLabel *m_multiplayerCaption;
+	UIElementRect *m_multiplayerColor;
+	UIElementLabel *m_fragsLabel;
+	UIElementLabel *m_frags;
 };
 
 #endif // _game_h

@@ -156,7 +156,8 @@ UITemplates::HashTable_KeyMatch(const void *_a, const void *_b, void *data)
 	const HashKey *a = static_cast<const HashKey *>(_a);
 	const HashKey *b = static_cast<const HashKey *>(_a);
 
-	return strcmp(a->type, b->type) == 0 && strcmp(a->name, b->name) == 0;
+	return strcasecmp(a->type, b->type) == 0 && 
+	       strcasecmp(a->name, b->name) == 0;
 }
 
 void

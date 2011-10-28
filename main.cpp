@@ -342,24 +342,6 @@ int main(int argc, char *argv[])
 }	/* -- main */
 
 
-int DrawText(int x, int y, const char *text, MFont *font, Uint8 style,
-					Uint8 R, Uint8 G, Uint8 B)
-{
-	SDL_Texture *textimage;
-	int width;
-
-	textimage = fontserv->TextImage(text, font, style, R, G, B);
-	if ( textimage == NULL ) {
-		width = 0;
-	} else {
-		screen->QueueBlit(x, y-screen->GetImageHeight(textimage)+2, textimage, NOCLIP);
-		width = screen->GetImageWidth(textimage);
-		fontserv->FreeText(textimage);
-	}
-	return(width);
-}
-
-
 /* ----------------------------------------------------------------- */
 /* -- Setup the main screen */
 
@@ -533,14 +515,20 @@ MainPanelDelegate::OnTick()
 void Message(const char *message)
 {
 // FIXME: This totally doesn't work anymore, but that may not matter if we're cutting network support.
-	int xOff;
+	int x, y;
+	SDL_Texture *textimage;
+	int width;
 
 	if (!message) {
 		return;
 	}
 
 	/* This was taken from the DrawMainScreen function */
-	xOff = (SCREEN_WIDTH - 512) / 2;
-	DrawText(xOff, 25, message, fonts[NEWYORK_14], STYLE_BOLD,
-						0xCC, 0xCC, 0xCC);
+	x = (SCREEN_WIDTH - 512) / 2;
+	y = 25;
+	textimage = fontserv->TextImage(message, fonts[NEWYORK_14], STYLE_BOLD, 0xCC, 0xCC, 0xCC);
+	if ( textimage ) {
+		screen->QueueBlit(x, y-screen->GetImageHeight(textimage)+2, textimage, NOCLIP);
+		fontserv->FreeText(textimage);
+	}
 }

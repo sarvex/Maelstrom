@@ -17,6 +17,10 @@ public:
 
 	virtual void Draw();
 
+	void SetColor(Uint32 color) {
+		m_color = color;
+	}
+
 private:
 	Uint32 m_color;
 

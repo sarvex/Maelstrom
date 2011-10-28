@@ -8,6 +8,7 @@
 #include "game.h"
 #include "../UIElementIcon.h"
 #include "../UIElementLabel.h"
+#include "../screenlib/UIElementRect.h"
 
 
 #ifdef MOVIE_SUPPORT
@@ -199,6 +200,11 @@ GamePanelDelegate::OnLoad()
 	m_triplefire = m_panel->GetElement<UIElementIcon>("triplefire");
 	m_longfire = m_panel->GetElement<UIElementIcon>("longfire");
 
+	m_multiplayerCaption = m_panel->GetElement<UIElementLabel>("multiplayer_caption");
+	m_multiplayerColor = m_panel->GetElement<UIElementRect>("multiplayer_color");
+	m_fragsLabel = m_panel->GetElement<UIElementLabel>("frags_label");
+	m_frags = m_panel->GetElement<UIElementLabel>("frags");
+
 	return true;
 }
 
@@ -216,6 +222,34 @@ GamePanelDelegate::OnShow()
 	gLastStar = STAR_DELAY;
 	gLastDrawn = 0L;
 	gNumSprites = 0;
+
+	if ( gNumPlayers > 1 ) {
+		if (m_multiplayerCaption) {
+			m_multiplayerCaption->Show();
+		}
+		if (m_multiplayerColor) {
+			m_multiplayerColor->Show();
+		}
+		if (m_fragsLabel) {
+			m_fragsLabel->Show();
+		}
+		if (m_frags) {
+			m_frags->Show();
+		}
+	} else {
+		if (m_multiplayerCaption) {
+			m_multiplayerCaption->Hide();
+		}
+		if (m_multiplayerColor) {
+			m_multiplayerColor->Hide();
+		}
+		if (m_fragsLabel) {
+			m_fragsLabel->Hide();
+		}
+		if (m_frags) {
+			m_frags->Hide();
+		}
+	}
 
 	NextWave();
 }
@@ -387,25 +421,24 @@ GamePanelDelegate::DrawStatus(Bool first)
 		}
 	}
 
-	/* Heh, DOOM style frag count */
-	if ( gNumPlayers > 1 ) {
-		x = 530;
-		i = DrawText(x, gStatusLine+11, "Frags:", geneva,
-				STYLE_BOLD, 30000>>8, 30000>>8, 0xFF);
-		sprintf(numbuf, "%-3.1d", TheShip->GetFrags());
-		DrawText(x+i+4, gStatusLine+11, numbuf, geneva, STYLE_BOLD, 0xFF, 0xFF, 0xFF);
-	}
-
 	if ( gNumPlayers > 1 ) {
 		char caption[BUFSIZ];
 
 		sprintf(caption, "You are player %d --- displaying player %d",
 					gOurPlayer+1, gDisplayed+1);
-		DrawText(SPRITES_WIDTH, 11, caption, geneva,
-				STYLE_BOLD, 30000>>8, 30000>>8, 0xFF);
+		if (m_multiplayerCaption) {
+			m_multiplayerCaption->SetText(caption);
+		}
 
 		/* Fill in the color by the frag count */
-		screen->FillRect(518, gStatusLine+4, 4, 8, TheShip->Color());
+		if (m_multiplayerColor) {
+			m_multiplayerColor->SetColor(TheShip->Color());
+		}
+
+		sprintf(numbuf, "%-3.1d", TheShip->GetFrags());
+		if (m_frags) {
+			m_frags->SetText(numbuf);
+		}
 	}
 
 	int fact = ((SHIELD_WIDTH - 2) * TheShip->GetShieldLevel()) / MAX_SHIELD;

@@ -77,5 +77,20 @@
 		<Icon name="longfire" id="136">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="BOTTOMLEFT" anchor="status_line" x="502" y="3"/>
 		</Icon>
+
+		<!-- Multiplayer elements -->
+		<Label name="multiplayer_caption" template="SmallBlue">
+			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" x="32" y="1"/>
+		</Label>
+		<Rectangle name="multiplayer_color" fill="true">
+			<Size w="4" h="8"/>
+			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="status_line" x="518" y="4"/>
+		</Label>
+		<Label name="frags_label" template="SmallBlue" text="Frags:">
+			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="status_line" x="530" y="1"/>
+		</Label>
+		<Label name="frags" template="SmallWhite">
+			<Anchor anchorFrom="LEFT" anchorTo="RIGHT" anchor="frags_label" x="4"/>
+		</Label>
 	</Elements>
 </UIPanel>
