@@ -113,6 +113,10 @@ static void RunCheat(void)
 		NewGame();
 	}
 }
+static void RunShowDawn(void)
+{
+	ui->ShowPanel(DIALOG_DAWN);
+}
 static void RunScreenshot(void)
 {
 	screen->ScreenDump("ScoreDump", 64, 48, 298, 384);
@@ -396,7 +400,7 @@ MainPanelDelegate::OnLoad()
 	}
 	button = m_panel->GetElement<UIElementButton>("Special");
 	if (button) {
-		button->SetClickCallback(ShowDawn);
+		button->SetClickCallback(RunShowDawn);
 	}
 	button = m_panel->GetElement<UIElementButton>("Screenshot");
 	if (button) {

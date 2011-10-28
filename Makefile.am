@@ -30,6 +30,8 @@ Maelstrom_SOURCES =		\
 	rect.h			\
 	scores.cpp		\
 	scores.h		\
+	UIDialog.cpp		\
+	UIDialog.h		\
 	UIElementIcon.cpp	\
 	UIElementIcon.h		\
 	UIElementKeyButton.cpp	\

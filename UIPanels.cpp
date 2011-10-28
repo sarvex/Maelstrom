@@ -1,6 +1,7 @@
 
 #include "screenlib/UIPanel.h"
 #include "UIPanels.h"
+#include "UIDialog.h"
 #include "main.h"
 #include "netlogic/about.h"
 #include "netlogic/game.h"
@@ -28,6 +29,8 @@ CreateMaelstromUIPanel(UIManager *ui, const char *type, const char *name, const 
 
 	if (strcasecmp(type, "UIPanel") == 0) {
 		panel = new UIPanel(ui, name);
+	} else if (strcasecmp(type, "Dialog") == 0) {
+		panel = new UIDialog(ui, name);
 	} else {
 		panel = NULL;
 	}

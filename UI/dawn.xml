@@ -1,0 +1,27 @@
+<Dialog>
+	<Size w="318" h="194"/>
+	<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" x="160" y="73"/>
+	<Elements>
+		<Icon name="icon" id="103">
+			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" x="23" y="23"/>
+		</Icon>
+		<Label name="line1" template="Dialog" text="No eternal reward will forgive us">
+			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPRIGHT" anchor="icon" x="25"/>
+		</Label>
+		<Label name="line2" template="Dialog" text="now">
+			<Anchor anchorFrom="TOPLEFT" anchorTo="BOTTOMLEFT" anchor="line1" y="2"/>
+		</Label>
+		<Label name="line3" template="Dialog" text="for">
+			<Anchor anchorFrom="TOPLEFT" anchorTo="BOTTOMRIGHT" anchor="line2" x="2" y="2"/>
+		</Label>
+		<Label name="line4" template="Dialog" text="wasting">
+			<Anchor anchorFrom="TOPLEFT" anchorTo="BOTTOMRIGHT" anchor="line3" x="2" y="2"/>
+		</Label>
+		<Label name="line5" template="Dialog" text="the">
+			<Anchor anchorFrom="TOPLEFT" anchorTo="BOTTOMRIGHT" anchor="line4" x="2" y="2"/>
+		</Label>
+		<Label name="line6" template="Dialog" text="dawn.">
+			<Anchor anchorFrom="TOPLEFT" anchorTo="BOTTOMRIGHT" anchor="line5" x="2" y="2"/>
+		</Label>
+	</Elements>
+</Dialog>

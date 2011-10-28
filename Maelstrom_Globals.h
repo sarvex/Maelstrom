@@ -107,7 +107,8 @@ extern Bool	gNetScores;
 #define PANEL_BONUS	"bonus"
 #define PANEL_GAMEOVER	"gameover"
 #define PANEL_ABOUT	"about_story"
-#define PANEL_CONTROLS	"controls"
+#define DIALOG_CONTROLS	"controls"
+#define DIALOG_DAWN	"dawn"
 
 // Sound resource definitions...
 #define gShotSound	100
