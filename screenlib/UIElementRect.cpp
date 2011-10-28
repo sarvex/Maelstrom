@@ -13,10 +13,14 @@ UIElementRect::UIElementRect(UIPanel *panel, const char *name) :
 }
 
 bool
-UIElementRect::Load(rapidxml::xml_node<> *node)
+UIElementRect::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 {
 	rapidxml::xml_node<> *child;
 	rapidxml::xml_attribute<> *attr;
+
+	if (!UIElement::Load(node, templates)) {
+		return false;
+	}
 
 	attr = node->first_attribute("fill", 0, false);
 	if (attr) {
@@ -32,7 +36,7 @@ UIElementRect::Load(rapidxml::xml_node<> *node)
 		m_color = LoadColor(child);
 	}
 
-	return UIElement::Load(node);
+	return true;
 }
 
 void

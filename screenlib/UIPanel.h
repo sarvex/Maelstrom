@@ -34,6 +34,7 @@
 class FrameBuf;
 class UIManager;
 class UIPanel;
+class UITemplates;
 
 class UIPanelDelegate
 {
@@ -69,7 +70,7 @@ public:
 		return m_cursorVisible;
 	}
 
-	virtual bool Load(rapidxml::xml_node<> *node);
+	virtual bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
 	virtual bool FinishLoading();
 
 	virtual UIArea *GetAnchorElement(const char *name);
@@ -113,7 +114,7 @@ protected:
 protected:
 	UIElement *GetElement(const char *name);
 
-	bool LoadElements(rapidxml::xml_node<> *node);
+	bool LoadElements(rapidxml::xml_node<> *node, const UITemplates *templates);
 };
 
 #endif // _UIPanel_h

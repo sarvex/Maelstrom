@@ -24,6 +24,7 @@
 #include "UIPanel.h"
 #include "UIManager.h"
 #include "UIElement.h"
+#include "UITemplates.h"
 
 
 UIPanel::UIPanel(UIManager *ui, const char *name) : UIArea(ui->GetScreen())
@@ -59,16 +60,25 @@ UIPanel::~UIPanel()
 }
 
 bool
-UIPanel::Load(rapidxml::xml_node<> *node)
+UIPanel::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 {
 	rapidxml::xml_node<> *child;
 	rapidxml::xml_attribute<> *attr;
+
+	child = templates->GetTemplateFor(node);
+	if (child) {
+		if (!Load(child, templates)) {
+			return false;
+		}
+	}
 
 	attr = node->first_attribute("fullscreen", 0, false);
 	if (attr) {
 		const char *value = attr->value();
 		if (*value == '0' || *value == 'f' || *value == 'F') {
 			m_fullscreen = false;
+		} else {
+			m_fullscreen = true;
 		}
 	}
 	attr = node->first_attribute("cursor", 0, false);
@@ -76,6 +86,8 @@ UIPanel::Load(rapidxml::xml_node<> *node)
 		const char *value = attr->value();
 		if (*value == '0' || *value == 'f' || *value == 'F') {
 			m_cursorVisible = false;
+		} else {
+			m_cursorVisible = true;
 		}
 	}
 	attr = node->first_attribute("enterSound", 0, false);
@@ -91,7 +103,7 @@ UIPanel::Load(rapidxml::xml_node<> *node)
 	}
 	child = node->first_node("elements", 0, false);
 	if (child) {
-		if (!LoadElements(child)) {
+		if (!LoadElements(child, templates)) {
 			return false;
 		}
 	}
@@ -110,25 +122,22 @@ UIPanel::FinishLoading()
 }
 
 bool
-UIPanel::LoadElements(rapidxml::xml_node<> *node)
+UIPanel::LoadElements(rapidxml::xml_node<> *node, const UITemplates *templates)
 {
-	rapidxml::xml_node<> *templateNode;
-
 	for (node = node->first_node(); node; node = node->next_sibling()) {
 		UIElement *element = (m_ui->GetElementFactory())(this, node->name());
 		if (!element) {
 			fprintf(stderr, "Warning: Couldn't find handler for element %s\n", node->name());
+			continue;
 		}
 
-
-		templateNode = m_ui->GetTemplateFor(node);
-		if ((templateNode && !element->Load(templateNode)) ||
-		    !element->Load(node) ||
+		if (!element->Load(node, templates) ||
 		    !element->FinishLoading()) {
 			fprintf(stderr, "Warning: Couldn't load element %s: %s\n", node->name(), element->Error());
 			delete element;
+		} else {
+			AddElement(element);
 		}
-		AddElement(element);
 	}
 	return true;
 }

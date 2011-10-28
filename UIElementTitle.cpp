@@ -11,9 +11,13 @@ UIElementTitle::UIElementTitle(UIPanel *panel, const char *name) :
 }
 
 bool
-UIElementTitle::Load(rapidxml::xml_node<> *node)
+UIElementTitle::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 {
 	rapidxml::xml_attribute<> *attr;
+
+	if (!UIElementTexture::Load(node, templates)) {
+		return false;
+	}
 
 	attr = node->first_attribute("id", 0, false);
 	if (!attr) {
@@ -28,5 +32,5 @@ UIElementTitle::Load(rapidxml::xml_node<> *node)
 	}
 	SetTexture(texture);
 
-	return UIElementTexture::Load(node);
+	return true;
 }

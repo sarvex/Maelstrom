@@ -1,27 +1,21 @@
 <UIPanel fullscreen="false" enterSound="110">
 	<Elements>
-		<Label name="wave" fontName="Geneva" fontSize="9" fontStyle="BOLD">
-			<Color r="0xFF" g="0xFF" b="0x00"/>
+		<Label name="wave" template="SmallYellow">
 			<Anchor anchorFrom="TOP" anchorTo="CENTER" y="-90"/>
 		</Label>
-		<Label name="bonus_label" fontName="Geneva" fontSize="9" fontStyle="BOLD" text="Bonus Score:     ">
-			<Color r="0x75" g="0x75" b="0xFF"/>
+		<Label name="bonus_label" template="SmallBlue" text="Bonus Score:     ">
 			<Anchor anchorFrom="TOP" anchorTo="TOP" anchor="wave" x="-20" y="50"/>
 		</Label>
-		<Label name="bonus" fontName="Geneva" fontSize="9" fontStyle="BOLD">
-			<Color r="0xFF" g="0xFF" b="0xFF"/>
+		<Label name="bonus" template="SmallWhite">
 			<Anchor anchorFrom="LEFT" anchorTo="RIGHT" anchor="bonus_label"/>
 		</Label>
-		<Label name="multiplied_bonus" fontName="Geneva" fontSize="9" fontStyle="BOLD">
-			<Color r="0xFF" g="0xFF" b="0xFF"/>
+		<Label name="multiplied_bonus" template="SmallWhite">
 			<Anchor anchorFrom="LEFT" anchorTo="RIGHT" anchor="bonus_label" x="75"/>
 		</Label>
-		<Label name="score_label" fontName="Geneva" fontSize="9" fontStyle="BOLD" text="Score:     ">
-			<Color r="0x75" g="0x75" b="0xFF"/>
+		<Label name="score_label" template="SmallBlue" text="Score:     ">
 			<Anchor anchorFrom="TOP" anchorTo="TOP" anchor="wave" x="-3" y="70"/>
 		</Label>
-		<Label name="score" fontName="Geneva" fontSize="9" fontStyle="BOLD" text="Score:     ">
-			<Color r="0xFF" g="0xFF" b="0xFF"/>
+		<Label name="score" template="SmallWhite">
 			<Anchor anchorFrom="LEFT" anchorTo="RIGHT" anchor="score_label"/>
 		</Label>
 		<Sprite name="multiplier2" id="2000">
@@ -37,8 +31,7 @@
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="multiplier2"/>
 		</Sprite>
 
-		<Label name="next" fontName="Geneva" fontSize="9" fontStyle="BOLD">
-			<Color r="0xFF" g="0xFF" b="0x00"/>
+		<Label name="next" template="SmallYellow">
 			<Anchor anchorFrom="TOP" anchorTo="TOP" anchor="wave" y="109"/>
 		</Label>
 	</Elements>

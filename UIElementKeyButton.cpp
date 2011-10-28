@@ -22,12 +22,12 @@ UIElementKeyButton::~UIElementKeyButton()
 }
 
 bool
-UIElementKeyButton::Load(rapidxml::xml_node<> *node)
+UIElementKeyButton::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 {
 	m_rect.w = m_screen->GetImageWidth(gKeyIcon);
 	m_rect.h = m_screen->GetImageHeight(gKeyIcon);
 
-	if (!UIElementButton::Load(node)) {
+	if (!UIElementButton::Load(node, templates)) {
 		return false;
 	}
 

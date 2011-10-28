@@ -5,25 +5,20 @@
 		</Title>
 
 		<!-- Multiplayer rankings -->
-		<Label name="rank1" fontName="New York" fontSize="18">
-			<Color r="0x75" g="0x75" b="0xFF"/>
+		<Label name="rank1" template="LargeBlue">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="CENTER" x="-160" y="121"/>
 		</Label>
-		<Label name="rank2" fontName="New York" fontSize="18">
-			<Color r="0x75" g="0x75" b="0xFF"/>
+		<Label name="rank2" template="LargeBlue">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="BOTTOMLEFT" anchor="rank1"/>
 		</Label>
-		<Label name="rank3" fontName="New York" fontSize="18">
-			<Color r="0x75" g="0x75" b="0xFF"/>
+		<Label name="rank3" template="LargeBlue">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="BOTTOMLEFT" anchor="rank2"/>
 		</Label>
 
-		<Label name="name_label" fontName="New York" fontSize="18" text="Enter your name: ">
-			<Color r="0x75" g="0x75" b="0xFF"/>
+		<Label name="name_label" template="LargeBlue" text="Enter your name: ">
 			<Anchor anchorFrom="TOPRIGHT" anchorTo="CENTER" y="41"/>
 		</Label>
-		<Label name="name" fontName="New York" fontSize="18">
-			<Color r="0xFF" g="0xFF" b="0xFF"/>
+		<Label name="name" template="LargeWhite">
 			<Anchor anchorFrom="LEFT" anchorTo="RIGHT" anchor="name_label"/>
 		</Label>
 	</Elements>

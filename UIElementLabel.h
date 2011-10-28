@@ -15,7 +15,7 @@ public:
 		return UIElement::IsA(type) || type == GetType();
 	}
 
-	virtual bool Load(rapidxml::xml_node<> *node);
+	virtual bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
 
 	void SetText(const char *text);
 	void SetTextColor(Uint8 R, Uint8 G, Uint8 B);

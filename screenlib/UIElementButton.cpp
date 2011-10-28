@@ -66,9 +66,13 @@ UIElementButton::~UIElementButton()
 }
 
 bool
-UIElementButton::Load(rapidxml::xml_node<> *node)
+UIElementButton::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 {
 	rapidxml::xml_attribute<> *attr;
+
+	if (!UIElement::Load(node, templates)) {
+		return false;
+	}
 
 	attr = node->first_attribute("hotkey", 0, false);
 	if (attr) {
@@ -113,7 +117,7 @@ UIElementButton::Load(rapidxml::xml_node<> *node)
 		m_clickPanel = new char[strlen(value)+1];
 		strcpy(m_clickPanel, value);
 	}
-	return UIElement::Load(node);
+	return true;
 }
 
 bool

@@ -138,11 +138,7 @@ UIManager::LoadPanel(const char *name)
 		attr = node->first_attribute("delegate", 0, false);
 		panel = (GetPanelFactory())(this, node->name(), name, attr ? attr->value() : NULL);
 		if (panel) {
-			rapidxml::xml_node<> *templateNode;
-
-			templateNode = GetTemplateFor(node);
-			if ((templateNode && !panel->Load(templateNode)) ||
-			    !panel->Load(node) ||
+			if (!panel->Load(node, GetTemplates()) ||
 			    !panel->FinishLoading()) {
 				fprintf(stderr, "Warning: Couldn't load %s: %s\n",
 							file, panel->Error());

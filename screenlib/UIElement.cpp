@@ -23,6 +23,7 @@
 #include "SDL_FrameBuf.h"
 #include "UIPanel.h"
 #include "UIElement.h"
+#include "UITemplates.h"
 
 UIElementType UIElement::s_elementTypeIndex;
 UIElementType UIElement::s_elementType;
@@ -63,9 +64,17 @@ UIElement::LoadColor(rapidxml::xml_node<> *node) const
 }
 
 bool
-UIElement::Load(rapidxml::xml_node<> *node)
+UIElement::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 {
+	rapidxml::xml_node<> *child;
 	rapidxml::xml_attribute<> *attr;
+
+	child = templates->GetTemplateFor(node);
+	if (child) {
+		if (!Load(child, templates)) {
+			return false;
+		}
+	}
 
 	attr = node->first_attribute("name", 0, false);
 	if (attr) {

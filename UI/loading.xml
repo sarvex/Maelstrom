@@ -3,8 +3,7 @@
 		<Title name="image" id="130">
 			<Anchor anchorFrom="CENTER" anchorTo="CENTER"/>
 		</Title>
-		<Label fontName="Geneva" fontSize="9" fontStyle="BOLD" text="Loading...">
-			<Color r="0xFF" g="0xFF" b="0x00"/>
+		<Label template="SmallYellow" text="Loading...">
 			<Anchor anchorFrom="CENTER" anchorTo="BOTTOM" anchor="image" y="20"/>
 		</Label>
 

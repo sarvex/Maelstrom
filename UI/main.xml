@@ -25,146 +25,111 @@
 		</Line>
 
 		<!-- high scores -->
-		<Label name="name_header" fontName="New York" fontSize="18" fontStyle="UNDERLINE" text="Name">
-			<Color r="0xFF" g="0xFF" b="0x00"/>
+		<Label name="name_header" template="LargeYellowUnderline" text="Name">
 			<Anchor anchorFrom="BOTTOMLEFT" anchorTo="BOTTOMLEFT" anchor="hdivider_left" x="5" y="23"/>
 		</Label>
-		<Label name="score_header" fontName="New York" fontSize="18" fontStyle="UNDERLINE" text="Score">
-			<Color r="0xFF" g="0xFF" b="0x00"/>
+		<Label name="score_header" template="LargeYellowUnderline" text="Score">
 			<Anchor anchorFrom="BOTTOMLEFT" anchorTo="BOTTOMLEFT" anchor="hdivider_left" x="185" y="23"/>
 		</Label>
-		<Label name="wave_header" fontName="New York" fontSize="18" fontStyle="UNDERLINE" text="Wave">
-			<Color r="0xFF" g="0xFF" b="0x00"/>
+		<Label name="wave_header" template="LargeYellowUnderline" text="Wave">
 			<Anchor anchorFrom="BOTTOMLEFT" anchorTo="BOTTOMLEFT" anchor="hdivider_left" x="245" y="23"/>
 		</Label>
 
-		<Label name="name_0" fontName="New York" fontSize="14" fontStyle="BOLD">
-			<Color r="0x75" g="0x75" b="0x00"/>
+		<Label name="name_0" template="Medium">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="name_header" y="24"/>
 		</Label>
-		<Label name="score_0" fontName="New York" fontSize="14" fontStyle="BOLD">
-			<Color r="0x75" g="0x75" b="0x00"/>
+		<Label name="score_0" template="Medium">
 			<Anchor anchorFrom="TOPRIGHT" anchorTo="TOPRIGHT" anchor="score_header" y="24"/>
 		</Label>
-		<Label name="wave_0" fontName="New York" fontSize="14" fontStyle="BOLD">
-			<Color r="0x75" g="0x75" b="0x00"/>
+		<Label name="wave_0" template="Medium">
 			<Anchor anchorFrom="TOPRIGHT" anchorTo="TOPRIGHT" anchor="wave_header" x="-10" y="24"/>
 		</Label>
-		<Label name="name_1" fontName="New York" fontSize="14" fontStyle="BOLD">
-			<Color r="0x75" g="0x75" b="0x00"/>
+		<Label name="name_1" template="Medium">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="name_0" y="18"/>
 		</Label>
-		<Label name="score_1" fontName="New York" fontSize="14" fontStyle="BOLD">
-			<Color r="0x75" g="0x75" b="0x00"/>
+		<Label name="score_1" template="Medium">
 			<Anchor anchorFrom="TOPRIGHT" anchorTo="TOPRIGHT" anchor="score_0" y="18"/>
 		</Label>
-		<Label name="wave_1" fontName="New York" fontSize="14" fontStyle="BOLD">
-			<Color r="0x75" g="0x75" b="0x00"/>
+		<Label name="wave_1" template="Medium">
 			<Anchor anchorFrom="TOPRIGHT" anchorTo="TOPRIGHT" anchor="wave_0" y="18"/>
 		</Label>
-		<Label name="name_2" fontName="New York" fontSize="14" fontStyle="BOLD">
-			<Color r="0x75" g="0x75" b="0x00"/>
+		<Label name="name_2" template="Medium">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="name_1" y="18"/>
 		</Label>
-		<Label name="score_2" fontName="New York" fontSize="14" fontStyle="BOLD">
-			<Color r="0x75" g="0x75" b="0x00"/>
+		<Label name="score_2" template="Medium">
 			<Anchor anchorFrom="TOPRIGHT" anchorTo="TOPRIGHT" anchor="score_1" y="18"/>
 		</Label>
-		<Label name="wave_2" fontName="New York" fontSize="14" fontStyle="BOLD">
-			<Color r="0x75" g="0x75" b="0x00"/>
+		<Label name="wave_2" template="Medium">
 			<Anchor anchorFrom="TOPRIGHT" anchorTo="TOPRIGHT" anchor="wave_1" y="18"/>
 		</Label>
-		<Label name="name_3" fontName="New York" fontSize="14" fontStyle="BOLD">
-			<Color r="0x75" g="0x75" b="0x00"/>
+		<Label name="name_3" template="Medium">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="name_2" y="18"/>
 		</Label>
-		<Label name="score_3" fontName="New York" fontSize="14" fontStyle="BOLD">
-			<Color r="0x75" g="0x75" b="0x00"/>
+		<Label name="score_3" template="Medium">
 			<Anchor anchorFrom="TOPRIGHT" anchorTo="TOPRIGHT" anchor="score_2" y="18"/>
 		</Label>
-		<Label name="wave_3" fontName="New York" fontSize="14" fontStyle="BOLD">
-			<Color r="0x75" g="0x75" b="0x00"/>
+		<Label name="wave_3" template="Medium">
 			<Anchor anchorFrom="TOPRIGHT" anchorTo="TOPRIGHT" anchor="wave_2" y="18"/>
 		</Label>
-		<Label name="name_4" fontName="New York" fontSize="14" fontStyle="BOLD">
-			<Color r="0x75" g="0x75" b="0x00"/>
+		<Label name="name_4" template="Medium">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="name_3" y="18"/>
 		</Label>
-		<Label name="score_4" fontName="New York" fontSize="14" fontStyle="BOLD">
-			<Color r="0x75" g="0x75" b="0x00"/>
+		<Label name="score_4" template="Medium">
 			<Anchor anchorFrom="TOPRIGHT" anchorTo="TOPRIGHT" anchor="score_3" y="18"/>
 		</Label>
-		<Label name="wave_4" fontName="New York" fontSize="14" fontStyle="BOLD">
-			<Color r="0x75" g="0x75" b="0x00"/>
+		<Label name="wave_4" template="Medium">
 			<Anchor anchorFrom="TOPRIGHT" anchorTo="TOPRIGHT" anchor="wave_3" y="18"/>
 		</Label>
-		<Label name="name_5" fontName="New York" fontSize="14" fontStyle="BOLD">
-			<Color r="0x75" g="0x75" b="0x00"/>
+		<Label name="name_5" template="Medium">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="name_4" y="18"/>
 		</Label>
-		<Label name="score_5" fontName="New York" fontSize="14" fontStyle="BOLD">
-			<Color r="0x75" g="0x75" b="0x00"/>
+		<Label name="score_5" template="Medium">
 			<Anchor anchorFrom="TOPRIGHT" anchorTo="TOPRIGHT" anchor="score_4" y="18"/>
 		</Label>
-		<Label name="wave_5" fontName="New York" fontSize="14" fontStyle="BOLD">
-			<Color r="0x75" g="0x75" b="0x00"/>
+		<Label name="wave_5" template="Medium">
 			<Anchor anchorFrom="TOPRIGHT" anchorTo="TOPRIGHT" anchor="wave_4" y="18"/>
 		</Label>
-		<Label name="name_6" fontName="New York" fontSize="14" fontStyle="BOLD">
-			<Color r="0x75" g="0x75" b="0x00"/>
+		<Label name="name_6" template="Medium">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="name_5" y="18"/>
 		</Label>
-		<Label name="score_6" fontName="New York" fontSize="14" fontStyle="BOLD">
-			<Color r="0x75" g="0x75" b="0x00"/>
+		<Label name="score_6" template="Medium">
 			<Anchor anchorFrom="TOPRIGHT" anchorTo="TOPRIGHT" anchor="score_5" y="18"/>
 		</Label>
-		<Label name="wave_6" fontName="New York" fontSize="14" fontStyle="BOLD">
-			<Color r="0x75" g="0x75" b="0x00"/>
+		<Label name="wave_6" template="Medium">
 			<Anchor anchorFrom="TOPRIGHT" anchorTo="TOPRIGHT" anchor="wave_5" y="18"/>
 		</Label>
-		<Label name="name_7" fontName="New York" fontSize="14" fontStyle="BOLD">
-			<Color r="0x75" g="0x75" b="0x00"/>
+		<Label name="name_7" template="Medium">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="name_6" y="18"/>
 		</Label>
-		<Label name="score_7" fontName="New York" fontSize="14" fontStyle="BOLD">
-			<Color r="0x75" g="0x75" b="0x00"/>
+		<Label name="score_7" template="Medium">
 			<Anchor anchorFrom="TOPRIGHT" anchorTo="TOPRIGHT" anchor="score_6" y="18"/>
 		</Label>
-		<Label name="wave_7" fontName="New York" fontSize="14" fontStyle="BOLD">
-			<Color r="0x75" g="0x75" b="0x00"/>
+		<Label name="wave_7" template="Medium">
 			<Anchor anchorFrom="TOPRIGHT" anchorTo="TOPRIGHT" anchor="wave_6" y="18"/>
 		</Label>
-		<Label name="name_8" fontName="New York" fontSize="14" fontStyle="BOLD">
-			<Color r="0x75" g="0x75" b="0x00"/>
+		<Label name="name_8" template="Medium">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="name_7" y="18"/>
 		</Label>
-		<Label name="score_8" fontName="New York" fontSize="14" fontStyle="BOLD">
-			<Color r="0x75" g="0x75" b="0x00"/>
+		<Label name="score_8" template="Medium">
 			<Anchor anchorFrom="TOPRIGHT" anchorTo="TOPRIGHT" anchor="score_7" y="18"/>
 		</Label>
-		<Label name="wave_8" fontName="New York" fontSize="14" fontStyle="BOLD">
-			<Color r="0x75" g="0x75" b="0x00"/>
+		<Label name="wave_8" template="Medium">
 			<Anchor anchorFrom="TOPRIGHT" anchorTo="TOPRIGHT" anchor="wave_7" y="18"/>
 		</Label>
-		<Label name="name_9" fontName="New York" fontSize="14" fontStyle="BOLD">
-			<Color r="0x75" g="0x75" b="0x00"/>
+		<Label name="name_9" template="Medium">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="name_8" y="18"/>
 		</Label>
-		<Label name="score_9" fontName="New York" fontSize="14" fontStyle="BOLD">
-			<Color r="0x75" g="0x75" b="0x00"/>
+		<Label name="score_9" template="Medium">
 			<Anchor anchorFrom="TOPRIGHT" anchorTo="TOPRIGHT" anchor="score_8" y="18"/>
 		</Label>
-		<Label name="wave_9" fontName="New York" fontSize="14" fontStyle="BOLD">
-			<Color r="0x75" g="0x75" b="0x00"/>
+		<Label name="wave_9" template="Medium">
 			<Anchor anchorFrom="TOPRIGHT" anchorTo="TOPRIGHT" anchor="wave_8" y="18"/>
 		</Label>
 
-		<Label name="last_score_label" fontName="New York" fontSize="18" text="Last Score: ">
-			<Color r="0xFF" g="0xFF" b="0xFF"/>
+		<Label name="last_score_label" template="LargeWhite" text="Last Score: ">
 			<Anchor anchorFrom="BOTTOMLEFT" anchorTo="BOTTOMLEFT" anchor="hdivider_left" x="5" y="230"/>
 		</Label>
-		<Label name="last_score" fontName="New York" fontSize="18">
-			<Color r="0xFF" g="0xFF" b="0xFF"/>
+		<Label name="last_score" template="LargeWhite">
 			<Anchor anchorFrom="LEFT" anchorTo="RIGHT" anchor="last_score_label"/>
 		</Label>
 
@@ -172,50 +137,43 @@
 		<KeyButton name="PlayButton" hotkey="P" clickSound="114">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPRIGHT" anchor="vertical_divider" x="9" y="10"/>
 		</KeyButton>
-		<Label fontName="Geneva" fontSize="9" fontStyle="BOLD" text=" Start playing Maelstrom">
-			<Color r="0xFF" g="0xFF" b="0x00"/>
+		<Label template="SmallYellow" text=" Start playing Maelstrom">
 			<Anchor anchorFrom="BOTTOMLEFT" anchorTo="TOPRIGHT" anchor="PlayButton" x="3" y="21"/>
 		</Label>
 		<KeyButton name="ControlsButton" hotkey="C" clickSound="119">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="PlayButton" y="34"/>
 		</KeyButton>
-		<Label fontName="Geneva" fontSize="9" fontStyle="BOLD" text=" Configure the game controls">
-			<Color r="0xFF" g="0xFF" b="0x00"/>
+		<Label template="SmallYellow" text=" Configure the game controls">
 			<Anchor anchorFrom="BOTTOMLEFT" anchorTo="TOPRIGHT" anchor="ControlsButton" x="3" y="21"/>
 		</Label>
 		<KeyButton name="ZapButton" hotkey="Z" clickSound="107">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="ControlsButton" y="34"/>
 		</KeyButton>
-		<Label fontName="Geneva" fontSize="9" fontStyle="BOLD" text=" Zap the high scores">
-			<Color r="0xFF" g="0xFF" b="0x00"/>
+		<Label template="SmallYellow" text=" Zap the high scores">
 			<Anchor anchorFrom="BOTTOMLEFT" anchorTo="TOPRIGHT" anchor="ZapButton" x="3" y="21"/>
 		</Label>
 		<KeyButton name="AboutButton" hotkey="A" clickSound="122">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="ZapButton" y="34"/>
 		</KeyButton>
-		<Label fontName="Geneva" fontSize="9" fontStyle="BOLD" text=" About Maelstrom...">
-			<Color r="0xFF" g="0xFF" b="0x00"/>
+		<Label template="SmallYellow" text=" About Maelstrom...">
 			<Anchor anchorFrom="BOTTOMLEFT" anchorTo="TOPRIGHT" anchor="AboutButton" x="3" y="21"/>
 		</Label>
 		<KeyButton name="QuitButton" hotkey="Q" clickSound="106">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="AboutButton" y="68"/>
 		</KeyButton>
-		<Label fontName="Geneva" fontSize="9" fontStyle="BOLD" text=" Quit Maelstrom">
-			<Color r="0xFF" g="0xFF" b="0x00"/>
+		<Label template="SmallYellow" text=" Quit Maelstrom">
 			<Anchor anchorFrom="BOTTOMLEFT" anchorTo="TOPRIGHT" anchor="QuitButton" x="3" y="21"/>
 		</Label>
 		<KeyButton name="VolumeDownButton" hotkey="0">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="QuitButton" y="34"/>
 		</KeyButton>
-		<Label fontName="Geneva" fontSize="9" fontStyle="BOLD" text="-">
-			<Color r="0xFF" g="0xFF" b="0x00"/>
+		<Label template="SmallYellow" text="-">
 			<Anchor anchorFrom="BOTTOMLEFT" anchorTo="TOPRIGHT" anchor="VolumeDownButton" x="3" y="21"/>
 		</Label>
 		<KeyButton name="VolumeUpButton" hotkey="8">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="VolumeDownButton" x="40"/>
 		</KeyButton>
-		<Label fontName="Geneva" fontSize="9" fontStyle="BOLD" text=" Set Sound Volume">
-			<Color r="0xFF" g="0xFF" b="0x00"/>
+		<Label template="SmallYellow" text=" Set Sound Volume">
 			<Anchor anchorFrom="BOTTOMLEFT" anchorTo="TOPRIGHT" anchor="VolumeUpButton" x="3" y="21"/>
 		</Label>
 
@@ -235,13 +193,10 @@
 		<Button name="SetVolume8" hotkey="8"/>
 
 		<!-- Credits -->
-		<Label fontName="Geneva" fontSize="9" fontStyle="BOLD" text="Port to SDL by Sam Lantinga">
-			<Color r="0xFF" g="0xFF" b="0x00"/>
+		<Label template="SmallYellow" text="Port to SDL by Sam Lantinga">
 			<Anchor anchorFrom="CENTER" anchorTo="CENTER" anchor="image" y="52"/>
 		</Label>
-		<Label fontName="Geneva" fontSize="9" fontStyle="BOLD" text="©1992-4 Ambrosia Software, Inc.">
-	
-			<Color r="0xFF" g="0xFF" b="0xFF"/>
+		<Label template="SmallWhite" text="©1992-4 Ambrosia Software, Inc.">
 			<Anchor anchorFrom="BOTTOMLEFT" anchorTo="TOPLEFT" anchor="hdivider_right" x="9" y="-2"/>
 		</Label>
 		<Label name="version" fontName="Geneva" fontSize="9">
@@ -250,8 +205,7 @@
 		</Label>
 
 		<!-- Sound level -->
-		<Label name="volume" fontName="Geneva" fontSize="9" fontStyle="BOLD">
-			<Color r="0x75" g="0x75" b="0xFF"/>
+		<Label name="volume" template="SmallBlue">
 			<Anchor anchorFrom="BOTTOMLEFT" anchorTo="TOPLEFT" anchor="VolumeDownButton" x="-6" y="22"/>
 		</Label>
 	</Elements>

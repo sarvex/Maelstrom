@@ -52,8 +52,8 @@ public:
 	UIElementFactory GetElementFactory() const {
 		return m_elementFactory;
 	}
-	rapidxml::xml_node<> *GetTemplateFor(rapidxml::xml_node<> *node) const {
-		return m_templates.GetTemplateFor(node);
+	const UITemplates *GetTemplates() const {
+		return &m_templates;
 	}
 
 	void SetLoadPath(const char *path);

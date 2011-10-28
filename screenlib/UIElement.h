@@ -31,6 +31,7 @@
 
 class FrameBuf;
 class UIPanel;
+class UITemplates;
 
 typedef int UIElementType;
 
@@ -49,7 +50,7 @@ public:
 		return m_name;
 	}
 
-	virtual bool Load(rapidxml::xml_node<> *node);
+	virtual bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
 	virtual bool FinishLoading() { return true; }
 
 	virtual UIArea *GetAnchorElement(const char *name);

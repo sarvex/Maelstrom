@@ -10,12 +10,11 @@
 			<Size w="338" h="62"/>
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="image" x="166" y="282"/>
 		</Rectangle>
-		<Label name="port_label" fontName="New York" fontSize="18" text="Port to SDL:   ">
+		<Label name="port_label" template="Large" text="Port to SDL:   ">
 			<Color r="0xFF" g="0xFF" b="0x55"/>
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="image" x="188" y="298"/>
 		</Label>
-		<Label fontName="New York" fontSize="18" text="Sam Lantinga">
-			<Color r="0xFF" g="0xFF" b="0xFF"/>
+		<Label template="LargeWhite" text="Sam Lantinga">
 			<Anchor anchorFrom="LEFT" anchorTo="RIGHT" anchor="port_label"/>
 		</Label>
 

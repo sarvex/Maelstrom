@@ -12,16 +12,20 @@ UIElementLine::UIElementLine(UIPanel *panel, const char *name) :
 }
 
 bool
-UIElementLine::Load(rapidxml::xml_node<> *node)
+UIElementLine::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 {
 	rapidxml::xml_node<> *child;
+
+	if (!UIElement::Load(node, templates)) {
+		return false;
+	}
 
 	child = node->first_node("color", 0, false);
 	if (child) {
 		m_color = LoadColor(child);
 	}
 
-	return UIElement::Load(node);
+	return true;
 }
 
 void

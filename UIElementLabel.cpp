@@ -29,41 +29,46 @@ static Uint8 ParseStyle(const char *text)
 {
 	Uint8 style = STYLE_NORM;
 
-	if (strcasecmp(text, "bold") == 0) {
+	if (strcasecmp(text, "BOLD") == 0) {
 		style = STYLE_BOLD;
-	} else if (strcasecmp(text, "underline") == 0) {
+	} else if (strcasecmp(text, "UNDERLINE") == 0) {
 		style = STYLE_ULINE;
-	} else if (strcasecmp(text, "italic") == 0) {
+	} else if (strcasecmp(text, "ITALIC") == 0) {
 		style = STYLE_ITALIC;
 	}
 	return style;
 }
 
 bool
-UIElementLabel::Load(rapidxml::xml_node<> *node)
+UIElementLabel::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 {
 	rapidxml::xml_node<> *child;
 	rapidxml::xml_attribute<> *attr;
-	const char *fontName;
-	int fontSize;
+	const char *fontName = NULL;
+	int fontSize = 0;
+
+	if (!UIElement::Load(node, templates)) {
+		return false;
+	}
 
 	attr = node->first_attribute("fontName", 0, false);
-	if (!attr) {
-		SetError("Element 'Label' missing attribute 'font'");
-		return false;
+	if (attr) {
+		fontName = attr->value();
 	}
-	fontName = attr->value();
 
 	attr = node->first_attribute("fontSize", 0, false);
-	if (!attr) {
-		SetError("Element 'Label' missing attribute 'fontSize'");
-		return false;
+	if (attr) {
+		fontSize = SDL_atoi(attr->value());
 	}
-	fontSize = SDL_atoi(attr->value());
 
-	m_font = fontserv->NewFont(fontName, fontSize);
-	if (!m_font) {
-		SetError("Element 'Label' couldn't find font %s:%d", fontName, fontSize);
+	if (fontName && fontSize) {
+		m_font = fontserv->NewFont(fontName, fontSize);
+		if (!m_font) {
+			SetError("Element 'Label' couldn't find font %s:%d", fontName, fontSize);
+			return false;
+		}
+	} else if (!m_font) {
+		SetError("Element 'Label' missing attribute 'fontName' or 'fontSize'");
 		return false;
 	}
 
@@ -82,14 +87,7 @@ UIElementLabel::Load(rapidxml::xml_node<> *node)
 		SetText(attr->value());
 	}
 
-#ifdef UI_DEBUG
-	bool value = UIElement::Load(node);
-if (m_text)
-printf("Label: '%s' %d,%d\n", m_text, m_rect.x, m_rect.y);
-	return value;
-#else
-	return UIElement::Load(node);
-#endif
+	return true;
 }
 
 void
