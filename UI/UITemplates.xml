@@ -74,8 +74,4 @@
 	<Label templateName="LargeYellowUnderline" template="Large" fontStyle="UNDERLINE">
 		<Color r="0xFF" g="0xFF" b="0x00"/>
 	</Label>
-
-	<Label templateName="Dialog" fontName="Chicago" fontSize="12">
-		<Color r="0x00" g="0x00" b="0x00"/>
-	</Label>
 </UITemplates>

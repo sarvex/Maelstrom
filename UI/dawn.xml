@@ -5,23 +5,23 @@
 		<Icon name="icon" id="103">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" x="19" y="19"/>
 		</Icon>
-		<Label name="line1" template="Dialog" text="No eternal reward will forgive us">
+		<DialogLabel name="line1" text="No eternal reward will forgive us">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPRIGHT" anchor="icon" x="25"/>
-		</Label>
-		<Label name="line2" template="Dialog" text="now">
+		</DialogLabel>
+		<DialogLabel name="line2" text="now">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="BOTTOMLEFT" anchor="line1" y="2"/>
-		</Label>
-		<Label name="line3" template="Dialog" text="for">
+		</DialogLabel>
+		<DialogLabel name="line3" text="for">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="BOTTOMRIGHT" anchor="line2" x="2" y="2"/>
-		</Label>
-		<Label name="line4" template="Dialog" text="wasting">
+		</DialogLabel>
+		<DialogLabel name="line4" text="wasting">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="BOTTOMRIGHT" anchor="line3" x="2" y="2"/>
-		</Label>
-		<Label name="line5" template="Dialog" text="the">
+		</DialogLabel>
+		<DialogLabel name="line5" text="the">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="BOTTOMRIGHT" anchor="line4" x="2" y="2"/>
-		</Label>
-		<Label name="line6" template="Dialog" text="dawn.">
+		</DialogLabel>
+		<DialogLabel name="line6" text="dawn.">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="BOTTOMRIGHT" anchor="line5" x="2" y="2"/>
-		</Label>
+		</DialogLabel>
 	</Elements>
 </Dialog>
