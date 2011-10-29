@@ -45,14 +45,14 @@ public:
 
 	virtual bool HandleEvent(const SDL_Event &event);
 
-	/* These should be overridden by inherited classes */
+	// These can be overridden by inherited classes
 	virtual void OnMouseEnter() { }
 	virtual void OnMouseLeave() { }
 	virtual void OnMouseDown() { }
 	virtual void OnMouseUp() { }
 	virtual void OnClick();
 
-	/* Setting a click callback sets a simplified delegate */
+	// Setting a click callback sets a simplified delegate
 	void SetClickCallback(void (*callback)(void));
 	void SetButtonDelegate(UIButtonDelegate *delegate, bool autodelete = true);
 

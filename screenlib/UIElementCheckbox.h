@@ -13,6 +13,8 @@ public:
 		return UIElementButton::IsA(type) || type == GetType();
 	}
 
+	virtual bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
+
 	void SetChecked(bool checked) {
 		if (checked != m_checked) {
 			m_checked = checked;
@@ -23,8 +25,6 @@ public:
 		return m_checked;
 	}
 	virtual void OnChecked(bool checked) { }
-
-	virtual bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
 
 	virtual void OnClick();
 

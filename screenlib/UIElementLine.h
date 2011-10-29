@@ -37,11 +37,11 @@ public:
 
 	virtual bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
 
-	virtual void Draw();
-
 	void SetColor(Uint32 color) {
 		m_color = color;
 	}
+
+	virtual void Draw();
 
 private:
 	Uint32 m_color;
