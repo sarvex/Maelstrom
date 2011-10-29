@@ -122,9 +122,12 @@ UIElementLabel::SetText(const char *text)
 void
 UIElementLabel::SetTextColor(Uint8 R, Uint8 G, Uint8 B)
 {
-	Uint32 color;
+	SetTextColor(m_screen->MapRGB(R, G, B));
+}
 
-	color = m_screen->MapRGB(R, G, B);
+void
+UIElementLabel::SetTextColor(Uint32 color)
+{
 	if (color == m_color) {
 		return;
 	}

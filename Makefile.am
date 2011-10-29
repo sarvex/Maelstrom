@@ -36,6 +36,8 @@ Maelstrom_SOURCES =		\
 	UIDialog.h		\
 	UIDialogButton.cpp	\
 	UIDialogButton.h	\
+	UIDialogCheckbox.cpp	\
+	UIDialogCheckbox.h	\
 	UIDialogLabel.cpp	\
 	UIDialogLabel.h		\
 	UIElementIcon.cpp	\

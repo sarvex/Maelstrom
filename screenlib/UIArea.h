@@ -68,6 +68,8 @@ public:
 	void SetSize(int w, int h);
 	void SetWidth(int w);
 	void SetHeight(int h);
+	void SetAnchor(AnchorLocation from, AnchorLocation to, UIArea *anchor,
+					int offsetX = 0, int offsetY = 0);
 
 	bool ContainsPoint(int x, int y) const {
 		return (x >= m_rect.x && x < m_rect.x+m_rect.w &&

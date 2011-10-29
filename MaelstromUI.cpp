@@ -7,6 +7,7 @@
 #include "netlogic/game.h"
 #include "utils/hashtable.h"
 #include "UIDialogButton.h"
+#include "UIDialogCheckbox.h"
 #include "UIDialogLabel.h"
 #include "UIElementIcon.h"
 #include "UIElementKeyButton.h"
@@ -163,6 +164,8 @@ MaelstromUI::CreateElement(UIBaseElement *parent, const char *type)
 		return new UIDialogLabel(parent);
 	} else if (strcasecmp(type, "DialogButton") == 0) {
 		return new UIDialogButton(parent);
+	} else if (strcasecmp(type, "DialogCheckbox") == 0) {
+		return new UIDialogCheckbox(parent);
 	} else if (strcasecmp(type, "KeyButton") == 0) {
 		return new UIElementKeyButton(parent);
 	} else if (strcasecmp(type, "Icon") == 0) {

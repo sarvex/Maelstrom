@@ -133,6 +133,18 @@ UIArea::SetHeight(int h)
 	}
 }
 
+void
+UIArea::SetAnchor(AnchorLocation from, AnchorLocation to, UIArea *anchor,
+						int offsetX, int offsetY)
+{
+	m_anchor.element = anchor;
+	m_anchor.anchorFrom = from;
+	m_anchor.anchorTo = to;
+	m_anchor.offsetX = offsetX;
+	m_anchor.offsetY = offsetY;
+	CalculateAnchor();
+}
+
 bool
 UIArea::LoadBool(rapidxml::xml_node<> *node, const char *name, bool &value)
 {

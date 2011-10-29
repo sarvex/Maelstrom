@@ -50,6 +50,7 @@ UIDialogButton::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 
 		label = new UIDialogLabel(this, "label");
 		label->SetText(attr->value());
+		label->SetTextColor(m_colors[1]);
 		AddElement(label);
 	}
 

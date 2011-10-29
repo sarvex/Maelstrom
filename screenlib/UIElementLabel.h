@@ -41,6 +41,7 @@ public:
 
 	void SetText(const char *text);
 	void SetTextColor(Uint8 R, Uint8 G, Uint8 B);
+	void SetTextColor(Uint32 color);
 
 	virtual void Draw();
 
