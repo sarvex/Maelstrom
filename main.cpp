@@ -89,15 +89,25 @@ static void SetSoundLevel(int volume)
 	/* -- Draw the new sound level */
 	gUpdateBuffer = true;
 }
+static void SetupZapScores(void)
+{
+	UIPanel *panel;
+	UIElementButton *button;
+
+	panel = ui->GetPanel(DIALOG_ZAP);
+	if (!panel) {
+		return;
+	}
+
+	button = panel->GetElement<UIElementButton>("clearButton");
+	if (button) {
+		button->SetClickCallback(ZapHighScores);
+	}
+}
 static void RunZapScores(void)
 {
-	if ( ZapHighScores() ) {
-		/* Fade the screen and redisplay scores */
-		screen->Fade();
-		Delay(SOUND_DELAY);
-		sound->PlaySound(gExplosionSound, 5);
-		gUpdateBuffer = true;
-	}
+	SetupZapScores();
+	ui->ShowPanel(DIALOG_ZAP);
 }
 static void RunToggleFullscreen(void)
 {
@@ -327,6 +337,9 @@ int main(int argc, char *argv[])
 	while ( gRunning ) {
 
 		ui->Draw();
+
+		/* -- In case we were faded out */
+		screen->FadeIn();
 
 		/* -- Get events */
 		while ( screen->PollEvent(&event) ) {

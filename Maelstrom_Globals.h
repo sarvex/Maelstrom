@@ -109,6 +109,7 @@ extern Bool	gNetScores;
 #define PANEL_GAMEOVER	"gameover"
 #define PANEL_ABOUT	"about_story"
 #define DIALOG_CONTROLS	"controls"
+#define DIALOG_ZAP	"zap"
 #define DIALOG_DAWN	"dawn"
 
 // Sound resource definitions...

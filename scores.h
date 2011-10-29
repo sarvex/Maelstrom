@@ -2,7 +2,7 @@
 // Functions from scores.cc
 extern void	LoadScores(void);
 extern void	SaveScores(void);
-extern int	ZapHighScores(void);
+extern void	ZapHighScores(void);
 extern int	GetStartLevel(void);
 extern void	PrintHighScores(void);
 

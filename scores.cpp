@@ -21,9 +21,6 @@
 /* Everyone can write to scores file if defined to 0 */
 #define SCORES_PERMMASK		0
 
-#define CLR_DIALOG_WIDTH	281
-#define CLR_DIALOG_HEIGHT	111
-
 Bool gNetScores = 0;
 Scores hScores[NUM_SCORES];
 
@@ -102,63 +99,17 @@ void PrintHighScores(void)
 	}
 }
 
-static int do_clear;
-
-static int Clear_callback(void) {
-	do_clear = 1;
-	return(1);
-}
-static int Cancel_callback(void) {
-	do_clear = 0;
-	return(1);
-}
-
-int ZapHighScores(void)
+void ZapHighScores(void)
 {
-	MFont *chicago;
-	Maclike_Dialog *dialog;
-	int X, Y;
-	SDL_Texture *splash;
-	Mac_Button *clear;
-	Mac_Button *cancel;
+	memset(hScores, 0, sizeof(hScores));
+	SaveScores();
+	gLastHigh = -1;
 
-	/* Set up all the components of the dialog box */
-#ifdef CENTER_DIALOG
-	X=(SCREEN_WIDTH-CLR_DIALOG_WIDTH)/2;
-	Y=(SCREEN_HEIGHT-CLR_DIALOG_HEIGHT)/2;
-#else	/* The way it is on the original Maelstrom */
-	X=179;
-	Y=89;
-#endif
-	chicago = fonts[CHICAGO_12];
-	if ( (splash = Load_Title(screen, 102)) == NULL ) {
-		error("Can't load score zapping splash!\n");
-		return(0);
-	}
-	dialog = new Maclike_Dialog(X, Y, CLR_DIALOG_WIDTH, CLR_DIALOG_HEIGHT,
-								screen);
-	dialog->Add_Image(splash, 4, 4);
-	do_clear = 0;
-	clear = new Mac_Button(99, 74, BUTTON_WIDTH, BUTTON_HEIGHT,
-				"Clear", chicago, fontserv, Clear_callback);
-	dialog->Add_Dialog(clear);
-	cancel = new Mac_DefaultButton(99+BUTTON_WIDTH+14, 74, 
-				BUTTON_WIDTH, BUTTON_HEIGHT,
-				"Cancel", chicago, fontserv, Cancel_callback);
-	dialog->Add_Dialog(cancel);
-
-	/* Run the dialog box */
-	dialog->Run();
-
-	/* Clean up and return */
-	screen->FreeImage(splash);
-	delete dialog;
-	if ( do_clear ) {
-		memset(hScores, 0, sizeof(hScores));
-		SaveScores();
-		gLastHigh = -1;
-	}
-	return(do_clear);
+	/* Fade the screen and redisplay scores */
+	screen->FadeOut();
+	Delay(SOUND_DELAY);
+	sound->PlaySound(gExplosionSound, 5);
+	gUpdateBuffer = true;
 }
 
 
