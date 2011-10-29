@@ -82,6 +82,24 @@ UIBaseElement::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 	return true;
 }
 
+UIArea *
+UIBaseElement::GetAnchorElement(const char *name)
+{
+	if (name) {
+		if (m_parent) {
+			return m_parent->GetElement(name);
+		} else {
+			return NULL;
+		}
+	} else {
+		if (m_parent) {
+			return m_parent;
+		} else {
+			return m_ui;
+		}
+	}
+}
+
 void
 UIBaseElement::Draw()
 {

@@ -61,12 +61,7 @@ public:
 		return true;
 	}
 
-	virtual UIArea *GetAnchorElement(const char *name) {
-		if (!name) {
-			return m_parent;
-		}
-		return m_parent->GetElement(name);
-	}
+	virtual UIArea *GetAnchorElement(const char *name);
 
 	void AddElement(UIBaseElement *element) {
 		m_elements.add(element);
