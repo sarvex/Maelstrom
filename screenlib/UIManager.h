@@ -31,6 +31,7 @@
 #include "UITemplates.h"
 
 class FrameBuf;
+class UIBaseElement;
 class UIPanel;
 class UIPanelDelegate;
 class UIElement;
@@ -84,7 +85,7 @@ public:
 public:
 	virtual UIPanel *CreatePanel(const char *type, const char *name);
 	virtual UIPanelDelegate *CreatePanelDelegate(UIPanel *panel, const char *delegate);
-	virtual UIElement *CreateElement(UIPanel *panel, const char *type);
+	virtual UIElement *CreateElement(UIBaseElement *parent, const char *type);
 
 protected:
 	char *m_loadPath;

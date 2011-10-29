@@ -5,8 +5,8 @@
 UIElementType UIElementLabel::s_elementType;
 
 
-UIElementLabel::UIElementLabel(UIPanel *panel, const char *name) :
-	UIElement(panel, name)
+UIElementLabel::UIElementLabel(UIBaseElement *parent, const char *name) :
+	UIElement(parent, name)
 {
 	m_fontName = NULL;
 	m_fontSize = 0;
@@ -25,7 +25,7 @@ UIElementLabel::~UIElementLabel()
 		SDL_free(m_text);
 	}
 	if (m_texture) {
-		m_panel->GetUI()->FreeText(m_texture);
+		GetUI()->FreeText(m_texture);
 	}
 }
 
@@ -100,11 +100,11 @@ UIElementLabel::SetText(const char *text)
 		SDL_free(m_text);
 	}
 	if (m_texture) {
-		m_panel->GetUI()->FreeText(m_texture);
+		GetUI()->FreeText(m_texture);
 	}
 
 	m_text = SDL_strdup(text);
-	m_texture = m_panel->GetUI()->CreateText(m_text, m_fontName, m_fontSize, m_fontStyle, m_color);
+	m_texture = GetUI()->CreateText(m_text, m_fontName, m_fontSize, m_fontStyle, m_color);
 
 	m_rect.w = m_screen->GetImageWidth(m_texture);
 	m_rect.h = m_screen->GetImageHeight(m_texture);
@@ -124,9 +124,9 @@ UIElementLabel::SetTextColor(Uint8 R, Uint8 G, Uint8 B)
 
 	if (m_text) {
 		if (m_texture) {
-			m_panel->GetUI()->FreeText(m_texture);
+			GetUI()->FreeText(m_texture);
 		}
-		m_texture = m_panel->GetUI()->CreateText(m_text, m_fontName, m_fontSize, m_fontStyle, m_color);
+		m_texture = GetUI()->CreateText(m_text, m_fontName, m_fontSize, m_fontStyle, m_color);
 	}
 }
 

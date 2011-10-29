@@ -34,7 +34,7 @@ public:
 class UIElementButton : public UIElement
 {
 public:
-	UIElementButton(UIPanel *panel, const char *name = "");
+	UIElementButton(UIBaseElement *parent, const char *name = "");
 	virtual ~UIElementButton();
 
 	virtual bool IsA(UIElementType type) {

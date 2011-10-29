@@ -5,8 +5,8 @@
 UIElementType UIElementSprite::s_elementType;
 
 
-UIElementSprite::UIElementSprite(UIPanel *panel, const char *name) :
-	UIElementTexture(panel, name)
+UIElementSprite::UIElementSprite(UIBaseElement *parent, const char *name) :
+	UIElementTexture(parent, name)
 {
 }
 

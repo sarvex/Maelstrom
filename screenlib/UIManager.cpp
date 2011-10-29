@@ -282,14 +282,14 @@ UIManager::CreatePanelDelegate(UIPanel *panel, const char *delegate)
 }
 
 UIElement *
-UIManager::CreateElement(UIPanel *panel, const char *type)
+UIManager::CreateElement(UIBaseElement *parent, const char *type)
 {
 	if (strcasecmp(type, "Line") == 0) {
-		return new UIElementLine(panel);
+		return new UIElementLine(parent);
 	} else if (strcasecmp(type, "Rectangle") == 0) {
-		return new UIElementRect(panel);
+		return new UIElementRect(parent);
 	} else if (strcasecmp(type, "Button") == 0) {
-		return new UIElementButton(panel);
+		return new UIElementButton(parent);
 	}
 	return NULL;
 }

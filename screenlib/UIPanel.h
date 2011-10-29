@@ -26,10 +26,8 @@
 #include "SDL.h"
 
 #include "../utils/rapidxml.h"
-#include "../utils/array.h"
 
-#include "UIArea.h"
-#include "UIElement.h"
+#include "UIBaseElement.h"
 
 class FrameBuf;
 class UIManager;
@@ -51,18 +49,12 @@ protected:
 	UIPanel *m_panel;
 };
 
-class UIPanel : public UIArea
+class UIPanel : public UIBaseElement
 {
 public:
 	UIPanel(UIManager *ui, const char *name);
 	virtual ~UIPanel();
 
-	UIManager *GetUI() const {
-		return m_ui;
-	}
-	const char *GetName() const {
-		return m_name;
-	}
 	bool IsFullscreen() const {
 		return m_fullscreen;
 	}
@@ -73,23 +65,6 @@ public:
 	virtual bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
 	virtual bool FinishLoading();
 
-	virtual UIArea *GetAnchorElement(const char *name);
-
-	void AddElement(UIElement *element) {
-		m_elements.add(element);
-	}
-	template <typename T>
-	T *GetElement(const char *name) {
-		UIElement *element = GetElement(name);
-		if (element && element->IsA(T::GetType())) {
-			return (T*)element;
-		}
-		return NULL;
-	}
-	void RemoveElement(UIElement *element) {
-		m_elements.remove(element);
-	}
-
 	void SetPanelDelegate(UIPanelDelegate *delegate, bool autodelete = true);
 
 	virtual void Show();
@@ -98,23 +73,14 @@ public:
 	void HideAll();
 
 	virtual void Draw();
-	virtual bool HandleEvent(const SDL_Event &event);
 
 protected:
-	UIManager *m_ui;
-	char *m_name;
 	bool m_fullscreen;
 	bool m_cursorVisible;
 	int m_enterSound;
 	int m_leaveSound;
 	UIPanelDelegate *m_delegate;
 	bool m_deleteDelegate;
-	array<UIElement *> m_elements;
-
-protected:
-	UIElement *GetElement(const char *name);
-
-	bool LoadElements(rapidxml::xml_node<> *node, const UITemplates *templates);
 };
 
 #endif // _UIPanel_h

@@ -5,8 +5,8 @@
 UIElementType UIElementTexture::s_elementType;
 
 
-UIElementTexture::UIElementTexture(UIPanel *panel, const char *name) :
-	UIElement(panel, name)
+UIElementTexture::UIElementTexture(UIBaseElement *parent, const char *name) :
+	UIElement(parent, name)
 {
 	m_texture = NULL;
 }

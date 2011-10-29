@@ -117,9 +117,6 @@ int	gFreezeTime;
 Object *gEnemySprite;
 int	gWhenEnemy;
 
-// Local global variables;
-static MFont *geneva;
-
 // Local functions used in the game module of Maelstrom
 static void DoGameOver(void);
 static void DoBonus(void);
@@ -175,9 +172,6 @@ GamePanelDelegate::OnLoad()
 {
 	int i;
 	char name[32];
-
-	/* Load the font and colors we use everywhere */
-	geneva = fonts[GENEVA_9];
 
 	m_showingBonus = false;
 

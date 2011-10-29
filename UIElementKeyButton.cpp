@@ -4,8 +4,8 @@
 
 UIElementType UIElementKeyButton::s_elementType;
 
-UIElementKeyButton::UIElementKeyButton(UIPanel *panel, const char *name) :
-	UIElementButton(panel, name)
+UIElementKeyButton::UIElementKeyButton(UIBaseElement *parent, const char *name) :
+	UIElementButton(parent, name)
 {
 	m_text = NULL;
 	m_textShadow = NULL;

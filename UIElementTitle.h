@@ -7,7 +7,7 @@
 class UIElementTitle : public UIElementTexture
 {
 public:
-	UIElementTitle(UIPanel *panel, const char *name = "");
+	UIElementTitle(UIBaseElement *parent, const char *name = "");
 
 	virtual bool IsA(UIElementType type) {
 		return UIElementTexture::IsA(type) || type == GetType();

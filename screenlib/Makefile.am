@@ -7,6 +7,8 @@ libSDLscreen_a_SOURCES =	\
 	SDL_FrameBuf.h		\
 	UIArea.cpp		\
 	UIArea.h		\
+	UIBaseElement.cpp	\
+	UIBaseElement.h		\
 	UIElement.cpp		\
 	UIElement.h		\
 	UIElementButton.cpp	\

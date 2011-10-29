@@ -5,8 +5,8 @@
 UIElementType UIElementIcon::s_elementType;
 
 
-UIElementIcon::UIElementIcon(UIPanel *panel, const char *name) :
-	UIElementTexture(panel, name)
+UIElementIcon::UIElementIcon(UIBaseElement *parent, const char *name) :
+	UIElementTexture(parent, name)
 {
 }
 

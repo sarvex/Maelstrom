@@ -43,8 +43,8 @@ protected:
 UIElementType UIElementButton::s_elementType;
 
 
-UIElementButton::UIElementButton(UIPanel *panel, const char *name) :
-	UIElement(panel, name)
+UIElementButton::UIElementButton(UIBaseElement *parent, const char *name) :
+	UIElement(parent, name)
 {
 	m_hotkey = SDLK_UNKNOWN;
 	m_hotkeyMod = KMOD_NONE;
@@ -211,10 +211,10 @@ void
 UIElementButton::OnClick()
 {
 	if (m_clickSound) {
-		m_panel->GetUI()->PlaySound(m_clickSound);
+		GetUI()->PlaySound(m_clickSound);
 	}
 	if (m_clickPanel) {
-		m_panel->GetUI()->ShowPanel(m_clickPanel);
+		GetUI()->ShowPanel(m_clickPanel);
 	}
 	if (m_delegate) {
 		m_delegate->OnClick();

@@ -5,8 +5,8 @@
 UIElementType UIDialogLabel::s_elementType;
 
 
-UIDialogLabel::UIDialogLabel(UIPanel *panel, const char *name) :
-	UIElementLabel(panel, name)
+UIDialogLabel::UIDialogLabel(UIBaseElement *parent, const char *name) :
+	UIElementLabel(parent, name)
 {
 	m_fontName = SDL_strdup("Chicago");
 	m_fontSize = 12;

@@ -23,23 +23,31 @@
 #include "SDL_FrameBuf.h"
 #include "UIPanel.h"
 #include "UIElement.h"
-#include "UITemplates.h"
 
-UIElementType UIElement::s_elementTypeIndex;
 UIElementType UIElement::s_elementType;
 
 
-UIElement::UIElement(UIPanel *panel, const char *name) : UIArea(panel->GetScreen())
+UIElement::UIElement(UIBaseElement *parent, const char *name) :
+	UIBaseElement(parent, name)
 {
-	m_name = new char[strlen(name)+1];
-	strcpy(m_name, name);
-
-	m_panel = panel;
 }
 
-UIElement::~UIElement()
+bool
+UIElement::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 {
-	delete[] m_name;
+	rapidxml::xml_attribute<> *attr;
+
+	if (!UIBaseElement::Load(node, templates)) {
+		return false;
+	}
+
+	attr = node->first_attribute("name", 0, false);
+	if (attr) {
+		SDL_free(m_name);
+		m_name = SDL_strdup(attr->value());
+	}
+
+	return true;
 }
 
 Uint32
@@ -61,36 +69,4 @@ UIElement::LoadColor(rapidxml::xml_node<> *node) const
 		b = (Uint8)strtol(attr->value(), NULL, 0);
 	}
 	return m_screen->MapRGB(r, g, b);
-}
-
-bool
-UIElement::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
-{
-	rapidxml::xml_node<> *child;
-	rapidxml::xml_attribute<> *attr;
-
-	child = templates->GetTemplateFor(node);
-	if (child) {
-		if (!Load(child, templates)) {
-			return false;
-		}
-	}
-
-	attr = node->first_attribute("name", 0, false);
-	if (attr) {
-		delete[] m_name;
-		m_name = new char[strlen(attr->value())+1];
-		strcpy(m_name, attr->value());
-	}
-
-	return UIArea::Load(node);
-}
-
-UIArea *
-UIElement::GetAnchorElement(const char *name)
-{
-	if (!name) {
-		return m_panel;
-	}
-	return m_panel->GetElement<UIElement>(name);
 }

@@ -155,20 +155,20 @@ MaelstromUI::CreatePanelDelegate(UIPanel *panel, const char *delegate)
 }
 
 UIElement *
-MaelstromUI::CreateElement(UIPanel *panel, const char *type)
+MaelstromUI::CreateElement(UIBaseElement *parent, const char *type)
 {
 	if (strcasecmp(type, "Label") == 0) {
-		return new UIElementLabel(panel);
+		return new UIElementLabel(parent);
 	} else if (strcasecmp(type, "DialogLabel") == 0) {
-		return new UIDialogLabel(panel);
+		return new UIDialogLabel(parent);
 	} else if (strcasecmp(type, "KeyButton") == 0) {
-		return new UIElementKeyButton(panel);
+		return new UIElementKeyButton(parent);
 	} else if (strcasecmp(type, "Icon") == 0) {
-		return new UIElementIcon(panel);
+		return new UIElementIcon(parent);
 	} else if (strcasecmp(type, "Sprite") == 0) {
-		return new UIElementSprite(panel);
+		return new UIElementSprite(parent);
 	} else if (strcasecmp(type, "Title") == 0) {
-		return new UIElementTitle(panel);
+		return new UIElementTitle(parent);
 	}
-	return UIManager::CreateElement(panel, type);;
+	return UIManager::CreateElement(parent, type);;
 }

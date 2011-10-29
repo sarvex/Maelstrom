@@ -7,7 +7,7 @@
 class UIElementKeyButton : public UIElementButton
 {
 public:
-	UIElementKeyButton(UIPanel *panel, const char *name = "");
+	UIElementKeyButton(UIBaseElement *parent, const char *name = "");
 	virtual ~UIElementKeyButton();
 
 	virtual bool IsA(UIElementType type) {

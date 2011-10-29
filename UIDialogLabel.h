@@ -6,7 +6,7 @@
 class UIDialogLabel : public UIElementLabel
 {
 public:
-	UIDialogLabel(UIPanel *panel, const char *name = "");
+	UIDialogLabel(UIBaseElement *parent, const char *name = "");
 
 	virtual bool IsA(UIElementType type) {
 		return UIElementLabel::IsA(type) || type == GetType();

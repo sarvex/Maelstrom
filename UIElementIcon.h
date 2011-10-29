@@ -7,7 +7,7 @@
 class UIElementIcon : public UIElementTexture
 {
 public:
-	UIElementIcon(UIPanel *panel, const char *name = "");
+	UIElementIcon(UIBaseElement *parent, const char *name = "");
 
 	virtual bool IsA(UIElementType type) {
 		return UIElementTexture::IsA(type) || type == GetType();

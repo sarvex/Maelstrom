@@ -5,8 +5,8 @@
 UIElementType UIElementRect::s_elementType;
 
 
-UIElementRect::UIElementRect(UIPanel *panel, const char *name) :
-	UIElement(panel, name)
+UIElementRect::UIElementRect(UIBaseElement *parent, const char *name) :
+	UIElement(parent, name)
 {
 	m_fill = false;
 	m_color = m_screen->MapRGB(0xFF, 0xFF, 0xFF);

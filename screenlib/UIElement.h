@@ -23,55 +23,28 @@
 #ifndef _UIElement_h
 #define _UIElement_h
 
-#include "SDL.h"
+#include "UIBaseElement.h"
 
-#include "../utils/rapidxml.h"
-
-#include "UIArea.h"
-
-class FrameBuf;
 class UIPanel;
-class UITemplates;
+class UIManager;
 
-typedef int UIElementType;
-
-class UIElement : public UIArea
+class UIElement : public UIBaseElement
 {
 public:
-	UIElement(UIPanel *panel, const char *name = "");
-	virtual ~UIElement();
+	UIElement(UIBaseElement *parent, const char *name = "");
 
-	/* This is used for type-safe casting */
 	virtual bool IsA(UIElementType type) {
-		return type == GetType();
-	}
-
-	const char *GetName() const {
-		return m_name;
+		return UIBaseElement::IsA(type) || type == GetType();
 	}
 
 	virtual bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
-	virtual bool FinishLoading() { return true; }
-
-	virtual UIArea *GetAnchorElement(const char *name);
-
-	virtual void Draw() { }
-	virtual bool HandleEvent(const SDL_Event &event) { return false; }
 
 protected:
 	Uint32 LoadColor(rapidxml::xml_node<> *node) const;
 
 protected:
-	char *m_name;
-	UIPanel *m_panel;
-
-protected:
-	static UIElementType s_elementTypeIndex;
 	static UIElementType s_elementType;
 
-	static UIElementType GenerateType() {
-		return ++s_elementTypeIndex;
-	}
 public:
 	static UIElementType GetType() {
 		if (!s_elementType) {
@@ -80,5 +53,7 @@ public:
 		return s_elementType;
 	}
 };
+
+Uint32 LoadColor(rapidxml::xml_node<> *node);
 
 #endif // _UIElement_h

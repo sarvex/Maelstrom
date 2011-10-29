@@ -7,7 +7,7 @@
 class UIElementSprite : public UIElementTexture
 {
 public:
-	UIElementSprite(UIPanel *panel, const char *name = "");
+	UIElementSprite(UIBaseElement *parent, const char *name = "");
 
 	virtual bool IsA(UIElementType type) {
 		return UIElementTexture::IsA(type) || type == GetType();

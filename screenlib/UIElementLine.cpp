@@ -5,8 +5,8 @@
 UIElementType UIElementLine::s_elementType;
 
 
-UIElementLine::UIElementLine(UIPanel *panel, const char *name) :
-	UIElement(panel, name)
+UIElementLine::UIElementLine(UIBaseElement *parent, const char *name) :
+	UIElement(parent, name)
 {
 	m_color = m_screen->MapRGB(0xFF, 0xFF, 0xFF);
 }
