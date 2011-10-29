@@ -23,7 +23,8 @@ UIDialog::UIDialog(UIManager *ui, const char *name) :
 	m_expand = true;
 	m_step = 0;
 	m_status = 0;
-	m_handler = NULL;
+	m_handleInit = NULL;
+	m_handleDone = NULL;
 }
 
 UIDialog::~UIDialog()
@@ -52,6 +53,10 @@ UIDialog::Show()
 	}
 	m_status = 0;
 
+	if (m_handleInit) {
+		m_handleInit(this);
+	}
+
 	UIPanel::Show();
 }
 
@@ -60,8 +65,8 @@ UIDialog::Hide()
 {
 	UIPanel::Hide();
 
-	if (m_handler) {
-		m_handler(this, m_status);
+	if (m_handleDone) {
+		m_handleDone(this, m_status);
 	}
 }
 
@@ -131,11 +136,12 @@ UIDialog::HandleEvent(const SDL_Event &event)
 	return false;
 }
 
-UIDialogLauncher::UIDialogLauncher(UIManager *ui, const char *name, UIDialogHandler handler)
+UIDialogLauncher::UIDialogLauncher(UIManager *ui, const char *name, UIDialogInitHandler handleInit, UIDialogDoneHandler handleDone)
 {
 	m_ui = ui;
 	m_name = name;
-	m_handler = handler;
+	m_handleInit = handleInit;
+	m_handleDone = handleDone;
 }
 
 void
@@ -145,7 +151,7 @@ UIDialogLauncher::OnClick()
 
 	dialog = m_ui->GetPanel<UIDialog>(m_name);
 	if (dialog) {
-		dialog->SetDialogHandler(m_handler);
+		dialog->SetDialogHandlers(m_handleInit, m_handleDone);
 
 		m_ui->ShowPanel(dialog);
 	}

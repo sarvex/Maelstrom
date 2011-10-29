@@ -7,10 +7,14 @@
 
 class UIDialog;
 
+/* This function gets called when the dialog is shown.
+*/
+typedef void (*UIDialogInitHandler)(UIDialog *dialog);
+
 /* This function gets called when the dialog is hidden.
    The status defaults to 0, but can be changed by dialog buttons.
  */
-typedef void (*UIDialogHandler)(UIDialog *dialog, int status);
+typedef void (*UIDialogDoneHandler)(UIDialog *dialog, int status);
 
 class UIDialog : public UIPanel
 {
@@ -23,8 +27,10 @@ public:
 	}
 
 	/* Set a function that's called when the dialog is hidden */
-	void SetDialogHandler(UIDialogHandler handler) {
-		m_handler = handler;
+	void SetDialogHandlers(UIDialogInitHandler handleInit,
+				UIDialogDoneHandler handleDone) {
+		m_handleInit = handleInit;
+		m_handleDone = handleDone;
 	}
 	void SetDialogStatus(int status) {
 		m_status = status;
@@ -50,7 +56,8 @@ protected:
 	bool m_expand;
 	int m_step;
 	int m_status;
-	UIDialogHandler m_handler;
+	UIDialogInitHandler m_handleInit;
+	UIDialogDoneHandler m_handleDone;
 
 protected:
 	static UIElementType s_elementType;
@@ -70,14 +77,15 @@ public:
 class UIDialogLauncher : public UIButtonDelegate
 {
 public:
-	UIDialogLauncher(UIManager *ui, const char *name, UIDialogHandler handler = NULL);
+	UIDialogLauncher(UIManager *ui, const char *name, UIDialogInitHandler = NULL, UIDialogDoneHandler handleDone = NULL);
 
 	virtual void OnClick();
 
 protected:
 	UIManager *m_ui;
 	const char *m_name;
-	UIDialogHandler m_handler;
+	UIDialogInitHandler m_handleInit;
+	UIDialogDoneHandler m_handleDone;
 };
 
 #endif // _UIDialog_h

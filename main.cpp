@@ -362,7 +362,7 @@ MainPanelDelegate::OnLoad()
 	}
 	button = m_panel->GetElement<UIElementButton>("ZapButton");
 	if (button) {
-		button->SetButtonDelegate(new UIDialogLauncher(ui, DIALOG_ZAP, ZapHighScores));
+		button->SetButtonDelegate(new UIDialogLauncher(ui, DIALOG_ZAP, NULL, ZapHighScores));
 	}
 	button = m_panel->GetElement<UIElementButton>("AboutButton");
 	if (button) {
