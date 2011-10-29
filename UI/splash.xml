@@ -1,7 +1,5 @@
 <UIPanel>
 	<Elements>
-		<Title id="999">
-			<Anchor anchorFrom="CENTER" anchorTo="CENTER"/>
-		</Title>
+		<Title id="999"/>
 	</Elements>
 </UIPanel>

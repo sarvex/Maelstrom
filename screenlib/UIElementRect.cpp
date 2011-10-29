@@ -43,8 +43,8 @@ void
 UIElementRect::Draw()
 {
 	if (m_fill) {
-		m_screen->FillRect(m_rect.x, m_rect.y, m_rect.w, m_rect.h, m_color);
+		m_screen->FillRect(X(), Y(), Width(), Height(), m_color);
 	} else {
-		m_screen->DrawRect(m_rect.x, m_rect.y, m_rect.w, m_rect.h, m_color);
+		m_screen->DrawRect(X(), Y(), Width(), Height(), m_color);
 	}
 }

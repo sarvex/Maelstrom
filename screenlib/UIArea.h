@@ -24,6 +24,7 @@
 #define _UIArea_h
 
 #include "SDL_rect.h"
+#include "../utils/array.h"
 #include "../utils/rapidxml.h"
 #include "ErrorBase.h"
 
@@ -54,7 +55,7 @@ class FrameBuf;
 class UIArea : public ErrorBase
 {
 public:
-	UIArea(FrameBuf *screen);
+	UIArea(FrameBuf *screen, UIArea *anchor = NULL, int w = 0, int h = 0);
 
 	bool Load(rapidxml::xml_node<> *node);
 
@@ -63,23 +64,11 @@ public:
 		return NULL;
 	}
 
-	void SetPosition(int x, int y) {
-		m_rect.x = x;
-		m_rect.y = y;
-	}
-	void SetSize(int w, int h) {
-		m_rect.w = w;
-		m_rect.h = h;
-		CalculateAnchor();
-	}
-	void SetWidth(int w) {
-		m_rect.w = w;
-		CalculateAnchor();
-	}
-	void SetHeight(int h) {
-		m_rect.h = h;
-		CalculateAnchor();
-	}
+	void SetPosition(int x, int y);
+	void SetSize(int w, int h);
+	void SetWidth(int w);
+	void SetHeight(int h);
+
 	bool ContainsPoint(int x, int y) const {
 		return (x >= m_rect.x && x < m_rect.x+m_rect.w &&
 		        y >= m_rect.y && y < m_rect.y+m_rect.h);
@@ -88,8 +77,8 @@ public:
 	FrameBuf *GetScreen() const {
 		return m_screen;
 	}
-	const SDL_Rect *GetRect() const {
-		return &m_rect;
+	const SDL_Rect &GetRect() const {
+		return m_rect;
 	}
 	int X() const {
 		return m_rect.x;
@@ -103,7 +92,6 @@ public:
 	int Height() const {
 		return m_rect.h;
 	}
-	void GetAnchorLocation(AnchorLocation spot, int *x, int *y) const;
 
 	virtual void Show() {
 		m_shown = true;
@@ -115,19 +103,34 @@ public:
 		return m_shown;
 	}
 
+	void AddAnchoredArea(UIArea *area) {
+		m_anchoredAreas.add(area);
+	}
+	void DelAnchoredArea(UIArea *area) {
+		m_anchoredAreas.remove(area);
+	}
+
 protected:
-	void CalculateAnchor();
+	void GetAnchorLocation(AnchorLocation spot, int *x, int *y) const;
+	void CalculateAnchor(bool triggerRectChanged = true);
+	virtual void OnRectChanged();
 
 protected:
 	FrameBuf *m_screen;
+	bool m_shown;
+
+private:
+	/* This is private so updates can trigger OnRectChanged() */
+	SDL_Rect m_rect;
+
 	struct {
 		UIArea *element;
 		AnchorLocation anchorFrom;
 		AnchorLocation anchorTo;
 		int offsetX, offsetY;
 	} m_anchor;
-	SDL_Rect m_rect;
-	bool m_shown;
+
+	array<UIArea *> m_anchoredAreas;
 };
 
 #endif // _UIArea_h

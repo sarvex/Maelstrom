@@ -4,37 +4,30 @@
 			<Rectangle>
 				<Color r="0x75" g="0x75" b="0xFF"/>
 				<Size w="514" h="386"/>
-				<Anchor anchorFrom="CENTER" anchorTo="CENTER"/>
 			</Rectangle>
 			<Rectangle>
 				<Color r="0x75" g="0x75" b="0xFF"/>
 				<Size w="516" h="388"/>
-				<Anchor anchorFrom="CENTER" anchorTo="CENTER"/>
 			</Rectangle>
 			<Rectangle>
 				<Color r="0x9C" g="0x9C" b="0xFF"/>
 				<Size w="518" h="390"/>
-				<Anchor anchorFrom="CENTER" anchorTo="CENTER"/>
 			</Rectangle>
 			<Rectangle>
 				<Color r="0x9C" g="0x9C" b="0xFF"/>
 				<Size w="520" h="392"/>
-				<Anchor anchorFrom="CENTER" anchorTo="CENTER"/>
 			</Rectangle>
 			<Rectangle>
 				<Color r="0xC3" g="0xC3" b="0xFF"/>
 				<Size w="522" h="394"/>
-				<Anchor anchorFrom="CENTER" anchorTo="CENTER"/>
 			</Rectangle>
 			<Rectangle>
 				<Color r="0x9C" g="0x9C" b="0xFF"/>
 				<Size w="524" h="396"/>
-				<Anchor anchorFrom="CENTER" anchorTo="CENTER"/>
 			</Rectangle>
 			<Rectangle>
 				<Color r="0x75" g="0x75" b="0xFF"/>
 				<Size w="526" h="398"/>
-				<Anchor anchorFrom="CENTER" anchorTo="CENTER"/>
 			</Rectangle>
 		</Elements>
 	</UIPanel>
@@ -42,6 +35,9 @@
 	<Label templateName="Small" fontName="Geneva" fontSize="9" fontStyle="BOLD"/>
 	<Label templateName="SmallWhite" template="Small">
 		<Color r="0xFF" g="0xFF" b="0xFF"/>
+	</Label>
+	<Label templateName="SmallBlack" template="Small">
+		<Color r="0x00" g="0x00" b="0x00"/>
 	</Label>
 	<Label templateName="SmallYellow" template="Small">
 		<Color r="0xFF" g="0xFF" b="0x00"/>
@@ -74,4 +70,20 @@
 	<Label templateName="LargeYellowUnderline" template="Large" fontStyle="UNDERLINE">
 		<Color r="0xFF" g="0xFF" b="0x00"/>
 	</Label>
+
+	<Button templateName="HotkeyOnly">
+		<Size w="0" h="0"/>
+	</Button>
+	<KeyButton templateName="MenuButton">
+		<Size w="32" h="32"/>
+		<Elements>
+			<Icon id="100"/>
+			<Label name="shadow" template="SmallWhite">
+				<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" x="14" y="10"/>
+			</Icon>
+			<Label name="label" template="SmallBlack">
+				<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" x="13" y="9"/>
+			</Label>
+		</Elements>
+	</KeyButton>
 </UITemplates>

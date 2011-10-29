@@ -32,7 +32,7 @@ UIElementType UIBaseElement::s_elementType;
 
 
 UIBaseElement::UIBaseElement(UIManager *ui, const char *name) :
-	UIArea(ui->GetScreen())
+	UIArea(ui->GetScreen(), ui, ui->Width(), ui->Height())
 {
 	m_ui = ui;
 	m_parent = NULL;
@@ -40,7 +40,7 @@ UIBaseElement::UIBaseElement(UIManager *ui, const char *name) :
 }
 
 UIBaseElement::UIBaseElement(UIBaseElement *parent, const char *name) :
-	UIArea(parent->GetScreen())
+	UIArea(parent->GetScreen(), parent, parent->Width(), parent->Height())
 {
 	m_ui = parent->GetUI();
 	m_parent = parent;

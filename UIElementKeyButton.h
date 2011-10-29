@@ -16,12 +16,6 @@ public:
 
 	virtual bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
 
-	virtual void Draw();
-
-protected:
-	SDL_Texture *m_text;
-	SDL_Texture *m_textShadow;
-
 protected:
 	static UIElementType s_elementType;
 

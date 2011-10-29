@@ -1,8 +1,6 @@
 <UIPanel template="FramedPanel" delegate="AboutPanel">
 	<Elements>
-		<Title name="image" id="134">
-			<Anchor anchorFrom="CENTER" anchorTo="CENTER"/>
-		</Title>
+		<Title name="image" id="134"/>
 
 		<!-- Shield icon -->
 		<Icon id="137">
@@ -31,9 +29,6 @@
 
 		<!-- Buttons -->
 		<Button hotkey="any" clickPanel="main" clickSound="106"/>
-		<Button hotkey="Return" clickPanel="about_credits" clickSound="102">
-			<SizeParent/>
-			<Anchor anchorFrom="CENTER" anchorTo="CENTER"/>
-		</Button>
+		<Button hotkey="Return" clickPanel="about_credits" clickSound="102"/>
 	</Elements>
 </UIPanel>

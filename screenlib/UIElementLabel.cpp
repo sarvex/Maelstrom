@@ -106,9 +106,8 @@ UIElementLabel::SetText(const char *text)
 	m_text = SDL_strdup(text);
 	m_texture = GetUI()->CreateText(m_text, m_fontName, m_fontSize, m_fontStyle, m_color);
 
-	m_rect.w = m_screen->GetImageWidth(m_texture);
-	m_rect.h = m_screen->GetImageHeight(m_texture);
-	CalculateAnchor();
+	SetSize(m_screen->GetImageWidth(m_texture), 
+		m_screen->GetImageHeight(m_texture));
 }
 
 void
@@ -134,6 +133,6 @@ void
 UIElementLabel::Draw()
 {
 	if (m_texture) {
-		m_screen->QueueBlit(m_rect.x, m_rect.y, m_texture, NOCLIP);
+		m_screen->QueueBlit(X(), Y(), m_texture, NOCLIP);
 	}
 }

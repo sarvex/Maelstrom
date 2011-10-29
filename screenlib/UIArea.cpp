@@ -50,19 +50,22 @@ static AnchorLocation ParseAnchorLocation(const char *text)
 
 }
 
-UIArea::UIArea(FrameBuf *screen) : ErrorBase()
+UIArea::UIArea(FrameBuf *screen, UIArea *anchor, int w, int h) : ErrorBase()
 {
 	m_screen = screen;
-	m_anchor.element = NULL;
-	m_anchor.anchorFrom = TOPLEFT;
-	m_anchor.anchorTo = TOPLEFT;
-	m_anchor.offsetX = 0;
-	m_anchor.offsetY = 0;
+	m_shown = true;
 	m_rect.x = 0;
 	m_rect.y = 0;
-	m_rect.w = 0;
-	m_rect.h = 0;
-	m_shown = true;
+	m_rect.w = w;
+	m_rect.h = h;
+	m_anchor.element = anchor;
+	m_anchor.anchorFrom = CENTER;
+	m_anchor.anchorTo = CENTER;
+	m_anchor.offsetX = 0;
+	m_anchor.offsetY = 0;
+	if (anchor) {
+		anchor->AddAnchoredArea(this);
+	}
 }
 
 bool
@@ -70,6 +73,7 @@ UIArea::Load(rapidxml::xml_node<> *node)
 {
 	rapidxml::xml_node<> *child;
 	rapidxml::xml_attribute<> *attr;
+	SDL_Rect rect = m_rect;
 
 	attr = node->first_attribute("show", 0, false);
 	if (attr) {
@@ -93,22 +97,18 @@ UIArea::Load(rapidxml::xml_node<> *node)
 		}
 	}
 
-	child = node->first_node("sizeParent", 0, false);
-	if (child) {
-		UIArea *parent;
-
-		parent = GetAnchorElement(NULL);
-		m_rect.w = parent->Width();
-		m_rect.h = parent->Height();
-	}
-
 	child = node->first_node("anchor", 0, false);
 	if (child) {
 		int x, y;
 
 		attr = child->first_attribute("anchor", 0, false);
+		if (m_anchor.element) {
+			m_anchor.element->DelAnchoredArea(this);
+		}
 		m_anchor.element = GetAnchorElement(attr ? attr->value() : NULL);
-		if (!m_anchor.element) {
+		if (m_anchor.element) {
+			m_anchor.element->AddAnchoredArea(this);
+		} else {
 			SetError("Element 'anchor' couldn't find anchor element %s",
 				attr ? attr->value() : "NULL");
 			return false;
@@ -131,11 +131,58 @@ UIArea::Load(rapidxml::xml_node<> *node)
 		if (attr) {
 			m_anchor.offsetY = SDL_atoi(attr->value());
 		}
+	}
 
-		CalculateAnchor();
+	CalculateAnchor(false);
+	if (m_rect.x != rect.x || m_rect.y != rect.y ||
+	    m_rect.w != rect.w || m_rect.h != rect.h) {
+		OnRectChanged();
 	}
 
 	return true;
+}
+
+void
+UIArea::SetPosition(int x, int y) {
+	/* Setting the position breaks the anchoring */
+	m_anchor.element = NULL;
+
+	if (x != m_rect.x || y != m_rect.y) {
+		m_rect.x = x;
+		m_rect.y = y;
+		OnRectChanged();
+	}
+}
+
+void
+UIArea::SetSize(int w, int h)
+{
+	if (w != m_rect.w || h != m_rect.h) {
+		m_rect.w = w;
+		m_rect.h = h;
+		CalculateAnchor(false);
+		OnRectChanged();
+	}
+}
+
+void
+UIArea::SetWidth(int w)
+{
+	if (w != m_rect.w) {
+		m_rect.w = w;
+		CalculateAnchor(false);
+		OnRectChanged();
+	}
+}
+
+void
+UIArea::SetHeight(int h)
+{
+	if (h != m_rect.h) {
+		m_rect.h = h;
+		CalculateAnchor(false);
+		OnRectChanged();
+	}
 }
 
 void
@@ -170,7 +217,7 @@ UIArea::GetAnchorLocation(AnchorLocation spot, int *x, int *y) const
 }
 
 void
-UIArea::CalculateAnchor()
+UIArea::CalculateAnchor(bool triggerRectChanged)
 {
 	int x, y;
 
@@ -200,6 +247,22 @@ UIArea::CalculateAnchor()
 			break;
 	}
 
-	m_rect.x = x + m_anchor.offsetX;
-	m_rect.y = y + m_anchor.offsetY;
+	x += m_anchor.offsetX;
+	y += m_anchor.offsetY;
+	if (x != m_rect.x || y != m_rect.y) {
+		m_rect.x = x;
+		m_rect.y = y;
+
+		if (triggerRectChanged) {
+			OnRectChanged();
+		}
+	}
+}
+
+void
+UIArea::OnRectChanged()
+{
+	for (unsigned i = 0; i < m_anchoredAreas.length(); ++i) {
+		m_anchoredAreas[i]->CalculateAnchor(true);
+	}
 }

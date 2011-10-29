@@ -5,7 +5,7 @@
 		</Title>
 
 		<!-- Catch-all button to bonk when a key is pressed -->
-		<Button hotkey="any" clickSound="108"/>
+		<Button template="HotkeyOnly" hotkey="any" clickSound="108"/>
 
 		<!-- dividers -->
 		<Line name="vertical_divider">
@@ -134,43 +134,43 @@
 		</Label>
 
 		<!-- Instructions -->
-		<KeyButton name="PlayButton" hotkey="P" clickSound="114">
+		<KeyButton name="PlayButton" template="MenuButton" hotkey="P" clickSound="114">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPRIGHT" anchor="vertical_divider" x="9" y="10"/>
 		</KeyButton>
 		<Label template="SmallYellow" text=" Start playing Maelstrom">
 			<Anchor anchorFrom="BOTTOMLEFT" anchorTo="TOPRIGHT" anchor="PlayButton" x="3" y="21"/>
 		</Label>
-		<KeyButton name="ControlsButton" hotkey="C" clickSound="119">
+		<KeyButton name="ControlsButton" template="MenuButton" hotkey="C" clickSound="119">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="PlayButton" y="34"/>
 		</KeyButton>
 		<Label template="SmallYellow" text=" Configure the game controls">
 			<Anchor anchorFrom="BOTTOMLEFT" anchorTo="TOPRIGHT" anchor="ControlsButton" x="3" y="21"/>
 		</Label>
-		<KeyButton name="ZapButton" hotkey="Z" clickSound="107">
+		<KeyButton name="ZapButton" template="MenuButton" hotkey="Z" clickSound="107">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="ControlsButton" y="34"/>
 		</KeyButton>
 		<Label template="SmallYellow" text=" Zap the high scores">
 			<Anchor anchorFrom="BOTTOMLEFT" anchorTo="TOPRIGHT" anchor="ZapButton" x="3" y="21"/>
 		</Label>
-		<KeyButton name="AboutButton" hotkey="A" clickSound="122">
+		<KeyButton name="AboutButton" template="MenuButton" hotkey="A" clickSound="122">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="ZapButton" y="34"/>
 		</KeyButton>
 		<Label template="SmallYellow" text=" About Maelstrom...">
 			<Anchor anchorFrom="BOTTOMLEFT" anchorTo="TOPRIGHT" anchor="AboutButton" x="3" y="21"/>
 		</Label>
-		<KeyButton name="QuitButton" hotkey="Q" clickSound="106">
+		<KeyButton name="QuitButton" template="MenuButton" hotkey="Q" clickSound="106">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="AboutButton" y="68"/>
 		</KeyButton>
 		<Label template="SmallYellow" text=" Quit Maelstrom">
 			<Anchor anchorFrom="BOTTOMLEFT" anchorTo="TOPRIGHT" anchor="QuitButton" x="3" y="21"/>
 		</Label>
-		<KeyButton name="VolumeDownButton" hotkey="0">
+		<KeyButton name="VolumeDownButton" template="MenuButton" hotkey="0">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="QuitButton" y="34"/>
 		</KeyButton>
 		<Label template="SmallYellow" text="-">
 			<Anchor anchorFrom="BOTTOMLEFT" anchorTo="TOPRIGHT" anchor="VolumeDownButton" x="3" y="21"/>
 		</Label>
-		<KeyButton name="VolumeUpButton" hotkey="8">
+		<KeyButton name="VolumeUpButton" template="MenuButton" hotkey="8">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="VolumeDownButton" x="40"/>
 		</KeyButton>
 		<Label template="SmallYellow" text=" Set Sound Volume">
@@ -178,19 +178,19 @@
 		</Label>
 
 		<!-- Hidden action buttons -->
-		<Button name="ToggleFullscreen" hotkey="ALT-Return"/>
-		<Button name="Cheat" hotkey="L" clickSound="124"/>
-		<Button name="Special" hotkey="X" clickSound="128"/>
-		<Button name="Screenshot" hotkey="F3"/>
-		<Button name="SetVolume0" hotkey="0"/>
-		<Button name="SetVolume1" hotkey="1"/>
-		<Button name="SetVolume2" hotkey="2"/>
-		<Button name="SetVolume3" hotkey="3"/>
-		<Button name="SetVolume4" hotkey="4"/>
-		<Button name="SetVolume5" hotkey="5"/>
-		<Button name="SetVolume6" hotkey="6"/>
-		<Button name="SetVolume7" hotkey="7"/>
-		<Button name="SetVolume8" hotkey="8"/>
+		<Button name="ToggleFullscreen" template="HotkeyOnly" hotkey="ALT-Return"/>
+		<Button name="Cheat" template="HotkeyOnly" hotkey="L" clickSound="124"/>
+		<Button name="Special" template="HotkeyOnly" hotkey="X" clickSound="128"/>
+		<Button name="Screenshot" template="HotkeyOnly" hotkey="F3"/>
+		<Button name="SetVolume0" template="HotkeyOnly" hotkey="0"/>
+		<Button name="SetVolume1" template="HotkeyOnly" hotkey="1"/>
+		<Button name="SetVolume2" template="HotkeyOnly" hotkey="2"/>
+		<Button name="SetVolume3" template="HotkeyOnly" hotkey="3"/>
+		<Button name="SetVolume4" template="HotkeyOnly" hotkey="4"/>
+		<Button name="SetVolume5" template="HotkeyOnly" hotkey="5"/>
+		<Button name="SetVolume6" template="HotkeyOnly" hotkey="6"/>
+		<Button name="SetVolume7" template="HotkeyOnly" hotkey="7"/>
+		<Button name="SetVolume8" template="HotkeyOnly" hotkey="8"/>
 
 		<!-- Credits -->
 		<Label template="SmallYellow" text="Port to SDL by Sam Lantinga">

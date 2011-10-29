@@ -25,15 +25,14 @@ UIElementTexture::SetTexture(SDL_Texture *texture)
 		m_screen->FreeImage(m_texture);
 	}
 	m_texture = texture;
-	m_rect.w = m_screen->GetImageWidth(texture);
-	m_rect.h = m_screen->GetImageHeight(texture);
-	CalculateAnchor();
+	SetSize(m_screen->GetImageWidth(texture),
+		m_screen->GetImageHeight(texture));
 }
 
 void
 UIElementTexture::Draw()
 {
 	if (m_texture) {
-		m_screen->QueueBlit(m_rect.x, m_rect.y, m_texture, NOCLIP);
+		m_screen->QueueBlit(X(), Y(), m_texture, NOCLIP);
 	}
 }

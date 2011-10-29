@@ -30,8 +30,6 @@
 UIPanel::UIPanel(UIManager *ui, const char *name) :
 	UIBaseElement(ui, name)
 {
-	m_rect.w = m_screen->Width();
-	m_rect.h = m_screen->Height();
 	m_shown = false;
 	m_fullscreen = true;
 	m_cursorVisible = true;

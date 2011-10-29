@@ -31,5 +31,5 @@ UIElementLine::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 void
 UIElementLine::Draw()
 {
-	m_screen->DrawLine(m_rect.x, m_rect.y, m_rect.x+m_rect.w-1, m_rect.y+m_rect.h-1, m_color);
+	m_screen->DrawLine(X(), Y(), X()+Width()-1, Y()+Height()-1, m_color);
 }

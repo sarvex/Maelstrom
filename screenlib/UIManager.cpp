@@ -30,7 +30,8 @@
 #include "UIElementRect.h"
 
 
-UIManager::UIManager(FrameBuf *screen) : UIArea(screen)
+UIManager::UIManager(FrameBuf *screen) :
+	UIArea(screen, NULL, screen->Width(), screen->Height())
 {
 	m_loadPath = new char[2];
 	strcpy(m_loadPath, ".");
