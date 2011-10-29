@@ -1,68 +1,27 @@
 
 #include "screenlib/SDL_FrameBuf.h"
-#include "screenlib/UIManager.h"
-#include "UIDialog.h"
-#include "UIDialogButton.h"
-#include "UIDialogLabel.h"
+#include "screenlib/UIElementLabel.h"
+#include "MacDialogButton.h"
 
 /* Default dialog button size */
 #define BUTTON_WIDTH	75
 #define BUTTON_HEIGHT	19
 
 
-UIElementType UIDialogButton::s_elementType;
+UIElementType MacDialogButton::s_elementType;
 
 
-UIDialogButton::UIDialogButton(UIBaseElement *parent, const char *name) :
-	UIElementButton(parent, name)
+MacDialogButton::MacDialogButton(UIBaseElement *parent, const char *name) :
+	UIDialogButton(parent, name)
 {
-	m_statusID = 0;
-	m_default = false;
-	m_closeDialog = true;
-
 	m_colors[0] = m_screen->MapRGB(0xFF, 0xFF, 0xFF);
 	m_colors[1] = m_screen->MapRGB(0x00, 0x00, 0x00);
 
 	SetSize(BUTTON_WIDTH, BUTTON_HEIGHT);
 }
 
-UIDialogButton::~UIDialogButton()
-{
-}
-
-bool
-UIDialogButton::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
-{
-	rapidxml::xml_attribute<> *attr;
-
-	if (!UIElementButton::Load(node, templates)) {
-		return false;
-	}
-
-	LoadNumber(node, "id", m_statusID);
-
-	LoadBool(node, "default", m_default);
-	if (m_default) {
-		m_hotkey = SDLK_RETURN;
-	}
-
-	LoadBool(node, "closeDialog", m_closeDialog);
-
-	attr = node->first_attribute("text", 0, false);
-	if (attr) {
-		UIDialogLabel *label;
-
-		label = new UIDialogLabel(this, "label");
-		label->SetText(attr->value());
-		label->SetTextColor(m_colors[1]);
-		AddElement(label);
-	}
-
-	return true;
-}
-
 void
-UIDialogButton::Draw()
+MacDialogButton::Draw()
 {
 	Uint32 bg, fg;
 	int x, y, maxx, maxy;
@@ -136,43 +95,27 @@ UIDialogButton::Draw()
 		m_screen->DrawLine(x+5, maxy, maxx-5, maxy, fg);
 	}
 
-	UIElementButton::Draw();
+	UIDialogButton::Draw();
 }
 
 void
-UIDialogButton::OnMouseDown()
+MacDialogButton::OnMouseDown()
 {
 	SetElementColor(m_colors[0]);
 
-	UIElementButton::OnMouseDown();
+	UIDialogButton::OnMouseDown();
 }
 
 void
-UIDialogButton::OnMouseUp()
+MacDialogButton::OnMouseUp()
 {
 	SetElementColor(m_colors[1]);
 
-	UIElementButton::OnMouseUp();
+	UIDialogButton::OnMouseUp();
 }
 
 void
-UIDialogButton::OnClick()
-{
-	UIElementButton::OnClick();
-
-	if (m_statusID) {
-		UIPanel *panel = GetUI()->GetCurrentPanel();
-		if (panel->IsA(UIDialog::GetType())) {
-			static_cast<UIDialog*>(panel)->SetDialogStatus(m_statusID);
-		}
-	}
-	if (m_closeDialog) {
-		GetUI()->HidePanel(GetUI()->GetCurrentPanel());
-	}
-}
-
-void
-UIDialogButton::SetElementColor(Uint32 color)
+MacDialogButton::SetElementColor(Uint32 color)
 {
 	Uint8 R, G, B;
 

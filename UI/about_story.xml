@@ -1,4 +1,4 @@
-<UIPanel template="FramedPanel">
+<Panel template="FramedPanel">
 	<Elements>
 		<Title name="image" id="133"/>
 
@@ -6,4 +6,4 @@
 		<Button hotkey="any" clickPanel="main" clickSound="106"/>
 		<Button hotkey="Return" clickPanel="about_game" clickSound="102"/>
 	</Elements>
-</UIPanel>
+</Panel>

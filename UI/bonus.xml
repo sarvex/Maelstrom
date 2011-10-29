@@ -1,4 +1,4 @@
-<UIPanel fullscreen="false" enterSound="110">
+<Panel fullscreen="false" enterSound="110">
 	<Elements>
 		<Label name="wave" template="SmallYellow">
 			<Anchor anchorFrom="TOP" anchorTo="CENTER" y="-90"/>
@@ -35,4 +35,4 @@
 			<Anchor anchorFrom="TOP" anchorTo="TOP" anchor="wave" y="109"/>
 		</Label>
 	</Elements>
-</UIPanel>
+</Panel>

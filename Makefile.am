@@ -32,14 +32,14 @@ Maelstrom_SOURCES =		\
 	rect.h			\
 	scores.cpp		\
 	scores.h		\
-	UIDialog.cpp		\
-	UIDialog.h		\
-	UIDialogButton.cpp	\
-	UIDialogButton.h	\
-	UIDialogCheckbox.cpp	\
-	UIDialogCheckbox.h	\
-	UIDialogLabel.cpp	\
-	UIDialogLabel.h		\
+	MacDialog.cpp		\
+	MacDialog.h		\
+	MacDialogButton.cpp	\
+	MacDialogButton.h	\
+	MacDialogCheckbox.cpp	\
+	MacDialogCheckbox.h	\
+	MacDialogLabel.cpp	\
+	MacDialogLabel.h		\
 	UIElementIcon.cpp	\
 	UIElementIcon.h		\
 	UIElementKeyButton.cpp	\

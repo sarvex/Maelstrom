@@ -90,9 +90,16 @@ public:
 	bool HandleEvent(const SDL_Event &event);
 
 public:
-	virtual UIPanel *CreatePanel(const char *type, const char *name);
-	virtual UIPanelDelegate *CreatePanelDelegate(UIPanel *panel, const char *delegate);
-	virtual UIElement *CreateElement(UIBaseElement *parent, const char *type);
+	/* These should be implemented to load UI from XMl */
+	virtual UIPanel *CreatePanel(const char *type, const char *name) {
+		return NULL;
+	}
+	virtual UIPanelDelegate *CreatePanelDelegate(UIPanel *panel, const char *delegate) {
+		return NULL;
+	}
+	virtual UIElement *CreateElement(UIBaseElement *parent, const char *type, const char *name = "") {
+		return NULL;
+	}
 
 protected:
 	char *m_loadPath;

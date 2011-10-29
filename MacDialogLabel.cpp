@@ -1,11 +1,11 @@
 
-#include "UIDialogLabel.h"
+#include "MacDialogLabel.h"
 #include "Maelstrom_Globals.h"
 
-UIElementType UIDialogLabel::s_elementType;
+UIElementType MacDialogLabel::s_elementType;
 
 
-UIDialogLabel::UIDialogLabel(UIBaseElement *parent, const char *name) :
+MacDialogLabel::MacDialogLabel(UIBaseElement *parent, const char *name) :
 	UIElementLabel(parent, name)
 {
 	m_fontName = SDL_strdup("Chicago");

@@ -1,16 +1,16 @@
 
 #include "screenlib/SDL_FrameBuf.h"
-#include "UIDialogCheckbox.h"
-#include "UIDialogLabel.h"
+#include "MacDialogCheckbox.h"
+#include "MacDialogLabel.h"
 
 /* Default checkbox size */
 #define CHECKBOX_SIZE	12
 
 
-UIElementType UIDialogCheckbox::s_elementType;
+UIElementType MacDialogCheckbox::s_elementType;
 
 
-UIDialogCheckbox::UIDialogCheckbox(UIBaseElement *parent, const char *name) :
+MacDialogCheckbox::MacDialogCheckbox(UIBaseElement *parent, const char *name) :
 	UIElementCheckbox(parent, name)
 {
 	m_color = m_screen->MapRGB(0x00, 0x00, 0x00);
@@ -18,12 +18,12 @@ UIDialogCheckbox::UIDialogCheckbox(UIBaseElement *parent, const char *name) :
 	SetSize(CHECKBOX_SIZE, CHECKBOX_SIZE);
 }
 
-UIDialogCheckbox::~UIDialogCheckbox()
+MacDialogCheckbox::~MacDialogCheckbox()
 {
 }
 
 bool
-UIDialogCheckbox::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
+MacDialogCheckbox::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 {
 	rapidxml::xml_attribute<> *attr;
 
@@ -33,9 +33,9 @@ UIDialogCheckbox::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 
 	attr = node->first_attribute("text", 0, false);
 	if (attr) {
-		UIDialogLabel *label;
+		MacDialogLabel *label;
 
-		label = new UIDialogLabel(this, "label");
+		label = new MacDialogLabel(this, "label");
 		label->SetText(attr->value());
 		label->SetTextColor(m_color);
 		label->SetAnchor(TOPLEFT, TOPRIGHT, this, 3, -2);
@@ -46,7 +46,7 @@ UIDialogCheckbox::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 }
 
 void
-UIDialogCheckbox::Draw()
+MacDialogCheckbox::Draw()
 {
 	m_screen->DrawRect(X(), Y(), Width(), Height(), m_color);
 

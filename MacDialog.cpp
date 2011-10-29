@@ -1,20 +1,17 @@
 
 #include "screenlib/SDL_FrameBuf.h"
-#include "screenlib/UIManager.h"
 
-#include "UIDialog.h"
+#include "MacDialog.h"
 
 #define EXPAND_STEPS 30
 
 
-UIElementType UIDialog::s_elementType;
+UIElementType MacDialog::s_elementType;
 
 
-UIDialog::UIDialog(UIManager *ui, const char *name) :
-	UIPanel(ui, name)
+MacDialog::MacDialog(UIManager *ui, const char *name) :
+	UIDialog(ui, name)
 {
-	m_fullscreen = false;
-
 	m_colors[COLOR_BLACK] = m_screen->MapRGB(0x00, 0x00, 0x00);
 	m_colors[COLOR_DARK] = m_screen->MapRGB(0x66, 0x66, 0x99);
 	m_colors[COLOR_MEDIUM] = m_screen->MapRGB(0xBB, 0xBB, 0xBB);
@@ -22,19 +19,12 @@ UIDialog::UIDialog(UIManager *ui, const char *name) :
 	m_colors[COLOR_WHITE] = m_screen->MapRGB(0xFF, 0xFF, 0xFF);
 	m_expand = true;
 	m_step = 0;
-	m_status = 0;
-	m_handleInit = NULL;
-	m_handleDone = NULL;
-}
-
-UIDialog::~UIDialog()
-{
 }
 
 bool
-UIDialog::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
+MacDialog::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 {
-	if (!UIPanel::Load(node, templates)) {
+	if (!UIDialog::Load(node, templates)) {
 		return false;
 	}
 
@@ -44,34 +34,19 @@ UIDialog::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 }
 
 void
-UIDialog::Show()
+MacDialog::Show()
 {
 	if (m_expand) {
 		m_step = 0;
 	} else {
 		m_step = EXPAND_STEPS;
 	}
-	m_status = 0;
 
-	if (m_handleInit) {
-		m_handleInit(this);
-	}
-
-	UIPanel::Show();
+	UIDialog::Show();
 }
 
 void
-UIDialog::Hide()
-{
-	UIPanel::Hide();
-
-	if (m_handleDone) {
-		m_handleDone(this, m_status);
-	}
-}
-
-void
-UIDialog::Draw()
+MacDialog::Draw()
 {
 	int x, y, w, h;
 	int maxx, maxy;
@@ -115,44 +90,5 @@ UIDialog::Draw()
 		return;
 	}
 
-	UIPanel::Draw();
-}
-
-bool
-UIDialog::HandleEvent(const SDL_Event &event)
-{
-	if (UIPanel::HandleEvent(event)) {
-		return true;
-	}
-
-	if (event.type != SDL_QUIT) {
-		/* Press escape to cancel out of dialogs */
-		if (event.type == SDL_KEYUP &&
-		    event.key.keysym.sym == SDLK_ESCAPE) {
-			GetUI()->HidePanel(GetUI()->GetCurrentPanel());
-		}
-		return true;
-	}
-	return false;
-}
-
-UIDialogLauncher::UIDialogLauncher(UIManager *ui, const char *name, UIDialogInitHandler handleInit, UIDialogDoneHandler handleDone)
-{
-	m_ui = ui;
-	m_name = name;
-	m_handleInit = handleInit;
-	m_handleDone = handleDone;
-}
-
-void
-UIDialogLauncher::OnClick()
-{
-	UIDialog *dialog;
-
-	dialog = m_ui->GetPanel<UIDialog>(m_name);
-	if (dialog) {
-		dialog->SetDialogHandlers(m_handleInit, m_handleDone);
-
-		m_ui->ShowPanel(dialog);
-	}
+	UIDialog::Draw();
 }

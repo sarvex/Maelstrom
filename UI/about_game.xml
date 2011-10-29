@@ -1,4 +1,4 @@
-<UIPanel template="FramedPanel" delegate="AboutPanel">
+<Panel template="FramedPanel" delegate="AboutPanel">
 	<Elements>
 		<Title name="image" id="134"/>
 
@@ -31,4 +31,4 @@
 		<Button hotkey="any" clickPanel="main" clickSound="106"/>
 		<Button hotkey="Return" clickPanel="about_credits" clickSound="102"/>
 	</Elements>
-</UIPanel>
+</Panel>

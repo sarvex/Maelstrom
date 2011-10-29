@@ -1,18 +1,23 @@
 
 #include "MaelstromUI.h"
 #include "Maelstrom_Globals.h"
-#include "UIDialog.h"
 #include "main.h"
 #include "netlogic/about.h"
 #include "netlogic/game.h"
-#include "utils/hashtable.h"
-#include "UIDialogButton.h"
-#include "UIDialogCheckbox.h"
-#include "UIDialogLabel.h"
+#include "MacDialog.h"
+#include "MacDialogButton.h"
+#include "MacDialogCheckbox.h"
+#include "MacDialogLabel.h"
 #include "UIElementIcon.h"
 #include "UIElementKeyButton.h"
 #include "UIElementSprite.h"
 #include "UIElementTitle.h"
+#include "screenlib/UIElementButton.h"
+#include "screenlib/UIElementCheckbox.h"
+#include "screenlib/UIElementLine.h"
+#include "screenlib/UIElementRadio.h"
+#include "screenlib/UIElementRect.h"
+#include "utils/hashtable.h"
 
 
 static void
@@ -136,8 +141,10 @@ MaelstromUI::PlaySound(int soundID)
 UIPanel *
 MaelstromUI::CreatePanel(const char *type, const char *name)
 {
-	if (strcasecmp(type, "Dialog") == 0) {
-		return new UIDialog(ui, name);
+	if (strcasecmp(type, "Panel") == 0) {
+		return new UIPanel(this, name);
+	} else if (strcasecmp(type, "Dialog") == 0) {
+		return new MacDialog(ui, name);
 	}
 	return UIManager::CreatePanel(type, name);
 }
@@ -156,24 +163,34 @@ MaelstromUI::CreatePanelDelegate(UIPanel *panel, const char *delegate)
 }
 
 UIElement *
-MaelstromUI::CreateElement(UIBaseElement *parent, const char *type)
+MaelstromUI::CreateElement(UIBaseElement *parent, const char *type, const char *name)
 {
-	if (strcasecmp(type, "Label") == 0) {
-		return new UIElementLabel(parent);
+	if (strcasecmp(type, "Line") == 0) {
+		return new UIElementLine(parent, name);
+	} else if (strcasecmp(type, "Rectangle") == 0) {
+		return new UIElementRect(parent, name);
+	} else if (strcasecmp(type, "Label") == 0) {
+		return new UIElementLabel(parent, name);
+	} else if (strcasecmp(type, "Button") == 0) {
+		return new UIElementButton(parent, name);
 	} else if (strcasecmp(type, "DialogLabel") == 0) {
-		return new UIDialogLabel(parent);
+		return new MacDialogLabel(parent, name);
 	} else if (strcasecmp(type, "DialogButton") == 0) {
-		return new UIDialogButton(parent);
+		return new MacDialogButton(parent, name);
 	} else if (strcasecmp(type, "DialogCheckbox") == 0) {
-		return new UIDialogCheckbox(parent);
+		return new MacDialogCheckbox(parent, name);
+	} else if (strcasecmp(type, "DialogRadioGroup") == 0) {
+		return new UIElementRadioGroup(parent, name);
+	} else if (strcasecmp(type, "DialogRadioButton") == 0) {
+		return new UIElementRadioButton(parent, name);
 	} else if (strcasecmp(type, "KeyButton") == 0) {
-		return new UIElementKeyButton(parent);
+		return new UIElementKeyButton(parent, name);
 	} else if (strcasecmp(type, "Icon") == 0) {
-		return new UIElementIcon(parent);
+		return new UIElementIcon(parent, name);
 	} else if (strcasecmp(type, "Sprite") == 0) {
-		return new UIElementSprite(parent);
+		return new UIElementSprite(parent, name);
 	} else if (strcasecmp(type, "Title") == 0) {
-		return new UIElementTitle(parent);
+		return new UIElementTitle(parent, name);
 	}
-	return UIManager::CreateElement(parent, type);;
+	return UIManager::CreateElement(parent, name, type);;
 }

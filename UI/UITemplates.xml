@@ -1,5 +1,5 @@
 <UITemplates>
-	<UIPanel templateName="FramedPanel">
+	<Panel templateName="FramedPanel">
 		<Elements>
 			<Rectangle>
 				<Color r="0x75" g="0x75" b="0xFF"/>
@@ -30,7 +30,7 @@
 				<Size w="526" h="398"/>
 			</Rectangle>
 		</Elements>
-	</UIPanel>
+	</Panel>
 
 	<Label templateName="Small" fontName="Geneva" fontSize="9" fontStyle="BOLD"/>
 	<Label templateName="SmallWhite" template="Small">

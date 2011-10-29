@@ -1,4 +1,4 @@
-<UIPanel template="FramedPanel" delegate="MainPanel">
+<Panel template="FramedPanel" delegate="MainPanel">
 	<Elements>
 		<Title name="image" id="129">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="CENTER" x="-251" y="-187"/>
@@ -209,4 +209,4 @@
 			<Anchor anchorFrom="BOTTOMLEFT" anchorTo="TOPLEFT" anchor="VolumeDownButton" x="-6" y="22"/>
 		</Label>
 	</Elements>
-</UIPanel>
+</Panel>

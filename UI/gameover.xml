@@ -1,4 +1,4 @@
-<UIPanel cursor="false" enterSound="113">
+<Panel cursor="false" enterSound="113">
 	<Elements>
 		<Title name="image" id="128">
 			<Anchor anchorFrom="CENTER" anchorTo="CENTER" y="-80"/>
@@ -22,4 +22,4 @@
 			<Anchor anchorFrom="LEFT" anchorTo="RIGHT" anchor="name_label"/>
 		</Label>
 	</Elements>
-</UIPanel>
+</Panel>

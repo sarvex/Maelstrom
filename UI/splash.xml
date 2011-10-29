@@ -1,5 +1,5 @@
-<UIPanel>
+<Panel>
 	<Elements>
 		<Title id="999"/>
 	</Elements>
-</UIPanel>
+</Panel>

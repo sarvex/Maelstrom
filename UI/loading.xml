@@ -1,4 +1,4 @@
-<UIPanel template="FramedPanel" enterSound="111" leaveSound="123">
+<Panel template="FramedPanel" enterSound="111" leaveSound="123">
 	<Elements>
 		<Title name="image" id="130"/>
 
@@ -28,4 +28,4 @@
 			<Anchor anchorFrom="LEFT" anchorTo="CENTER" x="-98" y="185"/>
 		</Rectangle>
 	</Elements>
-</UIPanel>
+</Panel>

@@ -1,4 +1,4 @@
-<UIPanel cursor="false" delegate="GamePanel">
+<Panel cursor="false" delegate="GamePanel">
 	<Elements>
 		<!-- Status display -->
 		<Line name="status_line">
@@ -93,4 +93,4 @@
 			<Anchor anchorFrom="LEFT" anchorTo="RIGHT" anchor="frags_label" x="4"/>
 		</Label>
 	</Elements>
-</UIPanel>
+</Panel>

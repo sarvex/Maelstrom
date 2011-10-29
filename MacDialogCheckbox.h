@@ -1,14 +1,14 @@
-#ifndef _UIDialogCheckbox_h
-#define _UIDialogCheckbox_h
+#ifndef _MacDialogCheckbox_h
+#define _MacDialogCheckbox_h
 
 #include "screenlib/UIElementCheckbox.h"
 
 
-class UIDialogCheckbox : public UIElementCheckbox
+class MacDialogCheckbox : public UIElementCheckbox
 {
 public:
-	UIDialogCheckbox(UIBaseElement *parent, const char *name = "");
-	virtual ~UIDialogCheckbox();
+	MacDialogCheckbox(UIBaseElement *parent, const char *name = "");
+	virtual ~MacDialogCheckbox();
 
 	virtual bool IsA(UIElementType type) {
 		return UIElementCheckbox::IsA(type) || type == GetType();
@@ -33,4 +33,4 @@ public:
 	}
 };
 
-#endif // _UIDialogCheckbox_h
+#endif // _MacDialogCheckbox_h

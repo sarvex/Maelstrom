@@ -268,37 +268,3 @@ UIManager::HandleEvent(const SDL_Event &event)
 	}
 	return false;
 }
-
-UIPanel *
-UIManager::CreatePanel(const char *type, const char *name)
-{
-	if (strcasecmp(type, "UIPanel") == 0) {
-		return new UIPanel(this, name);
-	}
-	return NULL;
-}
-
-UIPanelDelegate *
-UIManager::CreatePanelDelegate(UIPanel *panel, const char *delegate)
-{
-	return NULL;
-}
-
-UIElement *
-UIManager::CreateElement(UIBaseElement *parent, const char *type)
-{
-	if (strcasecmp(type, "Line") == 0) {
-		return new UIElementLine(parent);
-	} else if (strcasecmp(type, "Rectangle") == 0) {
-		return new UIElementRect(parent);
-	} else if (strcasecmp(type, "Button") == 0) {
-		return new UIElementButton(parent);
-	} else if (strcasecmp(type, "Checkbox") == 0) {
-		return new UIElementCheckbox(parent);
-	} else if (strcasecmp(type, "RadioGroup") == 0) {
-		return new UIElementRadioGroup(parent);
-	} else if (strcasecmp(type, "RadioButton") == 0) {
-		return new UIElementRadioButton(parent);
-	}
-	return NULL;
-}

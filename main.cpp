@@ -18,7 +18,7 @@
 #include "main.h"
 
 #include "screenlib/UIElementLabel.h"
-#include "UIDialog.h"
+#include "screenlib/UIDialog.h"
 #include "UIElementKeyButton.h"
 
 /* External functions used in this file */

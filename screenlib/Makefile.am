@@ -9,6 +9,10 @@ libSDLscreen_a_SOURCES =	\
 	UIArea.h		\
 	UIBaseElement.cpp	\
 	UIBaseElement.h		\
+	UIDialog.cpp		\
+	UIDialog.h		\
+	UIDialogButton.cpp	\
+	UIDialogButton.h	\
 	UIElement.cpp		\
 	UIElement.h		\
 	UIElementButton.cpp	\

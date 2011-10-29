@@ -1,12 +1,12 @@
-#ifndef _UIDialogLabel_h
-#define _UIDialogLabel_h
+#ifndef _MacDialogLabel_h
+#define _MacDialogLabel_h
 
 #include "screenlib/UIElementLabel.h"
 
-class UIDialogLabel : public UIElementLabel
+class MacDialogLabel : public UIElementLabel
 {
 public:
-	UIDialogLabel(UIBaseElement *parent, const char *name = "");
+	MacDialogLabel(UIBaseElement *parent, const char *name = "");
 
 	virtual bool IsA(UIElementType type) {
 		return UIElementLabel::IsA(type) || type == GetType();
@@ -24,4 +24,4 @@ public:
 	}
 };
 
-#endif // _UIDialogLabel_h
+#endif // _MacDialogLabel_h
