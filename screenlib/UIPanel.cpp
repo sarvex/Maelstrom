@@ -134,3 +134,16 @@ UIPanel::Draw()
 		m_delegate->OnDraw();
 	}
 }
+
+bool
+UIPanel::HandleEvent(const SDL_Event &event)
+{
+	if (UIBaseElement::HandleEvent(event)) {
+		return true;
+	}
+
+	if (m_delegate) {
+		return m_delegate->HandleEvent(event);
+	}
+	return false;
+}

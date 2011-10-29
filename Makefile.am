@@ -39,7 +39,9 @@ Maelstrom_SOURCES =		\
 	MacDialogCheckbox.cpp	\
 	MacDialogCheckbox.h	\
 	MacDialogLabel.cpp	\
-	MacDialogLabel.h		\
+	MacDialogLabel.h	\
+	MacDialogRadioButton.cpp\
+	MacDialogRadioButton.h	\
 	UIElementIcon.cpp	\
 	UIElementIcon.h		\
 	UIElementKeyButton.cpp	\

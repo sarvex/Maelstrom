@@ -8,6 +8,9 @@
 #include "Maelstrom_Globals.h"
 #include "load.h"
 #include "dialog.h"
+#include "screenlib/UIDialog.h"
+#include "screenlib/UIElementLabel.h"
+#include "screenlib/UIElementRadio.h"
 
 #define MAELSTROM_DATA	".Maelstrom-data"
 
@@ -131,186 +134,163 @@ void SaveControls(void)
 	fclose(data);
 }
 
-#define FIRE_CTL	0
-#define THRUST_CTL	1
-#define SHIELD_CTL	2
-#define TURNR_CTL	3
-#define TURNL_CTL	4
-#define PAUSE_CTL	5
-#define QUIT_CTL	6
-#define NUM_CTLS	7
-
-#define SP		3
-
-#define CTL_DIALOG_WIDTH	482
-#define CTL_DIALOG_HEIGHT	300
-
-Controls newcontrols;
-static struct {
-	const char *label;
-	int  yoffset;
-	SDL_Keycode *control;
-} checkboxes[] = {
-	{ "Fire",	0*BOX_HEIGHT+0*SP, &newcontrols.gFireControl },
-	{ "Thrust",	1*BOX_HEIGHT+1*SP, &newcontrols.gThrustControl },
-	{ "Shield",	2*BOX_HEIGHT+2*SP, &newcontrols.gShieldControl },
-	{ "Turn Clockwise", 3*BOX_HEIGHT+3*SP, &newcontrols.gTurnRControl },
-	{ "Turn Counter-Clockwise",
-			4*BOX_HEIGHT+4*SP, &newcontrols.gTurnLControl },
-	{ "Pause",	5*BOX_HEIGHT+5*SP, &newcontrols.gPauseControl },
-	{ "Abort Game",	6*BOX_HEIGHT+6*SP, &newcontrols.gQuitControl },
-};
-
-static int X=0;
-static int Y=0;
-static SDL_Texture *keynames[NUM_CTLS];
-static int currentbox, valid;
-
-static int OK_callback(void) {
-	valid = 1;
-	return(1);
-}
-static int Cancel_callback(void) {
-	valid = 0;
-	return(1);
-}
-static void BoxKeyPress(const SDL_Keysym &key, int *doneflag)
+bool
+ControlsDialogDelegate::OnLoad()
 {
-	int i;
-	SDL_Keycode sym = key.sym;
-	char keyname[128];
+	char name[32];
 
-	if ( sym == *checkboxes[currentbox].control )
-		return;
-
-	/* Make sure the key isn't in use! */
-	for ( i=0; i<NUM_CTLS; ++i ) {
-		if ( sym == *checkboxes[i].control ) {
-			sym = *checkboxes[currentbox].control;
-
-			/* Clear the current text */
-			fontserv->FreeText(keynames[currentbox]);
-
-			/* Blit the new message */
-			strcpy(keyname, "That key is in use!");
-			keynames[currentbox] = fontserv->TextImage(keyname,
-					fonts[CHICAGO_12], STYLE_NORM, 0x00, 0x00, 0x00);
-			screen->QueueBlit(
-				X+96+(BOX_WIDTH-screen->GetImageWidth(keynames[currentbox]))/2, 
-				Y+75+SP+checkboxes[currentbox].yoffset,
-					keynames[currentbox], NOCLIP);
-			screen->Update();
-			SDL_Delay(1000);
-			break;
+	for (int i = 0; i < SDL_arraysize(m_controlKeys); ++i) {
+		sprintf(name, "control%d", 1+i);
+		m_controlKeys[i] = m_panel->GetElement<UIElementLabel>(name);
+		if (!m_controlKeys[i]) {
+			fprintf(stderr, "Warning: Couldn't find control key label '%s'\n", name);
+			return false;
 		}
 	}
 
-	/* Clear the current text */
-	fontserv->FreeText(keynames[currentbox]);
+	m_radioGroup = m_panel->GetElement<UIElementRadioGroup>("controlsRadioGroup");
+	if (!m_radioGroup) {
+		fprintf(stderr, "Warning: Couldn't find 'controlsRadioGroup'\n");
+		return false;
+	}
 
-	/* Display the new key */
-	*checkboxes[currentbox].control = sym;
-	KeyName(*checkboxes[currentbox].control, keyname);
-	keynames[currentbox] = fontserv->TextImage(keyname,
-					fonts[CHICAGO_12], STYLE_NORM, 0x00, 0x00, 0x00);
-	screen->QueueBlit(X+96+(BOX_WIDTH-screen->GetImageWidth(keynames[currentbox]))/2, 
-				Y+75+SP+checkboxes[currentbox].yoffset,
-						keynames[currentbox], NOCLIP);
-	screen->Update();
+	return true;
 }
 
-void ConfigureControls(void)
+void
+ControlsDialogDelegate::OnShow()
 {
-#ifdef FAITHFUL_SPECS
-	static char *C_text1 = 
-		"While playing Maelstrom, CAPS LOCK pauses the game and";
-	static char *C_text2 = 
-		"ESC aborts the game.";
-	SDL_Texture *text1, *text2;
-#endif
-	MFont *chicago;
-	Uint32 black;
-	int i;
-	char keyname[128];
-	Maclike_Dialog *dialog;
-	SDL_Texture *splash;
-	Mac_Button *cancel, *okay;
-	Mac_RadioList *radiobuttons;
-	Mac_Dialog *boxes;
+	UIElementRadioButton *button;
 
-
-	/* Set up all the components of the dialog box */
-	black = screen->MapRGB(0x00, 0x00, 0x00);
-	chicago = fonts[CHICAGO_12];
-	if ( (splash = Load_Title(screen, 100)) == NULL ) {
-		error("Can't load configuration splash!\n");
-		return;
+	button = m_radioGroup->GetRadioButton(1);
+	if (button) {
+		button->SetChecked(true);
 	}
-	X=(SCREEN_WIDTH-CTL_DIALOG_WIDTH)/2;
-	Y=(SCREEN_HEIGHT-CTL_DIALOG_HEIGHT)/2;
-	dialog = new Maclike_Dialog(X, Y, CTL_DIALOG_WIDTH, CTL_DIALOG_HEIGHT,
-									screen);
-	dialog->Add_Image(splash, 4, 4);
-#ifdef FAITHFUL_SPECS
-	text1 = fontserv->TextImage(C_text1,chicago,STYLE_NORM,0x00,0x00,0x00);
-	text2 = fontserv->TextImage(C_text2,chicago,STYLE_NORM,0x00,0x00,0x00);
-	dialog->Add_Image(text1, 66, 216);
-	dialog->Add_Image(text2, 66, 232);
-#endif
-	valid = 0;
-	cancel = new Mac_Button(291, 265, BUTTON_WIDTH, BUTTON_HEIGHT,
-				"Cancel", chicago, fontserv, Cancel_callback);
-	dialog->Add_Dialog(cancel);
-	okay = new Mac_Button(291+BUTTON_WIDTH+26, 265, 
-					BUTTON_WIDTH, BUTTON_HEIGHT,
-				"OK", chicago, fontserv, OK_callback);
-	dialog->Add_Dialog(okay);
-	memcpy(&newcontrols, &controls, sizeof(controls));
-	radiobuttons = new Mac_RadioList(&currentbox, X+266, Y+75,
-							chicago, fontserv);
-	currentbox = FIRE_CTL;
-	for ( i=0; i<NUM_CTLS; ++i ) {
-		KeyName(*checkboxes[i].control, keyname);
-		keynames[i] = fontserv->TextImage(keyname, chicago, STYLE_NORM,
-							0x00, 0x00, 0x00);
-		/* Only display "Fire" through "Turn Counter-Clockwise" */
-#ifdef FAITHFUL_SPECS
-		if ( i <  PAUSE_CTL ) {
-#else
-		if ( i <  NUM_CTLS ) {
-#endif
-			radiobuttons->Add_Radio(263, 71+checkboxes[i].yoffset,
-							checkboxes[i].label);
-			dialog->Add_Rectangle(92, 71+checkboxes[i].yoffset,
-						BOX_WIDTH, BOX_HEIGHT, black);
-			dialog->Add_Image(keynames[i],
-					92+(BOX_WIDTH-screen->GetImageWidth(keynames[i]))/2, 
-						71+SP+checkboxes[i].yoffset);
-		}
-	}
-	dialog->Add_Dialog(radiobuttons);
-	boxes = new Mac_Dialog(92, 71);
-	boxes->SetKeyPress(BoxKeyPress);
-	dialog->Add_Dialog(boxes);
 
-	/* Run the dialog box */
-	dialog->Run(EXPAND_STEPS);
-
-	/* Clean up and return */
-	screen->FreeImage(splash);
-#ifdef FAITHFUL_SPECS
-	fontserv->FreeText(text1);
-	fontserv->FreeText(text2);
-#endif
-	for ( i=0; i<NUM_CTLS; ++i ) {
-		fontserv->FreeText(keynames[i]);
+	for (int i = 0; i < SDL_arraysize(m_keyinuseTimers); ++i) {
+		m_keyinuseTimers[i] = 0;
 	}
-	delete dialog;
-	if ( valid ) {
-		memcpy(&controls, &newcontrols, sizeof(controls));
+
+	m_controls = controls;
+
+	ShowKeyLabels();
+}
+
+void
+ControlsDialogDelegate::OnHide()
+{
+	if (m_panel->IsA(UIDialog::GetType()) &&
+	    static_cast<UIDialog*>(m_panel)->GetDialogStatus() > 0) {
+		controls = m_controls;
 		SaveControls();
 	}
-	return;
+}
+
+void
+ControlsDialogDelegate::OnTick()
+{
+	for (int i = 0; i < SDL_arraysize(m_keyinuseTimers); ++i) {
+		if (m_keyinuseTimers[i] && (SDL_GetTicks() - m_keyinuseTimers[i]) > 1000) {
+			m_keyinuseTimers[i] = 0;
+			ShowKeyLabel(i);
+		}
+	}
+}
+
+bool
+ControlsDialogDelegate::HandleEvent(const SDL_Event &event)
+{
+	if (event.type == SDL_KEYDOWN) {
+		return true;
+	}
+	if (event.type == SDL_KEYUP) {
+		int index;
+		SDL_Keycode key = event.key.keysym.sym;
+
+		index = m_radioGroup->GetValue() - 1;
+
+		/* See if this key is in use */
+		m_keyinuseTimers[index] = 0;
+		for (int i = 0; i < NUM_CTLS; ++i) {
+			if (i != index && key == GetKeycode(i)) {
+				m_keyinuseTimers[index] = SDL_GetTicks();
+				break;
+			}
+		}
+		if (!m_keyinuseTimers[index]) {
+			SetKeycode(index, key);
+		}
+		ShowKeyLabel(index);
+
+		return true;
+	}
+	return false;
+}
+
+void
+ControlsDialogDelegate::ShowKeyLabel(int index)
+{
+	const char *text;
+
+	if (m_keyinuseTimers[index]) {
+		text = "That key is in use!";
+	} else {
+		text = SDL_GetKeyName(GetKeycode(index));
+	}
+	m_controlKeys[index]->SetText(text);
+}
+
+SDL_Keycode
+ControlsDialogDelegate::GetKeycode(int index)
+{
+	switch (index) {
+		case FIRE_CTL:
+			return m_controls.gFireControl;
+		case THRUST_CTL:
+			return m_controls.gThrustControl;
+		case SHIELD_CTL:
+			return m_controls.gShieldControl;
+		case TURNR_CTL:
+			return m_controls.gTurnRControl;
+		case TURNL_CTL:
+			return m_controls.gTurnLControl;
+		case PAUSE_CTL:
+			return m_controls.gPauseControl;
+		case QUIT_CTL:
+			return m_controls.gQuitControl;
+		default:
+			return SDLK_UNKNOWN;
+	}
+}
+
+void
+ControlsDialogDelegate::SetKeycode(int index, SDL_Keycode keycode)
+{
+	switch (index) {
+		case FIRE_CTL:
+			m_controls.gFireControl = keycode;
+			break;
+		case THRUST_CTL:
+			m_controls.gThrustControl = keycode;
+			break;
+		case SHIELD_CTL:
+			m_controls.gShieldControl = keycode;
+			break;
+		case TURNR_CTL:
+			m_controls.gTurnRControl = keycode;
+			break;
+		case TURNL_CTL:
+			m_controls.gTurnLControl = keycode;
+			break;
+		case PAUSE_CTL:
+			m_controls.gPauseControl = keycode;
+			break;
+		case QUIT_CTL:
+			m_controls.gQuitControl = keycode;
+			break;
+		default:
+			break;
+	}
 }
 
 static void HandleEvent(SDL_Event *event)

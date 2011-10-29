@@ -86,4 +86,9 @@
 			</Label>
 		</Elements>
 	</KeyButton>
+
+	<Rectangle templateName="ControlKeyBox">
+		<Size w="170" h="20"/>
+		<Color r="0x00" g="0x00" b="0x00"/>
+	</Rectangle>
 </UITemplates>

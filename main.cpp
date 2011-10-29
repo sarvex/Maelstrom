@@ -41,10 +41,6 @@ static void RunDoAbout(void)
 {
 	ui->ShowPanel(PANEL_ABOUT);
 }
-static void RunConfigureControls(void)
-{
-	ConfigureControls();
-}
 static void RunPlayGame(void)
 {
 	gStartLives = 3;
@@ -358,7 +354,7 @@ MainPanelDelegate::OnLoad()
 	}
 	button = m_panel->GetElement<UIElementButton>("ControlsButton");
 	if (button) {
-		button->SetClickCallback(RunConfigureControls);
+		button->SetButtonDelegate(new UIDialogLauncher(ui, DIALOG_CONTROLS));
 	}
 	button = m_panel->GetElement<UIElementButton>("ZapButton");
 	if (button) {

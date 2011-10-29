@@ -55,6 +55,9 @@ public:
 	void SetDialogStatus(int status) {
 		m_status = status;
 	}
+	int GetDialogStatus() const {
+		return m_status;
+	}
 
 	virtual void Show();
 	virtual void Hide();

@@ -87,7 +87,11 @@ UIBaseElement::GetAnchorElement(const char *name)
 {
 	if (name) {
 		if (m_parent) {
-			return m_parent->GetElement(name);
+			UIArea *element = m_parent->GetElement(name);
+			if (!element) {
+				element = m_parent->GetAnchorElement(name);
+			}
+			return element;
 		} else {
 			return NULL;
 		}

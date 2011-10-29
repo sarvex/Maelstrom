@@ -44,6 +44,7 @@ public:
 	virtual void OnHide() { }
 	virtual void OnTick() { }
 	virtual void OnDraw() { }
+	virtual bool HandleEvent(const SDL_Event &event) { return false; }
 
 protected:
 	UIPanel *m_panel;
@@ -73,6 +74,7 @@ public:
 	void HideAll();
 
 	virtual void Draw();
+	virtual bool HandleEvent(const SDL_Event &event);
 
 protected:
 	bool m_fullscreen;

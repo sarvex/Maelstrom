@@ -45,6 +45,8 @@ public:
 		return UIElement::IsA(type) || type == GetType();
 	}
 
+	UIElementRadioButton *GetRadioButton(int id);
+
 	void RadioButtonChecked(UIElementRadioButton *button);
 
 	int GetValue() const {

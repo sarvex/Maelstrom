@@ -1,16 +1,16 @@
-#ifndef _MacDialogCheckbox_h
-#define _MacDialogCheckbox_h
+#ifndef _MacDialogRadioButton_h
+#define _MacDialogRadioButton_h
 
-#include "screenlib/UIElementCheckbox.h"
+#include "screenlib/UIElementRadio.h"
 
 
-class MacDialogCheckbox : public UIElementCheckbox
+class MacDialogRadioButton : public UIElementRadioButton
 {
 public:
-	MacDialogCheckbox(UIBaseElement *parent, const char *name = "");
+	MacDialogRadioButton(UIBaseElement *parent, const char *name = "");
 
 	virtual bool IsA(UIElementType type) {
-		return UIElementCheckbox::IsA(type) || type == GetType();
+		return UIElementRadioButton::IsA(type) || type == GetType();
 	}
 
 	virtual bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
@@ -32,4 +32,4 @@ public:
 	}
 };
 
-#endif // _MacDialogCheckbox_h
+#endif // _MacDialogRadioButton_h

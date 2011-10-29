@@ -10,12 +10,32 @@ UIElementRadioGroup::UIElementRadioGroup(UIBaseElement *parent, const char *name
 	m_value = -1;
 }
 
+UIElementRadioButton *
+UIElementRadioGroup::GetRadioButton(int id)
+{
+	UIElementRadioButton *button;
+
+	for (unsigned i = 0; i < m_elements.length(); ++i) {
+		if (!m_elements[i]->IsA(UIElementRadioButton::GetType())) {
+			continue;
+		}
+
+		button = static_cast<UIElementRadioButton*>(m_elements[i]);
+		if (button->GetID() == id) {
+			return button;
+		}
+	}
+	return NULL;
+}
+
 void
 UIElementRadioGroup::RadioButtonChecked(UIElementRadioButton *button)
 {
 	for (unsigned i = 0; i < m_elements.length(); ++i) {
-		if (m_elements[i] != button &&
-		    m_elements[i]->IsA(UIElementRadioButton::GetType())) {
+		if (!m_elements[i]->IsA(UIElementRadioButton::GetType())) {
+			continue;
+		}
+		if (m_elements[i] != button) {
 			static_cast<UIElementRadioButton*>(m_elements[i])->SetChecked(false);
 		}
 	}

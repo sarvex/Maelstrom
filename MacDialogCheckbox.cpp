@@ -18,10 +18,6 @@ MacDialogCheckbox::MacDialogCheckbox(UIBaseElement *parent, const char *name) :
 	SetSize(CHECKBOX_SIZE, CHECKBOX_SIZE);
 }
 
-MacDialogCheckbox::~MacDialogCheckbox()
-{
-}
-
 bool
 MacDialogCheckbox::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 {

@@ -2,12 +2,14 @@
 #include "MaelstromUI.h"
 #include "Maelstrom_Globals.h"
 #include "main.h"
+#include "controls.h"
 #include "netlogic/about.h"
 #include "netlogic/game.h"
 #include "MacDialog.h"
 #include "MacDialogButton.h"
 #include "MacDialogCheckbox.h"
 #include "MacDialogLabel.h"
+#include "MacDialogRadioButton.h"
 #include "UIElementIcon.h"
 #include "UIElementKeyButton.h"
 #include "UIElementSprite.h"
@@ -158,6 +160,8 @@ MaelstromUI::CreatePanelDelegate(UIPanel *panel, const char *delegate)
 		return new AboutPanelDelegate(panel);
 	} else if (strcasecmp(delegate, "GamePanel") == 0) {
 		return new GamePanelDelegate(panel);
+	} else if (strcasecmp(delegate, "ControlsDialog") == 0) {
+		return new ControlsDialogDelegate(panel);
 	}
 	return UIManager::CreatePanelDelegate(panel, delegate);
 }
@@ -182,7 +186,7 @@ MaelstromUI::CreateElement(UIBaseElement *parent, const char *type, const char *
 	} else if (strcasecmp(type, "DialogRadioGroup") == 0) {
 		return new UIElementRadioGroup(parent, name);
 	} else if (strcasecmp(type, "DialogRadioButton") == 0) {
-		return new UIElementRadioButton(parent, name);
+		return new MacDialogRadioButton(parent, name);
 	} else if (strcasecmp(type, "KeyButton") == 0) {
 		return new UIElementKeyButton(parent, name);
 	} else if (strcasecmp(type, "Icon") == 0) {
