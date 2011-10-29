@@ -1,5 +1,6 @@
 
 #include "screenlib/SDL_FrameBuf.h"
+#include "screenlib/UIManager.h"
 
 #include "UIDialog.h"
 
@@ -110,6 +111,11 @@ UIDialog::HandleEvent(const SDL_Event &event)
 	UIPanel::HandleEvent(event);
 
 	if (event.type != SDL_QUIT) {
+		/* Press escape to cancel out of dialogs */
+		if (event.type == SDL_KEYUP &&
+		    event.key.keysym.sym == SDLK_ESCAPE) {
+			GetUI()->HidePanel(GetUI()->GetCurrentPanel());
+		}
 		return true;
 	}
 	return false;
