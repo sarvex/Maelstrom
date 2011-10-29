@@ -7,6 +7,9 @@
 #define EXPAND_STEPS 30
 
 
+UIElementType UIDialog::s_elementType;
+
+
 UIDialog::UIDialog(UIManager *ui, const char *name) :
 	UIPanel(ui, name)
 {
@@ -19,6 +22,8 @@ UIDialog::UIDialog(UIManager *ui, const char *name) :
 	m_colors[COLOR_WHITE] = m_screen->MapRGB(0xFF, 0xFF, 0xFF);
 	m_expand = true;
 	m_step = 0;
+	m_status = 0;
+	m_handler = NULL;
 }
 
 UIDialog::~UIDialog()
@@ -28,8 +33,6 @@ UIDialog::~UIDialog()
 bool
 UIDialog::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 {
-	rapidxml::xml_attribute<> *attr;
-
 	if (!UIPanel::Load(node, templates)) {
 		return false;
 	}
@@ -46,6 +49,19 @@ UIDialog::Show()
 		m_step = 0;
 	} else {
 		m_step = EXPAND_STEPS;
+	}
+	m_status = 0;
+
+	UIPanel::Show();
+}
+
+void
+UIDialog::Hide()
+{
+	UIPanel::Hide();
+
+	if (m_handler) {
+		m_handler(this, m_status);
 	}
 }
 
@@ -100,7 +116,9 @@ UIDialog::Draw()
 bool
 UIDialog::HandleEvent(const SDL_Event &event)
 {
-	UIPanel::HandleEvent(event);
+	if (UIPanel::HandleEvent(event)) {
+		return true;
+	}
 
 	if (event.type != SDL_QUIT) {
 		/* Press escape to cancel out of dialogs */
@@ -111,4 +129,24 @@ UIDialog::HandleEvent(const SDL_Event &event)
 		return true;
 	}
 	return false;
+}
+
+UIDialogLauncher::UIDialogLauncher(UIManager *ui, const char *name, UIDialogHandler handler)
+{
+	m_ui = ui;
+	m_name = name;
+	m_handler = handler;
+}
+
+void
+UIDialogLauncher::OnClick()
+{
+	UIDialog *dialog;
+
+	dialog = m_ui->GetPanel<UIDialog>(m_name);
+	if (dialog) {
+		dialog->SetDialogHandler(m_handler);
+
+		m_ui->ShowPanel(dialog);
+	}
 }

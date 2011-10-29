@@ -24,7 +24,7 @@
 			<Anchor anchorFrom="TOPLEFT" anchorTo="BOTTOMRIGHT" anchor="line5" x="2" y="2"/>
 		</DialogLabel>
 
-		<DialogButton text="OK" default="true" closeDialog="true">
+		<DialogButton text="OK" default="true">
 			<Size w="90"/>
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" x="210" y="160"/>
 		</DialogButton>

@@ -1,6 +1,7 @@
 
 #include "screenlib/SDL_FrameBuf.h"
 #include "screenlib/UIManager.h"
+#include "UIDialog.h"
 #include "UIDialogButton.h"
 #include "UIDialogLabel.h"
 
@@ -15,8 +16,9 @@ UIElementType UIDialogButton::s_elementType;
 UIDialogButton::UIDialogButton(UIBaseElement *parent, const char *name) :
 	UIElementButton(parent, name)
 {
+	m_statusID = 0;
 	m_default = false;
-	m_closeDialog = false;
+	m_closeDialog = true;
 
 	m_colors[0] = m_screen->MapRGB(0xFF, 0xFF, 0xFF);
 	m_colors[1] = m_screen->MapRGB(0x00, 0x00, 0x00);
@@ -36,6 +38,8 @@ UIDialogButton::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 	if (!UIElementButton::Load(node, templates)) {
 		return false;
 	}
+
+	LoadNumber(node, "id", m_statusID);
 
 	LoadBool(node, "default", m_default);
 	if (m_default) {
@@ -156,6 +160,12 @@ UIDialogButton::OnClick()
 {
 	UIElementButton::OnClick();
 
+	if (m_statusID) {
+		UIPanel *panel = GetUI()->GetCurrentPanel();
+		if (panel->IsA(UIDialog::GetType())) {
+			static_cast<UIDialog*>(panel)->SetDialogStatus(m_statusID);
+		}
+	}
 	if (m_closeDialog) {
 		GetUI()->HidePanel(GetUI()->GetCurrentPanel());
 	}

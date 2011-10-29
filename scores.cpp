@@ -99,17 +99,19 @@ void PrintHighScores(void)
 	}
 }
 
-void ZapHighScores(void)
+void ZapHighScores(UIDialog *dialog, int status)
 {
-	memset(hScores, 0, sizeof(hScores));
-	SaveScores();
-	gLastHigh = -1;
+	if (status) {
+		memset(hScores, 0, sizeof(hScores));
+		SaveScores();
+		gLastHigh = -1;
 
-	/* Fade the screen and redisplay scores */
-	screen->FadeOut();
-	Delay(SOUND_DELAY);
-	sound->PlaySound(gExplosionSound, 5);
-	gUpdateBuffer = true;
+		/* Fade the screen and redisplay scores */
+		screen->FadeOut();
+		Delay(SOUND_DELAY);
+		sound->PlaySound(gExplosionSound, 5);
+		gUpdateBuffer = true;
+	}
 }
 
 

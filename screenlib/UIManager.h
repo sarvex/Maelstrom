@@ -26,14 +26,13 @@
 #include "SDL.h"
 #include "../utils/array.h"
 #include "UIArea.h"
+#include "UIPanel.h"
 #include "UIFontInterface.h"
 #include "UISoundInterface.h"
 #include "UITemplates.h"
 
 class FrameBuf;
 class UIBaseElement;
-class UIPanel;
-class UIPanelDelegate;
 class UIElement;
 
 class UIManager : public UIArea, public UIFontInterface, public UISoundInterface
@@ -53,6 +52,14 @@ public:
 	bool LoadTemplates(const char *file);
 	UIPanel *LoadPanel(const char *name);
 	UIPanel *GetPanel(const char *name, bool allowLoad = true);
+	template <typename T>
+	T *GetPanel(const char *name) {
+		UIPanel *panel = GetPanel(name);
+		if (panel && panel->IsA(T::GetType())) {
+			return (T*)panel;
+		}
+		return NULL;
+	}
 	UIPanel *GetCurrentPanel();
 
 	/* These are called by the UIPanel class */

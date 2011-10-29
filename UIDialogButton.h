@@ -24,6 +24,7 @@ public:
 
 protected:
 	Uint32 m_colors[2];
+	int m_statusID;
 	bool m_default;
 	bool m_closeDialog;
 

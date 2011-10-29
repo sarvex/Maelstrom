@@ -5,10 +5,10 @@
 		<Title id="102">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" x="4" y="4"/>
 		</Icon>
-		<DialogButton name="clearButton" text="Clear" closeDialog="true">
+		<DialogButton name="clearButton" text="Clear" id="1">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" x="99" y="74"/>
 		</DialogButton>
-		<DialogButton text="Cancel" default="true" closeDialog="true">
+		<DialogButton text="Cancel" default="true">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPRIGHT" anchor="clearButton"x="13"/>
 		</DialogButton>
 	</Elements>

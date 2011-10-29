@@ -18,6 +18,7 @@
 #include "main.h"
 
 #include "screenlib/UIElementLabel.h"
+#include "UIDialog.h"
 #include "UIElementKeyButton.h"
 
 /* External functions used in this file */
@@ -89,26 +90,6 @@ static void SetSoundLevel(int volume)
 	/* -- Draw the new sound level */
 	gUpdateBuffer = true;
 }
-static void SetupZapScores(void)
-{
-	UIPanel *panel;
-	UIElementButton *button;
-
-	panel = ui->GetPanel(DIALOG_ZAP);
-	if (!panel) {
-		return;
-	}
-
-	button = panel->GetElement<UIElementButton>("clearButton");
-	if (button) {
-		button->SetClickCallback(ZapHighScores);
-	}
-}
-static void RunZapScores(void)
-{
-	SetupZapScores();
-	ui->ShowPanel(DIALOG_ZAP);
-}
 static void RunToggleFullscreen(void)
 {
 	screen->ToggleFullScreen();
@@ -122,10 +103,6 @@ static void RunCheat(void)
 		Delay(SOUND_DELAY);
 		NewGame();
 	}
-}
-static void RunShowDawn(void)
-{
-	ui->ShowPanel(DIALOG_DAWN);
 }
 static void RunScreenshot(void)
 {
@@ -385,7 +362,7 @@ MainPanelDelegate::OnLoad()
 	}
 	button = m_panel->GetElement<UIElementButton>("ZapButton");
 	if (button) {
-		button->SetClickCallback(RunZapScores);
+		button->SetButtonDelegate(new UIDialogLauncher(ui, DIALOG_ZAP, ZapHighScores));
 	}
 	button = m_panel->GetElement<UIElementButton>("AboutButton");
 	if (button) {
@@ -413,7 +390,7 @@ MainPanelDelegate::OnLoad()
 	}
 	button = m_panel->GetElement<UIElementButton>("Special");
 	if (button) {
-		button->SetClickCallback(RunShowDawn);
+		button->SetButtonDelegate(new UIDialogLauncher(ui, DIALOG_DAWN));
 	}
 	button = m_panel->GetElement<UIElementButton>("Screenshot");
 	if (button) {
