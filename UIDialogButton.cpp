@@ -37,23 +37,12 @@ UIDialogButton::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 		return false;
 	}
 
-	attr = node->first_attribute("default", 0, false);
-	if (attr) {
-		const char *value = attr->value();
-
-		if (*value == '1' || *value == 't' || *value == 'T') {
-			m_default = true;
-		}
+	LoadBool(node, "default", m_default);
+	if (m_default) {
+		m_hotkey = SDLK_RETURN;
 	}
 
-	attr = node->first_attribute("closeDialog", 0, false);
-	if (attr) {
-		const char *value = attr->value();
-
-		if (*value == '1' || *value == 't' || *value == 'T') {
-			m_closeDialog = true;
-		}
-	}
+	LoadBool(node, "closeDialog", m_closeDialog);
 
 	attr = node->first_attribute("text", 0, false);
 	if (attr) {
