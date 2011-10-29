@@ -148,33 +148,46 @@ UIElementButton::ShouldHandleKey(SDL_Keycode key)
 bool
 UIElementButton::HandleEvent(const SDL_Event &event)
 {
+	bool checkMouseLocation = false;
+	int x, y;
+
 	if (event.type == SDL_MOUSEMOTION) {
-		if (ContainsPoint(event.motion.x, event.motion.y)) {
+		x = event.motion.x;
+		y = event.motion.y;
+		checkMouseLocation = true;
+	}
+	if (event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP) {
+		x = event.button.x;
+		y = event.button.y;
+		checkMouseLocation = true;
+	}
+
+	if (checkMouseLocation) {
+		if (ContainsPoint(x, y)) {
 			if (!m_mouseInside) {
 				m_mouseInside = true;
 				OnMouseEnter();
 			}
-			return true;
 		} else {
 			if (m_mouseInside) {
 				m_mouseInside = false;
 				OnMouseLeave();
 			}
-			return false;
 		}
+	}
+	if (event.type == SDL_MOUSEMOTION) {
+		return m_mouseInside;
 	}
 
 	if (event.type == SDL_MOUSEBUTTONDOWN &&
-	    event.button.button == SDL_BUTTON_LEFT &&
-	    ContainsPoint(event.motion.x, event.motion.y)) {
+	    event.button.button == SDL_BUTTON_LEFT && m_mouseInside) {
 		m_mousePressed = true;
 		OnMouseDown();
 		return true;
 	}
 
 	if (event.type == SDL_MOUSEBUTTONUP &&
-	    event.button.button == SDL_BUTTON_LEFT &&
-	    m_mousePressed) {
+	    event.button.button == SDL_BUTTON_LEFT && m_mousePressed) {
 		m_mousePressed = false;
 		OnMouseUp();
 		if (m_mouseInside) {
