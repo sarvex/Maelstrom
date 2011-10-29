@@ -87,13 +87,6 @@ else
 fi
 AC_MSG_RESULT($use_checksum)
 
-dnl Add the include directories for the object libraries
-CFLAGS="$CFLAGS -I\$(top_srcdir)"
-CFLAGS="$CFLAGS -I\$(top_srcdir)/netlogic"
-CFLAGS="$CFLAGS -I\$(top_srcdir)/screenlib"
-CFLAGS="$CFLAGS -I\$(top_srcdir)/maclib"
-CFLAGS="$CFLAGS -I\$(top_srcdir)/utils"
-
 dnl Set up the icon object file, for Mingw32
 case "$target" in
     *-*-mingw32*)
@@ -121,7 +114,6 @@ case "$target" in
         ;;
 esac
 AC_SUBST(GAME_INSTALLDIR)
-CFLAGS="$CFLAGS -DLIBDIR=\\\"$GAME_INSTALLDIR\\\""
 
 dnl C++ flags are the same as the C flags
 CXXFLAGS="$CXXFLAGS $CFLAGS"

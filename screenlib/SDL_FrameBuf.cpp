@@ -21,7 +21,7 @@
 */
 
 #include <stdio.h>
-#include "physfsrwops.h"
+#include "../utils/physfsrwops.h"
 
 #include "SDL_FrameBuf.h"
 

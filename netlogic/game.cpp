@@ -1,10 +1,10 @@
 
-#include "Maelstrom_Globals.h"
+#include "../Maelstrom_Globals.h"
+#include "../load.h"
 #include "object.h"
 #include "player.h"
 #include "netplay.h"
 #include "make.h"
-#include "load.h"
 #include "game.h"
 #include "../screenlib/UIElementLabel.h"
 #include "../screenlib/UIElementRect.h"

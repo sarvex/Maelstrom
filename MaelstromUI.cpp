@@ -10,7 +10,6 @@
 #include "UIDialogLabel.h"
 #include "UIElementIcon.h"
 #include "UIElementKeyButton.h"
-#include "UIElementLabel.h"
 #include "UIElementSprite.h"
 #include "UIElementTitle.h"
 

@@ -4,12 +4,13 @@
 
 #include <stdlib.h>
 
-#include "SDL_FrameBuf.h"
-#include "Mac_FontServ.h"
-#include "Mac_Sound.h"
-#include "Mac_Compat.h"
-#include "UIManager.h"
-#include "UIPanel.h"
+#include "screenlib/SDL_FrameBuf.h"
+#include "screenlib/UIManager.h"
+#include "screenlib/UIPanel.h"
+
+#include "maclib/Mac_FontServ.h"
+#include "maclib/Mac_Sound.h"
+#include "maclib/Mac_Compat.h"
 
 #include "Maelstrom.h"
 

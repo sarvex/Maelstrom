@@ -3,9 +3,9 @@
 #define _load_h
 
 #include <physfs.h>
-#include "physfsrwops.h"
+#include "utils/physfsrwops.h"
 
-#include "SDL_FrameBuf.h"
+#include "screenlib/SDL_FrameBuf.h"
 
 /* Functions exported from load.cpp */
 extern SDL_Texture *Load_Title(FrameBuf *screen, int title_id);

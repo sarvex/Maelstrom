@@ -14,10 +14,10 @@
 #include "load.h"
 #include "fastrand.h"
 #include "checksum.h"
-#include "about.h"
+#include "netlogic/about.h"
 #include "main.h"
 
-#include "UIElementLabel.h"
+#include "screenlib/UIElementLabel.h"
 #include "UIElementKeyButton.h"
 
 /* External functions used in this file */
