@@ -34,15 +34,7 @@ UIDialog::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 		return false;
 	}
 
-	attr = node->first_attribute("expand", 0, false);
-	if (attr) {
-		const char *value = attr->value();
-		if (*value == '0' || *value == 'f' || *value == 'F') {
-			m_expand = false;
-		} else {
-			m_expand = true;
-		}
-	}
+	LoadBool(node, "expand", m_expand);
 
 	return true;
 }

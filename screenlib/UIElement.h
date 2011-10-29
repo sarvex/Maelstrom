@@ -40,12 +40,6 @@ public:
 	virtual bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
 
 protected:
-	bool LoadBool(rapidxml::xml_node<> *node, const char *name, bool &value);
-	bool LoadNumber(rapidxml::xml_node<> *node, const char *name, int &value);
-	bool LoadString(rapidxml::xml_node<> *node, const char *name, char *&value);
-	bool LoadColor(rapidxml::xml_node<> *node, const char *name, Uint32 &value);
-
-protected:
 	static UIElementType s_elementType;
 
 public:

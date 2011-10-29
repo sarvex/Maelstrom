@@ -57,32 +57,10 @@ UIPanel::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 		return false;
 	}
 
-	attr = node->first_attribute("fullscreen", 0, false);
-	if (attr) {
-		const char *value = attr->value();
-		if (*value == '0' || *value == 'f' || *value == 'F') {
-			m_fullscreen = false;
-		} else {
-			m_fullscreen = true;
-		}
-	}
-	attr = node->first_attribute("cursor", 0, false);
-	if (attr) {
-		const char *value = attr->value();
-		if (*value == '0' || *value == 'f' || *value == 'F') {
-			m_cursorVisible = false;
-		} else {
-			m_cursorVisible = true;
-		}
-	}
-	attr = node->first_attribute("enterSound", 0, false);
-	if (attr) {
-		m_enterSound = atoi(attr->value());
-	}
-	attr = node->first_attribute("leaveSound", 0, false);
-	if (attr) {
-		m_leaveSound = atoi(attr->value());
-	}
+	LoadBool(node, "fullscreen", m_fullscreen);
+	LoadBool(node, "cursor", m_cursorVisible);
+	LoadNumber(node, "enterSound", m_enterSound);
+	LoadNumber(node, "leaveSound", m_leaveSound);
 
 	return true;
 }

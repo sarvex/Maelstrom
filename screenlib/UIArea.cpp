@@ -20,35 +20,9 @@
     slouken@libsdl.org
 */
 
+#include "SDL_FrameBuf.h"
 #include "UIArea.h"
 
-
-static AnchorLocation ParseAnchorLocation(const char *text)
-{
-	AnchorLocation value = TOPLEFT;
-
-	if (strcasecmp(text, "TOPLEFT") == 0) {
-		value = TOPLEFT;
-	} else if (strcasecmp(text, "TOP") == 0) {
-		value = TOP;
-	} else if (strcasecmp(text, "TOPRIGHT") == 0) {
-		value = TOPRIGHT;
-	} else if (strcasecmp(text, "LEFT") == 0) {
-		value = LEFT;
-	} else if (strcasecmp(text, "CENTER") == 0) {
-		value = CENTER;
-	} else if (strcasecmp(text, "RIGHT") == 0) {
-		value = RIGHT;
-	} else if (strcasecmp(text, "BOTTOMLEFT") == 0) {
-		value = BOTTOMLEFT;
-	} else if (strcasecmp(text, "BOTTOM") == 0) {
-		value = BOTTOM;
-	} else if (strcasecmp(text, "BOTTOMRIGHT") == 0) {
-		value = BOTTOMRIGHT;
-	}
-	return value;
-
-}
 
 UIArea::UIArea(FrameBuf *screen, UIArea *anchor, int w, int h) : ErrorBase()
 {
@@ -75,26 +49,12 @@ UIArea::Load(rapidxml::xml_node<> *node)
 	rapidxml::xml_attribute<> *attr;
 	SDL_Rect rect = m_rect;
 
-	attr = node->first_attribute("show", 0, false);
-	if (attr) {
-		const char *value = attr->value();
-		if (*value == '0' || *value == 'f' || *value == 'F') {
-			m_shown = false;
-		} else {
-			m_shown = true;
-		}
-	}
+	LoadBool(node, "show", m_shown);
 
 	child = node->first_node("size", 0, false);
 	if (child) {
-		attr = child->first_attribute("w", 0, false);
-		if (attr) {
-			m_rect.w = SDL_atoi(attr->value());
-		}
-		attr = child->first_attribute("h", 0, false);
-		if (attr) {
-			m_rect.h = SDL_atoi(attr->value());
-		}
+		LoadNumber(child, "w", m_rect.w);
+		LoadNumber(child, "h", m_rect.h);
 	}
 
 	child = node->first_node("anchor", 0, false);
@@ -114,23 +74,11 @@ UIArea::Load(rapidxml::xml_node<> *node)
 			return false;
 		}
 
-		attr = child->first_attribute("anchorFrom", 0, false);
-		if (attr) {
-			m_anchor.anchorFrom = ParseAnchorLocation(attr->value());
-		}
-		attr = child->first_attribute("anchorTo", 0, false);
-		if (attr) {
-			m_anchor.anchorTo = ParseAnchorLocation(attr->value());
-		}
+		LoadAnchorLocation(child, "anchorFrom", m_anchor.anchorFrom);
+		LoadAnchorLocation(child, "anchorTo", m_anchor.anchorTo);
 
-		attr = child->first_attribute("x", 0, false);
-		if (attr) {
-			m_anchor.offsetX = SDL_atoi(attr->value());
-		}
-		attr = child->first_attribute("y", 0, false);
-		if (attr) {
-			m_anchor.offsetY = SDL_atoi(attr->value());
-		}
+		LoadNumber(child, "x", m_anchor.offsetX);
+		LoadNumber(child, "y", m_anchor.offsetY);
 	}
 
 	CalculateAnchor(false);
@@ -185,6 +133,108 @@ UIArea::SetHeight(int h)
 	}
 }
 
+bool
+UIArea::LoadBool(rapidxml::xml_node<> *node, const char *name, bool &value)
+{
+	rapidxml::xml_attribute<> *attr;
+
+	attr = node->first_attribute(name, 0, false);
+	if (attr) {
+		const char *text = attr->value();
+		if (*text == '\0' || *text == '0' ||
+		    *text == 'f' || *text == 'F') {
+			value = false;
+		} else {
+			value = true;
+		}
+		return true;
+	}
+	return false;
+}
+
+bool
+UIArea::LoadNumber(rapidxml::xml_node<> *node, const char *name, int &value)
+{
+	rapidxml::xml_attribute<> *attr;
+
+	attr = node->first_attribute(name, 0, false);
+	if (attr) {
+		value = (int)strtol(attr->value(), NULL, 0);
+		return true;
+	}
+	return false;
+}
+
+bool
+UIArea::LoadString(rapidxml::xml_node<> *node, const char *name, char *&value)
+{
+	rapidxml::xml_attribute<> *attr;
+
+	attr = node->first_attribute(name, 0, false);
+	if (attr) {
+		if (value) {
+			SDL_free(value);
+		}
+		value = SDL_strdup(attr->value());
+		return true;
+	}
+	return false;
+}
+
+bool
+UIArea::LoadAnchorLocation(rapidxml::xml_node<> *node, const char *name, AnchorLocation &value)
+{
+	rapidxml::xml_attribute<> *attr;
+
+	attr = node->first_attribute(name, 0, false);
+	if (attr) {
+		const char *text = attr->value();
+
+		if (strcasecmp(text, "TOPLEFT") == 0) {
+			value = TOPLEFT;
+		} else if (strcasecmp(text, "TOP") == 0) {
+			value = TOP;
+		} else if (strcasecmp(text, "TOPRIGHT") == 0) {
+			value = TOPRIGHT;
+		} else if (strcasecmp(text, "LEFT") == 0) {
+			value = LEFT;
+		} else if (strcasecmp(text, "CENTER") == 0) {
+			value = CENTER;
+		} else if (strcasecmp(text, "RIGHT") == 0) {
+			value = RIGHT;
+		} else if (strcasecmp(text, "BOTTOMLEFT") == 0) {
+			value = BOTTOMLEFT;
+		} else if (strcasecmp(text, "BOTTOM") == 0) {
+			value = BOTTOM;
+		} else if (strcasecmp(text, "BOTTOMRIGHT") == 0) {
+			value = BOTTOMRIGHT;
+		} else {
+			/* Failed to parse */
+			return false;
+		}
+		return true;
+	}
+	return false;
+}
+
+bool
+UIArea::LoadColor(rapidxml::xml_node<> *node, const char *name, Uint32 &value)
+{
+	rapidxml::xml_node<> *child;
+
+	child = node->first_node("color", 0, false);
+	if (child) {
+		rapidxml::xml_attribute<> *attr;
+		int r = 0xFF, g = 0xFF, b = 0xFF;
+
+		LoadNumber(child, "r", r);
+		LoadNumber(child, "g", g);
+		LoadNumber(child, "b", b);
+		value = m_screen->MapRGB(r, g, b);
+		return true;
+	}
+	return false;
+}
 void
 UIArea::GetAnchorLocation(AnchorLocation spot, int *x, int *y) const
 {
