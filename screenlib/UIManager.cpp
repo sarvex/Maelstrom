@@ -26,7 +26,9 @@
 #include "UIManager.h"
 #include "UIPanel.h"
 #include "UIElementButton.h"
+#include "UIElementCheckbox.h"
 #include "UIElementLine.h"
+#include "UIElementRadio.h"
 #include "UIElementRect.h"
 
 
@@ -291,6 +293,12 @@ UIManager::CreateElement(UIBaseElement *parent, const char *type)
 		return new UIElementRect(parent);
 	} else if (strcasecmp(type, "Button") == 0) {
 		return new UIElementButton(parent);
+	} else if (strcasecmp(type, "Checkbox") == 0) {
+		return new UIElementCheckbox(parent);
+	} else if (strcasecmp(type, "RadioGroup") == 0) {
+		return new UIElementRadioGroup(parent);
+	} else if (strcasecmp(type, "RadioButton") == 0) {
+		return new UIElementRadioButton(parent);
 	}
 	return NULL;
 }

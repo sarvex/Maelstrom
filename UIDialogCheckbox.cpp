@@ -11,10 +11,8 @@ UIElementType UIDialogCheckbox::s_elementType;
 
 
 UIDialogCheckbox::UIDialogCheckbox(UIBaseElement *parent, const char *name) :
-	UIElementButton(parent, name)
+	UIElementCheckbox(parent, name)
 {
-	m_checked = false;
-
 	m_color = m_screen->MapRGB(0x00, 0x00, 0x00);
 
 	SetSize(CHECKBOX_SIZE, CHECKBOX_SIZE);
@@ -29,11 +27,9 @@ UIDialogCheckbox::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 {
 	rapidxml::xml_attribute<> *attr;
 
-	if (!UIElementButton::Load(node, templates)) {
+	if (!UIElementCheckbox::Load(node, templates)) {
 		return false;
 	}
-
-	LoadBool(node, "checked", m_checked);
 
 	attr = node->first_attribute("text", 0, false);
 	if (attr) {
@@ -54,7 +50,7 @@ UIDialogCheckbox::Draw()
 {
 	m_screen->DrawRect(X(), Y(), Width(), Height(), m_color);
 
-	if ( m_checked ) {
+	if ( IsChecked() ) {
 		m_screen->DrawLine(X(), Y(),
 				X()+Width()-1, Y()+Height()-1, m_color);
 		m_screen->DrawLine(X(), Y()+Height()-1,
@@ -62,12 +58,4 @@ UIDialogCheckbox::Draw()
 	}
 
 	UIElementButton::Draw();
-}
-
-void
-UIDialogCheckbox::OnClick()
-{
-	UIElementButton::OnClick();
-
-	m_checked = !m_checked;
 }

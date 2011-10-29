@@ -20,32 +20,39 @@
     slouken@libsdl.org
 */
 
-#ifndef _UIElementRect_h
-#define _UIElementRect_h
+#ifndef _UIElementRadio_h
+#define _UIElementRadio_h
 
 #include "UIElement.h"
+#include "UIElementCheckbox.h"
 
+//
+// This file has two classes:
+//
+// UIElementRadioGroup maintains the state of radio buttons
+//
+// UIElementRadioButton is a member of the radio group and notifies the group
+// when it is clicked.
 
-class UIElementRect : public UIElement
+class UIElementRadioButton;
+
+class UIElementRadioGroup : public UIElement
 {
 public:
-	UIElementRect(UIBaseElement *parent, const char *name = "");
+	UIElementRadioGroup(UIBaseElement *parent, const char *name = "");
 
 	virtual bool IsA(UIElementType type) {
 		return UIElement::IsA(type) || type == GetType();
 	}
 
-	virtual bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
+	void RadioButtonChecked(UIElementRadioButton *button);
 
-	virtual void Draw();
-
-	void SetColor(Uint32 color) {
-		m_color = color;
+	int GetValue() const {
+		return m_value;
 	}
 
 protected:
-	bool m_fill;
-	Uint32 m_color;
+	int m_value;
 
 protected:
 	static UIElementType s_elementType;
@@ -59,4 +66,36 @@ public:
 	}
 };
 
-#endif // _UIElementRect_h
+class UIElementRadioButton : public UIElementCheckbox
+{
+public:
+	UIElementRadioButton(UIBaseElement *parent, const char *name = "");
+
+	virtual bool IsA(UIElementType type) {
+		return UIElementCheckbox::IsA(type) || type == GetType();
+	}
+
+	int GetID() const {
+		return m_id;
+	}
+
+	virtual bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
+
+	virtual void OnChecked(bool checked);
+
+protected:
+	int m_id;
+
+protected:
+	static UIElementType s_elementType;
+
+public:
+	static UIElementType GetType() {
+		if (!s_elementType) {
+			s_elementType = GenerateType();
+		}
+		return s_elementType;
+	}
+};
+
+#endif // _UIElementRadio_h
