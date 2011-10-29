@@ -54,6 +54,11 @@ public:
 	Uint32 MapRGB(Uint8 R, Uint8 G, Uint8 B) {
 		return (0xFF000000 | ((Uint32)R << 16) | ((Uint32)G << 8) | B);
 	}
+	void GetRGB(Uint32 color, Uint8 *R, Uint8 *G, Uint8 *B) {
+		*R = (Uint8)((color >> 16) & 0xFF);
+		*G = (Uint8)((color >>  8) & 0xFF);
+		*B = (Uint8)((color >>  0) & 0xFF);
+	}
 	/* Set the blit clipping rectangle */
 	void   ClipBlit(SDL_Rect *cliprect) {
 		clip = *cliprect;

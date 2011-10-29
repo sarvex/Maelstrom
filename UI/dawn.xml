@@ -23,5 +23,10 @@
 		<DialogLabel name="line6" text="dawn.">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="BOTTOMRIGHT" anchor="line5" x="2" y="2"/>
 		</DialogLabel>
+
+		<DialogButton text="OK" default="true" closeDialog="true">
+			<Size w="90"/>
+			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" x="210" y="160"/>
+		</DialogButton>
 	</Elements>
 </Dialog>
