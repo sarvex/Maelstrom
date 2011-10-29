@@ -51,28 +51,15 @@ UIElementLabel::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 		return false;
 	}
 
-	attr = node->first_attribute("fontName", 0, false);
-	if (attr) {
-		if (m_fontName) {
-			SDL_free(m_fontName);
-		}
-		m_fontName = SDL_strdup(attr->value());
-	}
-
-	attr = node->first_attribute("fontSize", 0, false);
-	if (attr) {
-		m_fontSize = SDL_atoi(attr->value());
-	}
+	LoadString(node, "fontName", m_fontName);
+	LoadNumber(node, "fontSize", m_fontSize);
 
 	attr = node->first_attribute("fontStyle", 0, false);
 	if (attr) {
 		m_fontStyle = ParseStyle(attr->value());
 	}
 
-	child = node->first_node("color", 0, false);
-	if (child) {
-		m_color = LoadColor(child);
-	}
+	LoadColor(node, "color", m_color);
 
 	attr = node->first_attribute("text", 0, false);
 	if (attr) {

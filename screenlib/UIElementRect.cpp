@@ -22,19 +22,8 @@ UIElementRect::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 		return false;
 	}
 
-	attr = node->first_attribute("fill", 0, false);
-	if (attr) {
-		const char *value = attr->value();
-
-		if (*value == '1' || *value == 't' || *value == 'T') {
-			m_fill = true;
-		}
-	}
-
-	child = node->first_node("color", 0, false);
-	if (child) {
-		m_color = LoadColor(child);
-	}
+	LoadBool(node, "fill", m_fill);
+	LoadColor(node, "color", m_color);
 
 	return true;
 }

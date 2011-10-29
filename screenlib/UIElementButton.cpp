@@ -61,7 +61,7 @@ UIElementButton::~UIElementButton()
 	SetButtonDelegate(NULL);
 
 	if (m_clickPanel) {
-		delete[] m_clickPanel;
+		SDL_free(m_clickPanel);
 	}
 }
 
@@ -107,16 +107,10 @@ UIElementButton::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 		}
 	}
 
-	attr = node->first_attribute("clickSound", 0, false);
-	if (attr) {
-		m_clickSound = atoi(attr->value());
-	}
-	attr = node->first_attribute("clickPanel", 0, false);
-	if (attr) {
-		const char *value = attr->value();
-		m_clickPanel = new char[strlen(value)+1];
-		strcpy(m_clickPanel, value);
-	}
+	
+	LoadNumber(node, "clickSound", m_clickSound);
+	LoadString(node, "clickPanel", m_clickPanel);
+
 	return true;
 }
 

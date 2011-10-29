@@ -41,32 +41,66 @@ UIElement::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 		return false;
 	}
 
-	attr = node->first_attribute("name", 0, false);
-	if (attr) {
-		SDL_free(m_name);
-		m_name = SDL_strdup(attr->value());
-	}
+	LoadString(node, "name", m_name);
 
 	return true;
 }
 
-Uint32
-UIElement::LoadColor(rapidxml::xml_node<> *node) const
+bool
+UIElement::LoadBool(rapidxml::xml_node<> *node, const char *name, bool &value)
 {
-	Uint8 r, g, b;
 	rapidxml::xml_attribute<> *attr;
 
-	attr = node->first_attribute("r", 0, false);
+	attr = node->first_attribute(name, 0, false);
 	if (attr) {
-		r = (Uint8)strtol(attr->value(), NULL, 0);
+		const char *text = attr->value();
+		if (*text == '\0' || *text == '0' ||
+		    *text == 'f' || *text == 'F') {
+			value = false;
+		} else {
+			value = true;
+		}
 	}
-	attr = node->first_attribute("g", 0, false);
+}
+
+bool
+UIElement::LoadNumber(rapidxml::xml_node<> *node, const char *name, int &value)
+{
+	rapidxml::xml_attribute<> *attr;
+
+	attr = node->first_attribute(name, 0, false);
 	if (attr) {
-		g = (Uint8)strtol(attr->value(), NULL, 0);
+		value = (int)strtol(attr->value(), NULL, 0);
 	}
-	attr = node->first_attribute("b", 0, false);
+}
+
+bool
+UIElement::LoadString(rapidxml::xml_node<> *node, const char *name, char *&value)
+{
+	rapidxml::xml_attribute<> *attr;
+
+	attr = node->first_attribute(name, 0, false);
 	if (attr) {
-		b = (Uint8)strtol(attr->value(), NULL, 0);
+		if (value) {
+			SDL_free(value);
+		}
+		value = SDL_strdup(attr->value());
 	}
-	return m_screen->MapRGB(r, g, b);
+}
+
+bool
+UIElement::LoadColor(rapidxml::xml_node<> *node, const char *name, Uint32 &value)
+{
+	rapidxml::xml_node<> *child;
+
+	child = node->first_node("color", 0, false);
+	if (child) {
+		rapidxml::xml_attribute<> *attr;
+		int r = 0xFF, g = 0xFF, b = 0xFF;
+
+		LoadNumber(child, "r", r);
+		LoadNumber(child, "g", g);
+		LoadNumber(child, "b", b);
+		value = m_screen->MapRGB(r, g, b);
+	}
 }

@@ -20,10 +20,7 @@ UIElementLine::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 		return false;
 	}
 
-	child = node->first_node("color", 0, false);
-	if (child) {
-		m_color = LoadColor(child);
-	}
+	LoadColor(node, "color", m_color);
 
 	return true;
 }
