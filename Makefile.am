@@ -8,8 +8,6 @@ Maelstrom_SOURCES =		\
 	MaelstromUI.cpp		\
 	MaelstromUI.h		\
 	buttonlist.h		\
-	checksum.cpp		\
-	checksum.h		\
 	colortable.h		\
 	controls.cpp		\
 	controls.h		\
@@ -23,9 +21,6 @@ Maelstrom_SOURCES =		\
 	main.h			\
 	myerror.cpp		\
 	myerror.h		\
-	netscore.cpp		\
-	netscore.h		\
-	public_key.h		\
 	rect.cpp		\
 	rect.h			\
 	scores.cpp		\

@@ -35,7 +35,6 @@
 #include "Maelstrom_Globals.h"
 #include "load.h"
 #include "fastrand.h"
-#include "checksum.h"
 #include "netlogic/about.h"
 #include "main.h"
 
@@ -242,11 +241,6 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 
-#ifndef __WIN95__
-	/* The first thing we do is calculate our checksum */
-	(void) checksum();
-#endif /* ! Win95 */
-
 	/* Seed the random number generator */
 	SeedRandom(0L);
 	/* Initialize the controls */
@@ -309,17 +303,8 @@ int main(int argc, char *argv[])
 			++argv;
 			--argc;
 		}
-#define CHECKSUM_DEBUG
-#ifdef CHECKSUM_DEBUG
-		else if ( strcmp(argv[1], "-checksum") == 0 ) {
-			mesg("Checksum = %s\n", get_checksum(NULL, 0));
-			exit(0);
-		}
-#endif /* CHECKSUM_DEBUG */
 		else if ( strcmp(argv[1], "-printscores") == 0 )
 			doprinthigh = 1;
-		else if ( strcmp(argv[1], "-netscores") == 0 )
-			gNetScores = 1;
 		else if ( strcmp(argv[1], "-speedtest") == 0 ) {
 			speedtest = 1;
 			render_flags &= ~SDL_RENDERER_PRESENTVSYNC;

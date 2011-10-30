@@ -76,17 +76,6 @@ http://icculus.org/physfs
 ])
 fi
 
-dnl Check for RSA checksum authentication
-AC_MSG_CHECKING(for RSA checksum authentication)
-if test -d $HOME/RSA; then
-    CFLAGS="$CFLAGS -DUSE_CHECKSUM -I$HOME/RSA/source"
-    LIBS="$LIBS $HOME/RSA/install/rsaref.a"
-    use_checksum=yes
-else
-    use_checksum=no
-fi
-AC_MSG_RESULT($use_checksum)
-
 dnl Set up the icon object file, for Mingw32
 case "$target" in
     *-*-mingw32*)

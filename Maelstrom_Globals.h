@@ -74,26 +74,22 @@ typedef Uint8 Bool;
 #define false	0
 #endif
 
-// Functions from main.cc
+// Functions from main.cpp
 extern void   PrintUsage(void);
 extern int    DrawText(int x, int y, const char *text, MFont *font, Uint8 style,
 						Uint8 R, Uint8 G, Uint8 B);
 extern void   Message(const char *message);
 
-// Functions from init.cc
+// Functions from init.cpp
 extern void  SetStar(int which);
 
-// Functions from netscore.cc
-extern void  RegisterHighScore(Scores high);
-extern int   NetLoadScores(void);
-
 // External variables...
-// in main.cc : 
+// in main.cpp : 
 extern Bool	gUpdateBuffer;
 extern Bool	gRunning;
 extern int	gNoDelay;
 
-// in init.cc : 
+// in init.cpp : 
 extern Sint32	gLastHigh;
 extern Rect	gScrnRect;
 extern SDL_Rect	gClipRect;
@@ -104,22 +100,20 @@ extern MPoint	gThrustOrigins[SHIP_FRAMES];
 extern MPoint	gVelocityTable[SHIP_FRAMES];
 extern StarPtr	gTheStars[MAX_STARS];
 extern Uint32	gStarColors[];
-// in controls.cc :
+// in controls.cpp :
 extern Controls	controls;
 extern Uint8	gSoundLevel;
 extern Uint8	gGammaCorrect;
-// int scores.cc :
+// int scores.cpp :
 extern Scores	hScores[];
 
 // -- Variables specific to each game 
-// in main.cc : 
+// in main.cpp : 
 extern int	gStartLives;
 extern int	gStartLevel;
-// in init.cc : 
+// in init.cpp : 
 extern Uint32	gLastDrawn;
 extern int	gNumSprites;
-// in scores.cc :
-extern Bool	gNetScores;
 
 // UI panel definitions...
 #define PANEL_SPLASH	"splash"
