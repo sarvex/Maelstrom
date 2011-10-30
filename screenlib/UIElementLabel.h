@@ -35,6 +35,9 @@ public:
 
 	override bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
 
+	const char *GetText() {
+		return m_text;
+	}
 	void SetText(const char *text);
 	void SetTextColor(Uint8 R, Uint8 G, Uint8 B);
 	void SetTextColor(Uint32 color);

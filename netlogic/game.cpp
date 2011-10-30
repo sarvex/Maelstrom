@@ -1000,17 +1000,25 @@ static void DoGameOver(void)
 		}
 
 		/* -- Let them enter their name */
-		chars_in_handle = 0;
-		handle[0] = '\0';
+		const char *text = NULL;
 		label = panel->GetElement<UIElementLabel>("name_label");
 		if (label) {
 			label->Show();
 		}
 		label = panel->GetElement<UIElementLabel>("name");
 		if (label) {
+			text = label->GetText();
 			label->Show();
 		}
 		ui->Draw();
+
+		/* Get the previously used handle, if possible */
+		if (text) {
+			SDL_strlcpy(handle, text, sizeof(handle));
+		} else {
+			handle[0] = '\0';
+		}
+		chars_in_handle = SDL_strlen(handle);
 
 		while ( screen->PollEvent(&event) ) /* Loop, flushing events */;
 		SDL_StartTextInput();
