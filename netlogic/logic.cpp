@@ -31,7 +31,6 @@ void LogicUsage(void)
 {
 	error(
 "	-player N[@host][:port]	# Designate player N (at host and/or port)\n"
-"	-server N@host[:port]	# Play with N players using server at host\n"
 "	-deathmatch [N]		# Play deathmatch to N frags (default = 8)\n"
 	);
 }
@@ -61,19 +60,6 @@ int LogicParseArgs(char ***argvptr, int *argcptr)
 			PrintUsage();
 		}
 		if ( AddPlayer(argv[2]) < 0 )
-			exit(1);
-		++(*argvptr);
-		--(*argcptr);
-		return(0);
-	}
-
-	/* Check for the '-server' option */
-	if ( strcmp(argv[1], "-server") == 0 ) {
-		if ( ! argv[2] ) {
-			error("The '-server' option requires an argument!\n");
-			PrintUsage();
-		}
-		if ( SetServer(argv[2]) < 0 )
 			exit(1);
 		++(*argvptr);
 		--(*argcptr);

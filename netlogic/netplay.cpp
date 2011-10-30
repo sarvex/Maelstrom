@@ -40,7 +40,7 @@ UDPsocket gNetFD;
 static int            GotPlayer[MAX_PLAYERS];
 static IPaddress      PlayAddr[MAX_PLAYERS];
 static IPaddress      ServAddr;
-static int            FoundUs, UseServer;
+static int            FoundUs;
 static Uint32         NextFrame;
 UDPpacket            *OutBound[2];
 static int            CurrOut;
@@ -97,7 +97,6 @@ int InitNetData(void)
 	FoundUs   = 0;
 	gOurPlayer  = -1;
 	gDeathMatch = 0;
-	UseServer = 0;
 	for ( i=0; i<MAX_PLAYERS; ++i ) {
 		GotPlayer[i] = 0;
 		SyncPtrs[0][i] = NULL;
@@ -176,47 +175,6 @@ int AddPlayer(const char *playerstr)
 	return(0);
 }
 
-int SetServer(char *serverstr)
-{
-	int portnum;
-	char *host=NULL, *port=NULL;
-
-	/* Extract host and port information */
-	if ( (host=strchr(serverstr, '@')) == NULL ) {
-		error(
-		"Server host must be specified in the -server option.\r\n");
-		PrintUsage();
-	} else
-		*(host++) = '\0';
-	if ( (port=strchr(serverstr, ':')) != NULL )
-		*(port++) = '\0';
-
-	/* We should know how many players we have now */
-	if (((gNumPlayers = atoi(serverstr)) <= 0) ||
-						(gNumPlayers > MAX_PLAYERS)) {
-		error(
-"The number of players must be an integer between 1 and %d inclusive.\r\n",
-								MAX_PLAYERS);
-		PrintUsage();
-	}
-
-	/* Resolve the remote address */
-	if ( port ) {
-		portnum = atoi(port);
-	} else {
-		portnum = NETPLAY_PORT-1;
-	}
-	SDLNet_ResolveHost(&ServAddr, host, portnum);
-	if ( ServAddr.host == INADDR_NONE ) {
-		error("Couldn't resolve host name for %s\r\n", host);
-		return(-1);
-	}
-
-	/* We're done! */
-	UseServer = 1;
-	return(0);
-}
-
 /* This MUST be called after command line options have been processed. */
 int CheckPlayers(void)
 {
@@ -224,23 +182,21 @@ int CheckPlayers(void)
 	int port;
 
 	/* Check to make sure we have all the players */
-	if ( ! UseServer ) {
-		for ( i=0, gNumPlayers=0; i<MAX_PLAYERS; ++i ) {
-			if ( GotPlayer[i] )
-				++gNumPlayers;
-		}
-		/* Add ourselves if needed */
-		if ( gNumPlayers == 0 ) {
-			AddPlayer("1");
-			gNumPlayers = 1;
-			FoundUs = 1;
-		}
-		for ( i=0; i<gNumPlayers; ++i ) {
-			if ( ! GotPlayer[i] ) {
-				error(
+	for ( i=0, gNumPlayers=0; i<MAX_PLAYERS; ++i ) {
+		if ( GotPlayer[i] )
+			++gNumPlayers;
+	}
+	/* Add ourselves if needed */
+	if ( gNumPlayers == 0 ) {
+		AddPlayer("1");
+		gNumPlayers = 1;
+		FoundUs = 1;
+	}
+	for ( i=0; i<gNumPlayers; ++i ) {
+		if ( ! GotPlayer[i] ) {
+			error(
 "Player %d not specified!  Use the -player option for all players.\r\n", i+1);
-				return(-1);
-			}
+			return(-1);
 		}
 	}
 	if ( ! FoundUs ) {
@@ -278,11 +234,9 @@ int CheckPlayers(void)
 	}
 
 	/* Bind all of our players to the channels */
-	if ( ! UseServer ) {
-		for ( i=0; i<gNumPlayers; ++i ) {
-			SDLNet_UDP_Bind(gNetFD, 0, &PlayAddr[i]);
-			SDLNet_UDP_Bind(gNetFD, i+1, &PlayAddr[i]);
-		}
+	for ( i=0; i<gNumPlayers; ++i ) {
+		SDLNet_UDP_Bind(gNetFD, 0, &PlayAddr[i]);
+		SDLNet_UDP_Bind(gNetFD, i+1, &PlayAddr[i]);
 	}
 	return(0);
 }
@@ -501,160 +455,6 @@ static void ErrorMessage(const char *message)
 	SDL_Delay(3000);
 }
 
-/* If we use an address server, we go here, instead of using Send_NewGame()
-   and Await_NewGame()
-
-   The server simply sucks up packets until it gets all player packets.
-   It then does error checking, making sure all players agree about who
-   they are and how many players will be in the game.  Then it spits a
-   packet containing all the player addresses to each player, and then
-   waits for a new game...
-
-   We will send a "Hi there" packet to the server and keep resending until
-   either the server sends back an error packet, we get an abort signal from
-   the user, or we get an addresses packet from the server.
-*/
-static int AlertServer(int *Wave, int *Lives, int *Turbo)
-{
-	TCPsocket sock;
-	SDLNet_SocketSet socketset;
-	Uint8 netbuf[BUFSIZ], sendbuf[NEW_PACKETLEN+4+1];
-	char *ptr;
-	int i, len, lenread;
-	Uint32 lives, seed;
-	int waiting;
-	int status;
-	const char *message = NULL;
-
-	/* Our address server connection is through TCP */
-	Message("Connecting to Address Server");
-	sock = SDLNet_TCP_Open(&ServAddr);
-	if ( sock == NULL ) {
-		ErrorMessage("Connection failed");
-		return(-1);
-	}
-	socketset = SDLNet_AllocSocketSet(1);
-	if ( socketset == NULL ) {
-		status = -1;
-		message = "Couldn't create socket set";
-		goto done;
-	}
-	SDLNet_TCP_AddSocket(socketset, sock);
-
-	MakeNewPacket(*Wave, *Lives, *Turbo, sendbuf);
-	len = NEW_PACKETLEN;
-	SDLNet_Write32(SDL_SwapBE16(PlayAddr[gOurPlayer].port), sendbuf+len);
-	len += 4;
-	sendbuf[len] = (Uint8)gNumPlayers;
-	len += 1;
-	if ( SDLNet_TCP_Send(sock, sendbuf, len) != len ) {
-		status = -1;
-		message = "Socket write error";
-		goto done;
-	}
-
-	Message("Waiting for other players");
-	status = 0;
-	len = 0;
-	lenread = 0;
-	waiting = 1;
-	while ( waiting ) {
-		if ( SDLNet_CheckSockets(socketset, 1000) <= 0 ) {
-			HandleEvents(0);
-			/* Peek at key buffer for Quit key */
-			for ( i=(PDATA_OFFSET+1); i<OutLen; i += 2 ) {
-				if ( OutBuf[i] == ABORT_KEY ) {
-					netbuf[0] = NET_ABORT;
-					SDLNet_TCP_Send(sock, netbuf, 1);
-					waiting = 0;
-					status = -1;
-				}
-			}
-			OutLen = PDATA_OFFSET;
-			continue;
-		}
-
-		/* We are guaranteed that there is data here */
-		len = SDLNet_TCP_Recv(sock, &netbuf[len], BUFSIZ-len-1);
-		if ( len <= 0 ) {
-			waiting = 0;
-			status = -1;
-			message = "Error reading player addresses";
-			continue;
-		}
-		lenread += len;
-
-		/* The very first byte is a packet length */
-		if ( len < netbuf[0] )
-			continue;
-
-		if ( netbuf[0] <= 1 ) {
-			waiting = 0;
-			status = -1;
-			message = "Error: Short server packet!";
-			continue;
-		}
-		switch ( netbuf[1] ) {
-			case NEW_GAME:	/* Extract parameters, addresses */
-				*Turbo = (int)netbuf[2];
-				len = 3;
-				*Wave = SDLNet_Read32(&netbuf[len]);
-				len += 4;
-				lives = SDLNet_Read32(&netbuf[len]);
-				len += 4;
-				if ( lives & 0x8000 )
-					gDeathMatch = (lives&(~0x8000));
-				else
-					*Lives = lives;
-				seed = SDLNet_Read32(&netbuf[len]);
-				len += 4;
-				SeedRandom(seed);
-//error("Seed is 0x%x\r\n", seed);
-
-				ptr = (char *)&netbuf[len];
-				for ( i=0; i<gNumPlayers; ++i ) {
-					if ( i == gOurPlayer ) {
-						/* Skip address */
-						ptr += (strlen(ptr)+1);
-						ptr += (strlen(ptr)+1);
-						continue;
-					}
-
-					/* Resolve the remote address */
-					char *host, *port;
-					host = ptr;
-					ptr += strlen(host)+1;
-					port = ptr;
-					ptr += strlen(port)+1;
-					SDLNet_ResolveHost(&PlayAddr[i], host, atoi(port));
-//printf("Port = %s\r\n", ptr);
-				}
-				waiting = 0;
-				break;
-
-			case NET_ABORT:	/* Some error? */
-				netbuf[len] = '\0';
-				message = (char *)&netbuf[2];
-				waiting = 0;
-				status = -1;
-				break;
-
-			default:	/* Huh? */
-				break;
-		}
-	}
-	for ( i=0; i<gNumPlayers; ++i ) {
-		SDLNet_UDP_Bind(gNetFD, 0, &PlayAddr[i]);
-		SDLNet_UDP_Bind(gNetFD, i+1, &PlayAddr[i]);
-	}
-	NextFrame = 0L;
-done:
-	if ( (status < 0) && message ) {
-		ErrorMessage(message);
-	}
-	return(status);
-}
-
 /* This function sends a NEWGAME packet, and waits for all other players
    to respond in kind.
    This function is not very robust in handling errors such as multiple
@@ -669,10 +469,6 @@ int Send_NewGame(int *Wave, int *Lives, int *Turbo)
 	int  acked[MAX_PLAYERS];
 	int  i;
 	UDPpacket newgame, sent;
-
-	/* Don't do the usual rigamarole if we have a game server */
-	if ( UseServer )
-		return(AlertServer(Wave, Lives, Turbo));
 
 	/* Send all the packets */
 	MakeNewPacket(*Wave, *Lives, *Turbo, sendbuf);
@@ -770,10 +566,6 @@ int Await_NewGame(int *Wave, int *Lives, int *Turbo)
 	int len, gameon;
 	UDPpacket sent;
 	Uint32 lives, seed;
-
-	/* Don't do the usual rigamarole if we have a game server */
-	if ( UseServer )
-		return(AlertServer(Wave, Lives, Turbo));
 
 	/* Get ready to wait for server */
 	Message("Awaiting Player 1 (server)");

@@ -1,6 +1,6 @@
 
 
-bin_PROGRAMS = Maelstrom Maelstrom-netd
+bin_PROGRAMS = Maelstrom
 
 Maelstrom_SOURCES =		\
 	Maelstrom.h		\
