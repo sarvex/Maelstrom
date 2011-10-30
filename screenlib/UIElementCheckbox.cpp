@@ -49,7 +49,7 @@ UIElementCheckbox::Load(rapidxml::xml_node<> *node, const UITemplates *templates
 void
 UIElementCheckbox::OnClick()
 {
-	UIElementButton::OnClick();
-
 	SetChecked(!m_checked);
+
+	UIElementButton::OnClick();
 }
