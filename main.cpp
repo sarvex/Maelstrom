@@ -297,8 +297,8 @@ int main(int argc, char *argv[])
 
 	DropEvents();
 	gRunning = true;
-//	while ( sound->Playing() )
-//		Delay(SOUND_DELAY);
+	while ( sound->Playing() )
+		Delay(SOUND_DELAY);
 	ui->ShowPanel(PANEL_MAIN);
 
 	while ( gRunning ) {

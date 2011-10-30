@@ -129,8 +129,6 @@ FrameBuf:: QueueBlit(int dstx, int dsty, SDL_Texture *src,
 void
 FrameBuf:: Fade(void)
 {
-// Temporary for development
-//return;
 	const int max = 32;
 	Uint16 ramp[256];   
 
