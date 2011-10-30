@@ -10,9 +10,9 @@ DECLARE_TYPESAFE_CLASS(UIElementCheckbox)
 public:
 	MacDialogCheckbox(UIBaseElement *parent, const char *name = "");
 
-	virtual bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
+	override bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
 
-	virtual void Draw();
+	override void Draw();
 
 protected:
 	Uint32 m_color;

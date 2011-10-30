@@ -64,18 +64,18 @@ public:
 		return m_cursorVisible;
 	}
 
-	virtual bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
-	virtual bool FinishLoading();
+	override bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
+	override bool FinishLoading();
 
 	void SetPanelDelegate(UIPanelDelegate *delegate, bool autodelete = true);
 
-	virtual void Show();
-	virtual void Hide();
+	override void Show();
+	override void Hide();
 
 	void HideAll();
 
-	virtual void Draw();
-	virtual bool HandleEvent(const SDL_Event &event);
+	override void Draw();
+	override bool HandleEvent(const SDL_Event &event);
 
 protected:
 	bool m_fullscreen;

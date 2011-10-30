@@ -56,9 +56,9 @@ public:
 		return m_status;
 	}
 
-	virtual void Show();
-	virtual void Hide();
-	virtual bool HandleEvent(const SDL_Event &event);
+	override void Show();
+	override void Hide();
+	override bool HandleEvent(const SDL_Event &event);
 
 protected:
 	int m_status;
@@ -74,7 +74,7 @@ class UIDialogLauncher : public UIButtonDelegate
 public:
 	UIDialogLauncher(UIManager *ui, const char *name, UIDialogInitHandler = NULL, UIDialogDoneHandler handleDone = NULL);
 
-	virtual void OnClick();
+	override void OnClick();
 
 protected:
 	UIManager *m_ui;

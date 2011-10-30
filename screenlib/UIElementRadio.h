@@ -64,9 +64,9 @@ public:
 		return m_id;
 	}
 
-	virtual bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
+	override bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
 
-	virtual void OnChecked(bool checked);
+	override void OnChecked(bool checked);
 
 protected:
 	int m_id;

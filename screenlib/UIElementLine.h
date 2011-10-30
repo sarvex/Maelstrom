@@ -32,13 +32,13 @@ DECLARE_TYPESAFE_CLASS(UIElement)
 public:
 	UIElementLine(UIBaseElement *parent, const char *name = "");
 
-	virtual bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
+	override bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
 
 	void SetColor(Uint32 color) {
 		m_color = color;
 	}
 
-	virtual void Draw();
+	override void Draw();
 
 private:
 	Uint32 m_color;

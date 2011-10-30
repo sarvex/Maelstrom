@@ -32,9 +32,9 @@ DECLARE_TYPESAFE_CLASS(UIElementButton)
 public:
 	UIDialogButton(UIBaseElement *parent, const char *name = "");
 
-	virtual bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
+	override bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
 
-	virtual void OnClick();
+	override void OnClick();
 
 protected:
 	int m_statusID;

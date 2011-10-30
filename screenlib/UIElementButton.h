@@ -38,9 +38,9 @@ public:
 	UIElementButton(UIBaseElement *parent, const char *name = "");
 	virtual ~UIElementButton();
 
-	virtual bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
+	override bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
 
-	virtual bool HandleEvent(const SDL_Event &event);
+	override bool HandleEvent(const SDL_Event &event);
 
 	// These can be overridden by inherited classes
 	virtual void OnMouseEnter() { }

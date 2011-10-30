@@ -10,10 +10,10 @@ DECLARE_TYPESAFE_CLASS(UIDialog)
 public:
 	MacDialog(UIManager *ui, const char *name);
 
-	virtual bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
+	override bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
 
-	virtual void Show();
-	virtual void Draw();
+	override void Show();
+	override void Draw();
 
 protected:
 	enum {

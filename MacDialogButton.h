@@ -10,10 +10,10 @@ DECLARE_TYPESAFE_CLASS(UIDialogButton)
 public:
 	MacDialogButton(UIBaseElement *parent, const char *name = "");
 
-	virtual void Draw();
+	override void Draw();
 
-	virtual void OnMouseDown();
-	virtual void OnMouseUp();
+	override void OnMouseDown();
+	override void OnMouseUp();
 
 protected:
 	Uint32 m_colors[2];

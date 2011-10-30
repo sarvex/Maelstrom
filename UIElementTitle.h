@@ -10,7 +10,7 @@ DECLARE_TYPESAFE_CLASS(UIElementTexture)
 public:
 	UIElementTitle(UIBaseElement *parent, const char *name = "");
 
-	virtual bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
+	override bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
 };
 
 #endif // _UIElementTitle_h

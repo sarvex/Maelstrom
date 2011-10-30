@@ -10,7 +10,7 @@ DECLARE_TYPESAFE_CLASS(UIElementButton)
 public:
 	UIElementCheckbox(UIBaseElement *parent, const char *name = "");
 
-	virtual bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
+	override bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
 
 	void SetChecked(bool checked) {
 		if (checked != m_checked) {
@@ -23,7 +23,7 @@ public:
 	}
 	virtual void OnChecked(bool checked) { }
 
-	virtual void OnClick();
+	override void OnClick();
 
 protected:
 	bool m_checked;

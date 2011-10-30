@@ -35,7 +35,7 @@ public:
 
 	void SetTexture(SDL_Texture *texture);
 
-	virtual void Draw();
+	override void Draw();
 
 private:
 	SDL_Texture *m_texture;

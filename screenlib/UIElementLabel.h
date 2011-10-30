@@ -34,13 +34,13 @@ public:
 	UIElementLabel(UIBaseElement *parent, const char *name = "");
 	virtual ~UIElementLabel();
 
-	virtual bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
+	override bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
 
 	void SetText(const char *text);
 	void SetTextColor(Uint8 R, Uint8 G, Uint8 B);
 	void SetTextColor(Uint32 color);
 
-	virtual void Draw();
+	override void Draw();
 
 protected:
 	char *m_fontName;
