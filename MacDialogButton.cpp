@@ -23,7 +23,11 @@ MacDialogButton::MacDialogButton(UIBaseElement *parent, const char *name) :
 UIElementLabel *
 MacDialogButton::CreateLabel()
 {
-	return new MacDialogLabel(this, "label");
+	MacDialogLabel *label;
+
+	label = new MacDialogLabel(this, "label");
+	label->SetTextColor(m_colors[1]);
+	return label;
 }
 
 void
@@ -123,12 +127,12 @@ MacDialogButton::OnMouseUp()
 void
 MacDialogButton::SetElementColor(Uint32 color)
 {
+	array<UIElementLabel*> labels;
 	Uint8 R, G, B;
 
 	m_screen->GetRGB(color, &R, &G, &B);
-	for (unsigned i = 0; i < m_elements.length(); ++i) {
-		if (m_elements[i]->IsA(UIElementLabel::GetType())) {
-			static_cast<UIElementLabel*>(m_elements[i])->SetTextColor(R, G, B);
-		}
+	FindElements<UIElementLabel>(labels);
+	for (unsigned i = 0; i < labels.length(); ++i) {
+		labels[i]->SetTextColor(R, G, B);
 	}
 }

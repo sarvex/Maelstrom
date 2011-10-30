@@ -8,6 +8,7 @@
 #include "MacDialog.h"
 #include "MacDialogButton.h"
 #include "MacDialogCheckbox.h"
+#include "MacDialogEditbox.h"
 #include "MacDialogLabel.h"
 #include "MacDialogRadioButton.h"
 #include "UIElementIcon.h"
@@ -15,7 +16,7 @@
 #include "UIElementSprite.h"
 #include "UIElementTitle.h"
 #include "screenlib/UIElementButton.h"
-#include "screenlib/UIElementCheckbox.h"
+#include "screenlib/UIElementLabel.h"
 #include "screenlib/UIElementLine.h"
 #include "screenlib/UIElementRadio.h"
 #include "screenlib/UIElementRect.h"
@@ -187,6 +188,8 @@ MaelstromUI::CreateElement(UIBaseElement *parent, const char *type, const char *
 		return new UIElementRadioGroup(parent, name);
 	} else if (strcasecmp(type, "DialogRadioButton") == 0) {
 		return new MacDialogRadioButton(parent, name);
+	} else if (strcasecmp(type, "DialogEditbox") == 0) {
+		return new MacDialogEditbox(parent, name);
 	} else if (strcasecmp(type, "KeyButton") == 0) {
 		return new UIElementKeyButton(parent, name);
 	} else if (strcasecmp(type, "Icon") == 0) {
@@ -196,5 +199,5 @@ MaelstromUI::CreateElement(UIBaseElement *parent, const char *type, const char *
 	} else if (strcasecmp(type, "Title") == 0) {
 		return new UIElementTitle(parent, name);
 	}
-	return UIManager::CreateElement(parent, name, type);;
+	return UIManager::CreateElement(parent, name, type);
 }

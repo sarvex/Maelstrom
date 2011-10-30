@@ -21,9 +21,12 @@ public:
 	bool IsChecked() const {
 		return m_checked;
 	}
-	virtual void OnChecked(bool checked) { }
 
 	override void OnClick();
+
+protected:
+	// This can be overridden by inheriting classes
+	virtual void OnChecked(bool checked) { }
 
 protected:
 	bool m_checked;

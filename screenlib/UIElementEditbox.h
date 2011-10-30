@@ -20,57 +20,65 @@
     slouken@libsdl.org
 */
 
-#ifndef _UIElementButton_h
-#define _UIElementButton_h
+#ifndef _UIElementEditbox_h
+#define _UIElementEditbox_h
 
-#include "UIElement.h"
+// This is a simple editbox class
+// It currently doesn't support multiline or editing within the line,
+// though the latter could be supported fairly easily.
 
-class UIElementLabel;
+#include "UIElementButton.h"
 
-class UIButtonDelegate
-{
-public:
-	virtual void OnClick() { }
-};
 
-class UIElementButton : public UIElement
+class UIElementEditbox : public UIElementButton
 {
 DECLARE_TYPESAFE_CLASS(UIElement)
 public:
-	UIElementButton(UIBaseElement *parent, const char *name = "");
-	virtual ~UIElementButton();
+	UIElementEditbox(UIBaseElement *parent, const char *name = "");
+	virtual ~UIElementEditbox();
 
 	override bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
+	override bool FinishLoading();
 
 	override bool HandleEvent(const SDL_Event &event);
 
-	virtual void SetText(const char *text);
+	override void OnClick() {
+		SetFocus(true);
+	}
 
-	// Setting a click callback sets a simplified delegate
-	void SetClickCallback(void (*callback)(void));
-	void SetButtonDelegate(UIButtonDelegate *delegate, bool autodelete = true);
+	void SetFocus(bool focus);
+	void SetFocusNext();
+
+	void SetTextMax(int maxLen);
+
+	override void SetText(const char *text);
+	const char *GetText() const {
+		return m_text;
+	}
+
+	void SetNumber(int value) {
+		char buffer[32];
+		sprintf(buffer, "%d", value);
+		SetText(buffer);
+	}
+	int GetNumber() const {
+		return SDL_atoi(m_text);
+	}
 
 protected:
 	// These can be overridden by inheriting classes
-	virtual void OnMouseEnter() { }
-	virtual void OnMouseLeave() { }
-	virtual void OnMouseDown() { }
-	virtual void OnMouseUp() { }
-	virtual void OnClick();
-	virtual UIElementLabel *CreateLabel();
+	virtual void OnHighlightChanged() { }
+	virtual void OnTextChanged();
 
-	bool ShouldHandleKey(SDL_Keycode key);
+	void SetHighlight(bool highlight);
 
 protected:
-	SDL_Keycode m_hotkey;
-	int m_hotkeyMod;
-	bool m_mouseInside;
-	bool m_mousePressed;
-	int m_clickSound;
-	char *m_clickPanel;
-	UIElementLabel *m_label;
-	UIButtonDelegate *m_delegate;
-	bool m_deleteDelegate;
+	bool m_focus;
+	bool m_highlight;
+	bool m_numeric;
+	int m_textMax;
+	int m_textLen;
+	char *m_text;
 };
 
-#endif // _UIElementButton_h
+#endif // _UIElementEditbox_h

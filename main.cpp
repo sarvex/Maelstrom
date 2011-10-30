@@ -17,8 +17,10 @@
 #include "netlogic/about.h"
 #include "main.h"
 
-#include "screenlib/UIElementLabel.h"
 #include "screenlib/UIDialog.h"
+#include "screenlib/UIElementCheckbox.h"
+#include "screenlib/UIElementEditbox.h"
+#include "screenlib/UIElementLabel.h"
 #include "UIElementKeyButton.h"
 
 /* External functions used in this file */
@@ -43,8 +45,8 @@ static void RunDoAbout(void)
 }
 static void RunPlayGame(void)
 {
-	gStartLives = 3;
 	gStartLevel = 1;
+	gStartLives = 3;
 	gNoDelay = 0;
 	NewGame();
 }
@@ -90,10 +92,40 @@ static void RunToggleFullscreen(void)
 {
 	screen->ToggleFullScreen();
 }
-static void RunCheat(void)
+static void CheatDialogInit(UIDialog *dialog)
 {
-	gStartLevel = GetStartLevel();
-	if ( gStartLevel > 0 ) {
+	UIElementEditbox *editbox;
+
+	editbox = dialog->GetElement<UIElementEditbox>("level");
+	if (editbox) {
+		editbox->SetFocus(true);
+	}
+}
+static void CheatDialogDone(UIDialog *dialog, int status)
+{
+	UIElementEditbox *editbox;
+	UIElementCheckbox *checkbox;
+
+	if (status > 0) {
+		editbox = dialog->GetElement<UIElementEditbox>("level");
+		if (editbox) {
+			gStartLevel = editbox->GetNumber();
+			if (gStartLevel < 1 || gStartLevel > 40) {
+				return;
+			}
+		}
+
+		editbox = dialog->GetElement<UIElementEditbox>("lives");
+		if (editbox) {
+			gStartLives = editbox->GetNumber();
+			if (gStartLives < 1 || gStartLives > 40) {
+				gStartLives = 3;
+			}
+		}
+
+		checkbox = dialog->GetElement<UIElementCheckbox>("turbofunk");
+		gNoDelay = checkbox->IsChecked();
+
 		Delay(SOUND_DELAY);
 		sound->PlaySound(gNewLife, 5);
 		Delay(SOUND_DELAY);
@@ -382,7 +414,7 @@ MainPanelDelegate::OnLoad()
 	}
 	button = m_panel->GetElement<UIElementButton>("Cheat");
 	if (button) {
-		button->SetClickCallback(RunCheat);
+		button->SetButtonDelegate(new UIDialogLauncher(ui, DIALOG_CHEAT, CheatDialogInit, CheatDialogDone));
 	}
 	button = m_panel->GetElement<UIElementButton>("Special");
 	if (button) {

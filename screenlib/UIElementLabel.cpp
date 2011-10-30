@@ -110,13 +110,18 @@ UIElementLabel::SetText(const char *text)
 	}
 	if (m_texture) {
 		GetUI()->FreeText(m_texture);
+		m_texture = NULL;
 	}
 
 	m_text = SDL_strdup(text);
-	m_texture = GetUI()->CreateText(m_text, m_fontName, m_fontSize, m_fontStyle, m_color);
+	if (*m_text) {
+		m_texture = GetUI()->CreateText(m_text, m_fontName, m_fontSize, m_fontStyle, m_color);
 
-	SetSize(m_screen->GetImageWidth(m_texture), 
-		m_screen->GetImageHeight(m_texture));
+		SetSize(m_screen->GetImageWidth(m_texture), 
+			m_screen->GetImageHeight(m_texture));
+	} else {
+		SetWidth(0);
+	}
 }
 
 void

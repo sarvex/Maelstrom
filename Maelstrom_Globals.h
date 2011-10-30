@@ -111,6 +111,7 @@ extern Bool	gNetScores;
 #define DIALOG_CONTROLS	"controls"
 #define DIALOG_ZAP	"zap"
 #define DIALOG_DAWN	"dawn"
+#define DIALOG_CHEAT	"cheat"
 
 // Sound resource definitions...
 #define gShotSound	100

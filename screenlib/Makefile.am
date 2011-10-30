@@ -19,6 +19,8 @@ libSDLscreen_a_SOURCES =	\
 	UIElementButton.h	\
 	UIElementCheckbox.cpp	\
 	UIElementCheckbox.h	\
+	UIElementEditbox.cpp	\
+	UIElementEditbox.h	\
 	UIElementLabel.cpp	\
 	UIElementLabel.h	\
 	UIElementLine.cpp	\

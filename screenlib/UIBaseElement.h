@@ -74,6 +74,46 @@ public:
 		}
 		return NULL;
 	}
+	template <typename T>
+	T *FindElement(UIBaseElement *start = NULL) {
+		unsigned i, j;
+		if (start) {
+			// Find the starting element
+			for (i = 0; i < m_elements.length(); ++i) {
+				if (m_elements[i] == start) {
+					break;
+				}
+			}
+			if (i == m_elements.length()) {
+				return NULL;
+			}
+			// Find the next element of that type
+			j = (i+1)%m_elements.length();
+			for ( ; j != i; j = (j+1)%m_elements.length()) {
+				UIBaseElement *element = m_elements[j];
+				if (element->IsA(T::GetType())) {
+					return (T*)element;
+				}
+			}
+		} else {
+			for (i = 0; i < m_elements.length(); ++i) {
+				UIBaseElement *element = m_elements[i];
+				if (element->IsA(T::GetType())) {
+					return (T*)element;
+				}
+			}
+		}
+		return NULL;
+	}
+	template <typename T>
+	void FindElements(array<T*> &elements) {
+		for (unsigned i = 0; i < m_elements.length(); ++i) {
+			UIBaseElement *element = m_elements[i];
+			if (element->IsA(T::GetType())) {
+				elements.add((T*)element);
+			}
+		}
+	}
 	void RemoveElement(UIBaseElement *element) {
 		m_elements.remove(element);
 	}
