@@ -13,7 +13,6 @@
 
 #include "Maelstrom_Globals.h"
 #include "load.h"
-#include "dialog.h"
 
 #define MAELSTROM_SCORES	"Maelstrom-Scores"
 #define NUM_SCORES		10		// Do not change this!

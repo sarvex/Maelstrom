@@ -13,8 +13,6 @@ Maelstrom_SOURCES =		\
 	colortable.h		\
 	controls.cpp		\
 	controls.h		\
-	dialog.cpp		\
-	dialog.h		\
 	fastrand.cpp		\
 	fastrand.h		\
 	init.cpp		\

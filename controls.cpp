@@ -7,7 +7,6 @@
 
 #include "Maelstrom_Globals.h"
 #include "load.h"
-#include "dialog.h"
 #include "screenlib/UIDialog.h"
 #include "screenlib/UIElementLabel.h"
 #include "screenlib/UIElementRadio.h"
@@ -445,67 +444,5 @@ int DropEvents(void)
 		}
 	}
 	return(keys);
-}
-
-#define DAWN_DIALOG_WIDTH	318
-#define DAWN_DIALOG_HEIGHT	194
-
-void ShowDawn(void)
-{
-	static const char *D_text[6] = {
-		"No eternal reward will forgive us",
-		"now",
-		    "for",
-		        "wasting",
-		                "the",
-		                    "dawn."
-	};
-	MFont *chicago;
-	SDL_Texture *splash, *text[6];
-	Maclike_Dialog *dialog;
-	Mac_Button *OK;
-	int i, x, y, X, Y;
-
-	/* Set up all the components of the dialog box */
-#ifdef CENTER_DIALOG
-	X=(SCREEN_WIDTH-DAWN_DIALOG_WIDTH)/2;
-	Y=(SCREEN_HEIGHT-DAWN_DIALOG_HEIGHT)/2;
-#else	/* The way it is on the original Maelstrom */
-	X=160;
-	Y=73;
-#endif
-	chicago = fonts[CHICAGO_12];
-	if ( (splash = GetCIcon(screen, 103)) == NULL ) {
-		error("Can't load alien dawn splash!\n");
-		return;
-	}
-	dialog = new Maclike_Dialog(X, Y, DAWN_DIALOG_WIDTH, DAWN_DIALOG_HEIGHT,
-									screen);
-	x = y = 19;
-	dialog->Add_Image(splash, x, y);
-	x += (screen->GetImageWidth(splash)+26);
-	text[0] = fontserv->TextImage(D_text[0], chicago, STYLE_NORM,
-							0x00, 0x00, 0x00);
-	dialog->Add_Image(text[0], x, y);
-	for ( i=1; i<6; ++i ) {
-		y += (screen->GetImageHeight(text[i-1])+2);
-		text[i] = fontserv->TextImage(D_text[i], chicago, STYLE_NORM,
-							0x00, 0x00, 0x00);
-		dialog->Add_Image(text[i], x, y);
-		x += (screen->GetImageWidth(text[i])+2);
-	}
-	OK = new Mac_DefaultButton(210, 160, 90, BUTTON_HEIGHT,
-						"OK", chicago, fontserv, NULL);
-	dialog->Add_Dialog(OK);
-
-	/* Run the dialog box */
-	dialog->Run(EXPAND_STEPS);
-
-	/* Clean up and return */
-	screen->FreeImage(splash);
-	for ( i=0; i<6; ++i )
-		fontserv->FreeText(text[i]);
-	delete dialog;
-	return;
 }
 
