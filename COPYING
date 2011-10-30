@@ -1,6 +1,9 @@
 The source code to Maelstrom 3.0 and higher has been released under
 the GNU General Public License which can be found in COPYING.GPL.
 
+The source code to the screenlib and maclib libraries has been released
+under the zlib license, which can be found in COPYING in those directories.
+
 The artwork and animations in Maelstrom may be used under the terms
 of the Creative Commons Attribution 3.0 license (unported):
 http://creativecommons.org/licenses/by/3.0/legalcode
