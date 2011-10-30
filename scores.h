@@ -26,7 +26,6 @@ class UIDialog;
 extern void	LoadScores(void);
 extern void	SaveScores(void);
 extern void	ZapHighScores(UIDialog *dialog, int status);
-extern void	PrintHighScores(void);
 
 /* The high scores structure */
 typedef	struct {
