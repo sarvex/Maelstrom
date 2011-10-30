@@ -2,6 +2,7 @@ syntax:glob
 *.a
 *.o
 *.Po
+*.Tpo
 *.swp
 Maelstrom
 Maelstrom-netd
