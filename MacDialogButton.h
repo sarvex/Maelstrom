@@ -16,10 +16,12 @@ public:
 	override void OnMouseUp();
 
 protected:
-	Uint32 m_colors[2];
+	override UIElementLabel *CreateLabel();
+
+	void SetElementColor(Uint32 color);
 
 protected:
-	void SetElementColor(Uint32 color);
+	Uint32 m_colors[2];
 };
 
 #endif // _MacDialogButton_h

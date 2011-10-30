@@ -1,7 +1,7 @@
 
 #include "screenlib/SDL_FrameBuf.h"
-#include "screenlib/UIElementLabel.h"
 #include "MacDialogButton.h"
+#include "MacDialogLabel.h"
 
 /* Default dialog button size */
 #define BUTTON_WIDTH	75
@@ -18,6 +18,12 @@ MacDialogButton::MacDialogButton(UIBaseElement *parent, const char *name) :
 	m_colors[1] = m_screen->MapRGB(0x00, 0x00, 0x00);
 
 	SetSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+}
+
+UIElementLabel *
+MacDialogButton::CreateLabel()
+{
+	return new MacDialogLabel(this, "label");
 }
 
 void

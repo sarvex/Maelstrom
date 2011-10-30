@@ -18,27 +18,15 @@ MacDialogCheckbox::MacDialogCheckbox(UIBaseElement *parent, const char *name) :
 	SetSize(CHECKBOX_SIZE, CHECKBOX_SIZE);
 }
 
-bool
-MacDialogCheckbox::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
+UIElementLabel *
+MacDialogCheckbox::CreateLabel()
 {
-	rapidxml::xml_attribute<> *attr;
+	MacDialogLabel *label;
 
-	if (!UIElementCheckbox::Load(node, templates)) {
-		return false;
-	}
-
-	attr = node->first_attribute("text", 0, false);
-	if (attr) {
-		MacDialogLabel *label;
-
-		label = new MacDialogLabel(this, "label");
-		label->SetText(attr->value());
-		label->SetTextColor(m_color);
-		label->SetAnchor(TOPLEFT, TOPRIGHT, this, 3, -2);
-		AddElement(label);
-	}
-
-	return true;
+	label = new MacDialogLabel(this, "label");
+	label->SetTextColor(m_color);
+	label->SetAnchor(TOPLEFT, TOPRIGHT, this, 3, -2);
+	return label;
 }
 
 void

@@ -17,29 +17,15 @@ MacDialogRadioButton::MacDialogRadioButton(UIBaseElement *parent, const char *na
 	SetSize(RADIOBUTTON_SIZE, RADIOBUTTON_SIZE);
 }
 
-bool
-MacDialogRadioButton::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
+
+UIElementLabel *
+MacDialogRadioButton::CreateLabel()
 {
-	rapidxml::xml_attribute<> *attr;
+	MacDialogLabel *label;
 
-	if (!UIElementRadioButton::Load(node, templates)) {
-		return false;
-	}
-
-	attr = node->first_attribute("text", 0, false);
-	if (attr) {
-		MacDialogLabel *label;
-
-		label = new MacDialogLabel(this, "label");
-		label->SetText(attr->value());
-		label->SetAnchor(TOPLEFT, TOPLEFT, this, 21, 3);
-		AddElement(label);
-
-		/* Extend the sensitive area to encompass the label */
-		SetWidth((label->X()+label->Width()) - X());
-	}
-
-	return true;
+	label = new MacDialogLabel(this, "label");
+	label->SetAnchor(TOPLEFT, TOPLEFT, this, 21, 3);
+	return label;
 }
 
 void

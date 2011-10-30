@@ -65,6 +65,7 @@ public:
 	}
 
 	override bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
+	override bool FinishLoading();
 
 	override void OnChecked(bool checked);
 

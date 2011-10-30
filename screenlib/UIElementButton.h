@@ -25,6 +25,8 @@
 
 #include "UIElement.h"
 
+class UIElementLabel;
+
 class UIButtonDelegate
 {
 public:
@@ -42,16 +44,22 @@ public:
 
 	override bool HandleEvent(const SDL_Event &event);
 
+	void SetText(const char *text);
+
+	// Setting a click callback sets a simplified delegate
+	void SetClickCallback(void (*callback)(void));
+	void SetButtonDelegate(UIButtonDelegate *delegate, bool autodelete = true);
+
+protected:
 	// These can be overridden by inherited classes
 	virtual void OnMouseEnter() { }
 	virtual void OnMouseLeave() { }
 	virtual void OnMouseDown() { }
 	virtual void OnMouseUp() { }
 	virtual void OnClick();
+	virtual UIElementLabel *CreateLabel();
 
-	// Setting a click callback sets a simplified delegate
-	void SetClickCallback(void (*callback)(void));
-	void SetButtonDelegate(UIButtonDelegate *delegate, bool autodelete = true);
+	bool ShouldHandleKey(SDL_Keycode key);
 
 protected:
 	SDL_Keycode m_hotkey;
@@ -60,11 +68,9 @@ protected:
 	bool m_mousePressed;
 	int m_clickSound;
 	char *m_clickPanel;
+	UIElementLabel *m_label;
 	UIButtonDelegate *m_delegate;
 	bool m_deleteDelegate;
-
-protected:
-	bool ShouldHandleKey(SDL_Keycode key);
 };
 
 #endif // _UIElementButton_h

@@ -25,7 +25,6 @@
 
 #include "UIElementButton.h"
 
-
 class UIDialogButton : public UIElementButton
 {
 DECLARE_TYPESAFE_CLASS(UIElementButton)

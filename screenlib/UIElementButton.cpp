@@ -23,6 +23,7 @@
 #include "UIManager.h"
 #include "UIPanel.h"
 #include "UIElementButton.h"
+#include "UIElementLabel.h"
 
 
 class SimpleButtonDelegate : public UIButtonDelegate
@@ -52,6 +53,7 @@ UIElementButton::UIElementButton(UIBaseElement *parent, const char *name) :
 	m_mousePressed = false;
 	m_clickSound = 0;
 	m_clickPanel = NULL;
+	m_label = NULL;
 	m_delegate = NULL;
 	m_deleteDelegate = false;
 }
@@ -111,7 +113,33 @@ UIElementButton::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 	LoadNumber(node, "clickSound", m_clickSound);
 	LoadString(node, "clickPanel", m_clickPanel);
 
+	attr = node->first_attribute("text", 0, false);
+	if (attr) {
+		m_label = CreateLabel();
+		if (m_label) {
+			AddElement(m_label);
+		}
+		SetText(attr->value());
+	}
+
 	return true;
+}
+
+UIElementLabel *
+UIElementButton::CreateLabel()
+{
+	UIElement *label;
+
+	label = GetUI()->CreateElement(this, "Label", "label");
+	if (!label) {
+		return NULL;
+	}
+	if (label->IsA(UIElementLabel::GetType())) {
+		return static_cast<UIElementLabel*>(label);
+	} else {
+		delete label;
+		return NULL;
+	}
 }
 
 bool
@@ -225,6 +253,14 @@ UIElementButton::OnClick()
 	}
 	if (m_delegate) {
 		m_delegate->OnClick();
+	}
+}
+
+void
+UIElementButton::SetText(const char *text)
+{
+	if (m_label) {
+		m_label->SetText(text);
 	}
 }
 

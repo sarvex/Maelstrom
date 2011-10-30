@@ -55,20 +55,6 @@ UIDialogButton::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 
 	LoadBool(node, "closeDialog", m_closeDialog);
 
-	attr = node->first_attribute("text", 0, false);
-	if (attr) {
-		UIElement *label;
-
-		label = GetUI()->CreateElement(this, "DialogLabel", "label");
-		if (label && label->IsA(UIElementLabel::GetType())) {
-			static_cast<UIElementLabel*>(label)->SetText(attr->value());
-			AddElement(label);
-		} else {
-			fprintf(stderr, "Warning: Couldn't create dialog button label");
-			delete label;
-		}
-	}
-
 	return true;
 }
 
