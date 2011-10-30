@@ -171,43 +171,18 @@ private:
 };
 
 /* ----------------------------------------------------------------- */
-/* -- Run a graphics speed test.                                     */
-static void RunSpeedTest(void)
-{
-	const int test_reps = 100;	/* How many full cycles to run */
-
-	Uint32 then, now;
-	int i, frame, x=((640/2)-16), y=((480/2)-16);
-
-	then = SDL_GetTicks();
-	for ( i=0; i<test_reps; ++i ) {
-		for ( frame=0; frame<SHIP_FRAMES; ++frame ) {
-			screen->Clear();
-			screen->QueueBlit(x, y, gPlayerShip->sprite[frame]);
-			screen->Update();
-		}
-	}
-	now = SDL_GetTicks();
-	mesg("Graphics speed test took %d milliseconds per cycle.\r\n",
-						((now-then)/test_reps));
-}
-
-/* ----------------------------------------------------------------- */
 /* -- Print a Usage message and quit.
       In several places we depend on this function exiting.
  */
 static char *progname;
 void PrintUsage(void)
 {
-	error("\nUsage: %s [-netscores] -printscores\n", progname);
-	error("or\n");
 	error("Usage: %s <options>\n\n", progname);
 	error("Where <options> can be any of:\n\n"
 "	-fullscreen		# Run Maelstrom in full-screen mode\n"
 "	-windowed		# Run Maelstrom in windowed mode\n"
 "	-gamma [0-8]		# Set the gamma correction\n"
 "	-volume [0-8]		# Set the sound volume\n"
-"	-netscores		# Use the world-wide network score server\n"
 	);
 	LogicUsage();
 	error("\n");
@@ -219,8 +194,6 @@ void PrintUsage(void)
 int main(int argc, char *argv[])
 {
 	/* Command line flags */
-	int doprinthigh = 0;
-	int speedtest = 0;
 	Uint32 window_flags = 0;
 	Uint32 render_flags = SDL_RENDERER_PRESENTVSYNC;
 
@@ -302,12 +275,6 @@ int main(int argc, char *argv[])
 
 			++argv;
 			--argc;
-		}
-		else if ( strcmp(argv[1], "-printscores") == 0 )
-			doprinthigh = 1;
-		else if ( strcmp(argv[1], "-speedtest") == 0 ) {
-			speedtest = 1;
-			render_flags &= ~SDL_RENDERER_PRESENTVSYNC;
 		} else if ( LogicParseArgs(&argv, &argc) == 0 ) {
 			/* LogicParseArgs() took care of everything */;
 		} else if ( strcmp(argv[1], "-version") == 0 ) {
@@ -318,12 +285,6 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	/* Do we just want the high scores? */
-	if ( doprinthigh ) {
-		PrintHighScores();
-		exit(0);
-	}
-
 	/* Make sure we have a valid player list (netlogic) */
 	if ( InitLogic() < 0 )
 		exit(1);
@@ -332,12 +293,6 @@ int main(int argc, char *argv[])
 	if ( DoInitializations(window_flags, render_flags) < 0 ) {
 		/* An error message was already printed */
 		exit(1);
-	}
-
-	if ( speedtest ) {
-		RunSpeedTest();
-		CleanUp();
-		exit(0);
 	}
 
 	DropEvents();
