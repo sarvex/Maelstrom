@@ -38,12 +38,9 @@ class UIElementRadioButton;
 
 class UIElementRadioGroup : public UIElement
 {
+DECLARE_TYPESAFE_CLASS(UIElement)
 public:
 	UIElementRadioGroup(UIBaseElement *parent, const char *name = "");
-
-	virtual bool IsA(UIElementType type) {
-		return UIElement::IsA(type) || type == GetType();
-	}
 
 	UIElementRadioButton *GetRadioButton(int id);
 
@@ -55,27 +52,13 @@ public:
 
 protected:
 	int m_value;
-
-protected:
-	static UIElementType s_elementType;
-
-public:
-	static UIElementType GetType() {
-		if (!s_elementType) {
-			s_elementType = GenerateType();
-		}
-		return s_elementType;
-	}
 };
 
 class UIElementRadioButton : public UIElementCheckbox
 {
+DECLARE_TYPESAFE_CLASS(UIElementCheckbox)
 public:
 	UIElementRadioButton(UIBaseElement *parent, const char *name = "");
-
-	virtual bool IsA(UIElementType type) {
-		return UIElementCheckbox::IsA(type) || type == GetType();
-	}
 
 	int GetID() const {
 		return m_id;
@@ -87,17 +70,6 @@ public:
 
 protected:
 	int m_id;
-
-protected:
-	static UIElementType s_elementType;
-
-public:
-	static UIElementType GetType() {
-		if (!s_elementType) {
-			s_elementType = GenerateType();
-		}
-		return s_elementType;
-	}
 };
 
 #endif // _UIElementRadio_h

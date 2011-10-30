@@ -29,13 +29,10 @@
 
 class UIElementLabel : public UIElement
 {
+DECLARE_TYPESAFE_CLASS(UIElement)
 public:
 	UIElementLabel(UIBaseElement *parent, const char *name = "");
 	virtual ~UIElementLabel();
-
-	virtual bool IsA(UIElementType type) {
-		return UIElement::IsA(type) || type == GetType();
-	}
 
 	virtual bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
 
@@ -52,17 +49,6 @@ protected:
 	Uint32 m_color;
 	char *m_text;
 	SDL_Texture *m_texture;
-
-protected:
-	static UIElementType s_elementType;
-
-public:
-	static UIElementType GetType() {
-		if (!s_elementType) {
-			s_elementType = GenerateType();
-		}
-		return s_elementType;
-	}
 };
 
 #endif // _UIElementLabel_h

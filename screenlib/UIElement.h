@@ -25,32 +25,14 @@
 
 #include "UIBaseElement.h"
 
-class UIPanel;
-class UIManager;
 
 class UIElement : public UIBaseElement
 {
+DECLARE_TYPESAFE_CLASS(UIBaseElement)
 public:
 	UIElement(UIBaseElement *parent, const char *name = "");
 
-	virtual bool IsA(UIElementType type) {
-		return UIBaseElement::IsA(type) || type == GetType();
-	}
-
 	virtual bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
-
-protected:
-	static UIElementType s_elementType;
-
-public:
-	static UIElementType GetType() {
-		if (!s_elementType) {
-			s_elementType = GenerateType();
-		}
-		return s_elementType;
-	}
 };
-
-Uint32 LoadColor(rapidxml::xml_node<> *node);
 
 #endif // _UIElement_h

@@ -28,12 +28,9 @@
 
 class UIElementLine : public UIElement
 {
+DECLARE_TYPESAFE_CLASS(UIElement)
 public:
 	UIElementLine(UIBaseElement *parent, const char *name = "");
-
-	virtual bool IsA(UIElementType type) {
-		return UIElement::IsA(type) || type == GetType();
-	}
 
 	virtual bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
 
@@ -45,17 +42,6 @@ public:
 
 private:
 	Uint32 m_color;
-
-protected:
-	static UIElementType s_elementType;
-
-public:
-	static UIElementType GetType() {
-		if (!s_elementType) {
-			s_elementType = GenerateType();
-		}
-		return s_elementType;
-	}
 };
 
 #endif // _UIElementLine_h

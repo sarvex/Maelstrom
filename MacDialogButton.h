@@ -6,12 +6,9 @@
 
 class MacDialogButton : public UIDialogButton
 {
+DECLARE_TYPESAFE_CLASS(UIDialogButton)
 public:
 	MacDialogButton(UIBaseElement *parent, const char *name = "");
-
-	virtual bool IsA(UIElementType type) {
-		return UIDialogButton::IsA(type) || type == GetType();
-	}
 
 	virtual void Draw();
 
@@ -23,17 +20,6 @@ protected:
 
 protected:
 	void SetElementColor(Uint32 color);
-
-protected:
-	static UIElementType s_elementType;
-
-public:
-	static UIElementType GetType() {
-		if (!s_elementType) {
-			s_elementType = GenerateType();
-		}
-		return s_elementType;
-	}
 };
 
 #endif // _MacDialogButton_h

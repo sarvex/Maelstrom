@@ -26,6 +26,8 @@
 #include "UIElement.h"
 #include "UITemplates.h"
 
+UIElementType UIPanel::s_elementType;
+
 
 UIPanel::UIPanel(UIManager *ui, const char *name) :
 	UIBaseElement(ui, name)

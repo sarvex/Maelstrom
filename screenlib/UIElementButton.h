@@ -33,13 +33,10 @@ public:
 
 class UIElementButton : public UIElement
 {
+DECLARE_TYPESAFE_CLASS(UIElement)
 public:
 	UIElementButton(UIBaseElement *parent, const char *name = "");
 	virtual ~UIElementButton();
-
-	virtual bool IsA(UIElementType type) {
-		return UIElement::IsA(type) || type == GetType();
-	}
 
 	virtual bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
 
@@ -68,17 +65,6 @@ protected:
 
 protected:
 	bool ShouldHandleKey(SDL_Keycode key);
-
-protected:
-	static UIElementType s_elementType;
-
-public:
-	static UIElementType GetType() {
-		if (!s_elementType) {
-			s_elementType = GenerateType();
-		}
-		return s_elementType;
-	}
 };
 
 #endif // _UIElementButton_h

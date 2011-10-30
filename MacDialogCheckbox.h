@@ -6,12 +6,9 @@
 
 class MacDialogCheckbox : public UIElementCheckbox
 {
+DECLARE_TYPESAFE_CLASS(UIElementCheckbox)
 public:
 	MacDialogCheckbox(UIBaseElement *parent, const char *name = "");
-
-	virtual bool IsA(UIElementType type) {
-		return UIElementCheckbox::IsA(type) || type == GetType();
-	}
 
 	virtual bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
 
@@ -19,17 +16,6 @@ public:
 
 protected:
 	Uint32 m_color;
-
-protected:
-	static UIElementType s_elementType;
-
-public:
-	static UIElementType GetType() {
-		if (!s_elementType) {
-			s_elementType = GenerateType();
-		}
-		return s_elementType;
-	}
 };
 
 #endif // _MacDialogCheckbox_h

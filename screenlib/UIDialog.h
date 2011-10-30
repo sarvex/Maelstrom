@@ -39,12 +39,9 @@ typedef void (*UIDialogDoneHandler)(UIDialog *dialog, int status);
 
 class UIDialog : public UIPanel
 {
+DECLARE_TYPESAFE_CLASS(UIPanel)
 public:
 	UIDialog(UIManager *ui, const char *name);
-
-	virtual bool IsA(UIElementType type) {
-		return UIPanel::IsA(type) || type == GetType();
-	}
 
 	/* Set a function that's called when the dialog is hidden */
 	void SetDialogHandlers(UIDialogInitHandler handleInit,
@@ -67,17 +64,6 @@ protected:
 	int m_status;
 	UIDialogInitHandler m_handleInit;
 	UIDialogDoneHandler m_handleDone;
-
-protected:
-	static UIElementType s_elementType;
-
-public:
-	static UIElementType GetType() {
-		if (!s_elementType) {
-			s_elementType = GenerateType();
-		}
-		return s_elementType;
-	}
 };
 
 //

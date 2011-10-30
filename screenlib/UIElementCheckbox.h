@@ -6,12 +6,9 @@
 
 class UIElementCheckbox : public UIElementButton
 {
+DECLARE_TYPESAFE_CLASS(UIElementButton)
 public:
 	UIElementCheckbox(UIBaseElement *parent, const char *name = "");
-
-	virtual bool IsA(UIElementType type) {
-		return UIElementButton::IsA(type) || type == GetType();
-	}
 
 	virtual bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
 
@@ -30,17 +27,6 @@ public:
 
 protected:
 	bool m_checked;
-
-protected:
-	static UIElementType s_elementType;
-
-public:
-	static UIElementType GetType() {
-		if (!s_elementType) {
-			s_elementType = GenerateType();
-		}
-		return s_elementType;
-	}
 };
 
 #endif // _UIElementCheckbox_h

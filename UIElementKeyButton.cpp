@@ -9,10 +9,6 @@ UIElementKeyButton::UIElementKeyButton(UIBaseElement *parent, const char *name) 
 {
 }
 
-UIElementKeyButton::~UIElementKeyButton()
-{
-}
-
 bool
 UIElementKeyButton::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 {

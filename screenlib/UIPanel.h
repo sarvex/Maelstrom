@@ -52,6 +52,7 @@ protected:
 
 class UIPanel : public UIBaseElement
 {
+DECLARE_TYPESAFE_CLASS(UIBaseElement)
 public:
 	UIPanel(UIManager *ui, const char *name);
 	virtual ~UIPanel();
