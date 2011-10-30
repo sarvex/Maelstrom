@@ -8,12 +8,9 @@ Maelstrom
 Maelstrom-netd
 Maelstrom.dmg
 Makefile
-Makefile.in
 autom4te.cache
 config.log
 config.status
-configure
-depcomp
 maclib/macres
 maclib/playwave
 maclib/snd2wav
