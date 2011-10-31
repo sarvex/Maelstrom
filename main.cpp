@@ -45,6 +45,7 @@
 #include "screenlib/UIElementLabel.h"
 #include "UIElementKeyButton.h"
 
+#define MAELSTROM_DATA	"Maelstrom_Data.zip"
 
 static const char *Version =
 "Maelstrom v1.4.3 (GPL version 4.0.0) -- 10/08/2011 by Sam Lantinga\n";
@@ -187,6 +188,31 @@ void PrintUsage(void)
 	exit(1);
 }
 
+static bool
+MountData(const char *argv0)
+{
+	const char *path;
+	const char *file = MAELSTROM_DATA;
+
+	if ( PHYSFS_mount(argv0, "/", 1) ) {
+		return true;
+	}
+
+	path = PHYSFS_getRealDir(file);
+	if ( path != NULL ) {
+		int status;
+		char *fullpath = new char[strlen(path)+1+strlen(file)+1];
+
+		sprintf(fullpath, "%s/%s", path, file);
+		status = PHYSFS_mount(fullpath, "/", 1);
+		delete[] fullpath;
+		if (status) {
+			return true;
+		}
+	}
+	return false;
+}
+
 /* ----------------------------------------------------------------- */
 /* -- Blitter main program */
 int main(int argc, char *argv[])
@@ -206,9 +232,8 @@ int main(int argc, char *argv[])
 		error("Couldn't set PHYSFS config: %s\n", PHYSFS_getLastError());
 		exit(1);
 	}
-	if ( !PHYSFS_mount(argv[0], "/", 1) &&
-	     !PHYSFS_mount("Maelstrom_Data.zip", "/", 1) ) {
-		error("Can't find Maelstrom_Data.zip\n");
+	if ( !MountData(argv[0]) ) {
+		error("Can't find %s\n", MAELSTROM_DATA);
 		exit(1);
 	}
 
