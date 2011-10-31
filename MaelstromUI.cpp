@@ -37,6 +37,7 @@
 #include "UIElementSprite.h"
 #include "UIElementTitle.h"
 #include "screenlib/UIElementButton.h"
+#include "screenlib/UIElementImage.h"
 #include "screenlib/UIElementLabel.h"
 #include "screenlib/UIElementLine.h"
 #include "screenlib/UIElementRadio.h"
@@ -199,6 +200,8 @@ MaelstromUI::CreateElement(UIBaseElement *parent, const char *type, const char *
 		return new UIElementRect(parent, name);
 	} else if (strcasecmp(type, "Label") == 0) {
 		return new UIElementLabel(parent, name);
+	} else if (strcasecmp(type, "Image") == 0) {
+		return new UIElementImage(parent, name);
 	} else if (strcasecmp(type, "Button") == 0) {
 		return new UIElementButton(parent, name);
 	} else if (strcasecmp(type, "DialogLabel") == 0) {

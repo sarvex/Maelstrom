@@ -282,6 +282,12 @@ FrameBuf:: LoadImage(int w, int h, Uint32 *pixels)
 	return(texture);
 }
 
+SDL_Texture *
+FrameBuf:: LoadImage(SDL_Surface *surface)
+{
+	return SDL_CreateTextureFromSurface(renderer, surface);
+}
+
 void
 FrameBuf:: FreeImage(SDL_Texture *image)
 {
