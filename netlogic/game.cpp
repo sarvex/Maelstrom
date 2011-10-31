@@ -424,7 +424,7 @@ GamePanelDelegate::DrawStatus(Bool first)
 	static int lastScores[MAX_PLAYERS], lastLife[MAX_PLAYERS];
 	int Score;
 	int MultFactor;
-	int i, x;
+	int i;
 	char numbuf[128];
 
 /* -- Draw the status display */
@@ -1023,8 +1023,6 @@ static void DoGameOver(void)
 		while ( screen->PollEvent(&event) ) /* Loop, flushing events */;
 		SDL_StartTextInput();
 		while ( label && !done ) {
-			bool updated = false;
-
 			screen->WaitEvent(&event);
 
 			if ( event.type == SDL_KEYUP ) {

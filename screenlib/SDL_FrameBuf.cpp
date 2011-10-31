@@ -212,7 +212,6 @@ FrameBuf:: LoadImage(int w, int h, Uint8 *pixels, Uint8 *mask)
 	int i, j, pad;
 	Uint8 *pix_mem;
 	Uint32 *art_mem;
-	int retval;
 
 	/* Assume 8-bit artwork using the current palette */
 	artwork = new Uint32[w*h];

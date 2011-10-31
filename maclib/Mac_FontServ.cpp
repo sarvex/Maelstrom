@@ -100,7 +100,7 @@ FontServ:: NewFont(const char *fontname, int ptsize)
 	int nchars;		/* number of chars including 'missing char' */
 	int nwords;		/* bit image size, in words */
 	int i, swapfont;
-	MFont *prev, *font;
+	MFont *font;
 
 	/* Get the font family */
 	fond = fontres->Resource("FOND", fontname);
@@ -264,8 +264,6 @@ FontServ:: TextHeight(MFont *font)
 SDL_Texture *
 FontServ:: TextImage(const char *text, MFont *font, Uint8 style, SDL_Color fg)
 {
-	char *key, *keycopy;
-	int keysize;
 	int width, height;
 	SDL_Texture *image;
 	Uint32 *bitmap;

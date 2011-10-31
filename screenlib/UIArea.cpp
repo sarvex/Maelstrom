@@ -58,8 +58,6 @@ UIArea::Load(rapidxml::xml_node<> *node)
 
 	child = node->first_node("anchor", 0, false);
 	if (child) {
-		int x, y;
-
 		attr = child->first_attribute("anchor", 0, false);
 		if (m_anchor.element) {
 			m_anchor.element->DelAnchoredArea(this);
@@ -235,7 +233,6 @@ UIArea::LoadColor(rapidxml::xml_node<> *node, const char *name, Uint32 &value)
 
 	child = node->first_node("color", 0, false);
 	if (child) {
-		rapidxml::xml_attribute<> *attr;
 		int r = 0xFF, g = 0xFF, b = 0xFF;
 
 		LoadNumber(child, "r", r);

@@ -39,8 +39,6 @@ UIDialogButton::UIDialogButton(UIBaseElement *parent, const char *name) :
 bool
 UIDialogButton::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 {
-	rapidxml::xml_attribute<> *attr;
-
 	if (!UIElementButton::Load(node, templates)) {
 		return false;
 	}

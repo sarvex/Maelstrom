@@ -21,7 +21,7 @@
 
 #include <stdio.h>
 #include <strings.h>
-#include <physfs.h>
+#include "physfs.h"
 
 #include "UITemplates.h"
 

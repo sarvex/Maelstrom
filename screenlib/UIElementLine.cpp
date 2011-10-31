@@ -34,8 +34,6 @@ UIElementLine::UIElementLine(UIBaseElement *parent, const char *name) :
 bool
 UIElementLine::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 {
-	rapidxml::xml_node<> *child;
-
 	if (!UIElement::Load(node, templates)) {
 		return false;
 	}

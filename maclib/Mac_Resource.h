@@ -31,7 +31,7 @@ Note: Most of the info in this file came from "Inside Macintosh"
 
 #include <stdio.h>
 #include <stdarg.h>
-#include <physfs.h>
+#include "physfs.h"
 
 /* The actual resources in the resource fork */
 typedef struct {

@@ -52,8 +52,6 @@ UIPanel::~UIPanel()
 bool
 UIPanel::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 {
-	rapidxml::xml_attribute<> *attr;
-
 	if (!UIBaseElement::Load(node, templates)) {
 		return false;
 	}

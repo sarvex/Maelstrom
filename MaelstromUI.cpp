@@ -78,7 +78,7 @@ MaelstromUI::~MaelstromUI()
 MFont *
 MaelstromUI::GetFont(const char *fontName, int fontSize)
 {
-	char *key, *keycopy;
+	char *key;
 	int keysize;
 	MFont *font;
 
@@ -105,7 +105,7 @@ MaelstromUI::CreateText(const char *text, const char *fontName, int fontSize, UI
 {
 	MFont *font;
 	Uint8 style;
-	char *key, *keycopy;
+	char *key;
 	int keysize;
 	SDL_Texture *texture;
 

@@ -96,6 +96,7 @@ UIElementRadioButton::FinishLoading()
 			assert(!"Need code for labels on the left");
 		}
 	}
+	return true;
 }
 
 void

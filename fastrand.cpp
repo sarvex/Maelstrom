@@ -28,6 +28,8 @@
 
 #include "SDL_types.h"
 
+#include "fastrand.h"
+
 static Uint32 randomSeed;
 
 void SeedRandom(Uint32 Seed)

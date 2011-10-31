@@ -20,9 +20,6 @@
     slouken@libsdl.org
 */
 
-#ifndef _myerror_h
-#define _myerror_h
-
 /* Generic error message routines */
 
 #include <stdio.h>
@@ -30,6 +27,7 @@
 #include <string.h>
 #include <errno.h>
 
+#include "myerror.h"
 
 void error(const char *fmt, ...)
 {
@@ -63,6 +61,3 @@ void myperror(const char *msg)
 	} else
 		error((char *)strerror(errno));
 }
-
-#endif /* _myerror_h */
-

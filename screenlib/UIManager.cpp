@@ -19,7 +19,7 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-#include <physfs.h>
+#include "physfs.h"
 
 #include "SDL_FrameBuf.h"
 #include "UIManager.h"

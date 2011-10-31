@@ -52,45 +52,6 @@ Uint8 gSoundLevel = 4;
 Uint8 gGammaCorrect = 3;
 
 
-/* Map a keycode to a key name */
-void KeyName(SDL_Keycode keycode, char *namebuf)
-{
-	const char *name;
-	char ch;
-	int starting;
-
-	/* Get the name of the key */
-	name = SDL_GetKeyName(keycode);
-
-	/* Add "arrow" to the arrow keys */
-	if ( strcmp(name, "up") == 0 ) {
-		name = "up arrow";
-	} else
-	if ( strcmp(name, "down") == 0 ) {
-		name = "down arrow";
-	} else
-	if ( strcmp(name, "right") == 0 ) {
-		name = "right arrow";
-	} else
-	if ( strcmp(name, "left") == 0 ) {
-		name = "left arrow";
-	}
-	/* Make the key names uppercased */
-	for ( starting = 1; *name; ++name ) {
-		ch = *name;
-		if ( starting ) {
-			if ( islower(ch) )
-				ch = toupper(ch);
-			starting = 0;
-		} else {
-			if ( ch == ' ' )
-				starting = 1;
-		}
-		*namebuf++ = ch;
-	}
-	*namebuf = '\0';
-}
-
 static FILE *OpenData(const char *mode, char **fname)
 {
 	static char datafile[BUFSIZ];

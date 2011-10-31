@@ -21,6 +21,7 @@
 */
 
 #include "../Maelstrom_Globals.h"
+#include "make.h"
 #include "netplay.h"
 #include "object.h"
 #include "player.h"

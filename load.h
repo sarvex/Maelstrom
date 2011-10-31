@@ -23,7 +23,7 @@
 #ifndef _load_h
 #define _load_h
 
-#include <physfs.h>
+#include "physfs.h"
 #include "utils/physfsrwops.h"
 
 #include "screenlib/SDL_FrameBuf.h"

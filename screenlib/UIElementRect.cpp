@@ -35,9 +35,6 @@ UIElementRect::UIElementRect(UIBaseElement *parent, const char *name) :
 bool
 UIElementRect::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 {
-	rapidxml::xml_node<> *child;
-	rapidxml::xml_attribute<> *attr;
-
 	if (!UIElement::Load(node, templates)) {
 		return false;
 	}

@@ -65,7 +65,6 @@ static UIFontStyle ParseStyle(const char *text)
 bool
 UIElementLabel::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 {
-	rapidxml::xml_node<> *child;
 	rapidxml::xml_attribute<> *attr;
 
 	if (!UIElement::Load(node, templates)) {
@@ -93,8 +92,6 @@ UIElementLabel::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 void
 UIElementLabel::SetText(const char *text)
 {
-	SDL_Texture *texture;
-
 	if (!m_fontName || !m_fontSize) {
 		SetError("You must set a font first");
 		return;

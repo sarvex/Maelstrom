@@ -501,8 +501,6 @@ void Message(const char *message)
 // FIXME: This totally doesn't work anymore, but that may not matter if we're cutting network support.
 	int x, y;
 	SDL_Texture *textimage;
-	int width;
-
 	if (!message) {
 		return;
 	}
