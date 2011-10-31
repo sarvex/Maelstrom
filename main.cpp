@@ -45,6 +45,7 @@
 #include "screenlib/UIElementLabel.h"
 #include "UIElementKeyButton.h"
 
+#define MAELSTROM_PREFS	"com.galaxygameworks.Maelstrom"
 #define MAELSTROM_DATA	"Maelstrom_Data.zip"
 
 static const char *Version =
@@ -188,28 +189,53 @@ void PrintUsage(void)
 	exit(1);
 }
 
+/* ----------------------------------------------------------------- */
+/* -- Initialize PHYSFS and mount the data archive */
 static bool
-MountData(const char *argv0)
+InitFilesystem(const char *argv0)
 {
-	const char *path;
+	char path[4096];
 	const char *file = MAELSTROM_DATA;
 
-	if ( PHYSFS_mount(argv0, "/", 1) ) {
+	if (!PHYSFS_init(argv0)) {
+		error("Couldn't initialize PHYSFS: %s\n", PHYSFS_getLastError());
+		return false;
+	}
+
+	// Set up the write directory for this platform
+	const char *home = PHYSFS_getUserDir();
+#if defined(__MACOSX__) || defined(__IPHONEOS__)
+	SDL_snprintf(path, SDL_arraysize(path), "%sLibrary/Application Support/%s", home, MAELSTROM_PREFS);
+#else
+	SDL_snprintf(path, SDL_arraysize(path), "%s.%s", home, MAELSTROM_PREFS);
+#endif
+	if (!PHYSFS_setWriteDir(path)) {
+		if (!PHYSFS_setWriteDir(home) ||
+		    !PHYSFS_mkdir(path+SDL_strlen(home)) ||
+		    !PHYSFS_setWriteDir(path)) {
+			error("Couldn't set write directory to %s: %s\n", path, PHYSFS_getLastError());
+			return false;
+		}
+	}
+
+	/* Put the write directory first in the search path */
+	PHYSFS_mount(path, NULL, 0);
+
+	/* Then add the base directory to the search path */
+	PHYSFS_mount(PHYSFS_getBaseDir(), NULL, 0);
+
+	/* Then add the data file, which could be appended to the executable */
+	if (PHYSFS_mount(argv0, "/", 1)) {
 		return true;
 	}
 
-	path = PHYSFS_getRealDir(file);
-	if ( path != NULL ) {
-		int status;
-		char *fullpath = new char[strlen(path)+1+strlen(file)+1];
-
-		sprintf(fullpath, "%s/%s", path, file);
-		status = PHYSFS_mount(fullpath, "/", 1);
-		delete[] fullpath;
-		if (status) {
-			return true;
-		}
+	/* ... or not */
+	SDL_snprintf(path, SDL_arraysize(path), "%s%s", PHYSFS_getBaseDir(), MAELSTROM_DATA);
+	if (PHYSFS_mount(path, "/", 1)) {
+		return true;
 	}
+
+	error("Couldn't find %s", MAELSTROM_DATA);
 	return false;
 }
 
@@ -224,16 +250,7 @@ int main(int argc, char *argv[])
 	/* Normal variables */
 	SDL_Event event;
 
-	if ( !PHYSFS_init(argv[0]) ) {
-		error("Couldn't initialize PHYSFS: %s\n", PHYSFS_getLastError());
-		exit(1);
-	}
-	if ( !PHYSFS_setSaneConfig("galaxygameworks", "Maelstrom", NULL, 0, 0) ) {
-		error("Couldn't set PHYSFS config: %s\n", PHYSFS_getLastError());
-		exit(1);
-	}
-	if ( !MountData(argv[0]) ) {
-		error("Can't find %s\n", MAELSTROM_DATA);
+	if ( !InitFilesystem(argv[0]) ) {
 		exit(1);
 	}
 
@@ -345,7 +362,7 @@ int main(int argc, char *argv[])
 	}
 
 	ui->HidePanel(PANEL_MAIN);
-	return(0);
+	exit(0);
 }	/* -- main */
 
 
