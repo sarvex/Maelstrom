@@ -205,9 +205,9 @@ InitFilesystem(const char *argv0)
 	// Set up the write directory for this platform
 	const char *home = PHYSFS_getUserDir();
 #if defined(__MACOSX__) || defined(__IPHONEOS__)
-	SDL_snprintf(path, SDL_arraysize(path), "%sLibrary/Application Support/%s", home, MAELSTROM_PREFS);
+	SDL_snprintf(path, SDL_arraysize(path), "%sLibrary/Application Support/%s/", home, MAELSTROM_PREFS);
 #else
-	SDL_snprintf(path, SDL_arraysize(path), "%s.%s", home, MAELSTROM_PREFS);
+	SDL_snprintf(path, SDL_arraysize(path), "%s.%s/", home, MAELSTROM_PREFS);
 #endif
 	if (!PHYSFS_setWriteDir(path)) {
 		if (!PHYSFS_setWriteDir(home) ||
