@@ -34,6 +34,7 @@
 
 #include "Maelstrom_Globals.h"
 #include "load.h"
+#include "init.h"
 #include "fastrand.h"
 #include "netlogic/about.h"
 #include "main.h"
@@ -44,9 +45,6 @@
 #include "screenlib/UIElementLabel.h"
 #include "UIElementKeyButton.h"
 
-/* External functions used in this file */
-extern int DoInitializations(Uint32 window_flags, Uint32 render_flags);	/* init.cpp */
-extern void CleanUp(void);
 
 static const char *Version =
 "Maelstrom v1.4.3 (GPL version 4.0.0) -- 10/08/2011 by Sam Lantinga\n";

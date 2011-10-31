@@ -28,6 +28,7 @@
 
 #include "Maelstrom_Globals.h"
 #include "load.h"
+#include "init.h"
 #include "colortable.h"
 #include "fastrand.h"
 #include "MaelstromUI.h"
@@ -80,12 +81,6 @@ static int LoadSprite(Mac_Resource *spriteres,
 			BlitPtr *theBlit, int baseID, int numFrames);
 static int LoadSmallSprite(Mac_Resource *spriteres,
 			BlitPtr *theBlit, int baseID, int numFrames);
-
-
-/* Put up an Ambrosia Software splash screen */
-void DoSplash(void)
-{
-}
 
 /* ----------------------------------------------------------------- */
 /* -- Draw a loading status bar */
