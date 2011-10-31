@@ -27,6 +27,15 @@
 
 class UIDialog;
 
+class UIDialogDelegate : public UIPanelDelegate
+{
+public:
+	UIDialogDelegate(UIPanel *panel);
+
+protected:
+	UIDialog *m_dialog;
+};
+
 /* This function gets called when the dialog is shown.
 */
 typedef void (*UIDialogInitHandler)(UIDialog *dialog);

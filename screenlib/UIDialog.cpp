@@ -75,6 +75,17 @@ UIDialog::HandleEvent(const SDL_Event &event)
 	return false;
 }
 
+UIDialogDelegate::UIDialogDelegate(UIPanel *panel) :
+	UIPanelDelegate(panel)
+{
+	if (panel->IsA(UIDialog::GetType())) {
+		m_dialog = static_cast<UIDialog*>(panel);
+	} else {
+		m_dialog = NULL;
+	}
+	assert(m_dialog);
+}
+
 UIDialogLauncher::UIDialogLauncher(UIManager *ui, const char *name, UIDialogInitHandler handleInit, UIDialogDoneHandler handleDone)
 {
 	m_ui = ui;
