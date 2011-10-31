@@ -191,7 +191,9 @@ MaelstromUI::CreatePanelDelegate(UIPanel *panel, const char *delegate)
 UIElement *
 MaelstromUI::CreateElement(UIBaseElement *parent, const char *type, const char *name)
 {
-	if (strcasecmp(type, "Line") == 0) {
+	if (strcasecmp(type, "Area") == 0) {
+		return new UIElement(parent, name);
+	} else if (strcasecmp(type, "Line") == 0) {
 		return new UIElementLine(parent, name);
 	} else if (strcasecmp(type, "Rectangle") == 0) {
 		return new UIElementRect(parent, name);
