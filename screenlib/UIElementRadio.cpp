@@ -57,7 +57,7 @@ UIElementRadioGroup::RadioButtonChecked(UIElementRadioButton *button)
 	FindElements<UIElementRadioButton>(buttons);
 	for (unsigned i = 0; i < buttons.length(); ++i) {
 		if (buttons[i] != button && buttons[i]->IsChecked()) {
-			buttons[i]->OnClick();
+			buttons[i]->SetChecked(false);
 		}
 	}
 	m_value = button->GetID();
@@ -97,6 +97,14 @@ UIElementRadioButton::FinishLoading()
 		}
 	}
 	return true;
+}
+
+void
+UIElementRadioButton::OnClick()
+{
+	SetChecked(true);
+
+	UIElementButton::OnClick();
 }
 
 void
