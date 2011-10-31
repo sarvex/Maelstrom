@@ -45,7 +45,7 @@ MacDialogRadioButton::CreateLabel()
 	MacDialogLabel *label;
 
 	label = new MacDialogLabel(this, "label");
-	label->SetAnchor(TOPLEFT, TOPLEFT, this, 21, 3);
+	label->SetAnchor(TOPLEFT, TOPLEFT, this, RADIOBUTTON_SIZE+1, 3);
 	return label;
 }
 

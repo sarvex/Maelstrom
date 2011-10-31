@@ -46,20 +46,20 @@ MacDialogCheckbox::CreateLabel()
 
 	label = new MacDialogLabel(this, "label");
 	label->SetTextColor(m_color);
-	label->SetAnchor(TOPLEFT, TOPRIGHT, this, 3, -2);
+	label->SetAnchor(TOPLEFT, TOPLEFT, this, CHECKBOX_SIZE+3, -2);
 	return label;
 }
 
 void
 MacDialogCheckbox::Draw()
 {
-	m_screen->DrawRect(X(), Y(), Width(), Height(), m_color);
+	m_screen->DrawRect(X(), Y(), CHECKBOX_SIZE, CHECKBOX_SIZE, m_color);
 
 	if ( IsChecked() ) {
-		m_screen->DrawLine(X(), Y(),
-				X()+Width()-1, Y()+Height()-1, m_color);
-		m_screen->DrawLine(X(), Y()+Height()-1,
-					X()+Width()-1, Y(), m_color);
+		m_screen->DrawLine(X(), Y(), X()+CHECKBOX_SIZE-1,
+					Y()+CHECKBOX_SIZE-1, m_color);
+		m_screen->DrawLine(X(), Y()+CHECKBOX_SIZE-1,
+					X()+CHECKBOX_SIZE-1, Y(), m_color);
 	}
 
 	UIElementButton::Draw();

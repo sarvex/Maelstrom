@@ -32,6 +32,7 @@ public:
 	UIElementCheckbox(UIBaseElement *parent, const char *name = "");
 
 	override bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
+	override bool FinishLoading();
 
 	void SetChecked(bool checked) {
 		if (checked != m_checked) {

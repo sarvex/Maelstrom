@@ -20,6 +20,7 @@
 */
 
 #include "UIElementCheckbox.h"
+#include "UIElementLabel.h"
 
 UIElementType UIElementCheckbox::s_elementType;
 
@@ -43,6 +44,20 @@ UIElementCheckbox::Load(rapidxml::xml_node<> *node, const UITemplates *templates
 		SetChecked(checked);
 	}
 
+	return true;
+}
+
+bool
+UIElementCheckbox::FinishLoading()
+{
+	if (m_label) {
+		// Extend the sensitive area to encompass the label
+		if (m_label->X() >= X()) {
+			SetWidth((m_label->X()+m_label->Width()) - X());
+		} else {
+			assert(!"Need code for labels on the left");
+		}
+	}
 	return true;
 }
 
