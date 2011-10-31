@@ -32,8 +32,6 @@ UIElement::UIElement(UIBaseElement *parent, const char *name) :
 bool
 UIElement::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 {
-	rapidxml::xml_attribute<> *attr;
-
 	if (!UIBaseElement::Load(node, templates)) {
 		return false;
 	}

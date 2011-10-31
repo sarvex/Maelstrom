@@ -72,6 +72,7 @@ UIElementEditbox::FinishLoading()
 		}
 		AddElement(m_label);
 	}
+	return true;
 }
 			
 bool
@@ -169,7 +170,6 @@ void
 UIElementEditbox::SetFocusNext()
 {
 	UIElementEditbox *editbox;
-	unsigned i, j;
 
 	// We always lose focus even if we don't find another editbox
 	SetFocus(false);
