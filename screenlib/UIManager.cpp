@@ -224,13 +224,21 @@ UIManager::HidePanel(UIPanel *panel)
 		if (!panel->IsCursorVisible()) {
 			m_screen->ShowCursor();
 		}
+
+#ifdef FAST_ITERATION
+		// This is useful for iteration, panels are reloaded 
+		// each time they are shown.
+		DeletePanel(panel);
+#endif
 	}
 }
 
 void
 UIManager::DeletePanel(UIPanel *panel)
 {
-	if (panel) {
+	if (panel && m_panels.find(panel)) {
+		// Remove us so we don't recurse in HidePanel() or callbacks
+		m_panels.remove(panel);
 		HidePanel(panel);
 		delete panel;
 	}

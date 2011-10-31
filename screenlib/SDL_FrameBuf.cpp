@@ -129,6 +129,9 @@ FrameBuf:: QueueBlit(int dstx, int dsty, SDL_Texture *src,
 void
 FrameBuf:: Fade(void)
 {
+#ifdef FAST_ITERATION
+	return;
+#else
 	const int max = 32;
 	Uint16 ramp[256];   
 
@@ -148,6 +151,7 @@ FrameBuf:: Fade(void)
 		}
 		SDL_SetWindowGammaRamp(window, ramp, ramp, ramp);
 	}
+#endif
 } 
 
 int

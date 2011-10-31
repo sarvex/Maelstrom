@@ -28,6 +28,9 @@
    and it supports loading 8 bits-per-pixel masked images.
 */
 
+// Define this if you're rapidly iterating on UI screens
+#define FAST_ITERATION
+
 #include <stdio.h>
 
 #include "SDL.h"

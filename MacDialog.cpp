@@ -38,7 +38,11 @@ MacDialog::MacDialog(UIManager *ui, const char *name) :
 	m_colors[COLOR_MEDIUM] = m_screen->MapRGB(0xBB, 0xBB, 0xBB);
 	m_colors[COLOR_LIGHT] = m_screen->MapRGB(0xCC, 0xCC, 0xFF);
 	m_colors[COLOR_WHITE] = m_screen->MapRGB(0xFF, 0xFF, 0xFF);
+#ifdef FAST_ITERATION
+	m_expand = false;
+#else
 	m_expand = true;
+#endif
 	m_step = 0;
 }
 

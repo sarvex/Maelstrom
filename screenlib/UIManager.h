@@ -82,7 +82,7 @@ public:
 	}
 	void DeletePanel(UIPanel *panel);
 	void DeletePanel(const char *name) {
-		DeletePanel(GetPanel(name));
+		DeletePanel(GetPanel(name, false));
 	}
 
 	void Draw(bool fullUpdate = true);
