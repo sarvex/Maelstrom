@@ -69,7 +69,7 @@ BlitPtr	gThrust1, gThrust2, gShrapnel1, gShrapnel2;
 
 SDL_Texture *gAutoFireIcon, *gAirBrakesIcon, *gMult2Icon, *gMult3Icon;
 SDL_Texture *gMult4Icon, *gMult5Icon, *gLuckOfTheIrishIcon, *gLongFireIcon;
-SDL_Texture *gTripleFireIcon, *gKeyIcon, *gShieldIcon;
+SDL_Texture *gTripleFireIcon, *gShieldIcon;
 
 // Local functions used in this file.
 static void DrawLoadBar(int stage);
@@ -1134,8 +1134,9 @@ static int LoadCICNS(void)
 		return(-1);
 	if ( (gShieldIcon = GetCIcon(screen, 137)) == NULL )
 		return(-1);
-	if ( (gKeyIcon = GetCIcon(screen, 100)) == NULL )
-		return(-1);
+	// This was only used for the main menu, which is XML now.
+	//if ( (gKeyIcon = GetCIcon(screen, 100)) == NULL )
+	//	return(-1);
 	return(0);
 }	/* -- LoadCICNS */
 

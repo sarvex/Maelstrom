@@ -178,6 +178,6 @@ extern BlitPtr	gThrust1, gThrust2, gShrapnel1, gShrapnel2;
 
 extern SDL_Texture *gAutoFireIcon, *gAirBrakesIcon, *gMult2Icon, *gMult3Icon;
 extern SDL_Texture *gMult4Icon, *gMult5Icon, *gLuckOfTheIrishIcon;
-extern SDL_Texture *gLongFireIcon, *gTripleFireIcon, *gKeyIcon, *gShieldIcon;
+extern SDL_Texture *gLongFireIcon, *gTripleFireIcon, *gShieldIcon;
 
 #endif // _Maelstrom_Globals_h
