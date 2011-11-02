@@ -58,9 +58,7 @@ public:
 	bool Load(rapidxml::xml_node<> *node);
 
 	// This function returns anchor areas by name
-	virtual UIArea *GetAnchorElement(const char *name) {
-		return NULL;
-	}
+	virtual UIArea *GetAnchorElement(const char *name);
 
 	void SetPosition(int x, int y);
 	void SetSize(int w, int h, bool autosize = false);

@@ -134,7 +134,10 @@ UIElement::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 
 	child = node->first_node("TextArea", 0, false);
 	if (child) {
-		m_textArea.Load(child);
+		if (!m_textArea.Load(child)) {
+			fprintf(stderr, "Warning: Couldn't load TextArea\n");
+			return false;
+		}
 	}
 
 	child = node->first_node("TextShadow", 0, false);
@@ -168,7 +171,10 @@ UIElement::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 
 	child = node->first_node("ImageArea", 0, false);
 	if (child) {
-		m_imageArea.Load(child);
+		if (!m_textArea.Load(child)) {
+			fprintf(stderr, "Warning: Couldn't load ImageArea\n");
+			return false;
+		}
 	}
 
 	if (m_drawEngine) {

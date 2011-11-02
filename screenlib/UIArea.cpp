@@ -89,6 +89,19 @@ UIArea::Load(rapidxml::xml_node<> *node)
 	return true;
 }
 
+UIArea *
+UIArea::GetAnchorElement(const char *name)
+{
+	if (m_anchor.element) {
+		if (name) {
+			return m_anchor.element->GetAnchorElement(name);
+		} else {
+			return m_anchor.element;
+		}
+	}
+	return NULL;
+}
+
 void
 UIArea::SetPosition(int x, int y) {
 	/* Setting the position breaks the anchoring */
