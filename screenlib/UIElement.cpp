@@ -145,7 +145,7 @@ UIElement::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 		char *x = NULL;
 		char *y = NULL;
 
-		attr = node->first_attribute("offset", 0, false);
+		attr = child->first_attribute("offset", 0, false);
 		if (attr) {
 			x = attr->value();
 			y = SDL_strchr(x, ',');
