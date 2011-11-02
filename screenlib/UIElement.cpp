@@ -462,6 +462,8 @@ UIElement::Draw()
 	if (m_drawEngine) {
 		m_drawEngine->OnDraw();
 	}
+
+	UIBaseElement::Draw();
 }
 
 bool
