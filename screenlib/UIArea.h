@@ -49,12 +49,11 @@ enum AnchorLocation {
 	BOTTOMRIGHT = (Y_BOTTOM|X_RIGHT)
 };
 
-class FrameBuf;
 
 class UIArea : public ErrorBase
 {
 public:
-	UIArea(FrameBuf *screen, UIArea *anchor = NULL, int w = 0, int h = 0);
+	UIArea(UIArea *anchor = NULL, int w = 0, int h = 0);
 
 	bool Load(rapidxml::xml_node<> *node);
 
@@ -64,9 +63,10 @@ public:
 	}
 
 	void SetPosition(int x, int y);
-	void SetSize(int w, int h);
-	void SetWidth(int w);
-	void SetHeight(int h);
+	void SetSize(int w, int h, bool autosize = false);
+	void SetWidth(int w, bool autosize = false);
+	void SetHeight(int h, bool autosize = false);
+	void AutoSize(int w, int h);
 	void SetAnchor(AnchorLocation from, AnchorLocation to, UIArea *anchor,
 					int offsetX = 0, int offsetY = 0);
 
@@ -75,9 +75,6 @@ public:
 		        y >= m_rect.y && y < m_rect.y+m_rect.h);
 	}
 
-	FrameBuf *GetScreen() const {
-		return m_screen;
-	}
 	const SDL_Rect &GetRect() const {
 		return m_rect;
 	}
@@ -94,16 +91,6 @@ public:
 		return m_rect.h;
 	}
 
-	virtual void Show() {
-		m_shown = true;
-	}
-	virtual void Hide() {
-		m_shown = false;
-	}
-	bool IsShown() const {
-		return m_shown;
-	}
-
 	void AddAnchoredArea(UIArea *area) {
 		m_anchoredAreas.add(area);
 	}
@@ -116,18 +103,15 @@ protected:
 	bool LoadNumber(rapidxml::xml_node<> *node, const char *name, int &value);
 	bool LoadString(rapidxml::xml_node<> *node, const char *name, char *&value);
 	bool LoadAnchorLocation(rapidxml::xml_node<> *node, const char *name, AnchorLocation &value);
-	bool LoadColor(rapidxml::xml_node<> *node, const char *name, Uint32 &value);
 
 	void GetAnchorLocation(AnchorLocation spot, int *x, int *y) const;
 	void CalculateAnchor(bool triggerRectChanged = true);
 	virtual void OnRectChanged();
 
-protected:
-	FrameBuf *m_screen;
-	bool m_shown;
-
 private:
 	/* This is private so updates can trigger OnRectChanged() */
+	bool m_autosizeWidth;
+	bool m_autosizeHeight;
 	SDL_Rect m_rect;
 
 	struct {

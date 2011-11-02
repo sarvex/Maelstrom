@@ -24,16 +24,12 @@
 #include "SDL_FrameBuf.h"
 #include "UIManager.h"
 #include "UIPanel.h"
-#include "UIElementButton.h"
-#include "UIElementCheckbox.h"
-#include "UIElementLine.h"
-#include "UIElementRadio.h"
-#include "UIElementRect.h"
 
 
 UIManager::UIManager(FrameBuf *screen) :
-	UIArea(screen, NULL, screen->Width(), screen->Height())
+	UIArea(NULL, screen->Width(), screen->Height())
 {
+	m_screen = screen;
 	m_loadPath = new char[2];
 	strcpy(m_loadPath, ".");
 }

@@ -91,7 +91,7 @@ UIPanel::Show()
 		m_ui->PlaySound(m_enterSound);
 	}
 
-	UIArea::Show();
+	UIBaseElement::Show();
 
 	if (m_delegate) {
 		m_delegate->OnShow();
@@ -105,7 +105,7 @@ UIPanel::Hide()
 		m_ui->PlaySound(m_leaveSound);
 	}
 
-	UIArea::Hide();
+	UIBaseElement::Hide();
 
 	if (m_delegate) {
 		m_delegate->OnHide();

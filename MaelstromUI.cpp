@@ -23,25 +23,16 @@
 #include "MaelstromUI.h"
 #include "Maelstrom_Globals.h"
 #include "main.h"
+#include "load.h"
 #include "controls.h"
 #include "netlogic/about.h"
 #include "netlogic/game.h"
 #include "MacDialog.h"
-#include "MacDialogButton.h"
-#include "MacDialogCheckbox.h"
-#include "MacDialogEditbox.h"
-#include "MacDialogLabel.h"
-#include "MacDialogRadioButton.h"
-#include "UIElementIcon.h"
-#include "UIElementKeyButton.h"
-#include "UIElementSprite.h"
-#include "UIElementTitle.h"
 #include "screenlib/UIElementButton.h"
-#include "screenlib/UIElementImage.h"
-#include "screenlib/UIElementLabel.h"
-#include "screenlib/UIElementLine.h"
+#include "screenlib/UIElementCheckbox.h"
+#include "screenlib/UIElementEditbox.h"
 #include "screenlib/UIElementRadio.h"
-#include "screenlib/UIElementRect.h"
+#include "screenlib/UIDialogButton.h"
 #include "utils/hashtable.h"
 
 
@@ -121,7 +112,7 @@ MaelstromUI::CreateText(const char *text, const char *fontName, int fontSize, UI
 
 	font = GetFont(fontName, fontSize);
 	if (!font) {
-		SetError("Couldn't find font %s size %d", fontName, fontSize);
+		error("Couldn't find font %s size %d\n", fontName, fontSize);
 		return NULL;
 	}
 
@@ -192,38 +183,126 @@ MaelstromUI::CreatePanelDelegate(UIPanel *panel, const char *delegate)
 UIElement *
 MaelstromUI::CreateElement(UIBaseElement *parent, const char *type, const char *name)
 {
+	UIElement *element;
+
 	if (strcasecmp(type, "Area") == 0) {
-		return new UIElement(parent, name);
+		element = new UIElement(parent, name, new UIDrawEngine());
 	} else if (strcasecmp(type, "Line") == 0) {
-		return new UIElementLine(parent, name);
+		element = new UIElement(parent, name, new UIDrawEngineLine());
 	} else if (strcasecmp(type, "Rectangle") == 0) {
-		return new UIElementRect(parent, name);
+		element = new UIElement(parent, name, new UIDrawEngineRect());
 	} else if (strcasecmp(type, "Label") == 0) {
-		return new UIElementLabel(parent, name);
+		element = new UIElement(parent, name, new UIDrawEngine());
 	} else if (strcasecmp(type, "Image") == 0) {
-		return new UIElementImage(parent, name);
+		element = new UIElement(parent, name, new UIDrawEngine());
 	} else if (strcasecmp(type, "Button") == 0) {
-		return new UIElementButton(parent, name);
-	} else if (strcasecmp(type, "DialogLabel") == 0) {
-		return new MacDialogLabel(parent, name);
-	} else if (strcasecmp(type, "DialogButton") == 0) {
-		return new MacDialogButton(parent, name);
-	} else if (strcasecmp(type, "DialogCheckbox") == 0) {
-		return new MacDialogCheckbox(parent, name);
-	} else if (strcasecmp(type, "DialogRadioGroup") == 0) {
-		return new UIElementRadioGroup(parent, name);
-	} else if (strcasecmp(type, "DialogRadioButton") == 0) {
-		return new MacDialogRadioButton(parent, name);
-	} else if (strcasecmp(type, "DialogEditbox") == 0) {
-		return new MacDialogEditbox(parent, name);
-	} else if (strcasecmp(type, "KeyButton") == 0) {
-		return new UIElementKeyButton(parent, name);
+		element = new UIElementButton(parent, name, new UIDrawEngine());
 	} else if (strcasecmp(type, "Icon") == 0) {
-		return new UIElementIcon(parent, name);
+		element = new UIElement(parent, name, new UIDrawEngineIcon());
 	} else if (strcasecmp(type, "Sprite") == 0) {
-		return new UIElementSprite(parent, name);
+		element = new UIElement(parent, name, new UIDrawEngineSprite());
 	} else if (strcasecmp(type, "Title") == 0) {
-		return new UIElementTitle(parent, name);
+		element = new UIElement(parent, name, new UIDrawEngineTitle());
+	} else if (strcasecmp(type, "DialogLabel") == 0) {
+		element = new UIElement(parent, name, new MacDialogDrawEngine());
+	} else if (strcasecmp(type, "DialogButton") == 0) {
+		element = new UIDialogButton(parent, name, new MacDialogButton());
+	} else if (strcasecmp(type, "DialogCheckbox") == 0) {
+		element = new UIElementCheckbox(parent, name, new MacDialogCheckbox());
+	} else if (strcasecmp(type, "DialogRadioGroup") == 0) {
+		element = new UIElementRadioGroup(parent, name, new UIDrawEngine());
+	} else if (strcasecmp(type, "DialogRadioButton") == 0) {
+		element = new UIElementRadioButton(parent, name, new MacDialogRadioButton());
+	} else if (strcasecmp(type, "DialogEditbox") == 0) {
+		element = new UIElementEditbox(parent, name, new MacDialogEditbox());
+	} else {
+		element = UIManager::CreateElement(parent, name, type);
 	}
-	return UIManager::CreateElement(parent, name, type);
+	return element;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+bool
+UIDrawEngineIcon::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
+{
+	rapidxml::xml_attribute<> *attr;
+
+	if (!UIDrawEngine::Load(node, templates)) {
+		return false;
+	}
+
+	attr = node->first_attribute("id", 0, false);
+	if (!attr) {
+		error("Element '%s' missing attribute 'id'", node->name());
+		return false;
+	}
+
+	SDL_Texture *image = GetCIcon(m_screen, atoi(attr->value()));
+	if (!image) {
+		error("Unable to load icon %d", atoi(attr->value()));
+		return false;
+	}
+	m_element->SetImage(image);
+
+	return true;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+bool
+UIDrawEngineSprite::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
+{
+	rapidxml::xml_attribute<> *attr;
+	int baseID;
+	Mac_ResData *S, *M;
+
+	if (!UIDrawEngine::Load(node, templates)) {
+		return false;
+	}
+
+	attr = node->first_attribute("id", 0, false);
+	if (!attr) {
+		error("Element '%s' missing attribute 'id'", node->name());
+		return false;
+	}
+	baseID = SDL_atoi(attr->value());
+
+	/* Load the image */
+	SDL_Texture *image = NULL;
+	if ((S = spriteres->Resource("icl8", baseID)) != NULL &&
+	    (M = spriteres->Resource("ICN#", baseID)) != NULL) {
+		image = m_screen->LoadImage(32, 32, S->data, M->data+128);
+	}
+	if (!image) {
+		error("Unable to load sprite %d", baseID);
+		return false;
+	}
+	m_element->SetImage(image);
+
+	return true;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+bool
+UIDrawEngineTitle::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
+{
+	rapidxml::xml_attribute<> *attr;
+
+	if (!UIDrawEngine::Load(node, templates)) {
+		return false;
+	}
+
+	attr = node->first_attribute("id", 0, false);
+	if (!attr) {
+		error("Element '%s' missing attribute 'id'", node->name());
+		return false;
+	}
+
+	SDL_Texture *image = Load_Title(m_screen, SDL_atoi(attr->value()));
+	if (!image) {
+		error("Unable to load icon %d", SDL_atoi(attr->value()));
+		return false;
+	}
+	m_element->SetImage(image);
+
+	return true;
 }

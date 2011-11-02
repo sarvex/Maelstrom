@@ -23,10 +23,10 @@
 #include "UIArea.h"
 
 
-UIArea::UIArea(FrameBuf *screen, UIArea *anchor, int w, int h) : ErrorBase()
+UIArea::UIArea(UIArea *anchor, int w, int h) : ErrorBase()
 {
-	m_screen = screen;
-	m_shown = true;
+	m_autosizeWidth = true;
+	m_autosizeHeight = true;
 	m_rect.x = 0;
 	m_rect.y = 0;
 	m_rect.w = w;
@@ -48,12 +48,14 @@ UIArea::Load(rapidxml::xml_node<> *node)
 	rapidxml::xml_attribute<> *attr;
 	SDL_Rect rect = m_rect;
 
-	LoadBool(node, "show", m_shown);
-
 	child = node->first_node("size", 0, false);
 	if (child) {
-		LoadNumber(child, "w", m_rect.w);
-		LoadNumber(child, "h", m_rect.h);
+		if (LoadNumber(child, "w", m_rect.w)) {
+			m_autosizeWidth = false;
+		}
+		if (LoadNumber(child, "h", m_rect.h)) {
+			m_autosizeHeight = false;
+		}
 	}
 
 	child = node->first_node("anchor", 0, false);
@@ -100,7 +102,7 @@ UIArea::SetPosition(int x, int y) {
 }
 
 void
-UIArea::SetSize(int w, int h)
+UIArea::SetSize(int w, int h, bool autosize)
 {
 	if (w != m_rect.w || h != m_rect.h) {
 		m_rect.w = w;
@@ -108,25 +110,47 @@ UIArea::SetSize(int w, int h)
 		CalculateAnchor(false);
 		OnRectChanged();
 	}
+	if (!autosize) {
+		m_autosizeWidth = false;
+		m_autosizeHeight = false;
+	}
 }
 
 void
-UIArea::SetWidth(int w)
+UIArea::SetWidth(int w, bool autosize)
 {
 	if (w != m_rect.w) {
 		m_rect.w = w;
 		CalculateAnchor(false);
 		OnRectChanged();
 	}
+	if (!autosize) {
+		m_autosizeWidth = false;
+	}
 }
 
 void
-UIArea::SetHeight(int h)
+UIArea::SetHeight(int h, bool autosize)
 {
 	if (h != m_rect.h) {
 		m_rect.h = h;
 		CalculateAnchor(false);
 		OnRectChanged();
+	}
+	if (!autosize) {
+		m_autosizeHeight = false;
+	}
+}
+
+void
+UIArea::AutoSize(int w, int h)
+{
+	if (m_autosizeWidth && m_autosizeHeight) {
+		SetSize(w, h, true);
+	} else if (m_autosizeWidth) {
+		SetWidth(w, true);
+	} else if (m_autosizeHeight)  {
+		SetHeight(h, true);
 	}
 }
 
@@ -168,7 +192,7 @@ UIArea::LoadNumber(rapidxml::xml_node<> *node, const char *name, int &value)
 
 	attr = node->first_attribute(name, 0, false);
 	if (attr) {
-		value = (int)strtol(attr->value(), NULL, 0);
+		value = (int)SDL_strtol(attr->value(), NULL, 0);
 		return true;
 	}
 	return false;
@@ -226,23 +250,6 @@ UIArea::LoadAnchorLocation(rapidxml::xml_node<> *node, const char *name, AnchorL
 	return false;
 }
 
-bool
-UIArea::LoadColor(rapidxml::xml_node<> *node, const char *name, Uint32 &value)
-{
-	rapidxml::xml_node<> *child;
-
-	child = node->first_node("color", 0, false);
-	if (child) {
-		int r = 0xFF, g = 0xFF, b = 0xFF;
-
-		LoadNumber(child, "r", r);
-		LoadNumber(child, "g", g);
-		LoadNumber(child, "b", b);
-		value = m_screen->MapRGB(r, g, b);
-		return true;
-	}
-	return false;
-}
 void
 UIArea::GetAnchorLocation(AnchorLocation spot, int *x, int *y) const
 {

@@ -23,7 +23,7 @@
 #define _UIDialog_h
 
 #include "UIPanel.h"
-#include "UIElementButton.h"
+#include "UIElement.h"
 
 class UIDialog;
 
@@ -77,7 +77,7 @@ protected:
 //
 // A class to make it easy to launch a dialog from a button
 //
-class UIDialogLauncher : public UIButtonDelegate
+class UIDialogLauncher : public UIClickDelegate
 {
 public:
 	UIDialogLauncher(UIManager *ui, const char *name, UIDialogInitHandler = NULL, UIDialogDoneHandler handleDone = NULL);

@@ -22,45 +22,24 @@
 #include "UIManager.h"
 #include "UIPanel.h"
 #include "UIElementButton.h"
-#include "UIElementLabel.h"
-
-
-class SimpleButtonDelegate : public UIButtonDelegate
-{
-public:
-	SimpleButtonDelegate(void (*callback)(void)) {
-		m_callback = callback;
-	}
-
-	virtual void OnClick() {
-		m_callback();
-	}
-
-protected:
-	void (*m_callback)(void);
-};
 
 UIElementType UIElementButton::s_elementType;
 
 
-UIElementButton::UIElementButton(UIBaseElement *parent, const char *name) :
-	UIElement(parent, name)
+UIElementButton::UIElementButton(UIBaseElement *parent, const char *name, UIDrawEngine *drawEngine) :
+	UIElement(parent, name, drawEngine)
 {
+	// Turn on mouse events at the UIElement level
+	m_mouseEnabled = true;
+
 	m_hotkey = SDLK_UNKNOWN;
 	m_hotkeyMod = KMOD_NONE;
-	m_mouseInside = false;
-	m_mousePressed = false;
 	m_clickSound = 0;
 	m_clickPanel = NULL;
-	m_label = NULL;
-	m_delegate = NULL;
-	m_deleteDelegate = false;
 }
 
 UIElementButton::~UIElementButton()
 {
-	SetButtonDelegate(NULL);
-
 	if (m_clickPanel) {
 		SDL_free(m_clickPanel);
 	}
@@ -112,33 +91,7 @@ UIElementButton::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 	LoadNumber(node, "clickSound", m_clickSound);
 	LoadString(node, "clickPanel", m_clickPanel);
 
-	attr = node->first_attribute("text", 0, false);
-	if (attr) {
-		m_label = CreateLabel();
-		if (m_label) {
-			AddElement(m_label);
-		}
-		SetText(attr->value());
-	}
-
 	return true;
-}
-
-UIElementLabel *
-UIElementButton::CreateLabel()
-{
-	UIElement *label;
-
-	label = GetUI()->CreateElement(this, "Label", "label");
-	if (!label) {
-		return NULL;
-	}
-	if (label->IsA(UIElementLabel::GetType())) {
-		return static_cast<UIElementLabel*>(label);
-	} else {
-		delete label;
-		return NULL;
-	}
 }
 
 bool
@@ -169,54 +122,6 @@ UIElementButton::ShouldHandleKey(SDL_Keycode key)
 bool
 UIElementButton::HandleEvent(const SDL_Event &event)
 {
-	bool checkMouseLocation = false;
-	int x, y;
-
-	if (event.type == SDL_MOUSEMOTION) {
-		x = event.motion.x;
-		y = event.motion.y;
-		checkMouseLocation = true;
-	}
-	if (event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP) {
-		x = event.button.x;
-		y = event.button.y;
-		checkMouseLocation = true;
-	}
-
-	if (checkMouseLocation) {
-		if (ContainsPoint(x, y)) {
-			if (!m_mouseInside) {
-				m_mouseInside = true;
-				OnMouseEnter();
-			}
-		} else {
-			if (m_mouseInside) {
-				m_mouseInside = false;
-				OnMouseLeave();
-			}
-		}
-	}
-	if (event.type == SDL_MOUSEMOTION) {
-		return m_mouseInside;
-	}
-
-	if (event.type == SDL_MOUSEBUTTONDOWN &&
-	    event.button.button == SDL_BUTTON_LEFT && m_mouseInside) {
-		m_mousePressed = true;
-		OnMouseDown();
-		return true;
-	}
-
-	if (event.type == SDL_MOUSEBUTTONUP &&
-	    event.button.button == SDL_BUTTON_LEFT && m_mousePressed) {
-		m_mousePressed = false;
-		OnMouseUp();
-		if (m_mouseInside) {
-			OnClick();
-		}
-		return true;
-	}
-
 	if (event.type == SDL_KEYDOWN &&
 	    ShouldHandleKey(event.key.keysym.sym)) {
 		if (!m_mousePressed) {
@@ -238,7 +143,7 @@ UIElementButton::HandleEvent(const SDL_Event &event)
 		}
 	}
 
-	return false;
+	return UIElement::HandleEvent(event);
 }
 
 void
@@ -250,31 +155,5 @@ UIElementButton::OnClick()
 	if (m_clickPanel) {
 		GetUI()->ShowPanel(m_clickPanel);
 	}
-	if (m_delegate) {
-		m_delegate->OnClick();
-	}
-}
-
-void
-UIElementButton::SetText(const char *text)
-{
-	if (m_label) {
-		m_label->SetText(text);
-	}
-}
-
-void
-UIElementButton::SetClickCallback(void (*callback)(void))
-{
-	SetButtonDelegate(new SimpleButtonDelegate(callback));
-}
-
-void
-UIElementButton::SetButtonDelegate(UIButtonDelegate *delegate, bool autodelete)
-{
-	if (m_delegate && m_deleteDelegate) {
-		delete m_delegate;
-	}
-	m_delegate = delegate;
-	m_deleteDelegate = autodelete;
+	UIElement::OnClick();
 }

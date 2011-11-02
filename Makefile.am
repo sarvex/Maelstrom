@@ -7,6 +7,8 @@ Maelstrom_SOURCES =		\
 	Maelstrom_Globals.h	\
 	MaelstromUI.cpp		\
 	MaelstromUI.h		\
+	MacDialog.cpp		\
+	MacDialog.h		\
 	buttonlist.h		\
 	colortable.h		\
 	controls.cpp		\
@@ -24,27 +26,7 @@ Maelstrom_SOURCES =		\
 	rect.cpp		\
 	rect.h			\
 	scores.cpp		\
-	scores.h		\
-	MacDialog.cpp		\
-	MacDialog.h		\
-	MacDialogButton.cpp	\
-	MacDialogButton.h	\
-	MacDialogCheckbox.cpp	\
-	MacDialogCheckbox.h	\
-	MacDialogEditbox.cpp	\
-	MacDialogEditbox.h	\
-	MacDialogLabel.cpp	\
-	MacDialogLabel.h	\
-	MacDialogRadioButton.cpp\
-	MacDialogRadioButton.h	\
-	UIElementIcon.cpp	\
-	UIElementIcon.h		\
-	UIElementKeyButton.cpp	\
-	UIElementKeyButton.h	\
-	UIElementSprite.cpp	\
-	UIElementSprite.h	\
-	UIElementTitle.cpp	\
-	UIElementTitle.h
+	scores.h
 
 LOGIC = netlogic
 

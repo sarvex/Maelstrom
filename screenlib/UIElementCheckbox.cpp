@@ -20,13 +20,12 @@
 */
 
 #include "UIElementCheckbox.h"
-#include "UIElementLabel.h"
 
 UIElementType UIElementCheckbox::s_elementType;
 
 
-UIElementCheckbox::UIElementCheckbox(UIBaseElement *parent, const char *name) :
-	UIElementButton(parent, name)
+UIElementCheckbox::UIElementCheckbox(UIBaseElement *parent, const char *name, UIDrawEngine *drawEngine) :
+	UIElementButton(parent, name, drawEngine)
 {
 	m_checked = false;
 }
@@ -50,13 +49,11 @@ UIElementCheckbox::Load(rapidxml::xml_node<> *node, const UITemplates *templates
 bool
 UIElementCheckbox::FinishLoading()
 {
-	if (m_label) {
-		// Extend the sensitive area to encompass the label
-		if (m_label->X() >= X()) {
-			SetWidth((m_label->X()+m_label->Width()) - X());
-		} else {
-			assert(!"Need code for labels on the left");
-		}
+	// Extend the sensitive area to encompass the label
+	if (m_textArea.X() >= X()) {
+		SetWidth((m_textArea.X()+m_textArea.Width()) - X());
+	} else {
+		assert(!"Need code for labels on the left");
 	}
 	return true;
 }

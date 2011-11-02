@@ -20,13 +20,12 @@
 */
 
 #include "UIElementEditbox.h"
-#include "UIElementLabel.h"
 
 UIElementType UIElementEditbox::s_elementType;
 
 
-UIElementEditbox::UIElementEditbox(UIBaseElement *parent, const char *name) :
-	UIElementButton(parent, name)
+UIElementEditbox::UIElementEditbox(UIBaseElement *parent, const char *name, UIDrawEngine *drawEngine) :
+	UIElementButton(parent, name, drawEngine)
 {
 	m_focus = false;
 	m_highlight = false;
@@ -61,20 +60,6 @@ UIElementEditbox::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 	return true;
 }
 
-bool
-UIElementEditbox::FinishLoading()
-{
-	if (!m_label) {
-		m_label = CreateLabel();
-		if (!m_label) {
-			fprintf(stderr, "Warning: Couldn't create editbox label\n");
-			return false;
-		}
-		AddElement(m_label);
-	}
-	return true;
-}
-			
 bool
 UIElementEditbox::HandleEvent(const SDL_Event &event)
 {
@@ -206,5 +191,5 @@ UIElementEditbox::SetText(const char *text)
 void
 UIElementEditbox::OnTextChanged()
 {
-	UIElementButton::SetText(m_text);
+	UIElement::SetText(m_text);
 }

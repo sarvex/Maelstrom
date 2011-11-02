@@ -51,14 +51,10 @@ CONFIG_CLEAN_FILES = Maelstrom.spec
 am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
-am_Maelstrom_OBJECTS = MaelstromUI.$(OBJEXT) controls.$(OBJEXT) \
-	fastrand.$(OBJEXT) init.$(OBJEXT) load.$(OBJEXT) \
-	main.$(OBJEXT) myerror.$(OBJEXT) rect.$(OBJEXT) \
-	scores.$(OBJEXT) MacDialog.$(OBJEXT) MacDialogButton.$(OBJEXT) \
-	MacDialogCheckbox.$(OBJEXT) MacDialogEditbox.$(OBJEXT) \
-	MacDialogLabel.$(OBJEXT) MacDialogRadioButton.$(OBJEXT) \
-	UIElementIcon.$(OBJEXT) UIElementKeyButton.$(OBJEXT) \
-	UIElementSprite.$(OBJEXT) UIElementTitle.$(OBJEXT)
+am_Maelstrom_OBJECTS = MaelstromUI.$(OBJEXT) MacDialog.$(OBJEXT) \
+	controls.$(OBJEXT) fastrand.$(OBJEXT) init.$(OBJEXT) \
+	load.$(OBJEXT) main.$(OBJEXT) myerror.$(OBJEXT) rect.$(OBJEXT) \
+	scores.$(OBJEXT)
 Maelstrom_OBJECTS = $(am_Maelstrom_OBJECTS)
 Maelstrom_DEPENDENCIES = $(LOGIC)/liblogic.a screenlib/libSDLscreen.a \
 	maclib/libSDLmac.a utils/libutils.a
@@ -208,6 +204,8 @@ Maelstrom_SOURCES = \
 	Maelstrom_Globals.h	\
 	MaelstromUI.cpp		\
 	MaelstromUI.h		\
+	MacDialog.cpp		\
+	MacDialog.h		\
 	buttonlist.h		\
 	colortable.h		\
 	controls.cpp		\
@@ -225,27 +223,7 @@ Maelstrom_SOURCES = \
 	rect.cpp		\
 	rect.h			\
 	scores.cpp		\
-	scores.h		\
-	MacDialog.cpp		\
-	MacDialog.h		\
-	MacDialogButton.cpp	\
-	MacDialogButton.h	\
-	MacDialogCheckbox.cpp	\
-	MacDialogCheckbox.h	\
-	MacDialogEditbox.cpp	\
-	MacDialogEditbox.h	\
-	MacDialogLabel.cpp	\
-	MacDialogLabel.h	\
-	MacDialogRadioButton.cpp\
-	MacDialogRadioButton.h	\
-	UIElementIcon.cpp	\
-	UIElementIcon.h		\
-	UIElementKeyButton.cpp	\
-	UIElementKeyButton.h	\
-	UIElementSprite.cpp	\
-	UIElementSprite.h	\
-	UIElementTitle.cpp	\
-	UIElementTitle.h
+	scores.h
 
 LOGIC = netlogic
 Maelstrom_LDADD = \
@@ -349,16 +327,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MacDialog.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MacDialogButton.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MacDialogCheckbox.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MacDialogEditbox.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MacDialogLabel.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MacDialogRadioButton.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MaelstromUI.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UIElementIcon.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UIElementKeyButton.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UIElementSprite.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UIElementTitle.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/controls.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fastrand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/init.Po@am__quote@

@@ -27,8 +27,7 @@
 #include "netplay.h"
 #include "make.h"
 #include "game.h"
-#include "../screenlib/UIElementLabel.h"
-#include "../screenlib/UIElementRect.h"
+#include "../screenlib/UIElement.h"
 
 
 #ifdef MOVIE_SUPPORT
@@ -197,11 +196,11 @@ GamePanelDelegate::OnLoad()
 	m_showingBonus = false;
 
 	/* Initialize our panel variables */
-	m_score = m_panel->GetElement<UIElementLabel>("score");
+	m_score = m_panel->GetElement<UIElement>("score");
 	m_shield = m_panel->GetElement<UIElement>("shield");
-	m_wave = m_panel->GetElement<UIElementLabel>("wave");
-	m_lives = m_panel->GetElement<UIElementLabel>("lives");
-	m_bonus = m_panel->GetElement<UIElementLabel>("bonus");
+	m_wave = m_panel->GetElement<UIElement>("wave");
+	m_lives = m_panel->GetElement<UIElement>("lives");
+	m_bonus = m_panel->GetElement<UIElement>("bonus");
 
 	for (i = 0; i < SDL_arraysize(m_multiplier); ++i) {
 		sprintf(name, "multiplier%d", 2+i);
@@ -214,10 +213,10 @@ GamePanelDelegate::OnLoad()
 	m_triplefire = m_panel->GetElement<UIElement>("triplefire");
 	m_longfire = m_panel->GetElement<UIElement>("longfire");
 
-	m_multiplayerCaption = m_panel->GetElement<UIElementLabel>("multiplayer_caption");
-	m_multiplayerColor = m_panel->GetElement<UIElementRect>("multiplayer_color");
-	m_fragsLabel = m_panel->GetElement<UIElementLabel>("frags_label");
-	m_frags = m_panel->GetElement<UIElementLabel>("frags");
+	m_multiplayerCaption = m_panel->GetElement<UIElement>("multiplayer_caption");
+	m_multiplayerColor = m_panel->GetElement<UIElement>("multiplayer_color");
+	m_fragsLabel = m_panel->GetElement<UIElement>("frags_label");
+	m_frags = m_panel->GetElement<UIElement>("frags");
 
 	return true;
 }
@@ -627,9 +626,9 @@ GamePanelDelegate::DoBonus()
 {
 	UIPanel *panel;
 	UIElement *image;
-	UIElementLabel *label;
-	UIElementLabel *bonus;
-	UIElementLabel *score;
+	UIElement *label;
+	UIElement *bonus;
+	UIElement *score;
 	int i;
 	char numbuf[128];
 
@@ -643,17 +642,17 @@ GamePanelDelegate::DoBonus()
 	panel->HideAll();
 
 	/* -- Set the wave completed message */
-	label = panel->GetElement<UIElementLabel>("wave");
+	label = panel->GetElement<UIElement>("wave");
 	if (label) {
 		sprintf(numbuf, "Wave %d completed.", gWave);
 		label->SetText(numbuf);
 		label->Show();
 	}
-	label = panel->GetElement<UIElementLabel>("bonus_label");
+	label = panel->GetElement<UIElement>("bonus_label");
 	if (label) {
 		label->Show();
 	}
-	label = panel->GetElement<UIElementLabel>("score_label");
+	label = panel->GetElement<UIElement>("score_label");
 	if (label) {
 		label->Show();
 	}
@@ -673,8 +672,8 @@ GamePanelDelegate::DoBonus()
 
 	/* -- Count the score down */
 
-	bonus = panel->GetElement<UIElementLabel>("bonus");
-	score = panel->GetElement<UIElementLabel>("score");
+	bonus = panel->GetElement<UIElement>("bonus");
+	score = panel->GetElement<UIElement>("score");
 	OBJ_LOOP(i, gNumPlayers) {
 		if ( i != gOurPlayer ) {
 			gPlayers[i]->MultBonus();
@@ -687,7 +686,7 @@ GamePanelDelegate::DoBonus()
 				bonus->SetText(numbuf);
 				bonus->Show();
 			}
-			bonus = panel->GetElement<UIElementLabel>("multiplied_bonus");
+			bonus = panel->GetElement<UIElement>("multiplied_bonus");
 
 			OurShip->MultBonus();
 			Delay(SOUND_DELAY);
@@ -771,7 +770,7 @@ GamePanelDelegate::DoBonus()
 	HandleEvents(10);
 
 	/* -- Draw the "next wave" message */
-	label = panel->GetElement<UIElementLabel>("next");
+	label = panel->GetElement<UIElement>("next");
 	if (label) {
 		sprintf(numbuf, "Prepare for Wave %d...", gWave+1);
 		label->SetText(numbuf);
@@ -923,7 +922,7 @@ static void DoGameOver(void)
 {
 	UIPanel *panel;
 	UIElement *image;
-	UIElementLabel *label;
+	UIElement *label;
 	SDL_Event event;
 	int which = -1, i;
 	char handle[20];
@@ -961,7 +960,7 @@ static void DoGameOver(void)
 			char buffer[BUFSIZ], num1[12], num2[12];
 
 			sprintf(name, "rank%d", 1+i);
-			label = panel->GetElement<UIElementLabel>(name);
+			label = panel->GetElement<UIElement>(name);
 			if (label) {
 				sprintf(num1, "%7.1d", final[i].Score);
 				sprintf(num2, "%3.1d", final[i].Frags);
@@ -1001,11 +1000,11 @@ static void DoGameOver(void)
 
 		/* -- Let them enter their name */
 		const char *text = NULL;
-		label = panel->GetElement<UIElementLabel>("name_label");
+		label = panel->GetElement<UIElement>("name_label");
 		if (label) {
 			label->Show();
 		}
-		label = panel->GetElement<UIElementLabel>("name");
+		label = panel->GetElement<UIElement>("name");
 		if (label) {
 			text = label->GetText();
 			label->Show();

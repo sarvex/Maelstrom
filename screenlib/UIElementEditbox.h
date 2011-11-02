@@ -33,11 +33,10 @@ class UIElementEditbox : public UIElementButton
 {
 DECLARE_TYPESAFE_CLASS(UIElement)
 public:
-	UIElementEditbox(UIBaseElement *parent, const char *name = "");
+	UIElementEditbox(UIBaseElement *parent, const char *name, UIDrawEngine *drawEngine);
 	virtual ~UIElementEditbox();
 
 	override bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
-	override bool FinishLoading();
 
 	override bool HandleEvent(const SDL_Event &event);
 

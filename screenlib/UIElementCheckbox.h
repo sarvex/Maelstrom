@@ -29,7 +29,7 @@ class UIElementCheckbox : public UIElementButton
 {
 DECLARE_TYPESAFE_CLASS(UIElementButton)
 public:
-	UIElementCheckbox(UIBaseElement *parent, const char *name = "");
+	UIElementCheckbox(UIBaseElement *parent, const char *name, UIDrawEngine *drawEngine);
 
 	override bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
 	override bool FinishLoading();

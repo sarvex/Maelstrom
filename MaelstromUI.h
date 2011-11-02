@@ -22,6 +22,9 @@
 
 #include "Maelstrom_Globals.h"
 
+#include "screenlib/UIManager.h"
+#include "screenlib/UIDrawEngine.h"
+
 class HashTable;
 
 class MaelstromUI : public UIManager
@@ -54,4 +57,31 @@ protected:
 
 protected:
 	MFont *GetFont(const char *fontName, int fontSize);
+};
+
+//////////////////////////////////////////////////////////////////////////////
+class UIDrawEngineIcon : public UIDrawEngine
+{
+public:
+	UIDrawEngineIcon() : UIDrawEngine() { }
+
+	override bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
+};
+
+//////////////////////////////////////////////////////////////////////////////
+class UIDrawEngineSprite : public UIDrawEngine
+{
+public:
+	UIDrawEngineSprite() : UIDrawEngine() { }
+
+	override bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
+};
+
+//////////////////////////////////////////////////////////////////////////////
+class UIDrawEngineTitle : public UIDrawEngine
+{
+public:
+	UIDrawEngineTitle() : UIDrawEngine() { }
+
+	override bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
 };

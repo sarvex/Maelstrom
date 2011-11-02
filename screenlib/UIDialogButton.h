@@ -28,9 +28,13 @@ class UIDialogButton : public UIElementButton
 {
 DECLARE_TYPESAFE_CLASS(UIElementButton)
 public:
-	UIDialogButton(UIBaseElement *parent, const char *name = "");
+	UIDialogButton(UIBaseElement *parent, const char *name, UIDrawEngine *drawEngine);
 
 	override bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
+
+	bool IsDefault() const {
+		return m_default;
+	}
 
 	override void OnClick();
 

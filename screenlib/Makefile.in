@@ -50,13 +50,11 @@ libSDLscreen_a_AR = $(AR) $(ARFLAGS)
 libSDLscreen_a_LIBADD =
 am_libSDLscreen_a_OBJECTS = SDL_FrameBuf.$(OBJEXT) UIArea.$(OBJEXT) \
 	UIBaseElement.$(OBJEXT) UIDialog.$(OBJEXT) \
-	UIDialogButton.$(OBJEXT) UIElement.$(OBJEXT) \
-	UIElementButton.$(OBJEXT) UIElementCheckbox.$(OBJEXT) \
-	UIElementEditbox.$(OBJEXT) UIElementImage.$(OBJEXT) \
-	UIElementLabel.$(OBJEXT) UIElementLine.$(OBJEXT) \
-	UIElementRadio.$(OBJEXT) UIElementRect.$(OBJEXT) \
-	UIElementTexture.$(OBJEXT) UIManager.$(OBJEXT) \
-	UIPanel.$(OBJEXT) UITemplates.$(OBJEXT)
+	UIDialogButton.$(OBJEXT) UIDrawEngine.$(OBJEXT) \
+	UIElement.$(OBJEXT) UIElementButton.$(OBJEXT) \
+	UIElementCheckbox.$(OBJEXT) UIElementEditbox.$(OBJEXT) \
+	UIElementRadio.$(OBJEXT) UIManager.$(OBJEXT) UIPanel.$(OBJEXT) \
+	UITemplates.$(OBJEXT)
 libSDLscreen_a_OBJECTS = $(am_libSDLscreen_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -193,6 +191,8 @@ libSDLscreen_a_SOURCES = \
 	UIDialog.h		\
 	UIDialogButton.cpp	\
 	UIDialogButton.h	\
+	UIDrawEngine.cpp	\
+	UIDrawEngine.h		\
 	UIElement.cpp		\
 	UIElement.h		\
 	UIElementButton.cpp	\
@@ -201,18 +201,8 @@ libSDLscreen_a_SOURCES = \
 	UIElementCheckbox.h	\
 	UIElementEditbox.cpp	\
 	UIElementEditbox.h	\
-	UIElementImage.cpp	\
-	UIElementImage.h	\
-	UIElementLabel.cpp	\
-	UIElementLabel.h	\
-	UIElementLine.cpp	\
-	UIElementLine.h		\
 	UIElementRadio.cpp	\
 	UIElementRadio.h	\
-	UIElementRect.cpp	\
-	UIElementRect.h		\
-	UIElementTexture.cpp	\
-	UIElementTexture.h	\
 	UIFontInterface.h	\
 	UIManager.cpp		\
 	UIManager.h		\
@@ -274,16 +264,12 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UIBaseElement.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UIDialog.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UIDialogButton.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UIDrawEngine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UIElement.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UIElementButton.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UIElementCheckbox.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UIElementEditbox.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UIElementImage.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UIElementLabel.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UIElementLine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UIElementRadio.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UIElementRect.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UIElementTexture.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UIManager.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UIPanel.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UITemplates.Po@am__quote@

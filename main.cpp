@@ -40,10 +40,9 @@
 #include "main.h"
 
 #include "screenlib/UIDialog.h"
+#include "screenlib/UIElement.h"
 #include "screenlib/UIElementCheckbox.h"
 #include "screenlib/UIElementEditbox.h"
-#include "screenlib/UIElementLabel.h"
-#include "UIElementKeyButton.h"
 
 #define MAELSTROM_PREFS	"com.galaxygameworks.Maelstrom"
 #define MAELSTROM_DATA	"Maelstrom_Data.zip"
@@ -158,7 +157,7 @@ static void RunScreenshot(void)
 	screen->ScreenDump("ScoreDump", 64, 48, 298, 384);
 }
 
-class SetVolumeDelegate : public UIButtonDelegate
+class SetVolumeDelegate : public UIClickDelegate
 {
 public:
 	SetVolumeDelegate(int volume) : m_volume(volume) { }
@@ -372,11 +371,11 @@ int main(int argc, char *argv[])
 bool
 MainPanelDelegate::OnLoad()
 {
-	UIElementLabel *label;
+	UIElement *label;
 	UIElementButton *button;
 
 	/* Set the version */
-	label = m_panel->GetElement<UIElementLabel>("version");
+	label = m_panel->GetElement<UIElement>("version");
 	if (label) {
 		label->SetText(VERSION_STRING);
 	}
@@ -388,11 +387,11 @@ MainPanelDelegate::OnLoad()
 	}
 	button = m_panel->GetElement<UIElementButton>("ControlsButton");
 	if (button) {
-		button->SetButtonDelegate(new UIDialogLauncher(ui, DIALOG_CONTROLS));
+		button->SetClickDelegate(new UIDialogLauncher(ui, DIALOG_CONTROLS));
 	}
 	button = m_panel->GetElement<UIElementButton>("ZapButton");
 	if (button) {
-		button->SetButtonDelegate(new UIDialogLauncher(ui, DIALOG_ZAP, NULL, ZapHighScores));
+		button->SetClickDelegate(new UIDialogLauncher(ui, DIALOG_ZAP, NULL, ZapHighScores));
 	}
 	button = m_panel->GetElement<UIElementButton>("AboutButton");
 	if (button) {
@@ -416,11 +415,11 @@ MainPanelDelegate::OnLoad()
 	}
 	button = m_panel->GetElement<UIElementButton>("Cheat");
 	if (button) {
-		button->SetButtonDelegate(new UIDialogLauncher(ui, DIALOG_CHEAT, CheatDialogInit, CheatDialogDone));
+		button->SetClickDelegate(new UIDialogLauncher(ui, DIALOG_CHEAT, CheatDialogInit, CheatDialogDone));
 	}
 	button = m_panel->GetElement<UIElementButton>("Special");
 	if (button) {
-		button->SetButtonDelegate(new UIDialogLauncher(ui, DIALOG_DAWN));
+		button->SetClickDelegate(new UIDialogLauncher(ui, DIALOG_DAWN));
 	}
 	button = m_panel->GetElement<UIElementButton>("Screenshot");
 	if (button) {
@@ -429,39 +428,39 @@ MainPanelDelegate::OnLoad()
 
 	button = m_panel->GetElement<UIElementButton>("SetVolume0");
 	if (button) {
-		button->SetButtonDelegate(new SetVolumeDelegate(0));
+		button->SetClickDelegate(new SetVolumeDelegate(0));
 	}
 	button = m_panel->GetElement<UIElementButton>("SetVolume1");
 	if (button) {
-		button->SetButtonDelegate(new SetVolumeDelegate(1));
+		button->SetClickDelegate(new SetVolumeDelegate(1));
 	}
 	button = m_panel->GetElement<UIElementButton>("SetVolume2");
 	if (button) {
-		button->SetButtonDelegate(new SetVolumeDelegate(2));
+		button->SetClickDelegate(new SetVolumeDelegate(2));
 	}
 	button = m_panel->GetElement<UIElementButton>("SetVolume3");
 	if (button) {
-		button->SetButtonDelegate(new SetVolumeDelegate(3));
+		button->SetClickDelegate(new SetVolumeDelegate(3));
 	}
 	button = m_panel->GetElement<UIElementButton>("SetVolume4");
 	if (button) {
-		button->SetButtonDelegate(new SetVolumeDelegate(4));
+		button->SetClickDelegate(new SetVolumeDelegate(4));
 	}
 	button = m_panel->GetElement<UIElementButton>("SetVolume5");
 	if (button) {
-		button->SetButtonDelegate(new SetVolumeDelegate(5));
+		button->SetClickDelegate(new SetVolumeDelegate(5));
 	}
 	button = m_panel->GetElement<UIElementButton>("SetVolume6");
 	if (button) {
-		button->SetButtonDelegate(new SetVolumeDelegate(6));
+		button->SetClickDelegate(new SetVolumeDelegate(6));
 	}
 	button = m_panel->GetElement<UIElementButton>("SetVolume7");
 	if (button) {
-		button->SetButtonDelegate(new SetVolumeDelegate(7));
+		button->SetClickDelegate(new SetVolumeDelegate(7));
 	}
 	button = m_panel->GetElement<UIElementButton>("SetVolume8");
 	if (button) {
-		button->SetButtonDelegate(new SetVolumeDelegate(8));
+		button->SetClickDelegate(new SetVolumeDelegate(8));
 	}
 
 	return true;
@@ -476,7 +475,7 @@ MainPanelDelegate::OnShow()
 void
 MainPanelDelegate::OnTick()
 {
-	UIElementLabel *label;
+	UIElement *label;
 	char name[32];
 	char text[128];
 
@@ -499,36 +498,36 @@ MainPanelDelegate::OnTick()
 		}
 
 		sprintf(name, "name_%d", index);
-		label = m_panel->GetElement<UIElementLabel>(name);
+		label = m_panel->GetElement<UIElement>(name);
 		if (label) {
-			label->SetTextColor(R, G, B);
+			label->SetColor(R, G, B);
 			label->SetText(hScores[index].name);
 		}
 
 		sprintf(name, "score_%d", index);
-		label = m_panel->GetElement<UIElementLabel>(name);
+		label = m_panel->GetElement<UIElement>(name);
 		if (label) {
-			label->SetTextColor(R, G, B);
+			label->SetColor(R, G, B);
 			sprintf(text, "%d", hScores[index].score);
 			label->SetText(text);
 		}
 
 		sprintf(name, "wave_%d", index);
-		label = m_panel->GetElement<UIElementLabel>(name);
+		label = m_panel->GetElement<UIElement>(name);
 		if (label) {
-			label->SetTextColor(R, G, B);
+			label->SetColor(R, G, B);
 			sprintf(text, "%d", hScores[index].wave);
 			label->SetText(text);
 		}
 	}
 
-	label = m_panel->GetElement<UIElementLabel>("last_score");
+	label = m_panel->GetElement<UIElement>("last_score");
 	if (label) {
 		sprintf(text, "%d", GetScore());
 		label->SetText(text);
 	}
 
-	label = m_panel->GetElement<UIElementLabel>("volume");
+	label = m_panel->GetElement<UIElement>("volume");
 	if (label) {
 		sprintf(text, "%d", gSoundLevel);
 		label->SetText(text);

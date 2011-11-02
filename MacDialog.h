@@ -24,6 +24,7 @@
 #define _MacDialog_h
 
 #include "screenlib/UIDialog.h"
+#include "screenlib/UIDrawEngine.h"
 
 class MacDialog : public UIDialog
 {
@@ -49,5 +50,64 @@ protected:
 	bool m_expand;
 	int m_step;
 };
+
+//////////////////////////////////////////////////////////////////////////////
+
+class MacDialogDrawEngine : public UIDrawEngine
+{
+public:
+	override void Init(UIElement *element);
+};
+
+//////////////////////////////////////////////////////////////////////////////
+
+class MacDialogButton : public MacDialogDrawEngine
+{
+public:
+	MacDialogButton() : MacDialogDrawEngine() { }
+
+	override void Init(UIElement *element);
+	override void OnLoad();
+	override void OnDraw();
+	override void OnMouseDown();
+	override void OnMouseUp();
+
+protected:
+	Uint32 m_colors[2];
+};
+
+//////////////////////////////////////////////////////////////////////////////
+
+class MacDialogCheckbox : public MacDialogDrawEngine
+{
+public:
+	MacDialogCheckbox() : MacDialogDrawEngine() { }
+
+	override void Init(UIElement *element);
+	override void OnDraw();
+};
+
+//////////////////////////////////////////////////////////////////////////////
+
+class MacDialogRadioButton : public MacDialogDrawEngine
+{
+public:
+	MacDialogRadioButton() : MacDialogDrawEngine() { }
+
+	override void Init(UIElement *element);
+	override void OnDraw();
+};
+
+//////////////////////////////////////////////////////////////////////////////
+
+class MacDialogEditbox : public MacDialogDrawEngine
+{
+public:
+	MacDialogEditbox() : MacDialogDrawEngine() { }
+
+	override void Init(UIElement *element);
+};
+
+//////////////////////////////////////////////////////////////////////////////
 
 #endif // _MacDialog_h

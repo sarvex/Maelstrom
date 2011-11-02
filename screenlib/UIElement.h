@@ -23,15 +23,140 @@
 #define _UIElement_h
 
 #include "UIBaseElement.h"
+#include "UIDrawEngine.h"
+#include "UIFontInterface.h"
+
+
+class UIClickDelegate
+{
+public:
+	virtual void OnClick() { }
+};
+
+// This is the basic thing you see on the screen.
+// It consists of an area, a parent, children, text, an image, and a
+// drawing engine which is notified of state changes.
 
 
 class UIElement : public UIBaseElement
 {
 DECLARE_TYPESAFE_CLASS(UIBaseElement)
 public:
-	UIElement(UIBaseElement *parent, const char *name = "");
+	UIElement(UIBaseElement *parent, const char *name, UIDrawEngine *drawEngine);
+	virtual ~UIElement();
 
 	override bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
+	override bool FinishLoading();
+
+	// Set the draw engine for this element
+	// This should be called before Load() so the draw engine can load too.
+	// Once set, the element owns the draw engine and will free it.
+	void SetDrawEngine(UIDrawEngine *drawEngine);
+
+	// Border and fill information
+	void SetBorder(bool enabled);
+	bool HasBorder() const {
+		return m_border;
+	}
+	void SetFill(bool enabled);
+	bool HasFill() const {
+		return m_fill;
+	}
+	void SetFillColor(Uint8 R, Uint8 G, Uint8 B);
+	void SetFillColor(Uint32 color);
+	Uint32 GetFillColor() const {
+		return m_fillColor;
+	}
+
+	// Color information
+	void SetColor(Uint8 R, Uint8 G, Uint8 B);
+	void SetColor(Uint32 color);
+	Uint32 GetColor() const {
+		return m_color;
+	}
+
+	// Text information
+	void SetFont(const char *fontName, int fontSize, UIFontStyle fontStyle);
+	bool HasFont() const {
+		return m_fontName != NULL;
+	}
+	const char *GetFontName() const {
+		return m_fontName;
+	}
+	int GetFontSize() const {
+		return m_fontSize;
+	}
+	UIFontStyle GetFontStyle() const {
+		return m_fontStyle;
+	}
+
+	void SetText(const char *text);
+	const char *GetText() const {
+		return m_text;
+	}
+	UIArea *GetTextArea() {
+		return &m_textArea;
+	}
+	void SetTextShadowOffset(int x, int y);
+	bool GetTextShadowOffset(int *x, int *y) const;
+	void SetTextShadowColor(Uint8 R, Uint8 G, Uint8 B);
+	void SetTextShadowColor(Uint32 color);
+	Uint32 GetTextShadowColor() const {
+		return m_textShadowColor;
+	}
+
+	// Image information
+	void SetImage(SDL_Texture *image);
+	SDL_Texture *GetImage() const {
+		return m_image;
+	}
+	UIArea *GetImageArea() {
+		return &m_imageArea;
+	}
+
+	// Draw!
+	override void Draw();
+
+	// Events
+	override bool HandleEvent(const SDL_Event &event);
+
+	// Setting a click callback sets a simplified delegate
+	// Once set, the element owns the click delegate and will free it.
+	void SetClickCallback(void (*callback)(void));
+	void SetClickDelegate(UIClickDelegate *delegate);
+
+	// These can be overridden by inheriting classes
+	virtual void OnMouseEnter();
+	virtual void OnMouseLeave();
+	virtual void OnMouseDown();
+	virtual void OnMouseUp();
+	virtual void OnClick();
+
+protected:
+	UIDrawEngine *m_drawEngine;
+	bool m_border;
+	bool m_fill;
+	Uint32 m_fillColor;
+	Uint32 m_color;
+	char *m_fontName;
+	int m_fontSize;
+	UIFontStyle m_fontStyle;
+	char *m_text;
+	UIArea m_textArea;
+	int m_textShadowOffsetX;
+	int m_textShadowOffsetY;
+	Uint32 m_textShadowColor;
+	SDL_Texture *m_image;
+	UIArea m_imageArea;
+	bool m_mouseEnabled;
+	bool m_mouseInside;
+	bool m_mousePressed;
+	UIClickDelegate *m_clickDelegate;
+
+protected:
+	bool LoadColor(rapidxml::xml_node<> *node, const char *name, Uint32 &value);
+	bool ParseFont(char *text);
+	bool ParseImage(const char *file);
 };
 
 #endif // _UIElement_h

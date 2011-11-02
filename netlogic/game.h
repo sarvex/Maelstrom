@@ -24,8 +24,6 @@
 #define _game_h
 
 class UIElement;
-class UIElementLabel;
-class UIElementRect;
 
 class GamePanelDelegate : public UIPanelDelegate
 {
@@ -47,11 +45,11 @@ protected:
 protected:
 	bool m_showingBonus;
 
-	UIElementLabel *m_score;
+	UIElement *m_score;
 	UIElement *m_shield;
-	UIElementLabel *m_wave;
-	UIElementLabel *m_lives;
-	UIElementLabel *m_bonus;
+	UIElement *m_wave;
+	UIElement *m_lives;
+	UIElement *m_bonus;
 
 	UIElement *m_multiplier[4];
 	UIElement *m_autofire;
@@ -60,10 +58,10 @@ protected:
 	UIElement *m_triplefire;
 	UIElement *m_longfire;
 
-	UIElementLabel *m_multiplayerCaption;
-	UIElementRect *m_multiplayerColor;
-	UIElementLabel *m_fragsLabel;
-	UIElementLabel *m_frags;
+	UIElement *m_multiplayerCaption;
+	UIElement *m_multiplayerColor;
+	UIElement *m_fragsLabel;
+	UIElement *m_frags;
 };
 
 #endif // _game_h

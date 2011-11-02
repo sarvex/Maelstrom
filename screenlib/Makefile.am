@@ -13,6 +13,8 @@ libSDLscreen_a_SOURCES =	\
 	UIDialog.h		\
 	UIDialogButton.cpp	\
 	UIDialogButton.h	\
+	UIDrawEngine.cpp	\
+	UIDrawEngine.h		\
 	UIElement.cpp		\
 	UIElement.h		\
 	UIElementButton.cpp	\
@@ -21,18 +23,8 @@ libSDLscreen_a_SOURCES =	\
 	UIElementCheckbox.h	\
 	UIElementEditbox.cpp	\
 	UIElementEditbox.h	\
-	UIElementImage.cpp	\
-	UIElementImage.h	\
-	UIElementLabel.cpp	\
-	UIElementLabel.h	\
-	UIElementLine.cpp	\
-	UIElementLine.h		\
 	UIElementRadio.cpp	\
 	UIElementRadio.h	\
-	UIElementRect.cpp	\
-	UIElementRect.h		\
-	UIElementTexture.cpp	\
-	UIElementTexture.h	\
 	UIFontInterface.h	\
 	UIManager.cpp		\
 	UIManager.h		\

@@ -101,6 +101,7 @@ public:
 	}
 
 protected:
+	FrameBuf *m_screen;
 	char *m_loadPath;
 	UITemplates m_templates;
 	array<UIPanel *> m_panels;

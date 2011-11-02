@@ -21,11 +21,20 @@
 */
 
 #include "screenlib/SDL_FrameBuf.h"
+#include "screenlib/UIDialogButton.h"
+#include "screenlib/UIElementCheckbox.h"
+#include "screenlib/UIElementRadio.h"
 
 #include "MacDialog.h"
 
-#define EXPAND_STEPS 30
+#define EXPAND_STEPS	30
 
+#define BUTTON_WIDTH	75
+#define BUTTON_HEIGHT	19
+
+#define CHECKBOX_SIZE	12
+
+#define RADIOBUTTON_SIZE	20
 
 UIElementType MacDialog::s_elementType;
 
@@ -117,3 +126,238 @@ MacDialog::Draw()
 
 	UIDialog::Draw();
 }
+
+//////////////////////////////////////////////////////////////////////////////
+
+void
+MacDialogDrawEngine::Init(UIElement *element)
+{
+	UIDrawEngine::Init(element);
+
+	// Set the default colors and font for dialog elements
+	m_element->SetFillColor(0xFF, 0xFF, 0xFF);
+	m_element->SetColor(0x00, 0x00, 0x00);
+	m_element->SetFont("Chicago", 12, UIFONT_STYLE_NORMAL);
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+void
+MacDialogButton::Init(UIElement *element)
+{
+	MacDialogDrawEngine::Init(element);
+
+	m_element->SetFill(true);
+	m_element->SetSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+}
+
+void
+MacDialogButton::OnLoad()
+{
+	MacDialogDrawEngine::OnLoad();
+
+	m_colors[0] = m_element->GetFillColor();
+	m_colors[1] = m_element->GetColor();
+}
+
+void
+MacDialogButton::OnDraw()
+{
+	Uint32 color;
+	int x, y, maxx, maxy;
+
+	// Do the normal drawing
+	MacDialogDrawEngine::OnDraw();
+
+	color = m_element->GetColor();
+
+	// Draw the beveled edge
+	x = m_element->X();
+	maxx = x+m_element->Width()-1;
+	y = m_element->Y();
+	maxy = y+m_element->Height()-1;
+
+	// Top and upper corners
+	m_screen->DrawLine(x+3, y, maxx-3, y, color);
+	m_screen->DrawLine(x+1, y+1, x+2, y+1, color);
+	m_screen->DrawLine(maxx-2, y+1, maxx-1, y+1, color);
+	m_screen->DrawLine(x+1, y+2, x+1, y+2, color);
+	m_screen->DrawLine(maxx-1, y+2, maxx-1, y+2, color);
+
+	// Sides
+	m_screen->DrawLine(x, y+3, x, maxy-3, color);
+	m_screen->DrawLine(maxx, y+3, maxx, maxy-3, color);
+
+	// Bottom and lower corners
+	m_screen->DrawLine(x+1, maxy-2, x+1, maxy-2, color);
+	m_screen->DrawLine(maxx-1, maxy-2, maxx-1, maxy-2, color);
+	m_screen->DrawLine(x+1, maxy-1, x+2, maxy-1, color);
+	m_screen->DrawLine(maxx-2, maxy-1, maxx-1, maxy-1, color);
+	m_screen->DrawLine(x+3, maxy, maxx-3, maxy, color);
+
+	if (m_element->IsA(UIDialogButton::GetType()) &&
+	    static_cast<UIDialogButton*>(m_element)->IsDefault()) {
+		// Show the thick edge
+		x = m_element->X()-4;
+		maxx = x+4+m_element->Width()+4-1;
+		y = m_element->Y()-4;
+		maxy = y+4+m_element->Height()+4-1;
+
+		// The edge always uses the real foreground color
+		color = m_colors[1];
+
+		m_screen->DrawLine(x+5, y, maxx-5, y, color);
+		m_screen->DrawLine(x+3, y+1, maxx-3, y+1, color);
+		m_screen->DrawLine(x+2, y+2, maxx-2, y+2, color);
+		m_screen->DrawLine(x+1, y+3, x+5, y+3, color);
+		m_screen->DrawLine(maxx-5, y+3, maxx-1, y+3, color);
+		m_screen->DrawLine(x+1, y+4, x+3, y+4, color);
+		m_screen->DrawLine(maxx-3, y+4, maxx-1, y+4, color);
+		m_screen->DrawLine(x, y+5, x+3, y+5, color);
+		m_screen->DrawLine(maxx-3, y+5, maxx, y+5, color);
+
+		m_screen->DrawLine(x, y+6, x, maxy-6, color);
+		m_screen->DrawLine(maxx, y+6, maxx, maxy-6, color);
+		m_screen->DrawLine(x+1, y+6, x+1, maxy-6, color);
+		m_screen->DrawLine(maxx-1, y+6, maxx-1, maxy-6, color);
+		m_screen->DrawLine(x+2, y+6, x+2, maxy-6, color);
+		m_screen->DrawLine(maxx-2, y+6, maxx-2, maxy-6, color);
+
+		m_screen->DrawLine(x, maxy-5, x+3, maxy-5, color);
+		m_screen->DrawLine(maxx-3, maxy-5, maxx, maxy-5, color);
+		m_screen->DrawLine(x+1, maxy-4, x+3, maxy-4, color);
+		m_screen->DrawLine(maxx-3, maxy-4, maxx-1, maxy-4, color);
+		m_screen->DrawLine(x+1, maxy-3, x+5, maxy-3, color);
+		m_screen->DrawLine(maxx-5, maxy-3, maxx-1, maxy-3, color);
+		m_screen->DrawLine(x+2, maxy-2, maxx-2, maxy-2, color);
+		m_screen->DrawLine(x+3, maxy-1, maxx-3, maxy-1, color);
+		m_screen->DrawLine(x+5, maxy, maxx-5, maxy, color);
+	}
+}
+
+void
+MacDialogButton::OnMouseDown()
+{
+	MacDialogDrawEngine::OnMouseDown();
+
+	// Invert the colors
+	m_element->SetFillColor(m_colors[1]);
+	m_element->SetColor(m_colors[0]);
+}
+
+void
+MacDialogButton::OnMouseUp()
+{
+	MacDialogDrawEngine::OnMouseUp();
+
+	// Restore the colors
+	m_element->SetFillColor(m_colors[0]);
+	m_element->SetColor(m_colors[1]);
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+void
+MacDialogCheckbox::Init(UIElement *element)
+{
+	MacDialogDrawEngine::Init(element);
+
+	m_element->SetSize(CHECKBOX_SIZE, CHECKBOX_SIZE);
+
+	UIArea *area = m_element->GetTextArea();
+	area->SetAnchor(TOPLEFT, TOPLEFT, m_element, CHECKBOX_SIZE+3, -2);
+}
+
+void
+MacDialogCheckbox::OnDraw()
+{
+	Uint32 color;
+	int x, y;
+
+	MacDialogDrawEngine::OnDraw();
+
+	color = m_element->GetColor();
+	x = m_element->X();
+	y = m_element->Y();
+
+	m_screen->DrawRect(x, y, CHECKBOX_SIZE, CHECKBOX_SIZE, color);
+
+	if (m_element->IsA(UIElementCheckbox::GetType()) &&
+	    static_cast<UIElementCheckbox*>(m_element)->IsChecked()) {
+		m_screen->DrawLine(x, y, x+CHECKBOX_SIZE-1,
+					y+CHECKBOX_SIZE-1, color);
+		m_screen->DrawLine(x, y+CHECKBOX_SIZE-1,
+					x+CHECKBOX_SIZE-1, y, color);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+void
+MacDialogRadioButton::Init(UIElement *element)
+{
+	MacDialogDrawEngine::Init(element);
+
+	m_element->SetSize(RADIOBUTTON_SIZE, RADIOBUTTON_SIZE);
+
+	UIArea *area = m_element->GetTextArea();
+	area->SetAnchor(TOPLEFT, TOPLEFT, m_element, RADIOBUTTON_SIZE+1, 3);
+}
+
+void
+MacDialogRadioButton::OnDraw()
+{
+	Uint32 color;
+	int x, y;
+
+	MacDialogDrawEngine::OnDraw();
+
+	color = m_element->GetColor();
+	x = m_element->X() + 5;
+	y = m_element->Y() + 5;
+
+	/* Draw the circle */
+	m_screen->DrawLine(x+4, y, x+7, y, color);
+	m_screen->DrawLine(x+2, y+1, x+3, y+1, color);
+	m_screen->DrawLine(x+8, y+1, x+9, y+1, color);
+	m_screen->DrawLine(x+1, y+2, x+1, y+3, color);
+	m_screen->DrawLine(x+10, y+2, x+10, y+3, color);
+	m_screen->DrawLine(x, y+4, x, y+7, color);
+	m_screen->DrawLine(x+11, y+4, x+11, y+7, color);
+	m_screen->DrawLine(x+1, y+8, x+1, y+9, color);
+	m_screen->DrawLine(x+10, y+8, x+10, y+9, color);
+	m_screen->DrawLine(x+2, y+10, x+3, y+10, color);
+	m_screen->DrawLine(x+8, y+10, x+9, y+10, color);
+	m_screen->DrawLine(x+4, y+11, x+7, y+11, color);
+
+	if (m_element->IsA(UIElementRadioButton::GetType()) &&
+	    static_cast<UIElementRadioButton*>(m_element)->IsChecked()) {
+		/* Draw the spot in the center */
+		x += 3;
+		y += 3;
+
+		m_screen->DrawLine(x+1, y, x+4, y, color);
+		++y;
+		m_screen->DrawLine(x, y, x+5, y, color);
+		++y;
+		m_screen->DrawLine(x, y, x+5, y, color);
+		++y;
+		m_screen->DrawLine(x, y, x+5, y, color);
+		++y;
+		m_screen->DrawLine(x, y, x+5, y, color);
+		++y;
+		m_screen->DrawLine(x+1, y, x+4, y, color);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+void
+MacDialogEditbox::Init(UIElement *element)
+{
+	MacDialogDrawEngine::Init(element);
+
+	m_element->SetBorder(true);
+}
+
+//////////////////////////////////////////////////////////////////////////////

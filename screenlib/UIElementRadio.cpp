@@ -24,8 +24,8 @@
 UIElementType UIElementRadioGroup::s_elementType;
 
 
-UIElementRadioGroup::UIElementRadioGroup(UIBaseElement *parent, const char *name) :
-	UIElement(parent, name)
+UIElementRadioGroup::UIElementRadioGroup(UIBaseElement *parent, const char *name, UIDrawEngine *drawEngine) :
+	UIElement(parent, name, drawEngine)
 {
 	m_value = -1;
 }
@@ -66,8 +66,8 @@ UIElementRadioGroup::RadioButtonChecked(UIElementRadioButton *button)
 UIElementType UIElementRadioButton::s_elementType;
 
 
-UIElementRadioButton::UIElementRadioButton(UIBaseElement *parent, const char *name) :
-	UIElementCheckbox(parent, name)
+UIElementRadioButton::UIElementRadioButton(UIBaseElement *parent, const char *name, UIDrawEngine *drawEngine) :
+	UIElementCheckbox(parent, name, drawEngine)
 {
 	m_id = -1;
 }

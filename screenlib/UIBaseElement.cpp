@@ -31,19 +31,23 @@ UIElementType UIBaseElement::s_elementType;
 
 
 UIBaseElement::UIBaseElement(UIManager *ui, const char *name) :
-	UIArea(ui->GetScreen(), ui, ui->Width(), ui->Height())
+	UIArea(ui, ui->Width(), ui->Height())
 {
+	m_screen = ui->GetScreen();
 	m_ui = ui;
 	m_parent = NULL;
 	m_name = SDL_strdup(name);
+	m_shown = true;
 }
 
 UIBaseElement::UIBaseElement(UIBaseElement *parent, const char *name) :
-	UIArea(parent->GetScreen(), parent, parent->Width(), parent->Height())
+	UIArea(parent, parent->Width(), parent->Height())
 {
+	m_screen = parent->GetScreen();
 	m_ui = parent->GetUI();
 	m_parent = parent;
 	m_name = SDL_strdup(name);
+	m_shown = true;
 }
 
 UIBaseElement::~UIBaseElement()
@@ -70,6 +74,8 @@ UIBaseElement::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 	if (!UIArea::Load(node)) {
 		return false;
 	}
+
+	LoadBool(node, "show", m_shown);
 
 	child = node->first_node("elements", 0, false);
 	if (child) {

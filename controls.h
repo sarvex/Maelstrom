@@ -55,7 +55,7 @@ typedef struct {
 } Controls;
 
 
-class UIElementLabel;
+class UIElement;
 class UIElementRadioGroup;
 
 class ControlsDialogDelegate : public UIPanelDelegate
@@ -93,7 +93,7 @@ protected:
 	};
 
 	Controls m_controls;
-	UIElementLabel *m_controlKeys[NUM_CTLS];
+	UIElement *m_controlKeys[NUM_CTLS];
 	UIElementRadioGroup *m_radioGroup;
 	Uint32 m_keyinuseTimers[NUM_CTLS];
 };

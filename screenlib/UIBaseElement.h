@@ -28,6 +28,7 @@
 #include "SDL.h"
 #include "UIArea.h"
 
+class FrameBuf;
 class UIManager;
 class UITemplates;
 
@@ -45,6 +46,9 @@ public:
 		return type == GetType();
 	}
 
+	FrameBuf *GetScreen() const {
+		return m_screen;
+	}
 	UIManager *GetUI() {
 		return m_ui;
 	}
@@ -117,13 +121,25 @@ public:
 		m_elements.remove(element);
 	}
 
+	virtual void Show() {
+		m_shown = true;
+	}
+	virtual void Hide() {
+		m_shown = false;
+	}
+	bool IsShown() const {
+		return m_shown;
+	}
+
 	virtual void Draw();
 	virtual bool HandleEvent(const SDL_Event &event);
 
 protected:
+	FrameBuf *m_screen;
 	UIManager *m_ui;
 	UIBaseElement *m_parent;
 	char *m_name;
+	bool m_shown;
 	array<UIBaseElement *> m_elements;
 
 protected:

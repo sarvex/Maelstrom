@@ -39,7 +39,7 @@ class UIElementRadioGroup : public UIElement
 {
 DECLARE_TYPESAFE_CLASS(UIElement)
 public:
-	UIElementRadioGroup(UIBaseElement *parent, const char *name = "");
+	UIElementRadioGroup(UIBaseElement *parent, const char *name, UIDrawEngine *drawEngine);
 
 	UIElementRadioButton *GetRadioButton(int id);
 
@@ -57,7 +57,7 @@ class UIElementRadioButton : public UIElementCheckbox
 {
 DECLARE_TYPESAFE_CLASS(UIElementCheckbox)
 public:
-	UIElementRadioButton(UIBaseElement *parent, const char *name = "");
+	UIElementRadioButton(UIBaseElement *parent, const char *name, UIDrawEngine *drawEngine);
 
 	int GetID() const {
 		return m_id;

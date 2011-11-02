@@ -23,13 +23,12 @@
 #include "UIManager.h"
 #include "UIDialog.h"
 #include "UIDialogButton.h"
-#include "UIElementLabel.h"
 
 UIElementType UIDialogButton::s_elementType;
 
 
-UIDialogButton::UIDialogButton(UIBaseElement *parent, const char *name) :
-	UIElementButton(parent, name)
+UIDialogButton::UIDialogButton(UIBaseElement *parent, const char *name, UIDrawEngine *drawEngine) :
+	UIElementButton(parent, name, drawEngine)
 {
 	m_statusID = 0;
 	m_default = false;

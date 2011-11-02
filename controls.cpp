@@ -29,7 +29,7 @@
 #include "Maelstrom_Globals.h"
 #include "load.h"
 #include "screenlib/UIDialog.h"
-#include "screenlib/UIElementLabel.h"
+#include "screenlib/UIElement.h"
 #include "screenlib/UIElementRadio.h"
 
 #define MAELSTROM_DATA	".Maelstrom-data"
@@ -122,7 +122,7 @@ ControlsDialogDelegate::OnLoad()
 
 	for (int i = 0; i < SDL_arraysize(m_controlKeys); ++i) {
 		sprintf(name, "control%d", 1+i);
-		m_controlKeys[i] = m_panel->GetElement<UIElementLabel>(name);
+		m_controlKeys[i] = m_panel->GetElement<UIElement>(name);
 		if (!m_controlKeys[i]) {
 			fprintf(stderr, "Warning: Couldn't find control key label '%s'\n", name);
 			return false;
