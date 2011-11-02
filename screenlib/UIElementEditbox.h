@@ -41,11 +41,18 @@ public:
 	override bool HandleEvent(const SDL_Event &event);
 
 	override void OnClick() {
-		SetFocus(true);
+		SetFocus(!HasFocus());
+	}
+
+	bool IsHighlighted() const {
+		return m_highlight;
 	}
 
 	void SetFocus(bool focus);
 	void SetFocusNext();
+	bool HasFocus() const {
+		return m_focus;
+	}
 
 	void SetTextMax(int maxLen);
 

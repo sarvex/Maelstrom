@@ -69,9 +69,10 @@ UIElementEditbox::HandleEvent(const SDL_Event &event)
 
 	if (event.type == SDL_KEYUP) {
 		switch (event.key.keysym.sym) {
-			case SDLK_ESCAPE:
-				SetFocus(false);
-				return true;
+			// This is confusing in dialogs which are canceled by Escape.
+			//case SDLK_ESCAPE:
+			//	SetFocus(false);
+			//	return true;
 			case SDLK_TAB:
 				SetFocusNext();
 				return true;

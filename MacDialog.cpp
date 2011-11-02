@@ -23,6 +23,7 @@
 #include "screenlib/SDL_FrameBuf.h"
 #include "screenlib/UIDialogButton.h"
 #include "screenlib/UIElementCheckbox.h"
+#include "screenlib/UIElementEditbox.h"
 #include "screenlib/UIElementRadio.h"
 
 #include "MacDialog.h"
@@ -357,7 +358,53 @@ MacDialogEditbox::Init(UIElement *element)
 {
 	MacDialogDrawEngine::Init(element);
 
-	m_element->SetBorder(true);
+	UIArea *area = m_element->GetTextArea();
+	area->SetAnchor(LEFT, LEFT, m_element, 3, 0);
+}
+
+void
+MacDialogEditbox::OnLoad()
+{
+	MacDialogDrawEngine::OnLoad();
+
+	m_colors[0] = m_element->GetFillColor();
+	m_colors[1] = m_element->GetColor();
+}
+
+void
+MacDialogEditbox::OnDraw()
+{
+	bool highlight = false;
+	bool hasfocus = false;
+
+	if (m_element->IsA(UIElementEditbox::GetType())) {
+		UIElementEditbox *editbox;
+
+		editbox = static_cast<UIElementEditbox*>(m_element);
+		highlight = editbox->IsHighlighted();
+		hasfocus = editbox->HasFocus();
+	}
+
+	/* The colors are inverted when the editbox is highlighted */
+	m_element->SetFillColor(m_colors[highlight]);
+	m_element->SetColor(m_colors[!highlight]);
+
+	// Draw the outline, always in the real foreground color
+	m_screen->DrawRect(m_element->X(), m_element->Y(), m_element->Width(), m_element->Height(), m_colors[1]);
+
+	if (highlight) {
+		// Draw the highlight
+		m_screen->FillRect(m_element->X()+3, m_element->Y()+3, m_element->Width()-6, m_element->Height()-6, m_element->GetFillColor());
+	}
+
+	MacDialogDrawEngine::OnDraw();
+
+	if (hasfocus && !highlight) {
+		// Draw the cursor
+		int x = m_element->GetTextArea()->X() + m_element->GetTextArea()->Width();
+
+		m_screen->DrawLine(x, m_element->Y()+3, x, m_element->Y()+3+m_element->Height()-6-1, m_element->GetColor());
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -106,6 +106,11 @@ public:
 	MacDialogEditbox() : MacDialogDrawEngine() { }
 
 	override void Init(UIElement *element);
+	override void OnLoad();
+	override void OnDraw();
+
+protected:
+	Uint32 m_colors[2];
 };
 
 //////////////////////////////////////////////////////////////////////////////
