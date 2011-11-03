@@ -74,6 +74,14 @@ public:
 	Uint32 GetColor() const {
 		return m_color;
 	}
+	void SetDisabledColor(Uint8 R, Uint8 G, Uint8 B);
+	void SetDisabledColor(Uint32 color);
+	Uint32 GetDisabledColor() const {
+		return m_disabledColor;
+	}
+	Uint32 GetCurrentColor() const {
+		return IsDisabled() ? GetDisabledColor() : GetColor();
+	}
 
 	// Text information
 	void SetFont(const char *fontName, int fontSize, UIFontStyle fontStyle);
@@ -138,6 +146,7 @@ protected:
 	bool m_fill;
 	Uint32 m_fillColor;
 	Uint32 m_color;
+	Uint32 m_disabledColor;
 	char *m_fontName;
 	int m_fontSize;
 	UIFontStyle m_fontStyle;
@@ -157,6 +166,8 @@ protected:
 	bool LoadColor(rapidxml::xml_node<> *node, const char *name, Uint32 &value);
 	bool ParseFont(char *text);
 	bool ParseImage(const char *file);
+
+	override void UpdateDisabledState();
 };
 
 #endif // _UIElement_h

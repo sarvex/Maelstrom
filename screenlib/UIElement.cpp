@@ -53,6 +53,7 @@ UIElement::UIElement(UIBaseElement *parent, const char *name, UIDrawEngine *draw
 	m_fill = false;
 	m_fillColor = m_screen->MapRGB(0x00, 0x00, 0x00);
 	m_color = m_screen->MapRGB(0xFF, 0xFF, 0xFF);
+	m_disabledColor = m_screen->MapRGB(0x80, 0x80, 0x80);
 	m_fontName = NULL;
 	m_fontSize = 0;
 	m_fontStyle = UIFONT_STYLE_NORMAL;
@@ -358,6 +359,36 @@ UIElement::SetColor(Uint32 color)
 	}
 
 	m_color = color;
+
+	if (!IsDisabled() && m_drawEngine) {
+		m_drawEngine->OnColorChanged();
+	}
+}
+
+void
+UIElement::SetDisabledColor(Uint8 R, Uint8 G, Uint8 B)
+{
+	SetDisabledColor(m_screen->MapRGB(R, G, B));
+}
+
+void
+UIElement::SetDisabledColor(Uint32 color)
+{
+	if (color == m_disabledColor) {
+		return;
+	}
+
+	m_disabledColor = color;
+
+	if (IsDisabled() && m_drawEngine) {
+		m_drawEngine->OnColorChanged();
+	}
+}
+
+void
+UIElement::UpdateDisabledState()
+{
+	UIBaseElement::UpdateDisabledState();
 
 	if (m_drawEngine) {
 		m_drawEngine->OnColorChanged();

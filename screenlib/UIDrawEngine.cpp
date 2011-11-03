@@ -121,7 +121,7 @@ UIDrawEngine::OnDraw()
 	if (m_element->HasBorder()) {
 		m_screen->DrawRect(m_element->X(), m_element->Y(),
 				m_element->Width(), m_element->Height(),
-				m_element->GetColor());
+				m_element->GetCurrentColor());
 	}
 
 	SDL_Texture *image = m_element->GetImage();
@@ -141,7 +141,7 @@ UIDrawEngine::OnDraw()
 
 			m_screen->QueueBlit(area->X()+x, area->Y()+y, m_textImage, NOCLIP);
 
-			m_screen->GetRGB(m_element->GetColor(), &r, &g, &b);
+			m_screen->GetRGB(m_element->GetCurrentColor(), &r, &g, &b);
 			SDL_SetTextureColorMod(m_textImage, r, g, b);
 		}
 		m_screen->QueueBlit(area->X(), area->Y(), m_textImage, NOCLIP);
@@ -158,7 +158,7 @@ UIDrawEngine::OnColorChanged()
 						m_element->GetFontName(),
 						m_element->GetFontSize(),
 						m_element->GetFontStyle(),
-						m_element->GetColor());
+						m_element->GetCurrentColor());
 	}
 }
 
@@ -183,7 +183,7 @@ UIDrawEngine::OnTextChanged()
 						m_element->GetFontName(),
 						m_element->GetFontSize(),
 						m_element->GetFontStyle(),
-						m_element->GetColor());
+						m_element->GetCurrentColor());
 
 		w = m_screen->GetImageWidth(m_textImage);
 		h = m_screen->GetImageHeight(m_textImage);

@@ -131,6 +131,12 @@ public:
 		return m_shown;
 	}
 
+	void SetDisabled(bool disabled);
+	void SetParentDisabled(bool disabled);
+	bool IsDisabled() const {
+		return m_disabled || m_parentDisabled;
+	}
+
 	virtual void Draw();
 	virtual bool HandleEvent(const SDL_Event &event);
 
@@ -140,6 +146,8 @@ protected:
 	UIBaseElement *m_parent;
 	char *m_name;
 	bool m_shown;
+	bool m_disabled;
+	bool m_parentDisabled;
 	array<UIBaseElement *> m_elements;
 
 protected:
@@ -147,6 +155,8 @@ protected:
 	UIBaseElement *CreateElement(const char *type);
 
 	bool LoadElements(rapidxml::xml_node<> *node, const UITemplates *templates);
+
+	virtual void UpdateDisabledState();
 
 protected:
 	static UIElementType s_elementTypeIndex;

@@ -38,6 +38,8 @@ UIBaseElement::UIBaseElement(UIManager *ui, const char *name) :
 	m_parent = NULL;
 	m_name = SDL_strdup(name);
 	m_shown = true;
+	m_disabled = false;
+	m_parentDisabled = false;
 }
 
 UIBaseElement::UIBaseElement(UIBaseElement *parent, const char *name) :
@@ -48,6 +50,8 @@ UIBaseElement::UIBaseElement(UIBaseElement *parent, const char *name) :
 	m_parent = parent;
 	m_name = SDL_strdup(name);
 	m_shown = true;
+	m_disabled = false;
+	m_parentDisabled = parent->IsDisabled();
 }
 
 UIBaseElement::~UIBaseElement()
@@ -76,6 +80,11 @@ UIBaseElement::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 	}
 
 	LoadBool(node, "show", m_shown);
+
+	bool disabled;
+	if (LoadBool(node, "disabled", disabled)) {
+		SetDisabled(disabled);
+	}
 
 	child = node->first_node("elements", 0, false);
 	if (child) {
@@ -110,6 +119,42 @@ UIBaseElement::GetAnchorElement(const char *name)
 }
 
 void
+UIBaseElement::SetDisabled(bool disabled)
+{
+	if (disabled == m_disabled) {
+		return;
+	}
+
+	bool wasDisabled = IsDisabled();
+	m_disabled = disabled;
+	if (wasDisabled != IsDisabled()) {
+		UpdateDisabledState();
+	}
+}
+
+void
+UIBaseElement::SetParentDisabled(bool disabled)
+{
+	if (disabled == m_parentDisabled) {
+		return;
+	}
+
+	bool wasDisabled = IsDisabled();
+	m_parentDisabled = disabled;
+	if (wasDisabled != IsDisabled()) {
+		UpdateDisabledState();
+	}
+}
+
+void
+UIBaseElement::UpdateDisabledState()
+{
+	for (unsigned i = 0; i < m_elements.length(); ++i) {
+		m_elements[i]->SetParentDisabled(IsDisabled());
+	}
+}
+
+void
 UIBaseElement::Draw()
 {
 	for (unsigned i = 0; i < m_elements.length(); ++i) {
@@ -123,6 +168,9 @@ bool
 UIBaseElement::HandleEvent(const SDL_Event &event)
 {
 	for (unsigned i = m_elements.length(); i--; ) {
+		if (m_elements[i]->IsDisabled()) {
+			continue;
+		}
 		if (m_elements[i]->HandleEvent(event)) {
 			return true;
 		}

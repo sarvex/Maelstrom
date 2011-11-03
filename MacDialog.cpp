@@ -170,7 +170,7 @@ MacDialogButton::OnDraw()
 	// Do the normal drawing
 	MacDialogDrawEngine::OnDraw();
 
-	color = m_element->GetColor();
+	color = m_element->GetCurrentColor();
 
 	// Draw the beveled edge
 	x = m_element->X();
@@ -277,7 +277,7 @@ MacDialogCheckbox::OnDraw()
 
 	MacDialogDrawEngine::OnDraw();
 
-	color = m_element->GetColor();
+	color = m_element->GetCurrentColor();
 	x = m_element->X();
 	y = m_element->Y();
 
@@ -313,7 +313,7 @@ MacDialogRadioButton::OnDraw()
 
 	MacDialogDrawEngine::OnDraw();
 
-	color = m_element->GetColor();
+	color = m_element->GetCurrentColor();
 	x = m_element->X() + 5;
 	y = m_element->Y() + 5;
 
@@ -403,7 +403,7 @@ MacDialogEditbox::OnDraw()
 		// Draw the cursor
 		int x = m_element->GetTextArea()->X() + m_element->GetTextArea()->Width();
 
-		m_screen->DrawLine(x, m_element->Y()+3, x, m_element->Y()+3+m_element->Height()-6-1, m_element->GetColor());
+		m_screen->DrawLine(x, m_element->Y()+3, x, m_element->Y()+3+m_element->Height()-6-1, m_element->GetCurrentColor());
 	}
 }
 
