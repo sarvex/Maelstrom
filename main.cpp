@@ -194,7 +194,6 @@ static bool
 InitFilesystem(const char *argv0)
 {
 	char path[4096];
-	const char *file = MAELSTROM_DATA;
 
 	if (!PHYSFS_init(argv0)) {
 		error("Couldn't initialize PHYSFS: %s\n", PHYSFS_getLastError());
