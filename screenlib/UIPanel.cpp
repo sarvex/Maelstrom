@@ -115,7 +115,7 @@ UIPanel::Hide()
 void
 UIPanel::HideAll()
 {
-	for (unsigned i = 0; i < m_elements.length(); ++i) {
+	for (int i = 0; i < m_elements.length(); ++i) {
 		m_elements[i]->Hide();
 	}
 }

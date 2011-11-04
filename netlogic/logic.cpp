@@ -50,7 +50,6 @@ int InitLogicData(void)
 int LogicParseArgs(char ***argvptr, int *argcptr)
 {
 	char **argv = *argvptr;
-	int    argc = *argcptr;
 
 	/* Check for the '-player' option */
 	if ( strcmp(argv[1], "-player") == 0 ) {

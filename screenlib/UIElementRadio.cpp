@@ -35,7 +35,7 @@ UIElementRadioGroup::GetRadioButton(int id)
 {
 	UIElementRadioButton *button;
 
-	for (unsigned i = 0; i < m_elements.length(); ++i) {
+	for (int i = 0; i < m_elements.length(); ++i) {
 		if (!m_elements[i]->IsA(UIElementRadioButton::GetType())) {
 			continue;
 		}
@@ -54,7 +54,7 @@ UIElementRadioGroup::RadioButtonChecked(UIElementRadioButton *button)
 	array<UIElementRadioButton*> buttons;
 
 	FindElements<UIElementRadioButton>(buttons);
-	for (unsigned i = 0; i < buttons.length(); ++i) {
+	for (int i = 0; i < buttons.length(); ++i) {
 		if (buttons[i] != button && buttons[i]->IsChecked()) {
 			buttons[i]->SetChecked(false);
 		}

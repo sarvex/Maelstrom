@@ -139,7 +139,6 @@ int	gWhenEnemy;
 
 // Local functions used in the game module of Maelstrom
 static void DoGameOver(void);
-static void DoBonus(void);
 
 /* ----------------------------------------------------------------- */
 /* -- Start a new game */
@@ -202,7 +201,7 @@ GamePanelDelegate::OnLoad()
 	m_lives = m_panel->GetElement<UIElement>("lives");
 	m_bonus = m_panel->GetElement<UIElement>("bonus");
 
-	for (i = 0; i < SDL_arraysize(m_multiplier); ++i) {
+	for (i = 0; (unsigned)i < SDL_arraysize(m_multiplier); ++i) {
 		sprintf(name, "multiplier%d", 2+i);
 		m_multiplier[i] = m_panel->GetElement<UIElement>(name);
 	}
@@ -460,7 +459,7 @@ GamePanelDelegate::DrawStatus(Bool first)
 	}
 	
 	MultFactor = TheShip->GetBonusMult();
-	for (i = 0; i < SDL_arraysize(m_multiplier); ++i) {
+	for (i = 0; (unsigned)i < SDL_arraysize(m_multiplier); ++i) {
 		if (!m_multiplier[i]) {
 			continue;
 		}

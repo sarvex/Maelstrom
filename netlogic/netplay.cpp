@@ -39,7 +39,6 @@ UDPsocket gNetFD;
 
 static int            GotPlayer[MAX_PLAYERS];
 static IPaddress      PlayAddr[MAX_PLAYERS];
-static IPaddress      ServAddr;
 static int            FoundUs;
 static Uint32         NextFrame;
 UDPpacket            *OutBound[2];

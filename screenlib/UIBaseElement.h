@@ -79,7 +79,7 @@ public:
 	}
 	template <typename T>
 	T *FindElement(UIBaseElement *start = NULL) {
-		unsigned i, j;
+		int i, j;
 		if (start) {
 			// Find the starting element
 			for (i = 0; i < m_elements.length(); ++i) {
@@ -110,7 +110,7 @@ public:
 	}
 	template <typename T>
 	void FindElements(array<T*> &elements) {
-		for (unsigned i = 0; i < m_elements.length(); ++i) {
+		for (int i = 0; i < m_elements.length(); ++i) {
 			UIBaseElement *element = m_elements[i];
 			if (element->IsA(T::GetType())) {
 				elements.add((T*)element);

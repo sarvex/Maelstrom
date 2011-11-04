@@ -60,25 +60,6 @@ UIManager::LoadTemplates(const char *file)
 	return m_templates.Load(path);
 }
 
-static const char *GetLine(char *&text)
-{
-	while (*text == '\r' || *text == '\n') {
-		++text;
-	}
-	if (!*text) {
-		return NULL;
-	}
-
-	const char *line = text;
-	while (*text && *text != '\r' && *text != '\n') {
-		++text;
-	}
-	if (*text) {
-		*text++ = '\0';
-	}
-	return line;
-}
-
 UIPanel *
 UIManager::LoadPanel(const char *name)
 {
@@ -162,7 +143,7 @@ UIManager::LoadPanel(const char *name)
 UIPanel *
 UIManager::GetPanel(const char *name, bool allowLoad)
 {
-	for (unsigned i = 0; i < m_panels.length(); ++i) {
+	for (int i = 0; i < m_panels.length(); ++i) {
 		if (strcmp(name, m_panels[i]->GetName()) == 0) {
 			return m_panels[i];
 		}
@@ -246,7 +227,7 @@ UIManager::Draw(bool fullUpdate)
 	if (fullUpdate) {
 		m_screen->Clear();
 	}
-	for (unsigned i = 0; i < m_visible.length(); ++i) {
+	for (int i = 0; i < m_visible.length(); ++i) {
 		UIPanel *panel = m_visible[i];
 
 		panel->Draw();

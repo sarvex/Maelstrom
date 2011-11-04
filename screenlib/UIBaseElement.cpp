@@ -58,7 +58,7 @@ UIBaseElement::~UIBaseElement()
 {
 	SDL_free(m_name);
 
-	for (unsigned i = 0; i < m_elements.length(); ++i) {
+	for (int i = 0; i < m_elements.length(); ++i) {
 		delete m_elements[i];
 	}
 }
@@ -149,7 +149,7 @@ UIBaseElement::SetParentDisabled(bool disabled)
 void
 UIBaseElement::UpdateDisabledState()
 {
-	for (unsigned i = 0; i < m_elements.length(); ++i) {
+	for (int i = 0; i < m_elements.length(); ++i) {
 		m_elements[i]->SetParentDisabled(IsDisabled());
 	}
 }
@@ -157,7 +157,7 @@ UIBaseElement::UpdateDisabledState()
 void
 UIBaseElement::Draw()
 {
-	for (unsigned i = 0; i < m_elements.length(); ++i) {
+	for (int i = 0; i < m_elements.length(); ++i) {
 		if (m_elements[i]->IsShown()) {
 			m_elements[i]->Draw();
 		}
@@ -167,7 +167,7 @@ UIBaseElement::Draw()
 bool
 UIBaseElement::HandleEvent(const SDL_Event &event)
 {
-	for (unsigned i = m_elements.length(); i--; ) {
+	for (int i = m_elements.length(); i--; ) {
 		if (m_elements[i]->IsDisabled()) {
 			continue;
 		}
@@ -181,7 +181,7 @@ UIBaseElement::HandleEvent(const SDL_Event &event)
 UIBaseElement *
 UIBaseElement::GetElement(const char *name)
 {
-	for (unsigned i = 0; i < m_elements.length(); ++i) {
+	for (int i = 0; i < m_elements.length(); ++i) {
 		if (strcmp(name, m_elements[i]->GetName()) == 0) {
 			return m_elements[i];
 		}
