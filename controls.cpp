@@ -120,7 +120,7 @@ ControlsDialogDelegate::OnLoad()
 {
 	char name[32];
 
-	for (int i = 0; i < SDL_arraysize(m_controlKeys); ++i) {
+	for (int i = 0; (unsigned)i < SDL_arraysize(m_controlKeys); ++i) {
 		sprintf(name, "control%d", 1+i);
 		m_controlKeys[i] = m_panel->GetElement<UIElement>(name);
 		if (!m_controlKeys[i]) {
@@ -148,7 +148,7 @@ ControlsDialogDelegate::OnShow()
 		button->SetChecked(true);
 	}
 
-	for (int i = 0; i < SDL_arraysize(m_keyinuseTimers); ++i) {
+	for (int i = 0; (unsigned)i < SDL_arraysize(m_keyinuseTimers); ++i) {
 		m_keyinuseTimers[i] = 0;
 	}
 
@@ -170,7 +170,7 @@ ControlsDialogDelegate::OnHide()
 void
 ControlsDialogDelegate::OnTick()
 {
-	for (int i = 0; i < SDL_arraysize(m_keyinuseTimers); ++i) {
+	for (int i = 0; (unsigned)i < SDL_arraysize(m_keyinuseTimers); ++i) {
 		if (m_keyinuseTimers[i] && (SDL_GetTicks() - m_keyinuseTimers[i]) > 1000) {
 			m_keyinuseTimers[i] = 0;
 			ShowKeyLabel(i);
