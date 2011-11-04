@@ -25,12 +25,15 @@ typedef struct HashItem
     const void *key;
     const void *value;
     struct HashItem *next;
+    struct HashItem *global_next;
+    struct HashItem *global_prev;
 } HashItem;
 
 struct HashTable
 {
     HashItem **table;
     unsigned table_len;
+    HashItem *list;
     void *data;
     HashTable_HashFn hash;
     HashTable_KeyMatchFn keymatch;
@@ -72,6 +75,29 @@ int hash_find(const HashTable *table, const void *key, const void **_value)
     return 0;
 } // hash_find
 
+int hash_iter(const HashTable *table, const void **key,
+              const void **value, void **iter)
+{
+    HashItem *i = *iter;
+    if (i == NULL)
+        i = table->list;
+    else
+        i = i->global_next;
+
+    if (i != NULL)
+    {
+        *key = i->key;
+        *value = i->value;
+        *iter = i;
+        return 1;
+    }
+
+    *key = NULL;
+    *value = NULL;
+    *iter = NULL;
+    return 0;
+} // hash_iter
+
 int hash_insert(HashTable *table, const void *key, const void *value)
 {
     HashItem *item = NULL;
@@ -87,6 +113,12 @@ int hash_insert(HashTable *table, const void *key, const void *value)
     item->key = key;
     item->value = value;
     item->next = table->table[hash];
+    item->global_next = table->list;
+    if (table->list) {
+        table->list->global_prev = item;
+    }
+    item->global_prev = NULL;
+    table->list = item;
     table->table[hash] = item;
 
     return 1;
@@ -106,6 +138,11 @@ int hash_remove(HashTable *table, const void *key)
                 prev->next = item->next;
             else
                 table->table[hash] = item->next;
+
+            if (item->global_prev)
+                item->global_prev->global_next = item->global_next;
+            if (item->global_next)
+                item->global_next->global_prev = item->global_prev;
 
             table->nuke(item->key, item->value, data);
             free(item);

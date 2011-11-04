@@ -38,6 +38,7 @@
 #include "myerror.h"
 #include "fastrand.h"
 #include "logic.h"
+#include "prefs.h"
 #include "scores.h"
 #include "controls.h"
 
@@ -52,6 +53,9 @@ enum {
 	NUM_FONTS
 };
 extern MFont *fonts[NUM_FONTS];
+
+// The Preferences
+extern Prefs *prefs;
 
 // The Sound Server *grin*
 extern Sound *sound;

@@ -23,6 +23,8 @@ Maelstrom_SOURCES =		\
 	main.h			\
 	myerror.cpp		\
 	myerror.h		\
+	prefs.cpp		\
+	prefs.h			\
 	rect.cpp		\
 	rect.h			\
 	scores.cpp		\

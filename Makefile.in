@@ -53,8 +53,8 @@ binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_Maelstrom_OBJECTS = MaelstromUI.$(OBJEXT) MacDialog.$(OBJEXT) \
 	controls.$(OBJEXT) fastrand.$(OBJEXT) init.$(OBJEXT) \
-	load.$(OBJEXT) main.$(OBJEXT) myerror.$(OBJEXT) rect.$(OBJEXT) \
-	scores.$(OBJEXT)
+	load.$(OBJEXT) main.$(OBJEXT) myerror.$(OBJEXT) \
+	prefs.$(OBJEXT) rect.$(OBJEXT) scores.$(OBJEXT)
 Maelstrom_OBJECTS = $(am_Maelstrom_OBJECTS)
 Maelstrom_DEPENDENCIES = $(LOGIC)/liblogic.a screenlib/libSDLscreen.a \
 	maclib/libSDLmac.a utils/libutils.a
@@ -220,6 +220,8 @@ Maelstrom_SOURCES = \
 	main.h			\
 	myerror.cpp		\
 	myerror.h		\
+	prefs.cpp		\
+	prefs.h			\
 	rect.cpp		\
 	rect.h			\
 	scores.cpp		\
@@ -334,6 +336,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/load.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/myerror.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prefs.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rect.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scores.Po@am__quote@
 

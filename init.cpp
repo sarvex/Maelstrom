@@ -35,7 +35,10 @@
 #include "screenlib/UIElement.h"
 
 
+#define GAME_PREFS_FILE	"Maelstrom_Prefs.txt"
+
 // Global variables set in this file...
+Prefs    *prefs = NULL;
 Sound    *sound = NULL;
 FontServ *fontserv = NULL;
 MFont    *fonts[NUM_FONTS];
@@ -658,7 +661,10 @@ void CleanUp(void)
 		delete sound;
 		sound = NULL;
 	}
-	SaveControls();
+	if ( prefs ) {
+		delete prefs;
+		prefs = NULL;
+	}
 	PHYSFS_deinit();
 	SDL_Quit();
 }
@@ -671,6 +677,16 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 	int i;
 	SDL_Surface *icon;
 
+	// -- Initialize some variables
+	gLastHigh = -1;
+
+	// -- Create our scores file
+	LoadScores();
+
+	// -- Load our preferences files
+	prefs = new Prefs(GAME_PREFS_FILE);
+	prefs->Load();
+
 	Uint32 init_flags = (SDL_INIT_VIDEO|SDL_INIT_AUDIO);
 #ifdef SDL_INIT_JOYSTICK
 	init_flags |= SDL_INIT_JOYSTICK;
@@ -682,12 +698,6 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 			return(-1);
 		}
 	}
-
-	// -- Initialize some variables
-	gLastHigh = -1;
-
-	// -- Create our scores file
-	LoadScores();
 
 #ifdef SDL_INIT_JOYSTICK
 	/* Initialize the first joystick */
