@@ -49,7 +49,7 @@ class Controls
 public:
 	Controls();
 
-	void Register(Prefs *prefs);
+	void Bind(Prefs *prefs);
 
 public:
 	PrefsVariable<SDL_Keycode> gPauseControl;

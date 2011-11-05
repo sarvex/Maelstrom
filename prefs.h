@@ -116,7 +116,7 @@ public:
 		return value;
 	}
 
-	void Register(Prefs *prefs) {
+	void Bind(Prefs *prefs) {
 		m_prefs = prefs;
 		m_prefs->Get(m_name, m_value, m_defaultValue);
 	}

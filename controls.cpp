@@ -48,15 +48,15 @@ Controls::Controls() :
 }
 
 void
-Controls::Register(Prefs *prefs)
+Controls::Bind(Prefs *prefs)
 {
-	gPauseControl.Register(prefs);
-	gShieldControl.Register(prefs);
-	gThrustControl.Register(prefs);
-	gTurnRControl.Register(prefs);
-	gTurnLControl.Register(prefs);
-	gFireControl.Register(prefs);
-	gQuitControl.Register(prefs);
+	gPauseControl.Bind(prefs);
+	gShieldControl.Bind(prefs);
+	gThrustControl.Bind(prefs);
+	gTurnRControl.Bind(prefs);
+	gTurnLControl.Bind(prefs);
+	gFireControl.Bind(prefs);
+	gQuitControl.Bind(prefs);
 }
 
 Controls controls;
@@ -66,9 +66,9 @@ PrefsVariable<Uint8> gGammaCorrect("GammaCorrect", 3);
 
 void LoadControls(void)
 {
-	gSoundLevel.Register(prefs);
-	gGammaCorrect.Register(prefs);
-	controls.Register(prefs);
+	gSoundLevel.Bind(prefs);
+	gGammaCorrect.Bind(prefs);
+	controls.Bind(prefs);
 }
 
 void SaveControls(void)
