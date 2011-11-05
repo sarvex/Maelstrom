@@ -5,4 +5,6 @@ libutils_a_SOURCES =	\
 	hashtable.c		\
 	hashtable.h		\
 	physfsrwops.c		\
-	physfsrwops.h
+	physfsrwops.h		\
+	prefs.cpp		\
+	prefs.h

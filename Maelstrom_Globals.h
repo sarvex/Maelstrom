@@ -33,12 +33,13 @@
 #include "maclib/Mac_Sound.h"
 #include "maclib/Mac_Compat.h"
 
+#include "utils/prefs.h"
+
 #include "Maelstrom.h"
 
 #include "myerror.h"
 #include "fastrand.h"
 #include "logic.h"
-#include "prefs.h"
 #include "scores.h"
 #include "controls.h"
 
@@ -106,8 +107,8 @@ extern StarPtr	gTheStars[MAX_STARS];
 extern Uint32	gStarColors[];
 // in controls.cpp :
 extern Controls	controls;
-extern PrefsVariable<Uint8> gSoundLevel;
-extern PrefsVariable<Uint8> gGammaCorrect;
+extern PrefsVariable<int> gSoundLevel;
+extern PrefsVariable<int> gGammaCorrect;
 // int scores.cpp :
 extern Scores	hScores[];
 

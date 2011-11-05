@@ -1,29 +1,23 @@
 /*
-    Maelstrom: Open Source version of the classic game by Ambrosia Software
-    Copyright (C) 1997-2011  Sam Lantinga
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
 
 #ifndef _prefs_h
 #define _prefs_h
-
-#include "SDL.h"
 
 class HashTable;
 
@@ -37,32 +31,20 @@ public:
 	bool Save();
 
 	void SetString(const char *key, const char *value);
-	void SetNumber(const char *key, Uint32 value);
+	void SetNumber(const char *key, int value);
 	void Set(const char *key, const char *value) {
 		SetString(key, value);
 	}
 	void Set(const char *key, int value) {
 		SetNumber(key, value);
 	}
-	void Set(const char *key, Uint32 value) {
-		SetNumber(key, value);
-	}
-	void Set(const char *key, Uint8 value) {
-		SetNumber(key, value);
-	}
 
-	const char *GetString(const char *key, const char *defaultValue = NULL);
-	Uint32 GetNumber(const char *key, Uint32 defaultValue = 0);
+	const char *GetString(const char *key, const char *defaultValue = 0);
+	int GetNumber(const char *key, int defaultValue = 0);
 	void Get(const char *key, const char *&value, const char *defaultValue) {
 		value = GetString(key, defaultValue);
 	}
 	void Get(const char *key, int &value, int defaultValue) {
-		value = GetNumber(key, defaultValue);
-	}
-	void Get(const char *key, Uint32 &value, Uint32 defaultValue) {
-		value = GetNumber(key, defaultValue);
-	}
-	void Get(const char *key, Uint8 &value, Uint8 defaultValue) {
 		value = GetNumber(key, defaultValue);
 	}
 
@@ -76,7 +58,7 @@ class PrefsVariable
 {
 public:
 	PrefsVariable(const char *name, const T &rhs) {
-		m_prefs = NULL;
+		m_prefs = 0;
 		m_name = name;
 		m_defaultValue = m_value = rhs;
 	}

@@ -60,8 +60,8 @@ Controls::Bind(Prefs *prefs)
 }
 
 Controls controls;
-PrefsVariable<Uint8> gSoundLevel("SoundLevel", 4);
-PrefsVariable<Uint8> gGammaCorrect("GammaCorrect", 3);
+PrefsVariable<int> gSoundLevel("SoundLevel", 4);
+PrefsVariable<int> gGammaCorrect("GammaCorrect", 3);
 
 
 void LoadControls(void)
