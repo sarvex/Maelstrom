@@ -25,6 +25,12 @@
 #include "UIElement.h"
 #include "UIElementCheckbox.h"
 
+class UIRadioDelegate
+{
+public:
+	virtual void OnValueChanged(int oldValue, int newValue) { }
+};
+
 //
 // This file has two classes:
 //
@@ -55,9 +61,15 @@ public:
 		return m_value;
 	}
 
+	// Setting a callback sets a simplified delegate
+	// Once set, the element owns the delegate and will free it.
+	void SetCallback(void (*callback)(int value));
+	void SetDelegate(UIRadioDelegate *delegate);
+
 protected:
 	int m_value;
 	char *m_valueBinding;
+	UIRadioDelegate *m_delegate;
 };
 
 class UIElementRadioButton : public UIElementCheckbox

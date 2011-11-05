@@ -21,6 +21,23 @@
 
 #include "UIElementRadio.h"
 
+
+class SimpleRadioDelegate : public UIRadioDelegate
+{
+public:
+	SimpleRadioDelegate(void (*callback)(int value)) {
+		m_callback = callback;
+	}
+
+	virtual void OnValueChanged(int oldValue, int newValue) {
+		m_callback(newValue);
+	}
+
+protected:
+	void (*m_callback)(int value);
+};
+
+
 UIElementType UIElementRadioGroup::s_elementType;
 
 
@@ -29,12 +46,16 @@ UIElementRadioGroup::UIElementRadioGroup(UIBaseElement *parent, const char *name
 {
 	m_value = -1;
 	m_valueBinding = NULL;
+	m_delegate = NULL;
 }
 
 UIElementRadioGroup::~UIElementRadioGroup()
 {
 	if (m_valueBinding) {
 		SDL_free(m_valueBinding);
+	}
+	if (m_delegate) {
+		delete m_delegate;
 	}
 }
 
@@ -89,12 +110,14 @@ UIElementRadioGroup::GetRadioButton(int id)
 void
 UIElementRadioGroup::SetValue(int value)
 {
+	int oldValue;
 	array<UIElementRadioButton*> buttons;
 
 	if (value == m_value) {
 		return;
 	}
 
+	oldValue = m_value;
 	m_value = value;
 
 	FindElements<UIElementRadioButton>(buttons);
@@ -105,6 +128,25 @@ UIElementRadioGroup::SetValue(int value)
 			buttons[i]->SetChecked(false);
 		}
 	}
+
+	if (m_delegate) {
+		m_delegate->OnValueChanged(oldValue, m_value);
+	}
+}
+
+void
+UIElementRadioGroup::SetCallback(void (*callback)(int value))
+{
+	SetDelegate(new SimpleRadioDelegate(callback));
+}
+
+void
+UIElementRadioGroup::SetDelegate(UIRadioDelegate *delegate)
+{
+	if (m_delegate) {
+		delete m_delegate;
+	}
+	m_delegate = delegate;
 }
 
 
@@ -120,11 +162,12 @@ UIElementRadioButton::UIElementRadioButton(UIBaseElement *parent, const char *na
 bool
 UIElementRadioButton::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 {
+	// Load the ID first so OnChecked() will do the right thing
+	LoadNumber(node, "id", m_id);
+
 	if (!UIElementCheckbox::Load(node, templates)) {
 		return false;
 	}
-
-	LoadNumber(node, "id", m_id);
 
 	return true;
 }
