@@ -30,89 +30,6 @@
 #include "../screenlib/UIElement.h"
 
 
-#ifdef MOVIE_SUPPORT
-extern int gMovie;
-static SDL_Rect gMovieRect;
-int SelectMovieRect(void)
-{
-	SDL_Event event;
-	SDL_Surface *saved;
-	Uint32 white;
-	int center_x, center_y;
-	int width, height;
-
-	/* Wait for initial button press */
-	screen->ShowCursor();
-	center_x = 0;
-	center_y = 0;
-	while ( ! center_x && ! center_y ) {
-		screen->WaitEvent(&event);
-
-		/* Check for escape key */
-		if ( (event.type == SDL_KEYEVENT) && 
-				(event.key.state == SDL_PRESSED) &&
-				(event.key.keysym.sym == SDL_ESCAPE) ) {
-			screen->HideCursor();
-			return(0);
-		}
-
-		/* Wait for button press */
-		if ( (event.type == SDL_MOUSEBUTTONEVENT) && 
-				(event.button.state == SDL_PRESSED) ) {
-			center_x = event.button.x;
-			center_y = event.button.y;
-			break;
-		}
-	}
-
-	/* Save the screen */
-	white = screen->MapRGB(0xFFFF, 0xFFFF, 0xFFFF);
-	saved = screen->GrabArea(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-
-	/* As the box moves... */
-	width = height = 0;
-	while ( 1 ) {
-		win->GetEvent(&event);
-
-		/* Check for escape key */
-		if ( (event.type == SDL_KEYEVENT) && 
-				(event.key.state == SDL_PRESSED) &&
-				(event.key.keysym.sym == SDL_ESCAPE) ) {
-			screen->QueueBlit(0, 0, saved, NOCLIP);
-			screen->Update();
-			screen->FreeImage(saved);
-			win->HideCursor();
-			return(0);
-		}
-
-		/* Check for ending button press */
-		if ( event.type == ButtonPress ) {
-			gMovieRect.x = center_x - width;
-			gMovieRect.y = center_y - height;
-			gMovieRect.w = 2*width;
-			gMovieRect.h = 2*height;
-			screen->QueueBlit(0, 0, saved, NOCLIP);
-			screen->Update();
-			screen->FreeImage(saved);
-			win->HideCursor();
-			return(1);
-		}
-
-		if ( event.type == MotionNotify ) {
-			screen->QueueBlit(0, 0, saved, NOCLIP);
-			screen->Update();
-			width = abs(event.motion.x - center_x);
-			height = abs(event.motion.y - center_y);
-			screen->DrawRect(center_x-width, center_y-height,
-						2*width, 2*height, white);
-			screen->Update();
-		}
-	}
-	/* NEVERREACHED */
-
-}
-#endif
-
 // Global variables set in this file...
 int	gGameOn;
 int	gPaused;
@@ -553,10 +470,6 @@ GamePanelDelegate::DoHousekeeping()
 {
 	int i;
 
-#ifdef MOVIE_SUPPORT
-	if ( gMovie )
-		screen->ScreenDump("MovieFrame", &gMovieRect);
-#endif
 	/* -- Maybe throw a multiplier up on the screen */
 	if (gMultiplierShown && (--gMultiplierShown == 0) )
 		MakeMultiplier();

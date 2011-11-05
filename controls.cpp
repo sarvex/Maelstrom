@@ -60,9 +60,6 @@ Controls::Register(Prefs *prefs)
 }
 
 Controls controls;
-#ifdef MOVIE_SUPPORT
-int	gMovie = 0;
-#endif
 PrefsVariable<Uint8> gSoundLevel("SoundLevel", 4);
 PrefsVariable<Uint8> gGammaCorrect("GammaCorrect", 3);
 
@@ -326,18 +323,6 @@ static void HandleEvent(SDL_Event *event)
 					 */
 					screen->ScreenDump("ScreenShot",
 								0, 0, 0, 0);
-#ifdef MOVIE_SUPPORT
-				} else if ( key == XK_F5 ) {
-					/* Special key --
-						Toggle movie function.
-					 */
-					extern int SelectMovieRect(void);
-					if ( ! gMovie )
-						gMovie = SelectMovieRect();
-					else
-						gMovie = 0;
-mesg("Movie is %s...\n", gMovie ? "started" : "stopped");
-#endif
 				}
 			} else {
 				/* Update control key status */
