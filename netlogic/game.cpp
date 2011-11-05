@@ -29,8 +29,10 @@
 #include "game.h"
 #include "../screenlib/UIElement.h"
 
+#define PREFERENCES_HANDLE "Handle"
 
 // Global variables set in this file...
+int	gScore;
 int	gGameOn;
 int	gPaused;
 int	gWave;
@@ -890,9 +892,10 @@ static void DoGameOver(void)
 		Delay(SOUND_DELAY);
 
 	/* -- See if they got a high score */
+	gScore = OurShip->GetScore();
 	LoadScores();
 	for ( i = 0; i<10; ++i ) {
-		if ( OurShip->GetScore() > hScores[i].score ) {
+		if ( gScore > hScores[i].score ) {
 			which = i;
 			break;
 		}
@@ -904,32 +907,27 @@ static void DoGameOver(void)
 	if ((which != -1) && (gStartLevel == 1) && (gStartLives == 3) &&
 					(gNumPlayers == 1) && !gDeathMatch ) {
 		sound->PlaySound(gBonusShot, 5);
-		for ( i = 8; i >= which ; --i ) {
-			hScores[i + 1].score = hScores[i].score;
-			hScores[i + 1].wave = hScores[i].wave;
-			strcpy(hScores[i+1].name, hScores[i].name);
+
+		/* Get the previously used handle, if possible */
+		const char *text = prefs->GetString(PREFERENCES_HANDLE);
+		if (text) {
+			SDL_strlcpy(handle, text, sizeof(handle));
+		} else {
+			*handle = '\0';
 		}
+		chars_in_handle = SDL_strlen(handle);
 
 		/* -- Let them enter their name */
-		const char *text = NULL;
 		label = panel->GetElement<UIElement>("name_label");
 		if (label) {
 			label->Show();
 		}
 		label = panel->GetElement<UIElement>("name");
 		if (label) {
-			text = label->GetText();
+			label->SetText(handle);
 			label->Show();
 		}
 		ui->Draw();
-
-		/* Get the previously used handle, if possible */
-		if (text) {
-			SDL_strlcpy(handle, text, sizeof(handle));
-		} else {
-			handle[0] = '\0';
-		}
-		chars_in_handle = SDL_strlen(handle);
 
 		while ( screen->PollEvent(&event) ) /* Loop, flushing events */;
 		SDL_StartTextInput();
@@ -971,9 +969,17 @@ static void DoGameOver(void)
 		}
 		SDL_StopTextInput();
 
-		hScores[which].wave = gWave;
-		hScores[which].score = OurShip->GetScore();
-		strcpy(hScores[which].name, handle);
+		if (*handle) {
+			for ( i = 8; i >= which ; --i ) {
+				hScores[i + 1].score = hScores[i].score;
+				hScores[i + 1].wave = hScores[i].wave;
+				strcpy(hScores[i+1].name, hScores[i].name);
+			}
+			hScores[which].wave = gWave;
+			hScores[which].score = OurShip->GetScore();
+			strcpy(hScores[which].name, handle);
+			prefs->SetString(PREFERENCES_HANDLE, handle);
+		}
 
 		sound->HaltSound();
 		sound->PlaySound(gGotPrize, 6);
