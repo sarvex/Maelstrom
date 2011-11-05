@@ -20,8 +20,11 @@
     slouken@libsdl.org
 */
 
-/* Functions in netplay.cc */
-extern int   InitNetData(void);
+// Forward declaration from SDL_net.h
+typedef struct _UDPsocket *UDPsocket;
+
+/* Functions in netplay.cpp */
+extern int   InitNetData(bool hosting);
 extern void  HaltNetData(void);
 extern int   AddPlayer(const char *playerstr);
 extern int   CheckPlayers(void);
@@ -31,8 +34,8 @@ extern int   GetSyncBuf(int index, unsigned char **bufptr);
 extern int   Send_NewGame(int *Wave, int *Lives, int *Turbo);
 extern int   Await_NewGame(int *Wave, int *Lives, int *Turbo);
 
-/* Variables from netplay.cc */
+/* Variables from netplay.cpp */
 extern int	gOurPlayer;
 extern int	gNumPlayers;
 extern int	gDeathMatch;
-
+extern UDPsocket gNetFD;

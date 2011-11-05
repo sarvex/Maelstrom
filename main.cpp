@@ -37,6 +37,7 @@
 #include "init.h"
 #include "fastrand.h"
 #include "netlogic/about.h"
+#include "netlogic/netplay.h"
 #include "main.h"
 
 #include "screenlib/UIDialog.h"
@@ -63,12 +64,20 @@ static void RunDoAbout(void*)
 {
 	ui->ShowPanel(PANEL_ABOUT);
 }
+static void RunSinglePlayerGame()
+{
+	if (InitNetData(false) < 0) {
+		return;
+	}
+	NewGame();
+	HaltNetData();
+}
 static void RunPlayGame(void*)
 {
 	gStartLevel = 1;
 	gStartLives = 3;
 	gNoDelay = 0;
-	NewGame();
+	RunSinglePlayerGame();
 }
 static void RunQuitGame(void*)
 {
@@ -149,7 +158,7 @@ static void CheatDialogDone(UIDialog *dialog, int status)
 		Delay(SOUND_DELAY);
 		sound->PlaySound(gNewLife, 5);
 		Delay(SOUND_DELAY);
-		NewGame();
+		RunSinglePlayerGame();
 	}
 }
 static void RunScreenshot(void*)
@@ -181,7 +190,6 @@ void PrintUsage(void)
 "	-fullscreen		# Run Maelstrom in full-screen mode\n"
 "	-windowed		# Run Maelstrom in windowed mode\n"
 	);
-	LogicUsage();
 	error("\n");
 	exit(1);
 }
@@ -253,11 +261,6 @@ int main(int argc, char *argv[])
 	/* Seed the random number generator */
 	SeedRandom(0L);
 
-	/* Initialize game logic data structures */
-	if ( InitLogicData() < 0 ) {
-		exit(1);
-	}
-
 	/* Parse command line arguments */
 #ifdef __MACOSX__
 	//window_flags |= SDL_WINDOW_FULLSCREEN;
@@ -268,8 +271,6 @@ int main(int argc, char *argv[])
 		} else
 		if ( strcmp(argv[1], "-windowed") == 0 ) {
 			window_flags &= ~SDL_WINDOW_FULLSCREEN;
-		} else if ( LogicParseArgs(&argv, &argc) == 0 ) {
-			/* LogicParseArgs() took care of everything */;
 		} else if ( strcmp(argv[1], "-version") == 0 ) {
 			error("%s", Version);
 			exit(0);
@@ -277,10 +278,6 @@ int main(int argc, char *argv[])
 			PrintUsage();
 		}
 	}
-
-	/* Make sure we have a valid player list (netlogic) */
-	if ( InitLogic() < 0 )
-		exit(1);
 
 	/* Initialize everything. :) */
 	if ( DoInitializations(window_flags, render_flags) < 0 ) {
@@ -291,8 +288,10 @@ int main(int argc, char *argv[])
 
 	DropEvents();
 	gRunning = true;
+#ifndef FAST_ITERATION
 	while ( sound->Playing() )
 		Delay(SOUND_DELAY);
+#endif
 	ui->ShowPanel(PANEL_MAIN);
 
 	while ( gRunning ) {
@@ -340,6 +339,10 @@ MainPanelDelegate::OnLoad()
 	button = m_panel->GetElement<UIElementButton>("PlayButton");
 	if (button) {
 		button->SetClickCallback(RunPlayGame);
+	}
+	button = m_panel->GetElement<UIElementButton>("MultiplayerButton");
+	if (button) {
+		button->SetClickCallback(new UIDialogLauncher(ui, DIALOG_LOBBY));
 	}
 	button = m_panel->GetElement<UIElementButton>("ControlsButton");
 	if (button) {

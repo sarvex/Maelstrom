@@ -20,25 +20,49 @@
     slouken@libsdl.org
 */
 
-/* Game Logic interface routines and variables */
+#ifndef _lobby_h
+#define _lobby_h
 
-#include "netlogic/netlogic.h"
+#include "SDL_net.h"
+#include "packet.h"
+#include "../utils/array.h"
+#include "../screenlib/UIDialog.h"
 
-/* From logic.cpp */
-extern int  InitPlayerSprites(void);
-extern void SetControl(unsigned char which, int toggle);
-extern int  SpecialKey(SDL_Keycode key);
-extern int GetScore(void);
+// Forward declarations of UI elements
+class UIElementCheckbox;
+class UIElementRadioGroup;
 
-/* From game.cpp */
-extern void NewGame(void);
+enum {
+	HOST_GAME = 1,
+	JOIN_GAME = 2,
+};
 
-/* From about.cpp */
-extern void DoAbout(void);
+class LobbyDialogDelegate : public UIDialogDelegate
+{
+public:
+	LobbyDialogDelegate(UIPanel *panel);
 
-/* From player.cpp */
-extern Uint8 gPlayerShotColors[];
-extern SDL_Texture *gPlayerShot;
-extern Uint8 gEnemyShotColors[];
-extern SDL_Texture *gEnemyShot;
+	override bool OnLoad();
+	override void OnShow();
+	override void OnHide();
+	override void OnTick();
 
+protected:
+	void SetHostOrJoin(void*, int value);
+	void GlobalGameChanged(void*);
+
+	void AdvertiseGame();
+	void GetGameList();
+	void ClearGameList();
+
+protected:
+	IPaddress m_globalServer;
+	array<IPaddress> m_addresses;
+	DynamicPacket m_packet;
+	bool m_hosting;
+	Uint32 m_lastGlobalCheck;
+	UIElementRadioGroup *m_hostOrJoin;
+	UIElementCheckbox *m_globalGame;
+};
+
+#endif // _lobby_h

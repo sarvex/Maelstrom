@@ -41,6 +41,9 @@ public:
 		}
 		return false;
 	}
+	void clear() {
+		m_len = 0;
+	}
 	void add(const T& item) {
 		resize(m_len+1);
 		m_data[m_len++] = item;

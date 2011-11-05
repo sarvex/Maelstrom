@@ -27,6 +27,7 @@
 #include "controls.h"
 #include "netlogic/about.h"
 #include "netlogic/game.h"
+#include "netlogic/lobby.h"
 #include "MacDialog.h"
 #include "screenlib/UIElementButton.h"
 #include "screenlib/UIElementCheckbox.h"
@@ -172,6 +173,8 @@ MaelstromUI::CreatePanelDelegate(UIPanel *panel, const char *delegate)
 		return new MainPanelDelegate(panel);
 	} else if (strcasecmp(delegate, "AboutPanel") == 0) {
 		return new AboutPanelDelegate(panel);
+	} else if (strcasecmp(delegate, "LobbyDialog") == 0) {
+		return new LobbyDialogDelegate(panel);
 	} else if (strcasecmp(delegate, "GamePanel") == 0) {
 		return new GamePanelDelegate(panel);
 	} else if (strcasecmp(delegate, "ControlsDialog") == 0) {

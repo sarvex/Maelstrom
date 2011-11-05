@@ -121,8 +121,7 @@ ControlsDialogDelegate::OnShow()
 void
 ControlsDialogDelegate::OnHide()
 {
-	if (m_panel->IsA(UIDialog::GetType()) &&
-	    static_cast<UIDialog*>(m_panel)->GetDialogStatus() > 0) {
+	if (m_dialog->GetDialogStatus() > 0) {
 		controls = m_controls;
 		SaveControls();
 	}

@@ -26,77 +26,13 @@
 #include "globals.h"
 #include "netplay.h"
 
-/* Extra options specific to this logic module */
-void LogicUsage(void)
-{
-	error(
-"	-player N[@host][:port]	# Designate player N (at host and/or port)\n"
-"	-deathmatch [N]		# Play deathmatch to N frags (default = 8)\n"
-	);
-}
-
-/* Initialize special logic data */
-int InitLogicData(void)
-{
-	/* Initialize network player data */
-	if ( InitNetData() < 0 ) {
-		return(-1);
-	}
-	gDeathMatch = 0;
-	return(0);
-}
-
-/* Parse logic-specific command line arguments */
-int LogicParseArgs(char ***argvptr, int *argcptr)
-{
-	char **argv = *argvptr;
-
-	/* Check for the '-player' option */
-	if ( strcmp(argv[1], "-player") == 0 ) {
-		if ( ! argv[2] ) {
-			error(
-			"The '-player' option requires an argument!\n");
-			PrintUsage();
-		}
-		if ( AddPlayer(argv[2]) < 0 )
-			exit(1);
-		++(*argvptr);
-		--(*argcptr);
-		return(0);
-	}
-
-	/* Check for the '-deathmatch' option */
-	if ( strcmp(argv[1], "-deathmatch") == 0 ) {
-		if ( argv[2] && ((gDeathMatch=atoi(argv[2])) > 0) ) {
-			++(*argvptr);
-			--(*argcptr);
-		} else
-			gDeathMatch = 8;
-		return(0);
-	}
-	return(-1);
-}
-
-/* Do final logic initialization */
-int InitLogic(void)
-{
-	/* Make sure we have a valid player list */
-	if ( CheckPlayers() < 0 )
-		return(-1);
-	return(0);
-}
-
-void HaltLogic(void)
-{
-	HaltNetData();
-}
 
 /* Initialize the player sprites */
 int InitPlayerSprites(void)
 {
 	int index;
 
-	OBJ_LOOP(index, gNumPlayers)
+	OBJ_LOOP(index, MAX_PLAYERS)
 		gPlayers[index] = new Player(index);
 	return(0);
 }
@@ -119,6 +55,6 @@ void SetControl(unsigned char which, int toggle)
 
 int GetScore(void)
 {
-	return(OurShip->GetScore());
+	return gScore;
 }
 

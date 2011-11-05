@@ -20,25 +20,43 @@
     slouken@libsdl.org
 */
 
-/* Game Logic interface routines and variables */
+#include "SDL_net.h"
 
-#include "netlogic/netlogic.h"
+#include "netlogic/protocol.h"
 
-/* From logic.cpp */
-extern int  InitPlayerSprites(void);
-extern void SetControl(unsigned char which, int toggle);
-extern int  SpecialKey(SDL_Keycode key);
-extern int GetScore(void);
+#define MAX_PACKET_SIZE	1024
 
-/* From game.cpp */
-extern void NewGame(void);
+void ProcessPacket(UDPpacket *packet)
+{
+	printf("Received packet from %s\n", SDLNet_ResolveIP(&packet->address));
+}
 
-/* From about.cpp */
-extern void DoAbout(void);
+int main(int argc, char *argv[])
+{
+	UDPsocket sock;
+	UDPpacket *packet;
 
-/* From player.cpp */
-extern Uint8 gPlayerShotColors[];
-extern SDL_Texture *gPlayerShot;
-extern Uint8 gEnemyShotColors[];
-extern SDL_Texture *gEnemyShot;
+	sock = SDLNet_UDP_Open(LOBBY_PORT);
+	if (!sock) {
+		fprintf(stderr, "Couldn't create socket on port %d: %s\n",
+			LOBBY_PORT, SDL_GetError());
+		exit(1);
+	}
 
+	packet = SDLNet_AllocPacket(MAX_PACKET_SIZE);
+	if (!packet) {
+		fprintf(stderr, "Couldn't allocate packet of size %d: %s\n",
+			MAX_PACKET_SIZE, SDL_GetError());
+		SDLNet_UDP_Close(sock);
+		exit(1);
+	}
+
+	for ( ; ; ) {
+		while (SDLNet_UDP_Recv(sock, packet)) {
+			ProcessPacket(packet);
+		}
+
+		SDL_Delay(100);
+	}
+	SDLNet_UDP_Close(sock);
+}

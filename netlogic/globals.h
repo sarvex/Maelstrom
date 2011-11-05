@@ -24,6 +24,7 @@
 /* -- Special logic module variables */
 
 // in game.cc :
+extern int	gScore;
 extern int	gDisplayed;
 extern int	gGameOn;
 extern int	gPaused;

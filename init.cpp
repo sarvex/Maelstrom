@@ -639,7 +639,6 @@ static void BuildVelocityTable(void)
 */
 void CleanUp(void)
 {
-	HaltLogic();
 	SaveControls();
 	if ( spriteres ) {
 		delete spriteres;

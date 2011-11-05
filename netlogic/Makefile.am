@@ -6,6 +6,8 @@ liblogic_a_SOURCES =		\
 	game.cpp		\
 	game.h			\
 	globals.h		\
+	lobby.cpp		\
+	lobby.h			\
 	logic.cpp		\
 	make.cpp		\
 	make.h			\
@@ -16,6 +18,7 @@ liblogic_a_SOURCES =		\
 	object.h		\
 	objects.cpp		\
 	objects.h		\
+	packet.h		\
 	player.cpp		\
 	player.h		\
 	protocol.h		\

@@ -23,6 +23,8 @@
 #ifndef _controls_h
 #define _controls_h
 
+#include "screenlib/UIDialog.h"
+
 // Functions from controls.cc
 #ifdef USE_JOYSTICK
 extern void	CalibrateJoystick(char *joystick);
@@ -65,10 +67,10 @@ public:
 class UIElement;
 class UIElementRadioGroup;
 
-class ControlsDialogDelegate : public UIPanelDelegate
+class ControlsDialogDelegate : public UIDialogDelegate
 {
 public:
-	ControlsDialogDelegate(UIPanel *panel) : UIPanelDelegate(panel) { }
+	ControlsDialogDelegate(UIPanel *panel) : UIDialogDelegate(panel) { }
 
 	virtual bool OnLoad();
 	virtual void OnShow();

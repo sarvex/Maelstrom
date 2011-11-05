@@ -1,6 +1,7 @@
 
 
 bin_PROGRAMS = Maelstrom
+noinst_PROGRAMS = MaelstromLobby
 
 Maelstrom_SOURCES =		\
 	Maelstrom.h		\
@@ -28,16 +29,18 @@ Maelstrom_SOURCES =		\
 	scores.cpp		\
 	scores.h
 
-LOGIC = netlogic
-
 Maelstrom_LDADD = 			\
-	$(LOGIC)/liblogic.a		\
+	netlogic/liblogic.a		\
 	screenlib/libSDLscreen.a	\
 	maclib/libSDLmac.a		\
 	utils/libutils.a		\
 	@MATHLIB@ @INETLIB@ @ICONOBJ@
 
-SUBDIRS = $(LOGIC) screenlib maclib utils
+MaelstromLobby_SOURCES = MaelstromLobby.cpp
+
+MaelstromLobby_LDADD = @INETLIB@
+
+SUBDIRS = netlogic screenlib maclib utils
 
 EXTRA_DIST =			\
 	autogen.sh		\

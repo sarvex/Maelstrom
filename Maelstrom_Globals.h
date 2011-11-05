@@ -27,7 +27,6 @@
 
 #include "screenlib/SDL_FrameBuf.h"
 #include "screenlib/UIManager.h"
-#include "screenlib/UIPanel.h"
 
 #include "maclib/Mac_FontServ.h"
 #include "maclib/Mac_Sound.h"
@@ -128,6 +127,7 @@ extern int	gNumSprites;
 #define PANEL_BONUS	"bonus"
 #define PANEL_GAMEOVER	"gameover"
 #define PANEL_ABOUT	"about_story"
+#define DIALOG_LOBBY	"lobby"
 #define DIALOG_CONTROLS	"controls"
 #define DIALOG_ZAP	"zap"
 #define DIALOG_DAWN	"dawn"

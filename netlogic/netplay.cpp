@@ -72,16 +72,34 @@ static SDLNet_SocketSet SocketSet;
 #define TOGGLE(var)	var = !var
 
 
-int InitNetData(void)
+int InitNetData(bool hosting)
 {
 	int i;
+	int port;
 
 	/* Initialize the networking subsystem */
 	if ( SDLNet_Init() < 0 ) {
 		error("NetLogic: Couldn't initialize networking!\n");
 		return(-1);
 	}
-	atexit(SDLNet_Quit);
+
+	/* Oh heck, create the UDP socket here... */
+	if (hosting) {
+		port = NETPLAY_PORT;
+	} else {
+		port = 0;
+	}
+	gNetFD = SDLNet_UDP_Open(port);
+	if ( gNetFD == NULL ) {
+		error("Couldn't create bound network socket");
+		return(-1);
+	}
+	SocketSet = SDLNet_AllocSocketSet(1);
+	if ( SocketSet == NULL ) {
+		error("Couldn't create socket watch set");
+		return(-1);
+	}
+	SDLNet_UDP_AddSocket(SocketSet, gNetFD);
 
 	/* Create the outbound packets */
 	for ( i=0; i<2; ++i ) {
@@ -116,6 +134,16 @@ int InitNetData(void)
 
 void HaltNetData(void)
 {
+	if (SocketSet) {
+		SDLNet_FreeSocketSet(SocketSet);
+		SocketSet = NULL;
+	}
+
+	if (gNetFD) {
+		SDLNet_UDP_Close(gNetFD);
+		gNetFD = NULL;
+	}
+
 	SDLNet_Quit();
 }
 
@@ -178,7 +206,6 @@ int AddPlayer(const char *playerstr)
 int CheckPlayers(void)
 {
 	int i;
-	int port;
 
 	/* Check to make sure we have all the players */
 	for ( i=0, gNumPlayers=0; i<MAX_PLAYERS; ++i ) {
@@ -212,24 +239,10 @@ int CheckPlayers(void)
 		gDeathMatch = 0;
 	}
 
-	/* Oh heck, create the UDP socket here... */
-	port = SDL_SwapBE16(PlayAddr[gOurPlayer].port);
-	gNetFD = SDLNet_UDP_Open(port);
-	if ( gNetFD == NULL ) {
-		error("Couldn't create bound network socket");
-		return(-1);
-	}
-	SocketSet = SDLNet_AllocSocketSet(1);
-	if ( SocketSet == NULL ) {
-		error("Couldn't create socket watch set");
-		return(-1);
-	}
-	SDLNet_UDP_AddSocket(SocketSet, gNetFD);
-
 	/* Now, so we can send to ourselves... */
 	PlayAddr[gOurPlayer] = *SDLNet_UDP_GetPeerAddress(gNetFD, -1);
 	if ( ! PlayAddr[gOurPlayer].host ) {
-		SDLNet_ResolveHost(&PlayAddr[gOurPlayer], "127.0.0.1", port);
+		SDLNet_ResolveHost(&PlayAddr[gOurPlayer], "127.0.0.1", SDL_SwapBE16(PlayAddr[gOurPlayer].port));
 	}
 
 	/* Bind all of our players to the channels */
@@ -414,7 +427,6 @@ if ( retlen > 0 ) {
 	return(retlen);
 }
 
-
 inline void SuckPackets(void)
 {
 	UDPpacket sent;
@@ -426,7 +438,6 @@ inline void SuckPackets(void)
 		/* Keep sucking */ ;
 	}
 }
-	
 
 static inline void MakeNewPacket(int Wave, int Lives, int Turbo,
 					unsigned char *packet)

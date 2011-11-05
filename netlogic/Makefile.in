@@ -47,9 +47,9 @@ AR = ar
 ARFLAGS = cru
 liblogic_a_AR = $(AR) $(ARFLAGS)
 liblogic_a_LIBADD =
-am_liblogic_a_OBJECTS = about.$(OBJEXT) game.$(OBJEXT) logic.$(OBJEXT) \
-	make.$(OBJEXT) netplay.$(OBJEXT) object.$(OBJEXT) \
-	objects.$(OBJEXT) player.$(OBJEXT)
+am_liblogic_a_OBJECTS = about.$(OBJEXT) game.$(OBJEXT) lobby.$(OBJEXT) \
+	logic.$(OBJEXT) make.$(OBJEXT) netplay.$(OBJEXT) \
+	object.$(OBJEXT) objects.$(OBJEXT) player.$(OBJEXT)
 liblogic_a_OBJECTS = $(am_liblogic_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -179,6 +179,8 @@ liblogic_a_SOURCES = \
 	game.cpp		\
 	game.h			\
 	globals.h		\
+	lobby.cpp		\
+	lobby.h			\
 	logic.cpp		\
 	make.cpp		\
 	make.h			\
@@ -189,6 +191,7 @@ liblogic_a_SOURCES = \
 	object.h		\
 	objects.cpp		\
 	objects.h		\
+	packet.h		\
 	player.cpp		\
 	player.h		\
 	protocol.h		\
@@ -243,6 +246,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/about.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/game.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lobby.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/logic.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/make.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/netplay.Po@am__quote@

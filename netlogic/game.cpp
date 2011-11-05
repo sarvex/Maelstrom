@@ -64,6 +64,10 @@ static void DoGameOver(void);
 
 void NewGame(void)
 {
+	/* Make sure we have a valid player list */
+	if ( CheckPlayers() < 0 )
+		return;
+
 	/* Send a "NEW_GAME" packet onto the network */
 	if ( gNumPlayers > 1 ) {
 		if ( gOurPlayer == 0 ) {
