@@ -24,6 +24,7 @@
 
 #include "../utils/array.h"
 #include "../utils/rapidxml.h"
+#include "../utils/prefs.h"
 
 #include "SDL.h"
 #include "UIArea.h"
@@ -63,6 +64,10 @@ public:
 	virtual bool FinishLoading() {
 		return true;
 	}
+
+	// Bind any preferences variables to the preferences manager
+	virtual void LoadData(Prefs *prefs);
+	virtual void SaveData(Prefs *prefs);
 
 	virtual UIArea *GetAnchorElement(const char *name);
 

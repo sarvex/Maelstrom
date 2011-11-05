@@ -137,7 +137,17 @@ Prefs::Save()
 void
 Prefs::SetString(const char *key, const char *value)
 {
-	hash_remove(m_values, key);
+	const char *lastValue;
+
+	if (!value) {
+		value = "";
+	}
+	if (hash_find(m_values, key, (const void **)&lastValue)) {
+		if (SDL_strcmp(lastValue, value) == 0) {
+			return;
+		}
+		hash_remove(m_values, key);
+	}
 	hash_insert(m_values, SDL_strdup(key), SDL_strdup(value));
 }
 
@@ -148,6 +158,16 @@ Prefs::SetNumber(const char *key, int value)
 
 	SDL_snprintf(buf, sizeof(buf), "%d", value);
 	SetString(key, buf);
+}
+
+void
+Prefs::SetBool(const char *key, bool value)
+{
+	if (value) {
+		SetString(key, "true");
+	} else {
+		SetString(key, "false");
+	}
 }
 
 const char *
@@ -168,6 +188,21 @@ Prefs::GetNumber(const char *key, int defaultValue)
 
 	if (hash_find(m_values, key, (const void **)&value)) {
 		return SDL_atoi(value);
+	}
+	return defaultValue;
+}
+
+bool
+Prefs::GetBool(const char *key, bool defaultValue)
+{
+	const char *value;
+
+	if (hash_find(m_values, key, (const void **)&value)) {
+		if (*value == '1' || *value == 't' || *value == 'T') {
+			return true;
+		} else if (*value == '0' || *value == 'f' || *value == 'F') {
+			return false;
+		}
 	}
 	return defaultValue;
 }

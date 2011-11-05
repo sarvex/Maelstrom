@@ -69,7 +69,10 @@ public:
 	void SetPanelDelegate(UIPanelDelegate *delegate, bool autodelete = true);
 
 	override void Show();
-	override void Hide();
+	override void Hide() {
+		Hide(true);
+	}
+	void Hide(bool saveData);
 
 	void HideAll();
 

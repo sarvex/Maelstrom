@@ -50,7 +50,7 @@ UIDialog::Show()
 void
 UIDialog::Hide()
 {
-	UIPanel::Hide();
+	UIPanel::Hide(m_status > 0);
 
 	if (m_handleDone) {
 		m_handleDone(this, m_status);

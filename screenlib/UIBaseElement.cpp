@@ -96,6 +96,22 @@ UIBaseElement::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 	return true;
 }
 
+void
+UIBaseElement::LoadData(Prefs *prefs)
+{
+	for (int i = 0; i < m_elements.length(); ++i) {
+		m_elements[i]->LoadData(prefs);
+	}
+}
+
+void
+UIBaseElement::SaveData(Prefs *prefs)
+{
+	for (int i = 0; i < m_elements.length(); ++i) {
+		m_elements[i]->SaveData(prefs);
+	}
+}
+
 UIArea *
 UIBaseElement::GetAnchorElement(const char *name)
 {

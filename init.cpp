@@ -758,7 +758,7 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 	}
 
 	/* Create the UI manager */
-	ui = new MaelstromUI(screen);
+	ui = new MaelstromUI(screen, prefs);
 
 	/* -- We want to access the FULL screen! */
 	SetRect(&gScrnRect, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);

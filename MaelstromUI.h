@@ -30,7 +30,7 @@ class HashTable;
 class MaelstromUI : public UIManager
 {
 public:
-	MaelstromUI(FrameBuf *screen);
+	MaelstromUI(FrameBuf *screen, Prefs *prefs);
 	virtual ~MaelstromUI();
 
 	//

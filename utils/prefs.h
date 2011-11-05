@@ -32,20 +32,28 @@ public:
 
 	void SetString(const char *key, const char *value);
 	void SetNumber(const char *key, int value);
+	void SetBool(const char *key, bool value);
 	void Set(const char *key, const char *value) {
 		SetString(key, value);
 	}
 	void Set(const char *key, int value) {
 		SetNumber(key, value);
 	}
+	void Set(const char *key, bool value) {
+		SetBool(key, value);
+	}
 
 	const char *GetString(const char *key, const char *defaultValue = 0);
 	int GetNumber(const char *key, int defaultValue = 0);
+	bool GetBool(const char *key, bool defaultValue = false);
 	void Get(const char *key, const char *&value, const char *defaultValue) {
 		value = GetString(key, defaultValue);
 	}
 	void Get(const char *key, int &value, int defaultValue) {
 		value = GetNumber(key, defaultValue);
+	}
+	void Get(const char *key, bool &value, bool defaultValue) {
+		value = GetBool(key, defaultValue);
 	}
 
 protected:
@@ -75,7 +83,7 @@ public:
 		return *this = rhs.m_value;
 	}
 
-	operator T() {
+	operator const T() const {
 		return m_value;
 	}
 

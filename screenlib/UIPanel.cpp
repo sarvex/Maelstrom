@@ -68,10 +68,11 @@ bool
 UIPanel::FinishLoading()
 {
 	if (m_delegate) {
-		return m_delegate->OnLoad();
-	} else {
-		return true;
+		if (!m_delegate->OnLoad()) {
+			return false;
+		}
 	}
+	return UIBaseElement::FinishLoading();
 }
 
 void
@@ -91,6 +92,9 @@ UIPanel::Show()
 		m_ui->PlaySound(m_enterSound);
 	}
 
+	// Load data from preferences
+	LoadData(GetUI()->GetPrefs());
+
 	UIBaseElement::Show();
 
 	if (m_delegate) {
@@ -99,13 +103,18 @@ UIPanel::Show()
 }
 
 void
-UIPanel::Hide()
+UIPanel::Hide(bool saveData)
 {
 	if (m_leaveSound) {
 		m_ui->PlaySound(m_leaveSound);
 	}
 
 	UIBaseElement::Hide();
+
+	// Save data to preferences
+	if (saveData) {
+		SaveData(GetUI()->GetPrefs());
+	}
 
 	if (m_delegate) {
 		m_delegate->OnHide();

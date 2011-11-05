@@ -28,6 +28,14 @@ UIElementCheckbox::UIElementCheckbox(UIBaseElement *parent, const char *name, UI
 	UIElementButton(parent, name, drawEngine)
 {
 	m_checked = false;
+	m_valueBinding = NULL;
+}
+
+UIElementCheckbox::~UIElementCheckbox()
+{
+	if (m_valueBinding) {
+		SDL_free(m_valueBinding);
+	}
 }
 
 bool
@@ -43,6 +51,8 @@ UIElementCheckbox::Load(rapidxml::xml_node<> *node, const UITemplates *templates
 		SetChecked(checked);
 	}
 
+	LoadString(node, "bindValue", m_valueBinding);
+
 	return true;
 }
 
@@ -55,7 +65,25 @@ UIElementCheckbox::FinishLoading()
 	} else {
 		assert(!"Need code for labels on the left");
 	}
-	return true;
+	return UIElementButton::FinishLoading();
+}
+
+void
+UIElementCheckbox::LoadData(Prefs *prefs)
+{
+	if (m_valueBinding) {
+		SetChecked(prefs->GetBool(m_valueBinding, IsChecked()));
+	}
+	UIElementButton::LoadData(prefs);
+}
+
+void
+UIElementCheckbox::SaveData(Prefs *prefs)
+{
+	if (m_valueBinding) {
+		prefs->SetBool(m_valueBinding, IsChecked());
+	}
+	UIElementButton::SaveData(prefs);
 }
 
 void

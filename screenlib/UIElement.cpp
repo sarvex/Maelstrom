@@ -58,6 +58,7 @@ UIElement::UIElement(UIBaseElement *parent, const char *name, UIDrawEngine *draw
 	m_fontSize = 0;
 	m_fontStyle = UIFONT_STYLE_NORMAL;
 	m_text = NULL;
+	m_textBinding = NULL;
 	m_textShadowOffsetX = 0;
 	m_textShadowOffsetY = 0;
 	m_textShadowColor = m_screen->MapRGB(0x00, 0x00, 0x00);
@@ -80,6 +81,9 @@ UIElement::~UIElement()
 	}
 	if (m_text) {
 		SDL_free(m_text);
+	}
+	if (m_textBinding) {
+		SDL_free(m_textBinding);
 	}
 	if (m_image) {
 		m_screen->FreeImage(m_image);
@@ -132,6 +136,8 @@ UIElement::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 	if (attr) {
 		SetText(attr->value());
 	}
+
+	LoadString(node, "bindText", m_textBinding);
 
 	child = node->first_node("TextArea", 0, false);
 	if (child) {
@@ -193,7 +199,25 @@ UIElement::FinishLoading()
 	if (m_drawEngine) {
 		m_drawEngine->OnLoad();
 	}
-	return true;
+	return UIBaseElement::FinishLoading();
+}
+
+void
+UIElement::LoadData(Prefs *prefs)
+{
+	if (m_textBinding) {
+		SetText(prefs->GetString(m_textBinding, GetText()));
+	}
+	UIBaseElement::LoadData(prefs);
+}
+
+void
+UIElement::SaveData(Prefs *prefs)
+{
+	if (m_textBinding) {
+		prefs->SetString(m_textBinding, GetText());
+	}
+	UIBaseElement::SaveData(prefs);
 }
 
 bool

@@ -30,9 +30,14 @@ class UIElementCheckbox : public UIElementButton
 DECLARE_TYPESAFE_CLASS(UIElementButton)
 public:
 	UIElementCheckbox(UIBaseElement *parent, const char *name, UIDrawEngine *drawEngine);
+	virtual ~UIElementCheckbox();
 
 	override bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
 	override bool FinishLoading();
+
+	// Bind any preferences variables to the preferences manager
+	override void LoadData(Prefs *prefs);
+	override void SaveData(Prefs *prefs);
 
 	void SetChecked(bool checked) {
 		if (checked != m_checked) {
@@ -52,6 +57,7 @@ protected:
 
 protected:
 	bool m_checked;
+	char *m_valueBinding;
 };
 
 #endif // _UIElementCheckbox_h

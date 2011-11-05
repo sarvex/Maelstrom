@@ -26,7 +26,6 @@
 #include "UIDrawEngine.h"
 #include "UIFontInterface.h"
 
-
 class UIClickDelegate
 {
 public:
@@ -47,6 +46,10 @@ public:
 
 	override bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
 	override bool FinishLoading();
+
+	// Bind any preferences variables to the preferences manager
+	override void LoadData(Prefs *prefs);
+	override void SaveData(Prefs *prefs);
 
 	// Set the draw engine for this element
 	// This should be called before Load() so the draw engine can load too.
@@ -98,7 +101,7 @@ public:
 		return m_fontStyle;
 	}
 
-	void SetText(const char *text);
+	virtual void SetText(const char *text);
 	const char *GetText() const {
 		return m_text;
 	}
@@ -151,6 +154,7 @@ protected:
 	int m_fontSize;
 	UIFontStyle m_fontStyle;
 	char *m_text;
+	char *m_textBinding;
 	UIArea m_textArea;
 	int m_textShadowOffsetX;
 	int m_textShadowOffsetY;

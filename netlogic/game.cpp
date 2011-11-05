@@ -32,7 +32,7 @@
 #define PREFERENCES_HANDLE "Handle"
 
 // Global variables set in this file...
-int	gScore;
+Uint32	gScore;
 int	gGameOn;
 int	gPaused;
 int	gWave;
@@ -908,26 +908,26 @@ static void DoGameOver(void)
 					(gNumPlayers == 1) && !gDeathMatch ) {
 		sound->PlaySound(gBonusShot, 5);
 
-		/* Get the previously used handle, if possible */
-		const char *text = prefs->GetString(PREFERENCES_HANDLE);
-		if (text) {
-			SDL_strlcpy(handle, text, sizeof(handle));
-		} else {
-			*handle = '\0';
-		}
-		chars_in_handle = SDL_strlen(handle);
-
 		/* -- Let them enter their name */
+		const char *text = NULL;
 		label = panel->GetElement<UIElement>("name_label");
 		if (label) {
 			label->Show();
 		}
 		label = panel->GetElement<UIElement>("name");
 		if (label) {
-			label->SetText(handle);
+			text = label->GetText();
 			label->Show();
 		}
 		ui->Draw();
+
+		/* Get the previously used handle, if possible */
+		if (text) {
+			SDL_strlcpy(handle, text, sizeof(handle));
+		} else {
+			*handle = '\0';
+		}
+		chars_in_handle = SDL_strlen(handle);
 
 		while ( screen->PollEvent(&event) ) /* Loop, flushing events */;
 		SDL_StartTextInput();
@@ -978,7 +978,6 @@ static void DoGameOver(void)
 			hScores[which].wave = gWave;
 			hScores[which].score = OurShip->GetScore();
 			strcpy(hScores[which].name, handle);
-			prefs->SetString(PREFERENCES_HANDLE, handle);
 		}
 
 		sound->HaltSound();

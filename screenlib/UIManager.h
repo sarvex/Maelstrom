@@ -33,15 +33,19 @@
 class FrameBuf;
 class UIBaseElement;
 class UIElement;
+class Prefs;
 
 class UIManager : public UIArea, public UIFontInterface, public UISoundInterface
 {
 public:
-	UIManager(FrameBuf *screen);
+	UIManager(FrameBuf *screen, Prefs *prefs);
 	virtual ~UIManager();
 
 	FrameBuf *GetScreen() const {
 		return m_screen;
+	}
+	Prefs *GetPrefs() const {
+		return m_prefs;
 	}
 	const UITemplates *GetTemplates() const {
 		return &m_templates;
@@ -102,6 +106,7 @@ public:
 
 protected:
 	FrameBuf *m_screen;
+	Prefs *m_prefs;
 	char *m_loadPath;
 	UITemplates m_templates;
 	array<UIPanel *> m_panels;

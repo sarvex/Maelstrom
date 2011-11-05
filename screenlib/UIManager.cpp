@@ -26,10 +26,11 @@
 #include "UIPanel.h"
 
 
-UIManager::UIManager(FrameBuf *screen) :
+UIManager::UIManager(FrameBuf *screen, Prefs *prefs) :
 	UIArea(NULL, screen->Width(), screen->Height())
 {
 	m_screen = screen;
+	m_prefs = prefs;
 	m_loadPath = new char[2];
 	strcpy(m_loadPath, ".");
 }

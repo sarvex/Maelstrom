@@ -50,7 +50,7 @@ hash_nuke_string_text(const void *key, const void *value, void *data)
 	fontserv->FreeText((SDL_Texture *)value);
 }
 
-MaelstromUI::MaelstromUI(FrameBuf *screen) : UIManager(screen)
+MaelstromUI::MaelstromUI(FrameBuf *screen, Prefs *prefs) : UIManager(screen, prefs)
 {
 	/* Create our font hashtables */
 	m_fonts = hash_create(screen, hash_hash_string, hash_keymatch_string, hash_nuke_string_font);
