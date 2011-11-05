@@ -141,6 +141,9 @@ int hash_remove(HashTable *table, const void *key)
 
             if (item->global_prev)
                 item->global_prev->global_next = item->global_next;
+            else
+                table->list = item->global_next;
+
             if (item->global_next)
                 item->global_next->global_prev = item->global_prev;
 
