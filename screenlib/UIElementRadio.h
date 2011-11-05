@@ -25,10 +25,47 @@
 #include "UIElement.h"
 #include "UIElementCheckbox.h"
 
-class UIRadioDelegate
+class UIRadioCallback
 {
 public:
-	virtual void OnValueChanged(int oldValue, int newValue) { }
+	virtual void operator ()(int value) = 0;
+};
+
+template <class C>
+class UIObjectRadioCallback : public UIRadioCallback
+{
+public:
+	UIObjectRadioCallback(C *obj, void (C::*callback)(void*, int), void *param) : UIRadioCallback() {
+		m_obj = obj;
+		m_callback = callback;
+		m_param = param;
+	}
+
+	virtual void operator()(int value) {
+		(m_obj->*m_callback)(m_param, value);
+	}
+
+protected:
+	C *m_obj;
+	void (C::*m_callback)(void*, int);
+	void *m_param;
+};
+
+class UIFunctionRadioCallback : public UIRadioCallback
+{
+public:
+	UIFunctionRadioCallback(void (*callback)(void*, int), void *param) : UIRadioCallback() {
+		m_callback = callback;
+		m_param = param;
+	}
+
+	virtual void operator()(int value) {
+		(*m_callback)(m_param, value);
+	}
+
+protected:
+	void (*m_callback)(void*, int);
+	void *m_param;
 };
 
 //
@@ -61,15 +98,20 @@ public:
 		return m_value;
 	}
 
-	// Setting a callback sets a simplified delegate
-	// Once set, the element owns the delegate and will free it.
-	void SetCallback(void (*callback)(int value));
-	void SetDelegate(UIRadioDelegate *delegate);
+	// Once set, the element owns the callback and will free it.
+	template <class C>
+	void SetValueCallback(C *obj, void (C::*callback)(void*, int), void *param = 0) {
+		SetValueCallback(new UIObjectRadioCallback<C>(obj, callback, param));
+	}
+	void SetValueCallback(void (*callback)(void*, int), void *param = 0) {
+		SetValueCallback(new UIFunctionRadioCallback(callback, param));
+	}
+	void SetValueCallback(UIRadioCallback *callback);
 
 protected:
 	int m_value;
 	char *m_valueBinding;
-	UIRadioDelegate *m_delegate;
+	UIRadioCallback *m_callback;
 };
 
 class UIElementRadioButton : public UIElementCheckbox

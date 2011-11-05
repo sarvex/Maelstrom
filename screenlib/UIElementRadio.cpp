@@ -21,23 +21,6 @@
 
 #include "UIElementRadio.h"
 
-
-class SimpleRadioDelegate : public UIRadioDelegate
-{
-public:
-	SimpleRadioDelegate(void (*callback)(int value)) {
-		m_callback = callback;
-	}
-
-	virtual void OnValueChanged(int oldValue, int newValue) {
-		m_callback(newValue);
-	}
-
-protected:
-	void (*m_callback)(int value);
-};
-
-
 UIElementType UIElementRadioGroup::s_elementType;
 
 
@@ -46,7 +29,7 @@ UIElementRadioGroup::UIElementRadioGroup(UIBaseElement *parent, const char *name
 {
 	m_value = -1;
 	m_valueBinding = NULL;
-	m_delegate = NULL;
+	m_callback = NULL;
 }
 
 UIElementRadioGroup::~UIElementRadioGroup()
@@ -54,8 +37,8 @@ UIElementRadioGroup::~UIElementRadioGroup()
 	if (m_valueBinding) {
 		SDL_free(m_valueBinding);
 	}
-	if (m_delegate) {
-		delete m_delegate;
+	if (m_callback) {
+		delete m_callback;
 	}
 }
 
@@ -129,24 +112,18 @@ UIElementRadioGroup::SetValue(int value)
 		}
 	}
 
-	if (m_delegate) {
-		m_delegate->OnValueChanged(oldValue, m_value);
+	if (m_callback) {
+		(*m_callback)(m_value);
 	}
 }
 
 void
-UIElementRadioGroup::SetCallback(void (*callback)(int value))
+UIElementRadioGroup::SetValueCallback(UIRadioCallback *callback)
 {
-	SetDelegate(new SimpleRadioDelegate(callback));
-}
-
-void
-UIElementRadioGroup::SetDelegate(UIRadioDelegate *delegate)
-{
-	if (m_delegate) {
-		delete m_delegate;
+	if (m_callback) {
+		delete m_callback;
 	}
-	m_delegate = delegate;
+	m_callback = callback;
 }
 
 

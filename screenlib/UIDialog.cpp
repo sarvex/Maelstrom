@@ -102,7 +102,7 @@ UIDialogLauncher::UIDialogLauncher(UIManager *ui, const char *name, UIDialogInit
 }
 
 void
-UIDialogLauncher::OnClick()
+UIDialogLauncher::operator()()
 {
 	UIDialog *dialog;
 

@@ -78,12 +78,12 @@ protected:
 //
 // A class to make it easy to launch a dialog from a button
 //
-class UIDialogLauncher : public UIClickDelegate
+class UIDialogLauncher : public UIClickCallback
 {
 public:
 	UIDialogLauncher(UIManager *ui, const char *name, UIDialogInitHandler = NULL, UIDialogDoneHandler handleDone = NULL);
 
-	override void OnClick();
+	override void operator()();
 
 protected:
 	UIManager *m_ui;

@@ -24,22 +24,6 @@
 #include "SDL_FrameBuf.h"
 #include "UIElement.h"
 
-
-class SimpleClickDelegate : public UIClickDelegate
-{
-public:
-	SimpleClickDelegate(void (*callback)(void)) {
-		m_callback = callback;
-	}
-
-	virtual void OnClick() {
-		m_callback();
-	}
-
-protected:
-	void (*m_callback)(void);
-};
-
 UIElementType UIElement::s_elementType;
 
 
@@ -66,7 +50,7 @@ UIElement::UIElement(UIBaseElement *parent, const char *name, UIDrawEngine *draw
 	m_mouseEnabled = false;
 	m_mouseInside = false;
 	m_mousePressed = false;
-	m_clickDelegate = NULL;
+	m_clickCallback = NULL;
 
 	SetDrawEngine(drawEngine);
 }
@@ -88,8 +72,8 @@ UIElement::~UIElement()
 	if (m_image) {
 		m_screen->FreeImage(m_image);
 	}
-	if (m_clickDelegate) {
-		delete m_clickDelegate;
+	if (m_clickCallback) {
+		delete m_clickCallback;
 	}
 }
 
@@ -579,21 +563,15 @@ UIElement::HandleEvent(const SDL_Event &event)
 }
 
 void
-UIElement::SetClickCallback(void (*callback)(void))
+UIElement::SetClickCallback(UIClickCallback *callback)
 {
-	SetClickDelegate(new SimpleClickDelegate(callback));
-}
-
-void
-UIElement::SetClickDelegate(UIClickDelegate *delegate)
-{
-	if (m_clickDelegate) {
-		delete m_clickDelegate;
+	if (m_clickCallback) {
+		delete m_clickCallback;
 	}
 
-	m_clickDelegate = delegate;
+	m_clickCallback = callback;
 
-	if (m_clickDelegate) {
+	if (m_clickCallback) {
 		m_mouseEnabled = true;
 	}
 }
@@ -634,7 +612,7 @@ UIElement::OnMouseUp()
 void
 UIElement::OnClick()
 {
-	if (m_clickDelegate) {
-		m_clickDelegate->OnClick();
+	if (m_clickCallback) {
+		(*m_clickCallback)();
 	}
 }

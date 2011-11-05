@@ -59,24 +59,24 @@ int	gNoDelay;
 
 
 // Main Menu actions:
-static void RunDoAbout(void)
+static void RunDoAbout(void*)
 {
 	ui->ShowPanel(PANEL_ABOUT);
 }
-static void RunPlayGame(void)
+static void RunPlayGame(void*)
 {
 	gStartLevel = 1;
 	gStartLives = 3;
 	gNoDelay = 0;
 	NewGame();
 }
-static void RunQuitGame(void)
+static void RunQuitGame(void*)
 {
 	while ( sound->Playing() )
 		Delay(SOUND_DELAY);
 	gRunning = false;
 }
-static void IncrementSound(void)
+static void IncrementSound(void*)
 {
 	if ( gSoundLevel < 8 ) {
 		sound->Volume(++gSoundLevel);
@@ -86,7 +86,7 @@ static void IncrementSound(void)
 		gUpdateBuffer = true;
 	}
 }
-static void DecrementSound(void)
+static void DecrementSound(void*)
 {
 	if ( gSoundLevel > 0 ) {
 		sound->Volume(--gSoundLevel);
@@ -108,7 +108,7 @@ static void SetSoundLevel(int volume)
 	/* -- Draw the new sound level */
 	gUpdateBuffer = true;
 }
-static void RunToggleFullscreen(void)
+static void RunToggleFullscreen(void*)
 {
 	screen->ToggleFullScreen();
 }
@@ -152,17 +152,17 @@ static void CheatDialogDone(UIDialog *dialog, int status)
 		NewGame();
 	}
 }
-static void RunScreenshot(void)
+static void RunScreenshot(void*)
 {
 	screen->ScreenDump("ScoreDump", 64, 48, 298, 384);
 }
 
-class SetVolumeDelegate : public UIClickDelegate
+class SetVolumeCallback : public UIClickCallback
 {
 public:
-	SetVolumeDelegate(int volume) : m_volume(volume) { }
+	SetVolumeCallback(int volume) : m_volume(volume) { }
 
-	virtual void OnClick() {
+	virtual void operator()() {
 		SetSoundLevel(m_volume);
 	}
 private:
@@ -309,7 +309,7 @@ int main(int argc, char *argv[])
 
 			/* -- Handle window close requests */
 			if ( event.type == SDL_QUIT ) {
-				RunQuitGame();
+				RunQuitGame(0);
 			}
 		}
 		Delay(FRAME_DELAY);
@@ -343,11 +343,11 @@ MainPanelDelegate::OnLoad()
 	}
 	button = m_panel->GetElement<UIElementButton>("ControlsButton");
 	if (button) {
-		button->SetClickDelegate(new UIDialogLauncher(ui, DIALOG_CONTROLS));
+		button->SetClickCallback(new UIDialogLauncher(ui, DIALOG_CONTROLS));
 	}
 	button = m_panel->GetElement<UIElementButton>("ZapButton");
 	if (button) {
-		button->SetClickDelegate(new UIDialogLauncher(ui, DIALOG_ZAP, NULL, ZapHighScores));
+		button->SetClickCallback(new UIDialogLauncher(ui, DIALOG_ZAP, NULL, ZapHighScores));
 	}
 	button = m_panel->GetElement<UIElementButton>("AboutButton");
 	if (button) {
@@ -371,11 +371,11 @@ MainPanelDelegate::OnLoad()
 	}
 	button = m_panel->GetElement<UIElementButton>("Cheat");
 	if (button) {
-		button->SetClickDelegate(new UIDialogLauncher(ui, DIALOG_CHEAT, CheatDialogInit, CheatDialogDone));
+		button->SetClickCallback(new UIDialogLauncher(ui, DIALOG_CHEAT, CheatDialogInit, CheatDialogDone));
 	}
 	button = m_panel->GetElement<UIElementButton>("Special");
 	if (button) {
-		button->SetClickDelegate(new UIDialogLauncher(ui, DIALOG_DAWN));
+		button->SetClickCallback(new UIDialogLauncher(ui, DIALOG_DAWN));
 	}
 	button = m_panel->GetElement<UIElementButton>("Screenshot");
 	if (button) {
@@ -384,39 +384,39 @@ MainPanelDelegate::OnLoad()
 
 	button = m_panel->GetElement<UIElementButton>("SetVolume0");
 	if (button) {
-		button->SetClickDelegate(new SetVolumeDelegate(0));
+		button->SetClickCallback(new SetVolumeCallback(0));
 	}
 	button = m_panel->GetElement<UIElementButton>("SetVolume1");
 	if (button) {
-		button->SetClickDelegate(new SetVolumeDelegate(1));
+		button->SetClickCallback(new SetVolumeCallback(1));
 	}
 	button = m_panel->GetElement<UIElementButton>("SetVolume2");
 	if (button) {
-		button->SetClickDelegate(new SetVolumeDelegate(2));
+		button->SetClickCallback(new SetVolumeCallback(2));
 	}
 	button = m_panel->GetElement<UIElementButton>("SetVolume3");
 	if (button) {
-		button->SetClickDelegate(new SetVolumeDelegate(3));
+		button->SetClickCallback(new SetVolumeCallback(3));
 	}
 	button = m_panel->GetElement<UIElementButton>("SetVolume4");
 	if (button) {
-		button->SetClickDelegate(new SetVolumeDelegate(4));
+		button->SetClickCallback(new SetVolumeCallback(4));
 	}
 	button = m_panel->GetElement<UIElementButton>("SetVolume5");
 	if (button) {
-		button->SetClickDelegate(new SetVolumeDelegate(5));
+		button->SetClickCallback(new SetVolumeCallback(5));
 	}
 	button = m_panel->GetElement<UIElementButton>("SetVolume6");
 	if (button) {
-		button->SetClickDelegate(new SetVolumeDelegate(6));
+		button->SetClickCallback(new SetVolumeCallback(6));
 	}
 	button = m_panel->GetElement<UIElementButton>("SetVolume7");
 	if (button) {
-		button->SetClickDelegate(new SetVolumeDelegate(7));
+		button->SetClickCallback(new SetVolumeCallback(7));
 	}
 	button = m_panel->GetElement<UIElementButton>("SetVolume8");
 	if (button) {
-		button->SetClickDelegate(new SetVolumeDelegate(8));
+		button->SetClickCallback(new SetVolumeCallback(8));
 	}
 
 	return true;

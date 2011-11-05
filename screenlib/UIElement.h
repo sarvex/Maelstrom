@@ -26,10 +26,47 @@
 #include "UIDrawEngine.h"
 #include "UIFontInterface.h"
 
-class UIClickDelegate
+class UIClickCallback
 {
 public:
-	virtual void OnClick() { }
+	virtual void operator()() = 0;
+};
+
+template <class C>
+class UIObjectClickCallback : public UIClickCallback
+{
+public:
+	UIObjectClickCallback(C *obj, void (C::*callback)(void*), void *param) : UIClickCallback() {
+		m_obj = obj;
+		m_callback = callback;
+		m_param = param;
+	}
+
+	virtual void operator()() {
+		(m_obj->*m_callback)(m_param);
+	}
+
+protected:
+	C *m_obj;
+	void (C::*m_callback)(void*);
+	void *m_param;
+};
+
+class UIFunctionClickCallback : public UIClickCallback
+{
+public:
+	UIFunctionClickCallback(void (*callback)(void*), void *param) : UIClickCallback() {
+		m_callback = callback;
+		m_param = param;
+	}
+
+	virtual void operator()() {
+		(*m_callback)(m_param);
+	}
+
+protected:
+	void (*m_callback)(void*);
+	void *m_param;
 };
 
 // This is the basic thing you see on the screen.
@@ -131,10 +168,15 @@ public:
 	// Events
 	override bool HandleEvent(const SDL_Event &event);
 
-	// Setting a click callback sets a simplified delegate
-	// Once set, the element owns the click delegate and will free it.
-	void SetClickCallback(void (*callback)(void));
-	void SetClickDelegate(UIClickDelegate *delegate);
+	// Once set, the element owns the click callback and will free it.
+	template <class C>
+	void SetClickCallback(C *obj, void (C::*callback)(void*), void *param = 0) {
+		SetClickCallback(new UIObjectClickCallback<C>(obj, callback, param));
+	}
+	void SetClickCallback(void (*callback)(void*), void *param = 0) {
+		SetClickCallback(new UIFunctionClickCallback(callback, param));
+	}
+	void SetClickCallback(UIClickCallback *callback);
 
 	// These can be overridden by inheriting classes
 	virtual void OnMouseEnter();
@@ -164,7 +206,7 @@ protected:
 	bool m_mouseEnabled;
 	bool m_mouseInside;
 	bool m_mousePressed;
-	UIClickDelegate *m_clickDelegate;
+	UIClickCallback *m_clickCallback;
 
 protected:
 	bool LoadColor(rapidxml::xml_node<> *node, const char *name, Uint32 &value);
