@@ -50,11 +50,18 @@ UIDialog::Show()
 void
 UIDialog::Hide()
 {
-	UIPanel::Hide(m_status > 0);
+	UIPanel::Hide();
 
 	if (m_handleDone) {
 		m_handleDone(this, m_status);
 	}
+}
+
+bool
+UIDialog::ShouldSaveData()
+{
+	// FIXME: Is this the behavior we want?
+	return (m_status > 0);
 }
 
 bool

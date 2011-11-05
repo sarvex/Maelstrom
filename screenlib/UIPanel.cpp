@@ -103,7 +103,7 @@ UIPanel::Show()
 }
 
 void
-UIPanel::Hide(bool saveData)
+UIPanel::Hide()
 {
 	if (m_leaveSound) {
 		m_ui->PlaySound(m_leaveSound);
@@ -112,7 +112,7 @@ UIPanel::Hide(bool saveData)
 	UIBaseElement::Hide();
 
 	// Save data to preferences
-	if (saveData) {
+	if (ShouldSaveData()) {
 		SaveData(GetUI()->GetPrefs());
 	}
 

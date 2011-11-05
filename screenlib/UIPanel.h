@@ -69,10 +69,8 @@ public:
 	void SetPanelDelegate(UIPanelDelegate *delegate, bool autodelete = true);
 
 	override void Show();
-	override void Hide() {
-		Hide(true);
-	}
-	void Hide(bool saveData);
+	override void Hide();
+	virtual bool ShouldSaveData() { return true; }
 
 	void HideAll();
 
