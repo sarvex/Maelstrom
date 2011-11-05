@@ -146,7 +146,7 @@ Prefs::SetNumber(const char *key, int value)
 {
 	char buf[32];
 
-	SDL_snprintf(buf, sizeof(buf), "%u", value);
+	SDL_snprintf(buf, sizeof(buf), "%d", value);
 	SetString(key, buf);
 }
 
