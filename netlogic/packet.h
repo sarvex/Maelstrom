@@ -32,7 +32,7 @@ class DynamicPacket : public UDPpacket
 {
 public:
 	DynamicPacket(int minSize = 32) {
-		len = 0;
+		SDL_zero(*this);
 		maxlen = minSize;
 		data = (Uint8*)SDL_malloc(minSize);
 	}
@@ -40,35 +40,66 @@ public:
 		SDL_free(data);
 	}
 
-	void Reset() {
-		len = 0;
+	void Expand(size_t size) {
+		CheckSize(size - len);
 	}
 
-	DynamicPacket& operator <<(Uint8 value) {
+	void Reset() {
+		len = 0;
+		pos = 0;
+	}
+
+	void Write(Uint8 value) {
 		CheckSize(sizeof(value));
 		data[len++] = value;
-		return *this;
 	}
-	DynamicPacket& operator <<(Uint16 value) {
+	void Write(Uint16 value) {
 		CheckSize(sizeof(value));
 		SDLNet_Write16(value, &data[len]);
 		len += sizeof(value);
-		return *this;
 	}
-	DynamicPacket& operator <<(Uint32 value) {
+	void Write(Uint32 value) {
 		CheckSize(sizeof(value));
 		SDLNet_Write32(value, &data[len]);
 		len += sizeof(value);
-		return *this;
+	}
+
+	bool Read(Uint8 &value) {
+		if (pos+sizeof(value) > (size_t)len) {
+			return false;
+		}
+		value = data[pos++];
+		return true;
+	}
+	bool Read(Uint16 &value) {
+		if (pos+sizeof(value) > (size_t)len) {
+			return false;
+		}
+		value = SDLNet_Read16(&data[pos]);
+		pos += sizeof(value);
+		return true;
+	}
+	bool Read(Uint32 &value) {
+		if (pos+sizeof(value) > (size_t)len) {
+			return false;
+		}
+		value = SDLNet_Read32(&data[pos]);
+		pos += sizeof(value);
+		return true;
 	}
 
 protected:
 	void CheckSize(size_t additionalSize) {
 		if (len+additionalSize > (size_t)maxlen) {
-			maxlen *= 2;
+			while (len+additionalSize > (size_t)maxlen) {
+				maxlen *= 2;
+			}
 			data = (Uint8*)SDL_realloc(data, maxlen);
 		}
 	}
+
+protected:
+	int pos;
 };
 
 #endif // _packet_h

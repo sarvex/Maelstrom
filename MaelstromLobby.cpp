@@ -22,19 +22,285 @@
 
 #include "SDL_net.h"
 
+#include "netlogic/packet.h"
 #include "netlogic/protocol.h"
+#include "utils/array.h"
 
 #define MAX_PACKET_SIZE	1024
 
-void ProcessPacket(UDPpacket *packet)
-{
-	printf("Received packet from %s\n", SDLNet_ResolveIP(&packet->address));
+// We'll let games stick around for 10 seconds before aging them out
+#define GAME_LIFETIME	10000
+
+
+bool operator==(const IPaddress &lhs, const IPaddress &rhs) {
+	return lhs.host == rhs.host && lhs.port == rhs.port;
 }
+bool operator!=(const IPaddress &lhs, const IPaddress &rhs) {
+	return !operator==(lhs, rhs);
+}
+
+class AddressList : public array<IPaddress>
+{
+public:
+	AddressList() : array<IPaddress>() { }
+
+	bool ReadFromPacket(DynamicPacket &packet) {
+		Uint8 count;
+		IPaddress address;
+
+		if (!packet.Read(count) || !count) {
+			return false;
+		}
+
+		clear();
+		SDL_zero(address);
+		for (Uint8 i = 0; i < count; ++i) {
+			if (!packet.Read(address.host)) {
+				return false;
+			}
+			if (!packet.Read(address.port)) {
+				return false;
+			}
+			add(address);
+		}
+
+		// Add the address that we saw this packet come from
+		if (!find(packet.address)) {
+			insert(packet.address, 0);
+		}
+
+		return true;
+	}
+
+	void WriteToPacket(DynamicPacket &packet) {
+		packet.Write((Uint8)length());
+		for (int i = 0; i < length(); ++i) {
+			packet.Write(m_data[i].host);
+			packet.Write(m_data[i].port);
+		}
+	}
+
+	bool operator ==(const AddressList &rhs) const {
+		if (length() != rhs.length()) {
+			return false;
+		}
+		for (int i = 0; i < length(); ++i) {
+			if (m_data[i] != rhs.m_data[i]) {
+				return false;
+			}
+		}
+		return true;
+	}
+};
+
+class Game
+{
+public:
+	Game() {
+		m_timestamp = 0;
+		m_list = 0;
+		m_prev = 0;
+		m_next = 0;
+	}
+
+	bool ReadFromPacket(DynamicPacket &packet) {
+		return m_addresses.ReadFromPacket(packet);
+	}
+
+	void WriteToPacket(DynamicPacket &packet) {
+		m_addresses.WriteToPacket(packet);
+	}
+
+	bool operator ==(const Game &rhs) {
+		return m_addresses == rhs.m_addresses;
+	}
+
+	bool TimedOut(Uint32 now) {
+		return (now - m_timestamp) > GAME_LIFETIME;
+	}
+
+	void Refresh() {
+		m_timestamp = SDL_GetTicks();
+	}
+
+	const IPaddress *Address() const {
+		return &m_addresses[0];
+	}
+
+	void Link(Game *&list) {
+		Unlink();
+		if (list) {
+			list->m_prev = this;
+		}
+		m_next = list;
+		list = this;
+		m_list = &list;
+	}
+
+	void Unlink() {
+		if (m_prev) {
+			m_prev->m_next = m_next;
+		} else if (m_list) {
+			*m_list = m_next;
+		}
+		if (m_next) {
+			m_next->m_prev = m_prev;
+		}
+		m_list = 0;
+		m_prev = 0;
+		m_next = 0;
+	}
+
+	Game *Prev() {
+		return m_prev;
+	}
+	Game *Next() {
+		return m_next;
+	}
+
+protected:
+	Uint32 m_timestamp;
+	AddressList m_addresses;
+	Game **m_list;
+	Game *m_prev, *m_next;
+};
+
+class GameList
+{
+public:
+	GameList() {
+		m_list = 0;
+		m_free = 0;
+	}
+
+	~GameList() {
+		Game *game;
+
+		while (m_list) {
+			game = m_list;
+			game->Unlink();
+			delete game;
+		}
+		while (m_free) {
+			game = m_free;
+			game->Unlink();
+			delete game;
+		}
+	}
+
+	void ProcessList() {
+		Game *game, *next;
+		Uint32 now;
+
+		now = SDL_GetTicks();
+		game = m_list;
+		while (game) {
+			next = game->Next();
+			if (game->TimedOut(now)) {
+				printf("Expiring game from %s:%d\n",
+					SDLNet_ResolveIP(game->Address()),
+					SDL_SwapBE16(game->Address()->port));
+				game->Link(m_free);
+			}
+			game = next;
+		}
+	}
+
+	void ProcessPacket(DynamicPacket &packet) {
+		Uint8 cmd;
+
+		if (!packet.Read(cmd)) {
+			return;
+		}
+
+		switch (cmd) {
+			case LOBBY_ANNOUNCE_GAME:
+				ProcessAnnounceGame(packet);
+				break;
+			case LOBBY_REMOVE_GAME:
+				ProcessRemoveGame(packet);
+				break;
+			case LOBBY_REQUEST_GAME_SERVERS:
+				ProcessRequestGames(packet);
+				break;
+		}
+	}
+
+	void ProcessAnnounceGame(DynamicPacket &packet) {
+		Game *newGame;
+
+		if (m_free) {
+			newGame = m_free;
+		} else {
+			newGame = new Game;
+		}
+		if (!newGame->ReadFromPacket(packet)) {
+			printf("Invalid game from %s:%d\n",
+				SDLNet_ResolveIP(&packet.address),
+				SDL_SwapBE16(packet.address.port));
+
+			newGame->Link(m_free);
+			return;
+		}
+
+		for (Game *game = m_list; game; game = game->Next()) {
+			if (*game == *newGame) {
+				//printf("Refreshing game from %s:%d\n",
+				//	SDLNet_ResolveIP(&packet.address),
+				//	SDL_SwapBE16(packet.address.port));
+
+				game->Refresh();
+				newGame->Link(m_free);
+				return;
+			}
+		}
+
+		printf("Adding game from %s:%d\n",
+			SDLNet_ResolveIP(&packet.address),
+			SDL_SwapBE16(packet.address.port));
+
+		newGame->Refresh();
+		newGame->Link(m_list);
+	}
+
+	void ProcessRemoveGame(DynamicPacket &packet) {
+		Game *newGame;
+
+		if (m_free) {
+			newGame = m_free;
+		} else {
+			newGame = new Game;
+		}
+		if (!newGame->ReadFromPacket(packet)) {
+			newGame->Link(m_free);
+			return;
+		}
+
+		for (Game *game = m_list; game; game = game->Next()) {
+			if (*game == *newGame) {
+				printf("Removing game from %s:%d\n",
+					SDLNet_ResolveIP(&packet.address),
+					SDL_SwapBE16(packet.address.port));
+				game->Link(m_free);
+				break;
+			}
+		}
+		newGame->Link(m_free);
+	}
+
+	void ProcessRequestGames(DynamicPacket &packet) {
+	}
+
+protected:
+	Game *m_list;
+	Game *m_free;
+};
 
 int main(int argc, char *argv[])
 {
 	UDPsocket sock;
-	UDPpacket *packet;
+	DynamicPacket packet;
+	GameList games;
 
 	sock = SDLNet_UDP_Open(LOBBY_PORT);
 	if (!sock) {
@@ -43,17 +309,14 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 
-	packet = SDLNet_AllocPacket(MAX_PACKET_SIZE);
-	if (!packet) {
-		fprintf(stderr, "Couldn't allocate packet of size %d: %s\n",
-			MAX_PACKET_SIZE, SDL_GetError());
-		SDLNet_UDP_Close(sock);
-		exit(1);
-	}
+	packet.Expand(MAX_PACKET_SIZE);
 
 	for ( ; ; ) {
-		while (SDLNet_UDP_Recv(sock, packet)) {
-			ProcessPacket(packet);
+		games.ProcessList();
+
+		while (SDLNet_UDP_Recv(sock, &packet)) {
+			games.ProcessPacket(packet);
+			packet.Reset();
 		}
 
 		SDL_Delay(100);

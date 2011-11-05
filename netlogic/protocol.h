@@ -50,6 +50,17 @@ enum LobbyProtocol {
 		} addresses[]
 	 */
 
+	LOBBY_REMOVE_GAME,
+	/* Sent by the hosting game to the lobby server
+	   This is sent when the game is no longer available to join.
+
+		BYTE numaddresses
+		{
+			Uint32 host;
+			Uint16 port;
+		} addresses[]
+	 */
+
 	LOBBY_ANNOUNCE_PLAYER,
 	/* Sent by the lobby server when a player requests the game list.
 	   This allows the hosting game to send a packet to the player
@@ -148,9 +159,9 @@ enum LobbyProtocol {
 #define KEY_PRESS	0x80			/* Sent during game */
 #define KEY_RELEASE	0xF0			/* Sent during game */
 
-/* The default port for Maelstrom games.  What is 0xAEAE?? *shrug* :) */
-#define LOBBY_PORT	0xAFAF			/* port 44975 */
-#define NETPLAY_PORT	0xAEAE			/* port 44718 */
+/* The default port for Maelstrom games */
+#define LOBBY_PORT	0xAE00			/* port 44544 */
+#define NETPLAY_PORT	0xAF00			/* port 44800 */
 
 /* The minimum length of a new packet buffer */
 #define NEW_PACKETLEN	(3+3*4)

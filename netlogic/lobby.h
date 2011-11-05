@@ -52,15 +52,18 @@ protected:
 	void GlobalGameChanged(void*);
 
 	void AdvertiseGame();
+	void RemoveGame();
 	void GetGameList();
 	void ClearGameList();
+
+	void PackAddresses(DynamicPacket &packet);
 
 protected:
 	IPaddress m_globalServer;
 	array<IPaddress> m_addresses;
 	DynamicPacket m_packet;
 	bool m_hosting;
-	Uint32 m_lastGlobalCheck;
+	Uint32 m_lastRefresh;
 	UIElementRadioGroup *m_hostOrJoin;
 	UIElementCheckbox *m_globalGame;
 };

@@ -107,17 +107,17 @@ LobbyDialogDelegate::OnTick()
 		return;
 	}
 
-	if (m_globalGame->IsChecked()) {
-		Uint32 now = SDL_GetTicks();
-		if (!m_lastGlobalCheck ||
-		    (now - m_lastGlobalCheck) > GLOBAL_CHECK_INTERVAL) {
+	Uint32 now = SDL_GetTicks();
+	if (!m_lastRefresh ||
+	    (now - m_lastRefresh) > GLOBAL_CHECK_INTERVAL) {
+		if (m_globalGame->IsChecked()) {
 			if (m_hosting) {
 				AdvertiseGame();
 			} else {
 				GetGameList();
 			}
-			m_lastGlobalCheck = now;
 		}
+		m_lastRefresh = now;
 	}
 }
 
@@ -133,28 +133,41 @@ LobbyDialogDelegate::SetHostOrJoin(void*, int value)
 		if (InitNetData(m_hosting) < 0) {
 			m_hostOrJoin->SetValue(0);
 		}
-		m_lastGlobalCheck = 0;
+		m_lastRefresh = 0;
 	}
 }
 
 void
 LobbyDialogDelegate::GlobalGameChanged(void*)
 {
-	m_lastGlobalCheck = 0;
+	m_lastRefresh = 0;
+
+	if (!m_globalGame->IsChecked()) {
+		if (m_hosting) {
+			RemoveGame();
+		} else {
+			ClearGameList();
+		}
+	}
 }
 
 void
 LobbyDialogDelegate::AdvertiseGame()
 {
-	int i;
-
 	m_packet.Reset();
-	m_packet << (Uint8)LOBBY_ANNOUNCE_GAME;
-	m_packet << (Uint8)m_addresses.length();
-	for (i = 0; i < m_addresses.length(); ++i) {
-		m_packet << m_addresses[i].host;
-		m_packet << m_addresses[i].port;
-	}
+	m_packet.Write((Uint8)LOBBY_ANNOUNCE_GAME);
+	PackAddresses(m_packet);
+	m_packet.address = m_globalServer;
+
+	SDLNet_UDP_Send(gNetFD, -1, &m_packet);
+}
+
+void
+LobbyDialogDelegate::RemoveGame()
+{
+	m_packet.Reset();
+	m_packet.Write((Uint8)LOBBY_REMOVE_GAME);
+	PackAddresses(m_packet);
 	m_packet.address = m_globalServer;
 
 	SDLNet_UDP_Send(gNetFD, -1, &m_packet);
@@ -163,15 +176,9 @@ LobbyDialogDelegate::AdvertiseGame()
 void
 LobbyDialogDelegate::GetGameList()
 {
-	int i;
-
 	m_packet.Reset();
-	m_packet << (Uint8)LOBBY_REQUEST_GAME_SERVERS;
-	m_packet << (Uint8)m_addresses.length();
-	for (i = 0; i < m_addresses.length(); ++i) {
-		m_packet << m_addresses[i].host;
-		m_packet << m_addresses[i].port;
-	}
+	m_packet.Write((Uint8)LOBBY_REQUEST_GAME_SERVERS);
+	PackAddresses(m_packet);
 	m_packet.address = m_globalServer;
 
 	SDLNet_UDP_Send(gNetFD, -1, &m_packet);
@@ -180,4 +187,18 @@ LobbyDialogDelegate::GetGameList()
 void
 LobbyDialogDelegate::ClearGameList()
 {
+}
+
+void
+LobbyDialogDelegate::PackAddresses(DynamicPacket &packet)
+{
+	Uint16 port;
+
+	port = SDLNet_UDP_GetPeerAddress(gNetFD, -1)->port;
+
+	m_packet.Write((Uint8)m_addresses.length());
+	for (int i = 0; i < m_addresses.length(); ++i) {
+		m_packet.Write(m_addresses[i].host);
+		m_packet.Write(port);
+	}
 }
