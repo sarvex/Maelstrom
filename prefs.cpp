@@ -90,7 +90,7 @@ Prefs::Load()
 		SetString(key, value);
 
 		key = next;
-		while (*key && *key == '\r' && *key == '\n') {
+		while (*key && (*key == '\r' || *key == '\n')) {
 			++key;
 		}
 	}

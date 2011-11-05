@@ -106,8 +106,8 @@ extern StarPtr	gTheStars[MAX_STARS];
 extern Uint32	gStarColors[];
 // in controls.cpp :
 extern Controls	controls;
-extern Uint8	gSoundLevel;
-extern Uint8	gGammaCorrect;
+extern PrefsVariable<Uint8> gSoundLevel;
+extern PrefsVariable<Uint8> gGammaCorrect;
 // int scores.cpp :
 extern Scores	hScores[];
 

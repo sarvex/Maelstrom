@@ -36,83 +36,47 @@
 
 /* Savable and configurable controls/data */
 
-/* Pause        Shield     Thrust  TurnR      TurnL     Fire     Quit  */
-#ifdef FAITHFUL_SPECS
-Controls controls =
-{ SDLK_CAPSLOCK,SDLK_SPACE,SDLK_UP,SDLK_RIGHT,SDLK_LEFT,SDLK_TAB,SDLK_ESCAPE };
-#else
-Controls controls =
-   { SDLK_PAUSE,SDLK_SPACE,SDLK_UP,SDLK_RIGHT,SDLK_LEFT,SDLK_TAB,SDLK_ESCAPE };
-#endif
+Controls::Controls() :
+	gPauseControl("Controls.PauseControl", SDLK_PAUSE),
+	gShieldControl("Controls.ShieldControl", SDLK_SPACE),
+	gThrustControl("Controls.ThrustControl", SDLK_UP),
+	gTurnRControl("Controls.TurnRControl", SDLK_RIGHT),
+	gTurnLControl("Controls.TurnLControl", SDLK_LEFT),
+	gFireControl("Controls.FireControl", SDLK_TAB),
+	gQuitControl("Controls.QuitControl", SDLK_ESCAPE)
+{
+}
 
+void
+Controls::Register(Prefs *prefs)
+{
+	gPauseControl.Register(prefs);
+	gShieldControl.Register(prefs);
+	gThrustControl.Register(prefs);
+	gTurnRControl.Register(prefs);
+	gTurnLControl.Register(prefs);
+	gFireControl.Register(prefs);
+	gQuitControl.Register(prefs);
+}
+
+Controls controls;
 #ifdef MOVIE_SUPPORT
 int	gMovie = 0;
 #endif
-Uint8 gSoundLevel = 4;
-Uint8 gGammaCorrect = 3;
+PrefsVariable<Uint8> gSoundLevel("SoundLevel", 4);
+PrefsVariable<Uint8> gGammaCorrect("GammaCorrect", 3);
 
-
-static FILE *OpenData(const char *mode, char **fname)
-{
-	static char datafile[BUFSIZ];
-	FILE *data;
-
-	if ( fname ) {
-		*fname = datafile;
-	}
-	sprintf(datafile,  "%s/%s", PHYSFS_getWriteDir(), MAELSTROM_DATA);
-	if ( (data=fopen(datafile, mode)) == NULL )
-		return(NULL);
-	return(data);
-}
 
 void LoadControls(void)
 {
-	char  buffer[BUFSIZ], *datafile;
-	FILE *data;
-
-	/* Open our control data file */
-	data = OpenData("r", &datafile);
-	if ( data == NULL ) {
-		return;
-	}
-
-	/* Read the controls */
-	if ( (fread(buffer, 1, 5, data) != 5) || strncmp(buffer, "MAEL3", 5) ) {
-		error(
-		"Warning: Data file '%s' is corrupt! (will fix)\n", datafile);
-		fclose(data);
-		return;
-	}
-	fread(&gSoundLevel, sizeof(gSoundLevel), 1, data);
-	fread(&controls, sizeof(controls), 1, data);
-	fread(&gGammaCorrect, sizeof(gGammaCorrect), 1, data);
-	fclose(data);
+	gSoundLevel.Register(prefs);
+	gGammaCorrect.Register(prefs);
+	controls.Register(prefs);
 }
 
 void SaveControls(void)
 {
-	char  *datafile;
-	const char *newmode;
-	FILE *data;
-
-	/* Don't clobber existing joystick data */
-	if ( (data=OpenData("r", NULL)) != NULL ) {
-		newmode = "r+";
-		fclose(data);
-	} else
-		newmode = "w";
-
-	if ( (data=OpenData(newmode, &datafile)) == NULL ) {
-		error("Warning: Couldn't save controls to %s\n", datafile);
-		return;
-	}
-
-	fwrite("MAEL3", 1, 5, data);
-	fwrite(&gSoundLevel, sizeof(gSoundLevel), 1, data);
-	fwrite(&controls, sizeof(controls), 1, data);
-	fwrite(&gGammaCorrect, sizeof(gGammaCorrect), 1, data);
-	fclose(data);
+	prefs->Save();
 }
 
 bool

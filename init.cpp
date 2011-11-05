@@ -640,6 +640,7 @@ static void BuildVelocityTable(void)
 void CleanUp(void)
 {
 	HaltLogic();
+	SaveControls();
 	if ( spriteres ) {
 		delete spriteres;
 		spriteres = NULL;
@@ -686,6 +687,9 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 	// -- Load our preferences files
 	prefs = new Prefs(GAME_PREFS_FILE);
 	prefs->Load();
+
+	// -- Load our controls
+	LoadControls();
 
 	Uint32 init_flags = (SDL_INIT_VIDEO|SDL_INIT_AUDIO);
 #ifdef SDL_INIT_JOYSTICK

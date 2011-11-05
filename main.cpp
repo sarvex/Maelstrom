@@ -180,8 +180,6 @@ void PrintUsage(void)
 	error("Where <options> can be any of:\n\n"
 "	-fullscreen		# Run Maelstrom in full-screen mode\n"
 "	-windowed		# Run Maelstrom in windowed mode\n"
-"	-gamma [0-8]		# Set the gamma correction\n"
-"	-volume [0-8]		# Set the sound volume\n"
 	);
 	LogicUsage();
 	error("\n");
@@ -254,8 +252,6 @@ int main(int argc, char *argv[])
 
 	/* Seed the random number generator */
 	SeedRandom(0L);
-	/* Initialize the controls */
-	LoadControls();
 
 	/* Initialize game logic data structures */
 	if ( InitLogicData() < 0 ) {
@@ -272,47 +268,6 @@ int main(int argc, char *argv[])
 		} else
 		if ( strcmp(argv[1], "-windowed") == 0 ) {
 			window_flags &= ~SDL_WINDOW_FULLSCREEN;
-		} else
-		if ( strcmp(argv[1], "-gamma") == 0 ) {
-			int gammacorrect;
-
-			if ( ! argv[2] ) {  /* Print the current gamma */
-				mesg("Current Gamma correction level: %d\n",
-								gGammaCorrect);
-				exit(0);
-			}
-			if ( (gammacorrect=atoi(argv[2])) < 0 || 
-							gammacorrect > 8 ) {
-				error(
-	"Gamma correction value must be between 0 and 8. -- Exiting.\n");
-				exit(1);
-			}
-			/* We need to update the gamma */
-			gGammaCorrect = gammacorrect;
-			SaveControls();
-
-			++argv;
-			--argc;
-		}
-		else if ( strcmp(argv[1], "-volume") == 0 ) {
-			int volume;
-
-			if ( ! argv[2] ) {  /* Print the current volume */
-				mesg("Current volume level: %d\n",
-								gSoundLevel);
-				exit(0);
-			}
-			if ( (volume=atoi(argv[2])) < 0 || volume > 8 ) {
-				error(
-	"Volume must be a number between 0 and 8. -- Exiting.\n");
-				exit(1);
-			}
-			/* We need to update the volume */
-			gSoundLevel = volume;
-			SaveControls();
-
-			++argv;
-			--argc;
 		} else if ( LogicParseArgs(&argv, &argc) == 0 ) {
 			/* LogicParseArgs() took care of everything */;
 		} else if ( strcmp(argv[1], "-version") == 0 ) {
@@ -330,6 +285,7 @@ int main(int argc, char *argv[])
 	/* Initialize everything. :) */
 	if ( DoInitializations(window_flags, render_flags) < 0 ) {
 		/* An error message was already printed */
+		CleanUp();
 		exit(1);
 	}
 
@@ -360,6 +316,7 @@ int main(int argc, char *argv[])
 	}
 
 	ui->HidePanel(PANEL_MAIN);
+	CleanUp();
 	exit(0);
 }	/* -- main */
 
@@ -528,7 +485,7 @@ MainPanelDelegate::OnTick()
 
 	label = m_panel->GetElement<UIElement>("volume");
 	if (label) {
-		sprintf(text, "%d", gSoundLevel);
+		sprintf(text, "%d", gSoundLevel.Value());
 		label->SetText(text);
 	}
 }

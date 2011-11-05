@@ -44,15 +44,22 @@ extern void	ShowDawn(void);
 #define ABORT_KEY	0x07
 
 /* The controls structure */
-typedef struct {
-	SDL_Keycode gPauseControl;
-	SDL_Keycode gShieldControl;
-	SDL_Keycode gThrustControl;
-	SDL_Keycode gTurnRControl;
-	SDL_Keycode gTurnLControl;
-	SDL_Keycode gFireControl;
-	SDL_Keycode gQuitControl;
-} Controls;
+class Controls
+{
+public:
+	Controls();
+
+	void Register(Prefs *prefs);
+
+public:
+	PrefsVariable<SDL_Keycode> gPauseControl;
+	PrefsVariable<SDL_Keycode> gShieldControl;
+	PrefsVariable<SDL_Keycode> gThrustControl;
+	PrefsVariable<SDL_Keycode> gTurnRControl;
+	PrefsVariable<SDL_Keycode> gTurnLControl;
+	PrefsVariable<SDL_Keycode> gFireControl;
+	PrefsVariable<SDL_Keycode> gQuitControl;
+};
 
 
 class UIElement;
