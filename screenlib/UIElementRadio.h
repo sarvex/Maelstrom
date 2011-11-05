@@ -40,10 +40,16 @@ class UIElementRadioGroup : public UIElement
 DECLARE_TYPESAFE_CLASS(UIElement)
 public:
 	UIElementRadioGroup(UIBaseElement *parent, const char *name, UIDrawEngine *drawEngine);
+	~UIElementRadioGroup();
+
+	override bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
+
+	override void LoadData(Prefs *prefs);
+	override void SaveData(Prefs *prefs);
 
 	UIElementRadioButton *GetRadioButton(int id);
 
-	void RadioButtonChecked(UIElementRadioButton *button);
+	void SetValue(int value);
 
 	int GetValue() const {
 		return m_value;
@@ -51,6 +57,7 @@ public:
 
 protected:
 	int m_value;
+	char *m_valueBinding;
 };
 
 class UIElementRadioButton : public UIElementCheckbox

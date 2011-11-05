@@ -28,6 +28,44 @@ UIElementRadioGroup::UIElementRadioGroup(UIBaseElement *parent, const char *name
 	UIElement(parent, name, drawEngine)
 {
 	m_value = -1;
+	m_valueBinding = NULL;
+}
+
+UIElementRadioGroup::~UIElementRadioGroup()
+{
+	if (m_valueBinding) {
+		SDL_free(m_valueBinding);
+	}
+}
+
+bool
+UIElementRadioGroup::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
+{
+	if (!UIElement::Load(node, templates)) {
+		return false;
+	}
+
+	LoadString(node, "bindValue", m_valueBinding);
+
+	return true;
+}
+
+void
+UIElementRadioGroup::LoadData(Prefs *prefs)
+{
+	if (m_valueBinding) {
+		SetValue(prefs->GetNumber(m_valueBinding, GetValue()));
+	}
+	UIElement::LoadData(prefs);
+}
+
+void
+UIElementRadioGroup::SaveData(Prefs *prefs)
+{
+	if (m_valueBinding) {
+		prefs->SetNumber(m_valueBinding, GetValue());
+	}
+	UIElement::SaveData(prefs);
 }
 
 UIElementRadioButton *
@@ -49,17 +87,24 @@ UIElementRadioGroup::GetRadioButton(int id)
 }
 
 void
-UIElementRadioGroup::RadioButtonChecked(UIElementRadioButton *button)
+UIElementRadioGroup::SetValue(int value)
 {
 	array<UIElementRadioButton*> buttons;
 
+	if (value == m_value) {
+		return;
+	}
+
+	m_value = value;
+
 	FindElements<UIElementRadioButton>(buttons);
 	for (int i = 0; i < buttons.length(); ++i) {
-		if (buttons[i] != button && buttons[i]->IsChecked()) {
+		if (buttons[i]->GetID() == value) {
+			buttons[i]->SetChecked(true);
+		} else {
 			buttons[i]->SetChecked(false);
 		}
 	}
-	m_value = button->GetID();
 }
 
 
@@ -97,7 +142,7 @@ UIElementRadioButton::OnChecked(bool checked)
 {
 	if (checked) {
 		if (m_parent->IsA(UIElementRadioGroup::GetType())) {
-			static_cast<UIElementRadioGroup*>(m_parent)->RadioButtonChecked(this);
+			static_cast<UIElementRadioGroup*>(m_parent)->SetValue(GetID());
 		}
 	}
 }
