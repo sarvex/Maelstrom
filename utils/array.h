@@ -54,7 +54,7 @@ public:
 			return;
 		}
 		resize(m_len+1);
-		for (unsigned i = m_len; i >= index; --i) {
+		for (unsigned i = m_len; i > index; --i) {
 			m_data[i] = m_data[i-1];
 		}
 		m_data[index] = item;
@@ -73,7 +73,7 @@ public:
 	int length() const {
 		return m_len;
 	}
-	T operator[](unsigned index) {
+	const T& operator[](unsigned index) const {
 		assert(index < m_len);
 		return m_data[index];
 	}
