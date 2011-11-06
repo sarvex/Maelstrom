@@ -205,7 +205,11 @@ MacDialogButton::OnDraw()
 		maxy = y+4+m_element->Height()+4-1;
 
 		// The edge always uses the real foreground color
-		color = m_colors[1];
+		if (m_element->IsDisabled()) {
+			color = m_element->GetDisabledColor();
+		} else {
+			color = m_colors[1];
+		}
 
 		m_screen->DrawLine(x+5, y, maxx-5, y, color);
 		m_screen->DrawLine(x+3, y+1, maxx-3, y+1, color);
