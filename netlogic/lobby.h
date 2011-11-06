@@ -89,7 +89,8 @@ protected:
 		STATE_HOSTING,
 		STATE_LISTING,
 		STATE_JOINING,
-		STATE_JOINED
+		STATE_JOINED,
+		STATE_PLAYING
 	} m_state;
 
 	Uint32 m_uniqueID;

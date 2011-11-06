@@ -144,6 +144,7 @@ LobbyDialogDelegate::OnHide()
 {
 	// Start the game!
 	if (m_dialog->GetDialogStatus() > 0) {
+		SetState(STATE_PLAYING);
 		for (int i = 0; i < MAX_PLAYERS; ++i) {
 			GameInfoPlayer *player = m_game.GetPlayer(i);
 			if (player->playerID) {
@@ -283,6 +284,9 @@ void
 LobbyDialogDelegate::SetState(LOBBY_STATE state)
 {
 	// Handle any state transitions here
+	if (m_state == STATE_HOSTING && m_globalGame->IsChecked()) {
+		RemoveGame();
+	}
 	if (state == STATE_NONE) {
 		if (m_state == STATE_HOSTING) {
 			// Notify the players that the game is gone
