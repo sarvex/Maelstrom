@@ -155,6 +155,8 @@ LobbyDialogDelegate::OnHide()
 			}
 		}
 		NewGame();
+	} else {
+		SetState(STATE_NONE);
 	}
 
 	// Shut down networking
@@ -176,6 +178,8 @@ LobbyDialogDelegate::OnTick()
 			AdvertiseGame();
 		} else if (m_state == STATE_LISTING) {
 			GetGameList();
+		} else if (m_state == STATE_JOINING) {
+			SendJoinRequest();
 		} else {
 			GetGameInfo();
 		}
@@ -204,23 +208,17 @@ LobbyDialogDelegate::SetHostOrJoin(void*, int value)
 			return;
 		}
 
-		if (value == HOST_GAME) {
-			m_state = STATE_HOSTING;
-		} else {
-			m_state = STATE_LISTING;
-		}
 		m_uniqueID = rand();
-		m_lastRefresh = 0;
-
-		if (m_state == STATE_HOSTING) {
-			m_game.SetHostInfo(m_uniqueID, prefs->GetString(PREFERENCES_HANDLE));
-		}
 		m_game.SetLocalID(m_uniqueID);
-	} else {
-		m_state = STATE_NONE;
-	}
 
-	UpdateUI();
+		if (value == HOST_GAME) {
+			SetState(STATE_HOSTING);
+		} else {
+			SetState(STATE_LISTING);
+		}
+	} else {
+		SetState(STATE_NONE);
+	}
 }
 
 void
@@ -282,6 +280,38 @@ LobbyDialogDelegate::UpdateUI()
 }
 
 void
+LobbyDialogDelegate::SetState(LOBBY_STATE state)
+{
+	// Handle any state transitions here
+	if (state == STATE_NONE) {
+		if (m_state == STATE_HOSTING) {
+			// Notify the players that the game is gone
+			for (int i = 0; i < MAX_PLAYERS; ++i) {
+				SendKick(i);
+			}
+		} else if (m_state == STATE_JOINING ||
+			   m_state == STATE_JOINED) {
+			// Notify the host that we're gone
+			SendLeaveRequest();
+		}
+	} else if (state == STATE_HOSTING) {
+		m_game.SetHostInfo(m_uniqueID, prefs->GetString(PREFERENCES_HANDLE));
+	} else if (state == STATE_LISTING) {
+		ClearGameList();
+	}
+
+	// Set the state
+	m_state = state;
+
+	// Update the UI for the new state
+	UpdateUI();
+
+	// Send any packet requests immediately
+	// Comment this out to simulate initial packet loss
+	m_lastRefresh = 0;
+}
+
+void
 LobbyDialogDelegate::AdvertiseGame()
 {
 	if (m_globalGame->IsChecked()) {
@@ -325,24 +355,56 @@ void
 LobbyDialogDelegate::GetGameInfo()
 {
 	m_packet.StartLobbyMessage(LOBBY_REQUEST_GAME_INFO);
-	m_packet.address = m_game.players[0].address;
+	m_packet.address = m_game.GetHost()->address;
 	SDLNet_UDP_Send(gNetFD, -1, &m_packet);
 }
 
 void
 LobbyDialogDelegate::JoinGame(GameInfo &game)
 {
+	m_game.CopyFrom(game);
+	SetState(STATE_JOINING);
+}
+
+void
+LobbyDialogDelegate::SendJoinRequest()
+{
 	m_packet.StartLobbyMessage(LOBBY_REQUEST_JOIN);
-	m_packet.Write(game.gameID);
+	m_packet.Write(m_game.gameID);
 	m_packet.Write(m_uniqueID);
 	m_packet.Write(prefs->GetString(PREFERENCES_HANDLE));
-	m_packet.address = game.players[0].address;;
+	m_packet.address = m_game.GetHost()->address;
 
 	SDLNet_UDP_Send(gNetFD, -1, &m_packet);
+}
 
-	m_game.CopyFrom(game);
-	m_state = STATE_JOINING;
-	UpdateUI();
+void
+LobbyDialogDelegate::SendLeaveRequest()
+{
+	m_packet.StartLobbyMessage(LOBBY_REQUEST_LEAVE);
+	m_packet.Write(m_game.gameID);
+	m_packet.Write(m_uniqueID);
+	m_packet.address = m_game.GetHost()->address;
+
+	SDLNet_UDP_Send(gNetFD, -1, &m_packet);
+}
+
+void
+LobbyDialogDelegate::SendKick(int index)
+{
+	GameInfoPlayer *player;
+
+	player = m_game.GetPlayer(index);
+	if (!player->playerID || player->playerID == m_uniqueID) {
+		return;
+	}
+
+	m_packet.StartLobbyMessage(LOBBY_KICK);
+	m_packet.Write(m_game.gameID);
+	m_packet.Write(player->playerID);
+	m_packet.address = player->address;
+
+	SDLNet_UDP_Send(gNetFD, -1, &m_packet);
 }
 
 void
@@ -408,7 +470,7 @@ LobbyDialogDelegate::ProcessPacket(DynamicPacket &packet)
 		} else if (cmd == LOBBY_REQUEST_JOIN) {
 			ProcessRequestJoin(packet);
 		} else if (cmd == LOBBY_REQUEST_LEAVE) {
-			//ProcessRequestLeave(packet);
+			ProcessRequestLeave(packet);
 		}
 		return;
 
@@ -421,7 +483,6 @@ LobbyDialogDelegate::ProcessPacket(DynamicPacket &packet)
 			}
 			return;
 		}
-
 	}
 
 	// These packets we handle in all the join states
@@ -430,6 +491,8 @@ LobbyDialogDelegate::ProcessPacket(DynamicPacket &packet)
 		//RejectPing(packet);
 	} else if (cmd == LOBBY_GAME_INFO) {
 		ProcessGameInfo(packet);
+	} else if (cmd == LOBBY_KICK) {
+		ProcessKick(packet);
 	}
 }
 
@@ -532,33 +595,33 @@ LobbyDialogDelegate::ProcessRequestJoin(DynamicPacket &packet)
 }
 
 void
+LobbyDialogDelegate::ProcessRequestLeave(DynamicPacket &packet)
+{
+	Uint32 gameID;
+	Uint32 playerID;
+
+	if (!packet.Read(gameID) || gameID != m_game.gameID) {
+		return;
+	}
+	if (!packet.Read(playerID) || !m_game.HasPlayer(playerID)) {
+		return;
+	}
+
+	// Okay, clear them from the list!
+	GameInfoPlayer *player = m_game.GetPlayerByID(playerID);
+	SDL_zero(*player);
+
+	// Update our own UI
+	UpdateUI();
+}
+
+void
 LobbyDialogDelegate::ProcessGameInfo(DynamicPacket &packet)
 {
 	GameInfo game;
 
 	if (!game.ReadFromPacket(packet)) {
 		return;
-	}
-
-	if (m_state != STATE_LISTING) {
-		if (game.gameID != m_game.gameID) {
-			// Probably an old packet...
-			return;
-		}
-
-		m_game.CopyFrom(game);
-
-		if (m_state == STATE_JOINING) {
-			if (m_game.HasPlayer(m_uniqueID)) {
-				// We successfully joined the game
-				m_state = STATE_JOINED;
-			}
-		} else {
-			if (!m_game.HasPlayer(m_uniqueID)) {
-				// We were kicked from the game
-				m_state = STATE_LISTING;
-			}
-		}
 	}
 
 	if (m_state == STATE_LISTING) {
@@ -573,9 +636,47 @@ LobbyDialogDelegate::ProcessGameInfo(DynamicPacket &packet)
 		if (i == m_gameList.length()) {
 			m_gameList.add(game);
 		}
+	} else {
+		if (game.gameID != m_game.gameID) {
+			// Probably an old packet...
+			return;
+		}
+
+		m_game.CopyFrom(game);
+
+		if (m_state == STATE_JOINING) {
+			if (m_game.HasPlayer(m_uniqueID)) {
+				// We successfully joined the game
+				SetState(STATE_JOINED);
+			}
+		} else {
+			if (!m_game.HasPlayer(m_uniqueID)) {
+				// We were kicked from the game
+				SetState(STATE_LISTING);
+			}
+		}
 	}
 
 	UpdateUI();
+}
+
+void
+LobbyDialogDelegate::ProcessKick(DynamicPacket &packet)
+{
+	Uint32 gameID;
+	Uint32 playerID;
+
+	if (m_state != STATE_JOINING && m_state != STATE_JOINED) {
+		return;
+	}
+	if (!packet.Read(gameID) || gameID != m_game.gameID) {
+		return;
+	}
+	if (!packet.Read(playerID) || playerID != m_uniqueID) {
+		return;
+	}
+
+	SetState(STATE_LISTING);
 }
 
 void

@@ -77,8 +77,19 @@ public:
 	bool ReadFromPacket(DynamicPacket &packet);
 	void WriteToPacket(DynamicPacket &packet);
 
+	GameInfoPlayer *GetHost() {
+		return GetPlayer(0);
+	}
 	GameInfoPlayer *GetPlayer(int index) {
 		return &players[index];
+	}
+	GameInfoPlayer *GetPlayerByID(Uint32 playerID) {
+		for (int i = 0; i < MAX_PLAYERS; ++i) {
+			if (players[i].playerID == playerID) {
+				return &players[i];
+			}
+		}
+		return NULL;
 	}
 
 	bool HasPlayer(Uint32 playerID) {

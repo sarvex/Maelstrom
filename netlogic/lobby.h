@@ -62,6 +62,9 @@ protected:
 	void GetGameList();
 	void GetGameInfo();
 	void JoinGame(GameInfo &game);
+	void SendJoinRequest();
+	void SendLeaveRequest();
+	void SendKick(int index);
 	void ClearGameInfo();
 	void ClearGameList();
 
@@ -72,14 +75,16 @@ protected:
 	void ProcessAnnouncePlayer(DynamicPacket &packet);
 	void ProcessRequestGameInfo(DynamicPacket &packet);
 	void ProcessRequestJoin(DynamicPacket &packet);
+	void ProcessRequestLeave(DynamicPacket &packet);
 	void ProcessGameServerList(DynamicPacket &packet);
 	void ProcessGameInfo(DynamicPacket &packet);
+	void ProcessKick(DynamicPacket &packet);
 
 protected:
 	IPaddress m_globalServer;
 	array<IPaddress> m_addresses;
 
-	enum {
+	enum LOBBY_STATE {
 		STATE_NONE,
 		STATE_HOSTING,
 		STATE_LISTING,
@@ -103,6 +108,9 @@ protected:
 	UIElement *m_gameInfoArea;
 	UIElement *m_gameInfoPlayers[MAX_PLAYERS];
 	UIElement *m_playButton;
+
+protected:
+	void SetState(LOBBY_STATE state);
 };
 
 #endif // _lobby_h

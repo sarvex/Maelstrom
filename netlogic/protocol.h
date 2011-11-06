@@ -151,7 +151,6 @@ enum LobbyProtocol {
 	LOBBY_REQUEST_JOIN,
 	/* Sent by the joining game
 
-		Uint32 sequence;
 		Uint32 gameID
 		Uint32 playerID
 		Uint8 namelen
@@ -161,7 +160,13 @@ enum LobbyProtocol {
 	LOBBY_REQUEST_LEAVE,
 	/* Sent by the joining game
 
-		Uint32 sequence;
+		Uint32 gameID
+		Uint32 playerID
+	*/
+
+	LOBBY_KICK,
+	/* Sent by the hosting game
+
 		Uint32 gameID
 		Uint32 playerID
 	*/
