@@ -265,12 +265,17 @@ MacDialogButton::OnMouseUp()
 void
 MacDialogCheckbox::Init(UIElement *element)
 {
+	UIArea *area;
+
 	MacDialogDrawEngine::Init(element);
 
 	m_element->SetSize(CHECKBOX_SIZE, CHECKBOX_SIZE);
 
-	UIArea *area = m_element->GetTextArea();
+	area = m_element->GetTextArea();
 	area->SetAnchor(TOPLEFT, TOPLEFT, m_element, CHECKBOX_SIZE+3, -2);
+
+	area = m_element->GetImageArea();
+	area->SetAnchor(LEFT, LEFT, m_element, CHECKBOX_SIZE+3, 0);
 }
 
 void
@@ -301,12 +306,17 @@ MacDialogCheckbox::OnDraw()
 void
 MacDialogRadioButton::Init(UIElement *element)
 {
+	UIArea *area;
+
 	MacDialogDrawEngine::Init(element);
 
 	m_element->SetSize(RADIOBUTTON_SIZE, RADIOBUTTON_SIZE);
 
-	UIArea *area = m_element->GetTextArea();
+	area = m_element->GetTextArea();
 	area->SetAnchor(TOPLEFT, TOPLEFT, m_element, RADIOBUTTON_SIZE+1, 3);
+
+	area = m_element->GetImageArea();
+	area->SetAnchor(LEFT, LEFT, m_element, RADIOBUTTON_SIZE+1, 0);
 }
 
 void
