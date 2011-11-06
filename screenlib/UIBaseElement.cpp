@@ -184,6 +184,9 @@ bool
 UIBaseElement::HandleEvent(const SDL_Event &event)
 {
 	for (int i = m_elements.length(); i--; ) {
+		if (!m_elements[i]->IsShown()) {
+			continue;
+		}
 		if (m_elements[i]->IsDisabled()) {
 			continue;
 		}
