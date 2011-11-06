@@ -74,11 +74,38 @@ public:
 	void AddElement(UIBaseElement *element) {
 		m_elements.add(element);
 	}
+	void GetElements(array<UIBaseElement*> &elements) {
+		for (int i = 0; i < m_elements.length(); ++i) {
+			elements.add(m_elements[i]);
+		}
+	}
 	template <typename T>
 	T *GetElement(const char *name) {
-		UIBaseElement *element = GetElement(name);
-		if (element && element->IsA(T::GetType())) {
-			return (T*)element;
+		// Do a breadth first search
+		array<UIBaseElement*> lists[2];
+		int i, current = 0;
+
+		GetElements(lists[current]);
+		while (lists[current].length() > 0) {
+			array<UIBaseElement*> &list = lists[current];
+			
+			for (i = 0; i < list.length(); ++i) {
+				UIBaseElement *element = list[i];
+				if (strcmp(name, element->GetName()) == 0) {
+					if (element->IsA(T::GetType())) {
+						return (T*)element;
+					}
+				}
+			}
+
+			// Didn't find it, grab the children
+			array<UIBaseElement*> &children = lists[!current];
+			for (i = 0; i < list.length(); ++i) {
+				list[i]->GetElements(children);
+			}
+			list.clear();
+
+			current = !current;
 		}
 		return NULL;
 	}
@@ -156,7 +183,6 @@ protected:
 	array<UIBaseElement *> m_elements;
 
 protected:
-	UIBaseElement *GetElement(const char *name);
 	UIBaseElement *CreateElement(const char *type);
 
 	bool LoadElements(rapidxml::xml_node<> *node, const UITemplates *templates);

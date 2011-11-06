@@ -117,7 +117,7 @@ UIBaseElement::GetAnchorElement(const char *name)
 {
 	if (name) {
 		if (m_parent) {
-			UIArea *element = m_parent->GetElement(name);
+			UIArea *element = m_parent->GetElement<UIBaseElement>(name);
 			if (!element) {
 				element = m_parent->GetAnchorElement(name);
 			}
@@ -195,17 +195,6 @@ UIBaseElement::HandleEvent(const SDL_Event &event)
 		}
 	}
 	return false;
-}
-
-UIBaseElement *
-UIBaseElement::GetElement(const char *name)
-{
-	for (int i = 0; i < m_elements.length(); ++i) {
-		if (strcmp(name, m_elements[i]->GetName()) == 0) {
-			return m_elements[i];
-		}
-	}
-	return NULL;
 }
 
 UIBaseElement *
