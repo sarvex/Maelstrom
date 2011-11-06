@@ -36,6 +36,15 @@ enum {
 	CONTROL_NETWORK,
 };
 
+enum PING_STATUS {
+	PING_LOCAL,
+	PING_GOOD,
+	PING_OKAY,
+	PING_BAD,
+	PING_TIMEDOUT,
+	NUM_PING_STATES
+};
+
 struct GameInfoPlayer
 {
 	Uint32 playerID;
@@ -43,14 +52,21 @@ struct GameInfoPlayer
 	char name[MAX_NAMELEN+1];
 
 	struct {
+		Uint32 lastPing;
+		Uint32 roundTripTime;
+		PING_STATUS status;
+	} ping;
+
+	struct {
+		UIElement *element;
 		UIElementCheckbox *enabled;
 		UIElement *name;
 		UIElement *host;
-		UIElement *ping;
 		UIElementRadioGroup *control;
 		UIElement *keyboard;
 		UIElement *joystick;
 		UIElement *network;
+		UIElement *ping_states[NUM_PING_STATES];
 	} UI;
 };
 
@@ -78,7 +94,7 @@ public:
 	void WriteToPacket(DynamicPacket &packet);
 
 	GameInfoPlayer *GetHost() {
-		return GetPlayer(0);
+		return GetPlayer(HOST_PLAYER);
 	}
 	GameInfoPlayer *GetPlayer(int index) {
 		return &players[index];
@@ -109,6 +125,16 @@ public:
 		return false;
 	}
 
+	bool IsNetworkPlayer(int index) {
+		if (!players[index].playerID) {
+			return false;
+		}
+		if (players[index].playerID == localID) {
+			return false;
+		}
+		return true;
+	}
+
 	bool IsFull() {
 		for (int i = 0; i < MAX_PLAYERS; ++i) {
 			if (!players[i].playerID) {
@@ -121,6 +147,23 @@ public:
 	void BindPlayerToUI(int index, UIElement *element);
 	void UpdateUI();
 	void UpdateUI(GameInfoPlayer *player);
+
+	void InitializePing() {
+		for (int i = 0; i < MAX_PLAYERS; ++i) {
+			InitializePing(i);
+		}
+	}
+	void InitializePing(int index);
+	void UpdatePingTime(int index, Uint32 timestamp);
+	void UpdatePingStatus();
+
+	PING_STATUS GetPingStatus(int index) {
+		if (IsNetworkPlayer(index)) {
+			return players[index].ping.status;
+		} else {
+			return PING_LOCAL;
+		}
+	}
 
 public:
 	Uint32 gameID;

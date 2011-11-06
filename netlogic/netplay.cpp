@@ -172,7 +172,7 @@ int CheckPlayers(void)
 	}
 	/* Add ourselves if needed */
 	if ( gNumPlayers == 0 ) {
-		AddLocalPlayer(0);
+		AddLocalPlayer(HOST_PLAYER);
 		gNumPlayers = 1;
 		FoundUs = 1;
 	}

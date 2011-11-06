@@ -111,7 +111,7 @@ enum LobbyProtocol {
 
 		Uint32 gameID
 		Uint32 playerID
-		Uint32 sequence
+		Uint32 timestamp
 	 */
 
 	LOBBY_PONG,
@@ -119,16 +119,19 @@ enum LobbyProtocol {
 
 		Uint32 gameID
 		Uint32 playerID
-		Uint32 sequence
+		Uint32 timestamp
 	 */
 
 	LOBBY_REQUEST_GAME_INFO,
 	/* Sent by the joining game to get info for the game list
+
+		Uint32 timestamp
 	 */
 
 	LOBBY_GAME_INFO,
 	/* Sent by the hosting game, if there are slots open
 
+		Uint32 timestamp
 		Uint32 gameID
 		Uint8 deathMatch;
 		Uint32 player1_uniqueID;
@@ -195,6 +198,14 @@ enum LobbyProtocol {
 */
 #define MAX_PLAYERS	3
 
+/* The index of the player hosting the game */
+#define HOST_PLAYER	0
+
+/* If the other side hasn't responded in 3 seconds, we'll drop them */
+#define PING_INTERVAL	1000
+#define PING_TIMEOUT	3000
+
+/* The maximum characters in a player's handle */
 #define MAX_NAMELEN	15
 
 #endif /* _protocol_h */

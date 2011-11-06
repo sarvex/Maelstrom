@@ -57,6 +57,7 @@ protected:
 
 	void UpdateUI();
 
+	void CheckPings();
 	void AdvertiseGame();
 	void RemoveGame();
 	void GetGameList();
@@ -71,6 +72,8 @@ protected:
 	void PackAddresses(DynamicPacket &packet);
 
 	void ProcessPacket(DynamicPacket &packet);
+	void ProcessPing(DynamicPacket &packet);
+	void ProcessPong(DynamicPacket &packet);
 	void ProcessNewGame(DynamicPacket &packet);
 	void ProcessAnnouncePlayer(DynamicPacket &packet);
 	void ProcessRequestGameInfo(DynamicPacket &packet);
@@ -94,6 +97,7 @@ protected:
 	} m_state;
 
 	Uint32 m_uniqueID;
+	Uint32 m_lastPing;
 	Uint32 m_lastRefresh;
 	Uint32 m_requestSequence;
 

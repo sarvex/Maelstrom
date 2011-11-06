@@ -35,7 +35,6 @@
 // Update the game list every 3 seconds
 //#define GLOBAL_SERVER_HOST	"obelix.dreamhost.com"
 #define GLOBAL_SERVER_HOST	"localhost"
-#define GLOBAL_CHECK_INTERVAL	3000
 
 
 LobbyDialogDelegate::LobbyDialogDelegate(UIPanel *panel) :
@@ -43,6 +42,7 @@ LobbyDialogDelegate::LobbyDialogDelegate(UIPanel *panel) :
 {
 	m_state = STATE_NONE;
 	m_uniqueID = 0;
+	m_lastPing = 0;
 	m_lastRefresh = 0;
 	m_requestSequence = 1;
 }
@@ -174,7 +174,7 @@ LobbyDialogDelegate::OnTick()
 
 	Uint32 now = SDL_GetTicks();
 	if (!m_lastRefresh ||
-	    (now - m_lastRefresh) > GLOBAL_CHECK_INTERVAL) {
+	    (now - m_lastRefresh) > PING_INTERVAL) {
 		if (m_state == STATE_HOSTING) {
 			AdvertiseGame();
 		} else if (m_state == STATE_LISTING) {
@@ -192,6 +192,12 @@ LobbyDialogDelegate::OnTick()
 	while (SDLNet_UDP_Recv(gNetFD, &m_packet)) {
 		ProcessPacket(m_packet);
 		m_packet.Reset();
+	}
+
+	// Do this after processing packets in case a pong was pending
+	if (!m_lastPing || (now - m_lastPing) > PING_INTERVAL) {
+		CheckPings();
+		m_lastPing = now;
 	}
 }
 
@@ -261,7 +267,7 @@ LobbyDialogDelegate::UpdateUI()
 		for (int i = 0; (unsigned)i < SDL_arraysize(m_gameListElements); ++i) {
 			if (i < m_gameList.length()) {
 				m_gameListElements[i]->Show();
-				m_gameList[i].BindPlayerToUI(0, m_gameListElements[i]);
+				m_gameList[i].BindPlayerToUI(HOST_PLAYER, m_gameListElements[i]);
 			} else {
 				m_gameListElements[i]->Hide();
 			}
@@ -310,9 +316,66 @@ LobbyDialogDelegate::SetState(LOBBY_STATE state)
 	// Update the UI for the new state
 	UpdateUI();
 
+	m_lastPing = 0;
+
 	// Send any packet requests immediately
 	// Comment this out to simulate initial packet loss
 	m_lastRefresh = 0;
+}
+
+void
+LobbyDialogDelegate::CheckPings()
+{
+	// Check for ping timeouts
+	if (m_state == STATE_LISTING) {
+		bool removed = false;
+		int i = 0;
+		while (i < m_gameList.length()) {
+			GameInfo &game = m_gameList[i];
+			game.UpdatePingStatus();
+			if (game.GetPingStatus(HOST_PLAYER) == PING_TIMEDOUT) {
+//printf("Game timed out, removing from list\n");
+				m_gameList.remove(game);
+				removed = true;
+			} else {
+				++i;
+			}
+		}
+		if (removed) {
+			UpdateUI();
+		}
+	} else if (m_state == STATE_HOSTING) {
+		m_game.UpdatePingStatus();
+		for (int i = 0; i < MAX_PLAYERS; ++i) {
+			if (m_game.GetPingStatus(i) == PING_TIMEDOUT) {
+//printf("Player timed out, removing from lobby\n");
+				SendKick(i);
+			}
+		}
+	} else if (m_state == STATE_JOINED) {
+		m_game.UpdatePingStatus();
+		if (m_game.GetPingStatus(HOST_PLAYER) == PING_TIMEDOUT) {
+//printf("Game timed out, leaving lobbyn");
+			SetState(STATE_LISTING);
+		}
+	}
+
+	if (m_state == STATE_HOSTING || m_state == STATE_JOINED) {
+
+		// Send pings to everyone who is still here
+		m_packet.StartLobbyMessage(LOBBY_PING);
+		m_packet.Write(m_game.gameID);
+		m_packet.Write(m_uniqueID);
+		m_packet.Write(SDL_GetTicks());
+
+		for (int i = 0; i < MAX_PLAYERS; ++i) {
+			if (m_game.IsNetworkPlayer(i)) {
+				m_packet.address = m_game.GetPlayer(i)->address;
+				
+				SDLNet_UDP_Send(gNetFD, -1, &m_packet);
+			}
+		}
+	}
 }
 
 void
@@ -350,6 +413,7 @@ LobbyDialogDelegate::GetGameList()
 
 	// Get game info for local games
 	m_packet.StartLobbyMessage(LOBBY_REQUEST_GAME_INFO);
+	m_packet.Write(SDL_GetTicks());
 	m_packet.address.host = INADDR_BROADCAST;
 	m_packet.address.port = SDL_SwapBE16(NETPLAY_PORT);
 	SDLNet_UDP_Send(gNetFD, -1, &m_packet);
@@ -359,6 +423,7 @@ void
 LobbyDialogDelegate::GetGameInfo()
 {
 	m_packet.StartLobbyMessage(LOBBY_REQUEST_GAME_INFO);
+	m_packet.Write(SDL_GetTicks());
 	m_packet.address = m_game.GetHost()->address;
 	SDLNet_UDP_Send(gNetFD, -1, &m_packet);
 }
@@ -367,6 +432,7 @@ void
 LobbyDialogDelegate::JoinGame(GameInfo &game)
 {
 	m_game.CopyFrom(game);
+	m_game.InitializePing();
 	SetState(STATE_JOINING);
 }
 
@@ -398,17 +464,23 @@ LobbyDialogDelegate::SendKick(int index)
 {
 	GameInfoPlayer *player;
 
-	player = m_game.GetPlayer(index);
-	if (!player->playerID || player->playerID == m_uniqueID) {
+	if (!m_game.IsNetworkPlayer(index)) {
 		return;
 	}
 
+	player = m_game.GetPlayer(index);
 	m_packet.StartLobbyMessage(LOBBY_KICK);
 	m_packet.Write(m_game.gameID);
 	m_packet.Write(player->playerID);
 	m_packet.address = player->address;
 
 	SDLNet_UDP_Send(gNetFD, -1, &m_packet);
+
+	// Now remove them from the game list
+	SDL_zero(*player);
+
+	// Update our own UI
+	UpdateUI();
 }
 
 void
@@ -468,7 +540,9 @@ LobbyDialogDelegate::ProcessPacket(DynamicPacket &packet)
 		}
 
 		if (cmd == LOBBY_PING) {
-			//ProcessPing(packet);
+			ProcessPing(packet);
+		} else if (cmd == LOBBY_PONG) {
+			ProcessPong(packet);
 		} else if (cmd == LOBBY_REQUEST_GAME_INFO) {
 			ProcessRequestGameInfo(packet);
 		} else if (cmd == LOBBY_REQUEST_JOIN) {
@@ -491,12 +565,69 @@ LobbyDialogDelegate::ProcessPacket(DynamicPacket &packet)
 
 	// These packets we handle in all the join states
 	if (cmd == LOBBY_PING) {
-		// Somebody thinks we're still in a game lobby
-		//RejectPing(packet);
+		ProcessPing(packet);
+	} else if (cmd == LOBBY_PONG) {
+		ProcessPong(packet);
 	} else if (cmd == LOBBY_GAME_INFO) {
 		ProcessGameInfo(packet);
 	} else if (cmd == LOBBY_KICK) {
 		ProcessKick(packet);
+	}
+}
+
+void
+LobbyDialogDelegate::ProcessPing(DynamicPacket &packet)
+{
+	Uint32 gameID;
+	Uint32 playerID;
+	Uint32 timestamp;
+
+	if (m_state != STATE_HOSTING && m_state != STATE_JOINED) {
+		return;
+	}
+	if (!packet.Read(gameID) || gameID != m_game.gameID) {
+		return;
+	}
+	if (!packet.Read(playerID) || !m_game.HasPlayer(playerID)) {
+		return;
+	}
+	if (!packet.Read(timestamp)) {
+		return;
+	}
+
+	m_reply.StartLobbyMessage(LOBBY_PONG);
+	m_reply.Write(gameID);
+	m_reply.Write(playerID);
+	m_reply.Write(timestamp);
+	m_reply.address = packet.address;
+
+	SDLNet_UDP_Send(gNetFD, -1, &m_reply);
+}
+
+void
+LobbyDialogDelegate::ProcessPong(DynamicPacket &packet)
+{
+	Uint32 gameID;
+	Uint32 playerID;
+	Uint32 timestamp;
+
+	if (m_state != STATE_HOSTING && m_state != STATE_JOINED) {
+		return;
+	}
+	if (!packet.Read(gameID) || gameID != m_game.gameID) {
+		return;
+	}
+	if (!packet.Read(playerID) || playerID != m_uniqueID) {
+		return;
+	}
+	if (!packet.Read(timestamp)) {
+		return;
+	}
+
+	for (int i = 0; i < MAX_PLAYERS; ++i) {
+		if (packet.address == m_game.players[i].address) {
+			m_game.UpdatePingTime(i, timestamp);
+		}
 	}
 }
 
@@ -535,7 +666,14 @@ LobbyDialogDelegate::ProcessAnnouncePlayer(DynamicPacket &packet)
 void
 LobbyDialogDelegate::ProcessRequestGameInfo(DynamicPacket &packet)
 {
+	Uint32 timestamp;
+
+	if (!packet.Read(timestamp)) {
+		return;
+	}
+
 	m_reply.StartLobbyMessage(LOBBY_GAME_INFO);
+	m_reply.Write(timestamp);
 	m_game.WriteToPacket(m_reply);
 	m_reply.address = packet.address;
 
@@ -581,15 +719,15 @@ LobbyDialogDelegate::ProcessRequestJoin(DynamicPacket &packet)
 	player->playerID = playerID;
 	player->address = packet.address;
 	SDL_strlcpy(player->name, name, sizeof(player->name));
+	m_game.InitializePing(slot);
 
 	// Let everybody know!
 	m_reply.StartLobbyMessage(LOBBY_GAME_INFO);
+	m_reply.Write((Uint32)0);
 	m_game.WriteToPacket(m_reply);
 	for (slot = 0; slot < MAX_PLAYERS; ++slot) {
-		GameInfoPlayer *player = m_game.GetPlayer(slot);
-		Uint32 playerID = player->playerID;
-		if (playerID && playerID != m_uniqueID) {
-			m_reply.address = player->address;
+		if (m_game.IsNetworkPlayer(slot)) {
+			m_reply.address = m_game.players[slot].address;
 			SDLNet_UDP_Send(gNetFD, -1, &m_reply);
 		}
 	}
@@ -622,7 +760,12 @@ LobbyDialogDelegate::ProcessRequestLeave(DynamicPacket &packet)
 void
 LobbyDialogDelegate::ProcessGameInfo(DynamicPacket &packet)
 {
+	Uint32 timestamp;
 	GameInfo game;
+
+	if (!packet.Read(timestamp)) {
+		return;
+	}
 
 	if (!game.ReadFromPacket(packet)) {
 		return;
@@ -638,7 +781,12 @@ LobbyDialogDelegate::ProcessGameInfo(DynamicPacket &packet)
 			}
 		}
 		if (i == m_gameList.length()) {
+			game.InitializePing();
 			m_gameList.add(game);
+		}
+		if (timestamp) {
+			m_gameList[i].UpdatePingTime(HOST_PLAYER, timestamp);
+			m_gameList[i].UpdatePingStatus();
 		}
 	} else {
 		if (game.gameID != m_game.gameID) {
@@ -691,6 +839,7 @@ LobbyDialogDelegate::ProcessGameServerList(DynamicPacket &packet)
 
 	// Request game information from the servers
 	m_reply.StartLobbyMessage(LOBBY_REQUEST_GAME_INFO);
+	m_reply.Write(SDL_GetTicks());
 
 	if (!packet.Read(serverCount)) {
 		return;

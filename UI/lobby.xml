@@ -25,7 +25,7 @@
 
 		<Area name="gamelist">
 			<Elements>
-				<DialogLabel name="ping_label" text="Ping">
+				<DialogLabel name="ping_label">
 					<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" x="398" y="46"/>
 				</DialogLabel>
 
@@ -42,9 +42,15 @@
 						<DialogLabel name="host" text="bwg101.corp.pacbell.net">
 							<Anchor anchorFrom="LEFT" anchorTo="RIGHT" anchor="join" x="120"/>
 						</DialogLabel>
-						<DialogLabel name="ping" text="32ms">
-							<Anchor anchorFrom="TOP" anchorTo="BOTTOM" anchor="ping_label" y="12"/>
-						</DialogLabel>
+						<Image name="ping1" image="Images/ping1.bmp">
+							<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="ping_label" y="12"/>
+						</Image>
+						<Image name="ping2" image="Images/ping2.bmp">
+							<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="ping1"/>
+						</Image>
+						<Image name="ping3" image="Images/ping3.bmp">
+							<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="ping1"/>
+						</Image>
 					</Elements>
 				</Area>
 
@@ -61,9 +67,15 @@
 						<DialogLabel name="host" text="bwg101.corp.pacbell.net">
 							<Anchor anchorFrom="LEFT" anchorTo="RIGHT" anchor="join" x="120"/>
 						</DialogLabel>
-						<DialogLabel name="ping" text="32ms">
-							<Anchor anchorFrom="TOP" anchorTo="BOTTOM" anchor="ping_label" y="42"/>
-						</DialogLabel>
+						<Image name="ping1" image="Images/ping1.bmp">
+							<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="ping_label" y="42"/>
+						</Image>
+						<Image name="ping2" image="Images/ping2.bmp">
+							<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="ping1"/>
+						</Image>
+						<Image name="ping3" image="Images/ping3.bmp">
+							<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="ping1"/>
+						</Image>
 					</Elements>
 				</Area>
 
@@ -80,9 +92,15 @@
 						<DialogLabel name="host" text="bwg101.corp.pacbell.net">
 							<Anchor anchorFrom="LEFT" anchorTo="RIGHT" anchor="join" x="120"/>
 						</DialogLabel>
-						<DialogLabel name="ping" text="32ms">
-							<Anchor anchorFrom="TOP" anchorTo="BOTTOM" anchor="ping_label" y="72"/>
-						</DialogLabel>
+						<Image name="ping1" image="Images/ping1.bmp">
+							<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="ping_label" y="72"/>
+						</Image>
+						<Image name="ping2" image="Images/ping2.bmp">
+							<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="ping1"/>
+						</Image>
+						<Image name="ping3" image="Images/ping3.bmp">
+							<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="ping1"/>
+						</Image>
 					</Elements>
 				</Area>
 
@@ -99,9 +117,15 @@
 						<DialogLabel name="host" text="bwg101.corp.pacbell.net">
 							<Anchor anchorFrom="LEFT" anchorTo="RIGHT" anchor="join" x="120"/>
 						</DialogLabel>
-						<DialogLabel name="ping" text="32ms">
-							<Anchor anchorFrom="TOP" anchorTo="BOTTOM" anchor="ping_label" y="102"/>
-						</DialogLabel>
+						<Image name="ping1" image="Images/ping1.bmp">
+							<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="ping_label" y="102"/>
+						</Image>
+						<Image name="ping2" image="Images/ping2.bmp">
+							<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="ping1"/>
+						</Image>
+						<Image name="ping3" image="Images/ping3.bmp">
+							<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="ping1"/>
+						</Image>
 					</Elements>
 				</Area>
 
@@ -118,17 +142,23 @@
 						<DialogLabel name="host" text="bwg101.corp.pacbell.net">
 							<Anchor anchorFrom="LEFT" anchorTo="RIGHT" anchor="join" x="120"/>
 						</DialogLabel>
-						<DialogLabel name="ping" text="32ms">
-							<Anchor anchorFrom="TOP" anchorTo="BOTTOM" anchor="ping_label" y="132"/>
-						</DialogLabel>
+						<Image name="ping1" image="Images/ping1.bmp">
+							<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="ping_label" y="132"/>
+						</Image>
+						<Image name="ping2" image="Images/ping2.bmp">
+							<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="ping1"/>
+						</Image>
+						<Image name="ping3" image="Images/ping3.bmp">
+							<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="ping1"/>
+						</Image>
 					</Elements>
 				</Area>
 			</Elements>
 		</Area>
 		<Area name="gameinfo">
 			<Elements>
-				<DialogLabel name="ping_label" text="Ping">
-					<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" x="398" y="46"/>
+				<DialogLabel name="ping_label">
+					<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" x="398" y="50"/>
 				</DialogLabel>
 
 				<Area name="player1">
@@ -157,9 +187,15 @@
 						<DialogLabel name="host" text="bwg101.corp.pacbell.net">
 							<Anchor anchorFrom="TOPLEFT" anchorTo="BOTTOMLEFT" anchor="name" y="2"/>
 						</DialogLabel>
-						<DialogLabel name="ping" text="32ms">
-							<Anchor anchorFrom="TOP" anchorTo="BOTTOM" anchor="ping_label" y="12"/>
-						</DialogLabel>
+						<Image name="ping1" image="Images/ping1.bmp">
+							<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="ping_label" y="12"/>
+						</Image>
+						<Image name="ping2" image="Images/ping2.bmp">
+							<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="ping1"/>
+						</Image>
+						<Image name="ping3" image="Images/ping3.bmp">
+							<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="ping1"/>
+						</Image>
 					</Elements>
 				</Area>
 
@@ -189,9 +225,15 @@
 						<DialogLabel name="host" text="192.168.0.101">
 							<Anchor anchorFrom="TOPLEFT" anchorTo="BOTTOMLEFT" anchor="name" y="2"/>
 						</DialogLabel>
-						<DialogLabel name="ping" text="77ms">
-							<Anchor anchorFrom="TOP" anchorTo="BOTTOM" anchor="ping_label" y="58"/>
-						</DialogLabel>
+						<Image name="ping1" image="Images/ping1.bmp">
+							<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="ping_label" y="58"/>
+						</Image>
+						<Image name="ping2" image="Images/ping2.bmp">
+							<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="ping1"/>
+						</Image>
+						<Image name="ping3" image="Images/ping3.bmp">
+							<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="ping1"/>
+						</Image>
 					</Elements>
 				</Area>
 
@@ -221,9 +263,15 @@
 						<DialogLabel name="host" text="192.168.0.101">
 							<Anchor anchorFrom="TOPLEFT" anchorTo="BOTTOMLEFT" anchor="name" y="2"/>
 						</DialogLabel>
-						<DialogLabel name="ping" text="18ms">
-							<Anchor anchorFrom="TOP" anchorTo="BOTTOM" anchor="ping_label" y="104"/>
-						</DialogLabel>
+						<Image name="ping1" image="Images/ping1.bmp">
+							<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="ping_label" y="104"/>
+						</Image>
+						<Image name="ping2" image="Images/ping2.bmp">
+							<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="ping1"/>
+						</Image>
+						<Image name="ping3" image="Images/ping3.bmp">
+							<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="ping1"/>
+						</Image>
 					</Elements>
 				</Area>
 			</Elements>
