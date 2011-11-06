@@ -496,8 +496,8 @@ LobbyDialogDelegate::ProcessRequestJoin(DynamicPacket &packet)
 	int slot;
 	for (slot = 0; slot < MAX_PLAYERS; ++slot) {
 		if (playerID == m_game.players[slot].playerID) {
-			// We already have this player, just update it.
-			break;
+			// We already have this player, ignore it
+			return;
 		}
 	}
 	if (slot == MAX_PLAYERS) {
@@ -564,7 +564,7 @@ LobbyDialogDelegate::ProcessGameInfo(DynamicPacket &packet)
 	if (m_state == STATE_LISTING) {
 		// Add or update the game list
 		int i;
-		for (int i = 0; i < m_gameList.length(); ++i) {
+		for (i = 0; i < m_gameList.length(); ++i) {
 			if (game.gameID == m_gameList[i].gameID) {
 				m_gameList[i].CopyFrom(game);
 				break;

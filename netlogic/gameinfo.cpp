@@ -82,7 +82,10 @@ GameInfo::ReadFromPacket(DynamicPacket &packet)
 	}
 
 	// We want to get the public address of the server
-	players[0].address = packet.address;
+	// If we already have one, we assume that's the fastest interface
+	if (!players[0].address.host) {
+		players[0].address = packet.address;
+	}
 
 	return true;
 }
