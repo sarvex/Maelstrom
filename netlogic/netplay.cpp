@@ -285,6 +285,9 @@ error("Timed out waiting for frame %ld\r\n", NextFrame);
 //error("Received packet!\r\n");
 
 		/* We have a packet! */
+		if ( buf[0] == LOBBY_MSG ) {
+			continue;
+		}
 		if ( buf[0] == NEW_GAME ) {
 			/* Send it back if we are not the server.. */
 			if ( gOurPlayer != 0 ) {
@@ -489,6 +492,9 @@ int Send_NewGame(int *Wave, int *Lives, int *Turbo)
 		}
 
 		/* We have a packet! */
+		if ( netbuf[0] == LOBBY_MSG ) {
+			continue;
+		}
 		if ( netbuf[0] != NEW_GAME ) {
 			/* Continue waiting */
 #ifdef VERBOSE
@@ -562,6 +568,9 @@ int Await_NewGame(int *Wave, int *Lives, int *Turbo)
 		}
 
 		/* We have a packet! */
+		if ( netbuf[0] == LOBBY_MSG ) {
+			continue;
+		}
 		if ( netbuf[0] != NEW_GAME ) {
 #ifdef VERBOSE
 			error(
