@@ -70,6 +70,9 @@ public:
 		}
 		return false;
 	}
+	bool empty() const {
+		return length() == 0;
+	}
 	int length() const {
 		return m_len;
 	}
