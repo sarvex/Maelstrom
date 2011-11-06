@@ -24,7 +24,9 @@
 #define _lobby_h
 
 #include "SDL_net.h"
+#include "protocol.h"
 #include "packet.h"
+#include "gameinfo.h"
 #include "../utils/array.h"
 #include "../screenlib/UIDialog.h"
 
@@ -48,31 +50,52 @@ public:
 	override void OnTick();
 
 protected:
+	bool GetElement(const char *name, UIElement *&element);
 	void SetHostOrJoin(void*, int value);
 	void GlobalGameChanged(void*);
+
+	void UpdateUI();
 
 	void AdvertiseGame();
 	void RemoveGame();
 	void GetGameList();
+	void ClearGameInfo();
 	void ClearGameList();
 
 	void PackAddresses(DynamicPacket &packet);
 
-	void HostingProcessPacket(Uint8 type, DynamicPacket &packet);
+	void ProcessPacket(DynamicPacket &packet);
 	void ProcessAnnouncePlayer(DynamicPacket &packet);
-
-	void JoiningProcessPacket(Uint8 type, DynamicPacket &packet);
+	void ProcessRequestGameInfo(DynamicPacket &packet);
 	void ProcessGameServerList(DynamicPacket &packet);
+	void ProcessGameInfo(DynamicPacket &packet);
 
 protected:
 	IPaddress m_globalServer;
 	array<IPaddress> m_addresses;
-	DynamicPacket m_packet;
-	DynamicPacket m_reply;
-	bool m_hosting;
+
+	enum {
+		STATE_NONE,
+		STATE_HOSTING,
+		STATE_LISTING,
+		STATE_JOINING,
+		STATE_JOINED
+	} m_state;
+
+	Uint32 m_uniqueID;
 	Uint32 m_lastRefresh;
+	Uint32 m_requestSequence;
+
+	GameInfo m_game;
+	array<GameInfo> m_gameList;
+
+	DynamicPacket m_packet, m_reply;
+
 	UIElementRadioGroup *m_hostOrJoin;
 	UIElementCheckbox *m_globalGame;
+	UIElement *m_gameListArea;
+	UIElement *m_gameInfoArea;
+	UIElement *m_playButton;
 };
 
 #endif // _lobby_h

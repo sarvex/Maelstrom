@@ -84,6 +84,16 @@ public:
 		SDLNet_Write32(value, &data[pos]);
 		pos += sizeof(value);
 	}
+	void Write(const char *value) {
+		size_t len = SDL_strlen(value);
+		if (len > 255) {
+			len = 255;
+		}
+		Write((Uint8)len);
+		Grow(len);
+		SDL_memcpy(&data[pos], value, len);
+		pos += len;
+	}
 
 	bool Read(Uint8 &value) {
 		if (pos+sizeof(value) > (size_t)len) {
@@ -106,6 +116,19 @@ public:
 		}
 		value = SDLNet_Read32(&data[pos]);
 		pos += sizeof(value);
+		return true;
+	}
+	bool Read(char *value, size_t maxlen) {
+		Uint8 len;
+		if (!Read(len)) {
+			return false;
+		}
+		if (len > maxlen-1) {
+			return false;
+		}
+		SDL_memcpy(value, &data[pos], len);
+		value[len] = '\0';
+		pos += len;
 		return true;
 	}
 

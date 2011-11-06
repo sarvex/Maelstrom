@@ -106,21 +106,8 @@ enum LobbyProtocol {
 	   to open the firewall for communication
 	 */
 
-	LOBBY_REQUEST_GAME_INFO,
-	/* Sent by the joining game to get info for the game list
-	 */
-
-	LOBBY_GAME_INFO,
-	/* Sent by the hosting game, if there are slots open
-
-		Uint32 gameID
-		Uint8 namelen
-		char name[]
-	 */
-
 	LOBBY_PING,
-	/* Sent by the joining game to determine latency and as a keepalive
-	   check to make sure the player and game are still valid.
+	/* Sent by players to verify the game and player state.
 
 		Uint32 gameID
 		Uint32 playerID
@@ -135,21 +122,48 @@ enum LobbyProtocol {
 		Uint32 sequence
 	 */
 
+	LOBBY_REQUEST_GAME_INFO,
+	/* Sent by the joining game to get info for the game list
+	 */
+
+	LOBBY_GAME_INFO,
+	/* Sent by the hosting game, if there are slots open
+
+		Uint32 gameID
+		Uint8 deathMatch;
+		Uint32 player1_uniqueID;
+		Uint32 player1_host;
+		Uint16 player1_port;
+		Uint8 player1_namelen
+		char player1_name[]
+		Uint32 player2_uniqueID;
+		Uint32 player2_host;
+		Uint16 player2_port;
+		Uint8 player2_namelen
+		char player2_name[]
+		Uint32 player3_uniqueID;
+		Uint32 player3_host;
+		Uint16 player3_port;
+		Uint8 player3_namelen
+		char player3_name[]
+	 */
+
 	LOBBY_REQUEST_JOIN,
 	/* Sent by the joining game
 
+		Uint32 sequence;
 		Uint32 gameID
 		Uint32 playerID
 		Uint8 namelen
 		char name[]
 	*/
 
-	LOBBY_JOINED,
-	/* Sent by the hosting game
+	LOBBY_REQUEST_LEAVE,
+	/* Sent by the joining game
 
+		Uint32 sequence;
 		Uint32 gameID
 		Uint32 playerID
-		Uint8 playerSlot
 	*/
 
 	/* You can't add any more packets past here, look above for space! */
@@ -174,6 +188,8 @@ enum LobbyProtocol {
 /* Note: if you change MAX_PLAYERS, you need to modify the gPlayerColors
    array in player.cpp
 */
-#define MAX_PLAYERS		3		/* No more than 255!! */
+#define MAX_PLAYERS	3
+
+#define MAX_NAMELEN	15
 
 #endif /* _protocol_h */

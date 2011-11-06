@@ -29,8 +29,6 @@
 #include "game.h"
 #include "../screenlib/UIElement.h"
 
-#define PREFERENCES_HANDLE "Handle"
-
 // Global variables set in this file...
 Uint32	gScore;
 int	gGameOn;
@@ -843,7 +841,7 @@ static void DoGameOver(void)
 	UIElement *label;
 	SDL_Event event;
 	int which = -1, i;
-	char handle[20];
+	char handle[MAX_NAMELEN+1];
 	char key;
 	int chars_in_handle = 0;
 	Bool done = false;
@@ -958,7 +956,7 @@ static void DoGameOver(void)
 				/* FIXME: No true UNICODE support in font */
 				key = event.text.text[0];
 				if (key >= ' ' && key <= '~') {
-					if ( chars_in_handle < 15 ) {
+					if ( chars_in_handle < MAX_NAMELEN ) {
 						sound->PlaySound(gShotSound, 5);
 						handle[chars_in_handle++] = key;
 						handle[chars_in_handle] = '\0';

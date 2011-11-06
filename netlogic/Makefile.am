@@ -5,6 +5,8 @@ liblogic_a_SOURCES =		\
 	about.cpp		\
 	game.cpp		\
 	game.h			\
+	gameinfo.cpp		\
+	gameinfo.h		\
 	globals.h		\
 	lobby.cpp		\
 	lobby.h			\

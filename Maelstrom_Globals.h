@@ -42,6 +42,8 @@
 #include "scores.h"
 #include "controls.h"
 
+// Preferences keys
+#define PREFERENCES_HANDLE "Handle"
 
 // The Font Server :)
 extern FontServ *fontserv;

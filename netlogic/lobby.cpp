@@ -20,6 +20,9 @@
     slouken@libsdl.org
 */
 
+#include <stdlib.h>
+#include <time.h>
+
 #include "SDL_net.h"
 #include "../Maelstrom_Globals.h"
 #include "../screenlib/UIElementCheckbox.h"
@@ -37,27 +40,28 @@
 LobbyDialogDelegate::LobbyDialogDelegate(UIPanel *panel) :
 	UIDialogDelegate(panel)
 {
-	m_hosting = false;
-	m_hostOrJoin = NULL;
-	m_globalGame = NULL;
+	m_state = STATE_NONE;
+	m_uniqueID = 0;
+	m_lastRefresh = 0;
+	m_requestSequence = 1;
 }
 
 bool
 LobbyDialogDelegate::OnLoad()
 {
-	// Get the addresses for this machine
-	IPaddress addresses[32];
 	int i, count;
-
-	count = SDLNet_GetLocalAddresses(addresses, SDL_arraysize(addresses));
-	m_addresses.clear();
-	for (i = 0; i < count; ++i) {
-		m_addresses.add(addresses[i]);
-	}
+	IPaddress addresses[32];
 
 	// Get the address of the global server
 	if (SDLNet_ResolveHost(&m_globalServer, GLOBAL_SERVER_HOST, LOBBY_PORT) < 0) {
 		fprintf(stderr, "Warning: Couldn't resolve global server host %s\n", GLOBAL_SERVER_HOST);
+	}
+
+	// Get the addresses for this machine
+	count = SDLNet_GetLocalAddresses(addresses, SDL_arraysize(addresses));
+	m_addresses.clear();
+	for (i = 0; i < count; ++i) {
+		m_addresses.add(addresses[i]);
 	}
 
 	m_hostOrJoin = m_dialog->GetElement<UIElementRadioGroup>("hostOrJoin");
@@ -78,12 +82,36 @@ LobbyDialogDelegate::OnLoad()
 	}
 	m_globalGame->SetClickCallback(this, &LobbyDialogDelegate::GlobalGameChanged);
 
+	if (!GetElement("gamelist", m_gameListArea)) {
+		return false;
+	}
+	if (!GetElement("gameinfo", m_gameInfoArea)) {
+		return false;
+	}
+	if (!GetElement("playButton", m_playButton)) {
+		return false;
+	}
+
+	return true;
+}
+
+bool
+LobbyDialogDelegate::GetElement(const char *name, UIElement *&element)
+{
+	element = m_dialog->GetElement<UIElement>(name);
+	if (!element) {
+		fprintf(stderr, "Warning: Couldn't find element '%s'\n", name);
+		return false;
+	}
 	return true;
 }
 
 void
 LobbyDialogDelegate::OnShow()
 {
+	// Seed the random number generator for our unique ID
+	srand(time(NULL)+SDL_GetTicks());
+
 	// Start up networking
 	SetHostOrJoin(0, m_hostOrJoin->GetValue());
 }
@@ -91,6 +119,7 @@ LobbyDialogDelegate::OnShow()
 void
 LobbyDialogDelegate::OnHide()
 {
+	// Start the game!
 	if (m_dialog->GetDialogStatus() > 0) {
 		NewGame();
 	}
@@ -102,7 +131,7 @@ LobbyDialogDelegate::OnHide()
 void
 LobbyDialogDelegate::OnTick()
 {
-	if (m_hostOrJoin->GetValue() <= 0) {
+	if (m_state == STATE_NONE) {
 		// Neither host nor join is checked
 		return;
 	}
@@ -110,7 +139,7 @@ LobbyDialogDelegate::OnTick()
 	Uint32 now = SDL_GetTicks();
 	if (!m_lastRefresh ||
 	    (now - m_lastRefresh) > GLOBAL_CHECK_INTERVAL) {
-		if (m_hosting) {
+		if (m_state == STATE_HOSTING) {
 			AdvertiseGame();
 		} else {
 			GetGameList();
@@ -119,26 +148,10 @@ LobbyDialogDelegate::OnTick()
 	}
 
 	// See if there are any packets on the network
-	Uint8 cmd;
-	for ( ; ; ) {
+	m_packet.Reset();
+	while (SDLNet_UDP_Recv(gNetFD, &m_packet)) {
+		ProcessPacket(m_packet);
 		m_packet.Reset();
-		if (!SDLNet_UDP_Recv(gNetFD, &m_packet)) {
-			break;
-		}
-		if (!m_packet.Read(cmd)) {
-			continue;
-		}
-		if (cmd != LOBBY_MSG) {
-			continue;
-		}
-		if (!m_packet.Read(cmd)) {
-			continue;
-		}
-		if (m_hosting) {
-			HostingProcessPacket(cmd, m_packet);
-		} else {
-			JoiningProcessPacket(cmd, m_packet);
-		}
 	}
 }
 
@@ -147,15 +160,31 @@ LobbyDialogDelegate::SetHostOrJoin(void*, int value)
 {
 	// This is called when the lobby switches from hosting to joining
 	HaltNetData();
+	ClearGameInfo();
 	ClearGameList();
 
 	if (value > 0) {
-		m_hosting = (value == HOST_GAME);
-		if (InitNetData(m_hosting) < 0) {
-			m_hostOrJoin->SetValue(0);
+		if (InitNetData(value == HOST_GAME) < 0) {
+			m_hostOrJoin->SetValue(2);
+			return;
 		}
+
+		if (value == HOST_GAME) {
+			m_state = STATE_HOSTING;
+		} else {
+			m_state = STATE_LISTING;
+		}
+		m_uniqueID = rand();
 		m_lastRefresh = 0;
+
+		if (m_state == STATE_HOSTING) {
+			m_game.SetHostInfo(m_uniqueID, prefs->GetString(PREFERENCES_HANDLE));
+		}
+	} else {
+		m_state = STATE_NONE;
 	}
+
+	UpdateUI();
 }
 
 void
@@ -164,11 +193,31 @@ LobbyDialogDelegate::GlobalGameChanged(void*)
 	m_lastRefresh = 0;
 
 	if (!m_globalGame->IsChecked()) {
-		if (m_hosting) {
+		if (m_state == STATE_HOSTING) {
 			RemoveGame();
 		} else {
 			ClearGameList();
 		}
+	}
+}
+
+void
+LobbyDialogDelegate::UpdateUI()
+{
+	if (m_state == STATE_NONE) {
+		m_gameListArea->Hide();
+		m_gameInfoArea->Hide();
+	} else if (m_state == STATE_LISTING) {
+		m_gameListArea->Show();
+		m_gameInfoArea->Hide();
+	} else {
+		m_gameInfoArea->Show();
+		m_gameListArea->Hide();
+	}
+	if (m_state == STATE_HOSTING) {
+		m_playButton->SetDisabled(false);
+	} else {
+		m_playButton->SetDisabled(true);
 	}
 }
 
@@ -204,11 +253,24 @@ LobbyDialogDelegate::GetGameList()
 
 		SDLNet_UDP_Send(gNetFD, -1, &m_packet);
 	}
+
+	// Get game info for local games
+	m_packet.StartLobbyMessage(LOBBY_REQUEST_GAME_INFO);
+	m_packet.address.host = INADDR_BROADCAST;
+	m_packet.address.port = SDL_SwapBE16(NETPLAY_PORT);
+	SDLNet_UDP_Send(gNetFD, -1, &m_packet);
+}
+
+void
+LobbyDialogDelegate::ClearGameInfo()
+{
+	m_game.Reset();
 }
 
 void
 LobbyDialogDelegate::ClearGameList()
 {
+	m_gameList.clear();
 }
 
 void
@@ -226,12 +288,63 @@ LobbyDialogDelegate::PackAddresses(DynamicPacket &packet)
 }
 
 void
-LobbyDialogDelegate::HostingProcessPacket(Uint8 type, DynamicPacket &packet)
+LobbyDialogDelegate::ProcessPacket(DynamicPacket &packet)
 {
-	if (m_globalGame->IsChecked()) {
-		if (type == LOBBY_ANNOUNCE_PLAYER) {
-			ProcessAnnouncePlayer(packet);
+	Uint8 cmd;
+
+	if (!m_packet.Read(cmd)) {
+		return;
+	}
+	if (cmd != LOBBY_MSG) {
+		return;
+	}
+	if (!m_packet.Read(cmd)) {
+		return;
+	}
+
+	if (m_state == STATE_HOSTING) {
+		if (cmd == LOBBY_ANNOUNCE_PLAYER) {
+			if (m_globalGame->IsChecked()) {
+				ProcessAnnouncePlayer(packet);
+			}
 			return;
+		}
+
+		if (m_game.IsFull() && !m_game.HasPlayer(packet.address)) {
+			return;
+		}
+
+		if (cmd == LOBBY_PING) {
+			//ProcessPing(packet);
+		} else if (cmd == LOBBY_REQUEST_GAME_INFO) {
+			ProcessRequestGameInfo(packet);
+		} else if (cmd == LOBBY_REQUEST_JOIN) {
+			//ProcessRequestJoin(packet);
+		} else if (cmd == LOBBY_REQUEST_LEAVE) {
+			//ProcessRequestLeave(packet);
+		}
+
+	} else if (m_state == STATE_LISTING) {
+		if (cmd == LOBBY_GAME_SERVERS) {
+			if (m_globalGame->IsChecked()) {
+				ProcessGameServerList(packet);
+			}
+			return;
+		}
+
+		if (cmd == LOBBY_PING) {
+			// Somebody thinks we're still in a game lobby
+			//RejectPing(packet);
+		} else if (cmd == LOBBY_GAME_INFO) {
+			ProcessGameInfo(packet);
+		}
+
+	} else if (m_state == STATE_JOINING) {
+
+		if (cmd == LOBBY_PING) {
+			//ProcessPing(packet);
+		} else if (cmd == LOBBY_REQUEST_GAME_INFO) {
+			ProcessGameInfo(packet);
 		}
 	}
 }
@@ -260,13 +373,60 @@ LobbyDialogDelegate::ProcessAnnouncePlayer(DynamicPacket &packet)
 }
 
 void
-LobbyDialogDelegate::JoiningProcessPacket(Uint8 type, DynamicPacket &packet)
+LobbyDialogDelegate::ProcessRequestGameInfo(DynamicPacket &packet)
 {
-	if (m_globalGame->IsChecked()) {
-		if (type == LOBBY_GAME_SERVERS) {
-			ProcessGameServerList(packet);
+	m_reply.StartLobbyMessage(LOBBY_GAME_INFO);
+	m_game.WriteToPacket(m_reply);
+	m_reply.address = packet.address;
+
+	SDLNet_UDP_Send(gNetFD, -1, &m_reply);
+}
+
+void
+LobbyDialogDelegate::ProcessGameInfo(DynamicPacket &packet)
+{
+	GameInfo game;
+
+	if (!game.ReadFromPacket(packet)) {
+		return;
+	}
+
+	if (m_state != STATE_LISTING) {
+		if (game.gameID != m_game.gameID) {
+			// Probably an old packet...
+			return;
+		}
+
+		m_game.CopyFrom(game);
+
+		if (m_state == STATE_JOINING) {
+			if (m_game.HasPlayer(m_uniqueID)) {
+				// We successfully joined the game
+				m_state = STATE_JOINED;
+			}
+		} else {
+			if (!m_game.HasPlayer(m_uniqueID)) {
+				// We were kicked from the game
+				m_state = STATE_LISTING;
+			}
 		}
 	}
+
+	if (m_state == STATE_LISTING) {
+		// Add or update the game list
+		int i;
+		for (int i = 0; i < m_gameList.length(); ++i) {
+			if (game.gameID == m_gameList[i].gameID) {
+				m_gameList[i].CopyFrom(game);
+				break;
+			}
+		}
+		if (i == m_gameList.length()) {
+			m_gameList.add(game);
+		}
+	}
+
+	UpdateUI();
 }
 
 void
