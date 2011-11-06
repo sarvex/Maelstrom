@@ -74,6 +74,7 @@ public:
 
 	void HideAll();
 
+	virtual void Tick();
 	override void Draw();
 	override bool HandleEvent(const SDL_Event &event);
 

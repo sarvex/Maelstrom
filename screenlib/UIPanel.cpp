@@ -130,12 +130,16 @@ UIPanel::HideAll()
 }
 
 void
-UIPanel::Draw()
+UIPanel::Tick()
 {
 	if (m_delegate) {
 		m_delegate->OnTick();
 	}
+}
 
+void
+UIPanel::Draw()
+{
 	UIBaseElement::Draw();
 
 	if (m_delegate) {

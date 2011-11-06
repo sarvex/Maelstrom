@@ -218,23 +218,40 @@ UIManager::DeletePanel(UIPanel *panel)
 		// Remove us so we don't recurse in HidePanel() or callbacks
 		m_panels.remove(panel);
 		HidePanel(panel);
-		delete panel;
+		m_delete.add(panel);
 	}
 }
 
 void
 UIManager::Draw(bool fullUpdate)
 {
+	int i;
+
+	// Run the tick before we draw in case it changes drawing state
+	for (i = 0; i < m_visible.length(); ++i) {
+		UIPanel *panel = m_visible[i];
+
+		panel->Tick();
+	}
+
 	if (fullUpdate) {
 		m_screen->Clear();
 	}
-	for (int i = 0; i < m_visible.length(); ++i) {
+	for (i = 0; i < m_visible.length(); ++i) {
 		UIPanel *panel = m_visible[i];
 
 		panel->Draw();
 	}
 	if (fullUpdate) {
 		m_screen->Update();
+	}
+
+	// Clean up any deleted panels when we're done...
+	if (!m_delete.empty()) {
+		for (i = 0; i < m_delete.length(); ++i) {
+			delete m_delete[i];
+		}
+		m_delete.clear();
 	}
 }
 

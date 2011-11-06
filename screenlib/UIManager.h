@@ -111,6 +111,7 @@ protected:
 	UITemplates m_templates;
 	array<UIPanel *> m_panels;
 	array<UIPanel *> m_visible;
+	array<UIPanel *> m_delete;
 };
 
 #endif // _UIManager_h
