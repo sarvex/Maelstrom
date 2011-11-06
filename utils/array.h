@@ -77,6 +77,10 @@ public:
 		assert(index < m_len);
 		return m_data[index];
 	}
+	T& operator[](unsigned index) {
+		assert(index < m_len);
+		return m_data[index];
+	}
 
 protected:
 	unsigned m_len;
