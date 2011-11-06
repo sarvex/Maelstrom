@@ -20,6 +20,8 @@
     slouken@libsdl.org
 */
 
+#ifndef _protocol_h
+#define _protocol_h
 
 /* Architecture
  *
@@ -43,7 +45,7 @@ enum LobbyProtocol {
 	   This is sent periodically to keep the entry refreshed, since
 	   the server will automatically age out entries after 30 seconds.
 
-		BYTE numaddresses
+		Uint8 numaddresses
 		{
 			Uint32 host;
 			Uint16 port;
@@ -54,7 +56,7 @@ enum LobbyProtocol {
 	/* Sent by the hosting game to the lobby server
 	   This is sent when the game is no longer available to join.
 
-		BYTE numaddresses
+		Uint8 numaddresses
 		{
 			Uint32 host;
 			Uint16 port;
@@ -66,7 +68,7 @@ enum LobbyProtocol {
 	   This allows the hosting game to send a packet to the player
 	   requesting to join, opening the firewall for them.
 
-		BYTE numaddresses
+		Uint8 numaddresses
 		{
 			Uint32 host;
 			Uint16 port;
@@ -79,7 +81,7 @@ enum LobbyProtocol {
 	LOBBY_REQUEST_GAME_SERVERS = 10,
 	/* Sent by the joining game, containing a list of it's addresses
 
-		BYTE numaddresses
+		Uint8 numaddresses
 		{
 			Uint32 host;
 			Uint16 port;
@@ -89,7 +91,7 @@ enum LobbyProtocol {
 	LOBBY_GAME_SERVERS,
 	/* Sent by the lobby server containing all the current game addresses
 
-		BYTE numaddresses
+		Uint8 numaddresses
 		{
 			Uint32 host;
 			Uint16 port;
@@ -100,8 +102,8 @@ enum LobbyProtocol {
 	/* Messages between the joining game and the hosting game */
 
 	LOBBY_OPEN_FIREWALL = 20,
-	/* Sent by the both the hosting and the joining game in response
-	   to lobby server messages to open the firewall for communication
+	/* Sent by the hosting game in response to lobby server messages
+	   to open the firewall for communication
 	 */
 
 	LOBBY_REQUEST_GAME_INFO,
@@ -112,7 +114,7 @@ enum LobbyProtocol {
 	/* Sent by the hosting game, if there are slots open
 
 		Uint32 gameID
-		BYTE namelen
+		Uint8 namelen
 		char name[]
 	 */
 
@@ -138,7 +140,7 @@ enum LobbyProtocol {
 
 		Uint32 gameID
 		Uint32 playerID
-		BYTE namelen
+		Uint8 namelen
 		char name[]
 	*/
 
@@ -147,17 +149,20 @@ enum LobbyProtocol {
 
 		Uint32 gameID
 		Uint32 playerID
-		BYTE playerSlot
+		Uint8 playerSlot
 	*/
+
+	/* You can't add any more packets past here, look above for space! */
+	LOBBY_PACKET_MAX = 256
 };
 
 /* Network protocol for synchronization and keystrokes */
 
-#define SYNC_MSG	0x00			/* Sent during game */
+#define LOBBY_MSG	0x00			/* Sent before game */
 #define NEW_GAME	0x01			/* Sent by players at start */
-#define NET_ABORT	0x04			/* Used with address server */
-#define KEY_PRESS	0x80			/* Sent during game */
-#define KEY_RELEASE	0xF0			/* Sent during game */
+#define SYNC_MSG	0x02			/* Sent during game */
+#define KEY_PRESS	0x04			/* Sent during game */
+#define KEY_RELEASE	0x08			/* Sent during game */
 
 /* The default port for Maelstrom games */
 #define LOBBY_PORT	0xAE00			/* port 44544 */
@@ -171,3 +176,4 @@ enum LobbyProtocol {
 */
 #define MAX_PLAYERS		3		/* No more than 255!! */
 
+#endif /* _protocol_h */

@@ -58,10 +58,17 @@ protected:
 
 	void PackAddresses(DynamicPacket &packet);
 
+	void HostingProcessPacket(Uint8 type, DynamicPacket &packet);
+	void ProcessAnnouncePlayer(DynamicPacket &packet);
+
+	void JoiningProcessPacket(Uint8 type, DynamicPacket &packet);
+	void ProcessGameServerList(DynamicPacket &packet);
+
 protected:
 	IPaddress m_globalServer;
 	array<IPaddress> m_addresses;
 	DynamicPacket m_packet;
+	DynamicPacket m_reply;
 	bool m_hosting;
 	Uint32 m_lastRefresh;
 	UIElementRadioGroup *m_hostOrJoin;

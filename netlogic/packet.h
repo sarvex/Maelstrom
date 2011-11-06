@@ -1,4 +1,3 @@
-
 /*
     Maelstrom: Open Source version of the classic game by Ambrosia Software
     Copyright (C) 1997-2011  Sam Lantinga
@@ -25,13 +24,23 @@
 #define _packet_h
 
 #include "SDL_net.h"
+#include "protocol.h"
+
+// Utility functions to compare IP addresses 
+
+extern inline bool operator==(const IPaddress &lhs, const IPaddress &rhs) {
+	return lhs.host == rhs.host && lhs.port == rhs.port;
+}
+extern inline bool operator!=(const IPaddress &lhs, const IPaddress &rhs) {
+	return !operator==(lhs, rhs);
+}
 
 // A dynamic packet class that takes care of allocating memory and packing data
 
 class DynamicPacket : public UDPpacket
 {
 public:
-	DynamicPacket(int minSize = 32) {
+	DynamicPacket(int minSize = 1024) {
 		SDL_zero(*this);
 		maxlen = minSize;
 		data = (Uint8*)SDL_malloc(minSize);
@@ -40,8 +49,10 @@ public:
 		SDL_free(data);
 	}
 
-	void Expand(size_t size) {
-		CheckSize(size - len);
+	void StartLobbyMessage(int msg) {
+		Reset();
+		Write((Uint8)LOBBY_MSG);
+		Write((Uint8)msg);
 	}
 
 	void Reset() {
@@ -49,19 +60,29 @@ public:
 		pos = 0;
 	}
 
+	void Seek(int offset) {
+		if (offset < len) {
+			pos = offset;
+		}
+	}
+
+	int Tell() {
+		return pos;
+	}
+
 	void Write(Uint8 value) {
-		CheckSize(sizeof(value));
-		data[len++] = value;
+		Grow(sizeof(value));
+		data[pos++] = value;
 	}
 	void Write(Uint16 value) {
-		CheckSize(sizeof(value));
-		SDLNet_Write16(value, &data[len]);
-		len += sizeof(value);
+		Grow(sizeof(value));
+		SDLNet_Write16(value, &data[pos]);
+		pos += sizeof(value);
 	}
 	void Write(Uint32 value) {
-		CheckSize(sizeof(value));
-		SDLNet_Write32(value, &data[len]);
-		len += sizeof(value);
+		Grow(sizeof(value));
+		SDLNet_Write32(value, &data[pos]);
+		pos += sizeof(value);
 	}
 
 	bool Read(Uint8 &value) {
@@ -89,13 +110,14 @@ public:
 	}
 
 protected:
-	void CheckSize(size_t additionalSize) {
+	void Grow(size_t additionalSize) {
 		if (len+additionalSize > (size_t)maxlen) {
 			while (len+additionalSize > (size_t)maxlen) {
 				maxlen *= 2;
 			}
 			data = (Uint8*)SDL_realloc(data, maxlen);
 		}
+		len += additionalSize;
 	}
 
 protected:

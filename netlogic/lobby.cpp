@@ -110,14 +110,35 @@ LobbyDialogDelegate::OnTick()
 	Uint32 now = SDL_GetTicks();
 	if (!m_lastRefresh ||
 	    (now - m_lastRefresh) > GLOBAL_CHECK_INTERVAL) {
-		if (m_globalGame->IsChecked()) {
-			if (m_hosting) {
-				AdvertiseGame();
-			} else {
-				GetGameList();
-			}
+		if (m_hosting) {
+			AdvertiseGame();
+		} else {
+			GetGameList();
 		}
 		m_lastRefresh = now;
+	}
+
+	// See if there are any packets on the network
+	Uint8 cmd;
+	for ( ; ; ) {
+		m_packet.Reset();
+		if (!SDLNet_UDP_Recv(gNetFD, &m_packet)) {
+			break;
+		}
+		if (!m_packet.Read(cmd)) {
+			continue;
+		}
+		if (cmd != LOBBY_MSG) {
+			continue;
+		}
+		if (!m_packet.Read(cmd)) {
+			continue;
+		}
+		if (m_hosting) {
+			HostingProcessPacket(cmd, m_packet);
+		} else {
+			JoiningProcessPacket(cmd, m_packet);
+		}
 	}
 }
 
@@ -154,19 +175,19 @@ LobbyDialogDelegate::GlobalGameChanged(void*)
 void
 LobbyDialogDelegate::AdvertiseGame()
 {
-	m_packet.Reset();
-	m_packet.Write((Uint8)LOBBY_ANNOUNCE_GAME);
-	PackAddresses(m_packet);
-	m_packet.address = m_globalServer;
+	if (m_globalGame->IsChecked()) {
+		m_packet.StartLobbyMessage(LOBBY_ANNOUNCE_GAME);
+		PackAddresses(m_packet);
+		m_packet.address = m_globalServer;
 
-	SDLNet_UDP_Send(gNetFD, -1, &m_packet);
+		SDLNet_UDP_Send(gNetFD, -1, &m_packet);
+	}
 }
 
 void
 LobbyDialogDelegate::RemoveGame()
 {
-	m_packet.Reset();
-	m_packet.Write((Uint8)LOBBY_REMOVE_GAME);
+	m_packet.StartLobbyMessage(LOBBY_REMOVE_GAME);
 	PackAddresses(m_packet);
 	m_packet.address = m_globalServer;
 
@@ -176,12 +197,13 @@ LobbyDialogDelegate::RemoveGame()
 void
 LobbyDialogDelegate::GetGameList()
 {
-	m_packet.Reset();
-	m_packet.Write((Uint8)LOBBY_REQUEST_GAME_SERVERS);
-	PackAddresses(m_packet);
-	m_packet.address = m_globalServer;
+	if (m_globalGame->IsChecked()) {
+		m_packet.StartLobbyMessage(LOBBY_REQUEST_GAME_SERVERS);
+		PackAddresses(m_packet);
+		m_packet.address = m_globalServer;
 
-	SDLNet_UDP_Send(gNetFD, -1, &m_packet);
+		SDLNet_UDP_Send(gNetFD, -1, &m_packet);
+	}
 }
 
 void
@@ -200,5 +222,77 @@ LobbyDialogDelegate::PackAddresses(DynamicPacket &packet)
 	for (int i = 0; i < m_addresses.length(); ++i) {
 		m_packet.Write(m_addresses[i].host);
 		m_packet.Write(port);
+	}
+}
+
+void
+LobbyDialogDelegate::HostingProcessPacket(Uint8 type, DynamicPacket &packet)
+{
+	if (m_globalGame->IsChecked()) {
+		if (type == LOBBY_ANNOUNCE_PLAYER) {
+			ProcessAnnouncePlayer(packet);
+			return;
+		}
+	}
+}
+
+void
+LobbyDialogDelegate::ProcessAnnouncePlayer(DynamicPacket &packet)
+{
+	Uint8 count;
+	IPaddress address;
+
+	// Open the firewall so this player can contact us.
+	m_reply.StartLobbyMessage(LOBBY_OPEN_FIREWALL);
+
+	if (!packet.Read(count)) {
+		return;
+	}
+	for (Uint8 i = 0; i < count; ++i) {
+		if (!packet.Read(address.host) ||
+		    !packet.Read(address.port)) {
+			return;
+		}
+		m_reply.address = address;
+		
+		SDLNet_UDP_Send(gNetFD, -1, &m_reply);
+	}
+}
+
+void
+LobbyDialogDelegate::JoiningProcessPacket(Uint8 type, DynamicPacket &packet)
+{
+	if (m_globalGame->IsChecked()) {
+		if (type == LOBBY_GAME_SERVERS) {
+			ProcessGameServerList(packet);
+		}
+	}
+}
+
+void
+LobbyDialogDelegate::ProcessGameServerList(DynamicPacket &packet)
+{
+	Uint8 serverCount, count;
+	IPaddress address;
+
+	// Request game information from the servers
+	m_reply.StartLobbyMessage(LOBBY_REQUEST_GAME_INFO);
+
+	if (!packet.Read(serverCount)) {
+		return;
+	}
+	for (Uint8 i = 0; i < serverCount; ++i) {
+		if (!packet.Read(count)) {
+			return;
+		}
+		for (Uint8 j = 0; j < count; ++j) {
+			if (!packet.Read(address.host) ||
+			    !packet.Read(address.port)) {
+				return;
+			}
+			m_reply.address = address;
+			
+			SDLNet_UDP_Send(gNetFD, -1, &m_reply);
+		}
 	}
 }

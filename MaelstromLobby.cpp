@@ -26,18 +26,10 @@
 #include "netlogic/protocol.h"
 #include "utils/array.h"
 
-#define MAX_PACKET_SIZE	1024
 
 // We'll let games stick around for 10 seconds before aging them out
 #define GAME_LIFETIME	10000
 
-
-bool operator==(const IPaddress &lhs, const IPaddress &rhs) {
-	return lhs.host == rhs.host && lhs.port == rhs.port;
-}
-bool operator!=(const IPaddress &lhs, const IPaddress &rhs) {
-	return !operator==(lhs, rhs);
-}
 
 class AddressList : public array<IPaddress>
 {
@@ -169,6 +161,7 @@ class GameList
 {
 public:
 	GameList() {
+		m_sock = NULL;
 		m_list = 0;
 		m_free = 0;
 	}
@@ -186,6 +179,10 @@ public:
 			game->Unlink();
 			delete game;
 		}
+	}
+
+	void SetSocket(UDPsocket sock) {
+		m_sock = sock;
 	}
 
 	void ProcessList() {
@@ -209,6 +206,12 @@ public:
 	void ProcessPacket(DynamicPacket &packet) {
 		Uint8 cmd;
 
+		if (!packet.Read(cmd)) {
+			return;
+		}
+		if (cmd != LOBBY_MSG) {
+			return;
+		}
 		if (!packet.Read(cmd)) {
 			return;
 		}
@@ -289,11 +292,46 @@ public:
 	}
 
 	void ProcessRequestGames(DynamicPacket &packet) {
+		AddressList addresses;
+		Game *game;
+
+		if (!addresses.ReadFromPacket(packet)) {
+			return;
+		}
+
+		// Send back a list of all games
+		int mark;
+		m_reply.StartLobbyMessage(LOBBY_GAME_SERVERS);
+		mark = m_reply.Tell(); 
+		m_reply.Write((Uint8)0);
+		int count;
+		for (game = m_list; game; game = game->Next()) {
+			game->WriteToPacket(m_reply);
+			++count;
+			if (count == 255) {
+				// That's it, I'm cutting you off...
+				break;
+			}
+		}
+		m_reply.Seek(mark);
+		m_reply.Write((Uint8)count);
+		m_reply.address = packet.address;
+		SDLNet_UDP_Send(m_sock, -1, &m_reply);
+
+		// Send the requesting player to all game servers
+		m_reply.StartLobbyMessage(LOBBY_ANNOUNCE_PLAYER);
+		addresses.WriteToPacket(m_reply);
+		for (game = m_list; game; game = game->Next()) {
+			m_reply.address = *game->Address();
+			SDLNet_UDP_Send(m_sock, -1, &m_reply);
+		}
 	}
 
 protected:
+	UDPsocket m_sock;
 	Game *m_list;
 	Game *m_free;
+	DynamicPacket m_reply;
 };
 
 int main(int argc, char *argv[])
@@ -308,8 +346,7 @@ int main(int argc, char *argv[])
 			LOBBY_PORT, SDL_GetError());
 		exit(1);
 	}
-
-	packet.Expand(MAX_PACKET_SIZE);
+	games.SetSocket(sock);
 
 	for ( ; ; ) {
 		games.ProcessList();

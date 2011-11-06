@@ -79,7 +79,7 @@ int InitNetData(bool hosting)
 
 	/* Initialize the networking subsystem */
 	if ( SDLNet_Init() < 0 ) {
-		error("NetLogic: Couldn't initialize networking!\n");
+		error("Couldn't initialize networking: %s\n", SDL_GetError());
 		return(-1);
 	}
 
@@ -91,12 +91,12 @@ int InitNetData(bool hosting)
 	}
 	gNetFD = SDLNet_UDP_Open(port);
 	if ( gNetFD == NULL ) {
-		error("Couldn't create bound network socket");
+		error("Couldn't create bound network socket\n");
 		return(-1);
 	}
 	SocketSet = SDLNet_AllocSocketSet(1);
 	if ( SocketSet == NULL ) {
-		error("Couldn't create socket watch set");
+		error("Couldn't create socket watch set\n");
 		return(-1);
 	}
 	SDLNet_UDP_AddSocket(SocketSet, gNetFD);
