@@ -25,6 +25,7 @@
 
 #include "SDL_net.h"
 #include "../Maelstrom_Globals.h"
+#include "../screenlib/UIElement.h"
 #include "../screenlib/UIElementCheckbox.h"
 #include "../screenlib/UIElementRadio.h"
 #include "lobby.h"
@@ -143,6 +144,16 @@ LobbyDialogDelegate::OnHide()
 {
 	// Start the game!
 	if (m_dialog->GetDialogStatus() > 0) {
+		for (int i = 0; i < MAX_PLAYERS; ++i) {
+			GameInfoPlayer *player = m_game.GetPlayer(i);
+			if (player->playerID) {
+				if (player->playerID == m_game.localID) {
+					AddLocalPlayer(i);
+				} else {
+					AddNetworkPlayer(i, player->address);
+				}
+			}
+		}
 		NewGame();
 	}
 
@@ -369,6 +380,9 @@ LobbyDialogDelegate::ProcessPacket(DynamicPacket &packet)
 		return;
 	}
 	if (cmd != LOBBY_MSG) {
+		if (cmd == NEW_GAME) {
+			ProcessNewGame(packet);
+		}
 		return;
 	}
 	if (!m_packet.Read(cmd)) {
@@ -416,6 +430,15 @@ LobbyDialogDelegate::ProcessPacket(DynamicPacket &packet)
 		//RejectPing(packet);
 	} else if (cmd == LOBBY_GAME_INFO) {
 		ProcessGameInfo(packet);
+	}
+}
+
+void
+LobbyDialogDelegate::ProcessNewGame(DynamicPacket &packet)
+{
+	// Ooh, ooh, they're starting!
+	if (m_game.HasPlayer(packet.address)) {
+		m_playButton->OnClick();
 	}
 }
 
@@ -487,7 +510,7 @@ LobbyDialogDelegate::ProcessRequestJoin(DynamicPacket &packet)
 	assert(slot < MAX_PLAYERS);
 
 	// Fill in the data
-	GameInfo::GameInfoPlayer *player = &m_game.players[slot];
+	GameInfoPlayer *player = m_game.GetPlayer(slot);
 	player->playerID = playerID;
 	player->address = packet.address;
 	SDL_strlcpy(player->name, name, sizeof(player->name));
@@ -496,9 +519,10 @@ LobbyDialogDelegate::ProcessRequestJoin(DynamicPacket &packet)
 	m_reply.StartLobbyMessage(LOBBY_GAME_INFO);
 	m_game.WriteToPacket(m_reply);
 	for (slot = 0; slot < MAX_PLAYERS; ++slot) {
-		Uint32 playerID = m_game.players[slot].playerID;
+		GameInfoPlayer *player = m_game.GetPlayer(slot);
+		Uint32 playerID = player->playerID;
 		if (playerID && playerID != m_uniqueID) {
-			m_reply.address = m_game.players[slot].address;
+			m_reply.address = player->address;
 			SDLNet_UDP_Send(gNetFD, -1, &m_reply);
 		}
 	}

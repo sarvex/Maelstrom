@@ -79,7 +79,7 @@ int InitNetData(bool hosting)
 
 	/* Initialize the networking subsystem */
 	if ( SDLNet_Init() < 0 ) {
-		error("Couldn't initialize networking: %s\n", SDL_GetError());
+		error("Couldn't initialize networking: %s\n", SDLNet_GetError());
 		return(-1);
 	}
 
@@ -91,7 +91,7 @@ int InitNetData(bool hosting)
 	}
 	gNetFD = SDLNet_UDP_Open(port);
 	if ( gNetFD == NULL ) {
-		error("Couldn't create bound network socket\n");
+		error("Couldn't create socket bound to port %d: %s\n", port, SDLNet_GetError());
 		return(-1);
 	}
 	SocketSet = SDLNet_AllocSocketSet(1);
@@ -147,59 +147,17 @@ void HaltNetData(void)
 	SDLNet_Quit();
 }
 
-int AddPlayer(const char *playerstr)
+void AddLocalPlayer(int playernum)
 {
-	int playernum;
-	int portnum;
-	char *host=NULL, *port=NULL;
-
-	/* Extract host and port information */
-	if ( (port=strchr(playerstr, ':')) != NULL )
-		*(port++) = '\0';
-	if ( (host=strchr(playerstr, '@')) != NULL )
-		*(host++) = '\0';
-
-	/* Find out which player we are referring to */
-	if (((playernum = atoi(playerstr)) <= 0) || (playernum > MAX_PLAYERS)) {
-		error(
-"Argument to '-player' must be in integer between 1 and %d inclusive.\r\n",
-								MAX_PLAYERS);
-		PrintUsage();
-	}
-
-	/* Do some error checking */
-	if ( GotPlayer[--playernum] ) {
-		error("Player %d specified multiple times!\r\n", playernum+1);
-		return(-1);
-	}
-	if ( port ) {
-		portnum = atoi(port);
-	} else {
-		portnum = NETPLAY_PORT+playernum;
-	}
-	if ( host ) {
-		/* Resolve the remote address */
-		SDLNet_ResolveHost(&PlayAddr[playernum], host, portnum);
-		if ( PlayAddr[playernum].host == INADDR_NONE ) {
-			error("Couldn't resolve host name for %s\r\n", host);
-			return(-1);
-		}
-	} else { /* No host specified, local player */
-		if ( FoundUs ) {
-			error(
-"More than one local player!  (players %d and %d specified as local players)\r\n",
-						gOurPlayer+1, playernum+1);
-			return(-1);
-		} else {
-			gOurPlayer = playernum;
-			FoundUs = 1;
-			SDLNet_ResolveHost(&PlayAddr[playernum], NULL, portnum);
-		}
-	}
-
-	/* We're done! */
+	gOurPlayer = playernum;
+	FoundUs = 1;
 	GotPlayer[playernum] = 1;
-	return(0);
+}
+
+void AddNetworkPlayer(int playernum, const IPaddress &address)
+{
+	PlayAddr[playernum] = address;
+	GotPlayer[playernum] = 1;
 }
 
 /* This MUST be called after command line options have been processed. */
@@ -214,7 +172,7 @@ int CheckPlayers(void)
 	}
 	/* Add ourselves if needed */
 	if ( gNumPlayers == 0 ) {
-		AddPlayer("1");
+		AddLocalPlayer(0);
 		gNumPlayers = 1;
 		FoundUs = 1;
 	}

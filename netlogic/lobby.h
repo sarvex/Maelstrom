@@ -68,6 +68,7 @@ protected:
 	void PackAddresses(DynamicPacket &packet);
 
 	void ProcessPacket(DynamicPacket &packet);
+	void ProcessNewGame(DynamicPacket &packet);
 	void ProcessAnnouncePlayer(DynamicPacket &packet);
 	void ProcessRequestGameInfo(DynamicPacket &packet);
 	void ProcessRequestJoin(DynamicPacket &packet);

@@ -36,6 +36,24 @@ enum {
 	CONTROL_NETWORK,
 };
 
+struct GameInfoPlayer
+{
+	Uint32 playerID;
+	IPaddress address;
+	char name[MAX_NAMELEN+1];
+
+	struct {
+		UIElementCheckbox *enabled;
+		UIElement *name;
+		UIElement *host;
+		UIElement *ping;
+		UIElementRadioGroup *control;
+		UIElement *keyboard;
+		UIElement *joystick;
+		UIElement *network;
+	} UI;
+};
+
 class GameInfo
 {
 public:
@@ -58,6 +76,10 @@ public:
 
 	bool ReadFromPacket(DynamicPacket &packet);
 	void WriteToPacket(DynamicPacket &packet);
+
+	GameInfoPlayer *GetPlayer(int index) {
+		return &players[index];
+	}
 
 	bool HasPlayer(Uint32 playerID) {
 		for (int i = 0; i < MAX_PLAYERS; ++i) {
@@ -86,34 +108,15 @@ public:
 	}
 
 	void BindPlayerToUI(int index, UIElement *element);
+	void UpdateUI();
+	void UpdateUI(GameInfoPlayer *player);
 
 public:
 	Uint32 gameID;
 	Uint8 deathMatch;
-
-	struct GameInfoPlayer {
-		Uint32 playerID;
-		IPaddress address;
-		char name[MAX_NAMELEN+1];
-
-		struct {
-			UIElementCheckbox *enabled;
-			UIElement *name;
-			UIElement *host;
-			UIElement *ping;
-			UIElementRadioGroup *control;
-			UIElement *keyboard;
-			UIElement *joystick;
-			UIElement *network;
-		} UI;
-	};
 	GameInfoPlayer players[MAX_PLAYERS];
 
 	Uint32 localID;
-
-protected:
-	void UpdateUI();
-	void UpdateUI(GameInfoPlayer *player);
 };
 
 #endif // _gameinfo_h

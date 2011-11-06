@@ -20,13 +20,14 @@
     slouken@libsdl.org
 */
 
-// Forward declaration from SDL_net.h
-typedef struct _UDPsocket *UDPsocket;
+#include "SDL_net.h"
 
 /* Functions in netplay.cpp */
 extern int   InitNetData(bool hosting);
 extern void  HaltNetData(void);
 extern int   AddPlayer(const char *playerstr);
+extern void  AddLocalPlayer(int playernum);
+extern void  AddNetworkPlayer(int playernum, const IPaddress &address);
 extern int   CheckPlayers(void);
 extern void  QueueKey(unsigned char Op, unsigned char Type);
 extern int   SyncNetwork(void);
