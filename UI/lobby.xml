@@ -135,12 +135,12 @@
 					<Size h="46"/>
 					<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" x="14" y="84"/>
 					<Elements>
-						<DialogCheckbox name="enabled" text="Player 1" checked="true">
+						<DialogLabel name="enabled" text="Player 1">
 							<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT"/>
-						</DialogCheckbox>
+						</DialogLabel>
 						<DialogRadioGroup name="control">
 							<Elements>
-								<DialogRadioButton name="keyboard" id="1" image="Images/keyboard.bmp" checked="true">
+								<DialogRadioButton name="keyboard" id="1" image="Images/keyboard.bmp">
 									<Anchor anchorFrom="LEFT" anchorTo="RIGHT" anchor="enabled" x="8"/>
 								</DialogRadioButton>
 								<DialogRadioButton name="joystick" id="2" image="Images/joystick.bmp">
@@ -167,9 +167,9 @@
 					<Size h="46"/>
 					<Anchor anchorFrom="TOPLEFT" anchorTo="BOTTOMLEFT" anchor="player1"/>
 					<Elements>
-						<DialogCheckbox name="enabled" text="Player 2" checked="true">
+						<DialogLabel name="enabled" text="Player 2">
 							<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT"/>
-						</DialogCheckbox>
+						</DialogLabel>
 						<DialogRadioGroup name="control">
 							<Elements>
 								<DialogRadioButton name="keyboard" id="1" image="Images/keyboard.bmp">
@@ -199,9 +199,9 @@
 					<Size h="46"/>
 					<Anchor anchorFrom="TOPLEFT" anchorTo="BOTTOMLEFT" anchor="player2"/>
 					<Elements>
-						<DialogCheckbox name="enabled" text="Player 3" checked="true">
+						<DialogLabel name="enabled" text="Player 3">
 							<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT"/>
-						</DialogCheckbox>
+						</DialogLabel>
 						<DialogRadioGroup name="control">
 							<Elements>
 								<DialogRadioButton name="keyboard" id="1" image="Images/keyboard.bmp">
