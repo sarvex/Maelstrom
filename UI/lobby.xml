@@ -138,7 +138,7 @@
 						<DialogCheckbox name="enabled" text="Player 1" checked="true">
 							<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT"/>
 						</DialogCheckbox>
-						<DialogRadioGroup>
+						<DialogRadioGroup name="control">
 							<Elements>
 								<DialogRadioButton name="keyboard" id="1" image="Images/keyboard.bmp" checked="true">
 									<Anchor anchorFrom="LEFT" anchorTo="RIGHT" anchor="enabled" x="8"/>
@@ -170,7 +170,7 @@
 						<DialogCheckbox name="enabled" text="Player 2" checked="true">
 							<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT"/>
 						</DialogCheckbox>
-						<DialogRadioGroup>
+						<DialogRadioGroup name="control">
 							<Elements>
 								<DialogRadioButton name="keyboard" id="1" image="Images/keyboard.bmp">
 									<Anchor anchorFrom="LEFT" anchorTo="RIGHT" anchor="enabled" x="8"/>
@@ -202,7 +202,7 @@
 						<DialogCheckbox name="enabled" text="Player 3" checked="true">
 							<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT"/>
 						</DialogCheckbox>
-						<DialogRadioGroup>
+						<DialogRadioGroup name="control">
 							<Elements>
 								<DialogRadioButton name="keyboard" id="1" image="Images/keyboard.bmp">
 									<Anchor anchorFrom="LEFT" anchorTo="RIGHT" anchor="enabled" x="8"/>

@@ -51,6 +51,7 @@ LobbyDialogDelegate::OnLoad()
 {
 	int i, count;
 	IPaddress addresses[32];
+	char name[32];
 
 	// Get the address of the global server
 	if (SDLNet_ResolveHost(&m_globalServer, GLOBAL_SERVER_HOST, LOBBY_PORT) < 0) {
@@ -90,6 +91,22 @@ LobbyDialogDelegate::OnLoad()
 	}
 	if (!GetElement("playButton", m_playButton)) {
 		return false;
+	}
+
+	count = SDL_arraysize(m_gameListElements);
+	for (i = 0; i < count; ++i) {
+		SDL_snprintf(name, sizeof(name), "game%d", i+1);
+		if (!GetElement(name, m_gameListElements[i])) {
+			return false;
+		}
+	}
+
+	count = SDL_arraysize(m_gameInfoPlayers);
+	for (i = 0; i < count; ++i) {
+		SDL_snprintf(name, sizeof(name), "player%d", i+1);
+		if (!GetElement(name, m_gameInfoPlayers[i])) {
+			return false;
+		}
 	}
 
 	return true;
@@ -180,6 +197,7 @@ LobbyDialogDelegate::SetHostOrJoin(void*, int value)
 		if (m_state == STATE_HOSTING) {
 			m_game.SetHostInfo(m_uniqueID, prefs->GetString(PREFERENCES_HANDLE));
 		}
+		m_game.SetLocalID(m_uniqueID);
 	} else {
 		m_state = STATE_NONE;
 	}
@@ -210,9 +228,20 @@ LobbyDialogDelegate::UpdateUI()
 	} else if (m_state == STATE_LISTING) {
 		m_gameListArea->Show();
 		m_gameInfoArea->Hide();
+		for (int i = 0; (unsigned)i < SDL_arraysize(m_gameListElements); ++i) {
+			if (i < m_gameList.length()) {
+				m_gameListElements[i]->Show();
+				m_gameList[i].BindPlayerToUI(0, m_gameListElements[i]);
+			} else {
+				m_gameListElements[i]->Hide();
+			}
+		}
 	} else {
 		m_gameInfoArea->Show();
 		m_gameListArea->Hide();
+		for (int i = 0; i < MAX_PLAYERS; ++i) {
+			m_game.BindPlayerToUI(i, m_gameInfoPlayers[i]);
+		}
 	}
 	if (m_state == STATE_HOSTING) {
 		m_playButton->SetDisabled(false);

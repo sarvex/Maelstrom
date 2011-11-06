@@ -26,6 +26,16 @@
 #include "protocol.h"
 #include "packet.h"
 
+class UIElement;
+class UIElementCheckbox;
+class UIElementRadioGroup;
+
+enum {
+	CONTROL_KEYBOARD = 1,
+	CONTROL_JOYSTICK,
+	CONTROL_NETWORK,
+};
+
 class GameInfo
 {
 public:
@@ -37,6 +47,10 @@ public:
 	}
 
 	void Reset();
+
+	void SetLocalID(Uint32 playerID) {
+		localID = playerID;
+	}
 
 	void SetHostInfo(Uint32 gameID, const char *name);
 
@@ -70,17 +84,36 @@ public:
 		}
 		return true;
 	}
-		
+
+	void BindPlayerToUI(int index, UIElement *element);
+
 public:
 	Uint32 gameID;
 	Uint8 deathMatch;
 
-	struct PlayerInfo {
+	struct GameInfoPlayer {
 		Uint32 playerID;
 		IPaddress address;
 		char name[MAX_NAMELEN+1];
+
+		struct {
+			UIElementCheckbox *enabled;
+			UIElement *name;
+			UIElement *host;
+			UIElement *ping;
+			UIElementRadioGroup *control;
+			UIElement *keyboard;
+			UIElement *joystick;
+			UIElement *network;
+		} UI;
 	};
-	PlayerInfo players[MAX_PLAYERS];
+	GameInfoPlayer players[MAX_PLAYERS];
+
+	Uint32 localID;
+
+protected:
+	void UpdateUI();
+	void UpdateUI(GameInfoPlayer *info);
 };
 
 #endif // _gameinfo_h

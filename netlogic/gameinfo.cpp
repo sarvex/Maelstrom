@@ -20,6 +20,10 @@
     slouken@libsdl.org
 */
 
+#include "../screenlib/UIElement.h"
+#include "../screenlib/UIElementCheckbox.h"
+#include "../screenlib/UIElementRadio.h"
+
 #include "gameinfo.h"
 
 
@@ -49,6 +53,7 @@ GameInfo::CopyFrom(const GameInfo &rhs)
 		}
 		players[i] = rhs.players[i];
 	}
+	UpdateUI();
 }
 
 bool
@@ -61,7 +66,7 @@ GameInfo::ReadFromPacket(DynamicPacket &packet)
 		return false;
 	}
 
-	for (int i = 1; i < MAX_PLAYERS; ++i) {
+	for (int i = 0; i < MAX_PLAYERS; ++i) {
 		if (!packet.Read(players[i].playerID)) {
 			return false;
 		}
@@ -75,6 +80,9 @@ GameInfo::ReadFromPacket(DynamicPacket &packet)
 			return false;
 		}
 	}
+
+	// We want to get the public address of the server
+	players[0].address = packet.address;
 
 	return true;
 }
@@ -90,5 +98,83 @@ GameInfo::WriteToPacket(DynamicPacket &packet)
 		packet.Write(players[i].address.host);
 		packet.Write(players[i].address.port);
 		packet.Write(players[i].name);
+	}
+}
+
+void
+GameInfo::BindPlayerToUI(int index, UIElement *element)
+{
+	GameInfoPlayer *info = &players[index];
+
+	info->UI.enabled = element->GetElement<UIElementCheckbox>("enabled");
+	info->UI.name = element->GetElement<UIElement>("name");
+	info->UI.host = element->GetElement<UIElement>("host");
+	info->UI.ping = element->GetElement<UIElement>("ping");
+	info->UI.control = element->GetElement<UIElementRadioGroup>("control");
+	info->UI.keyboard = element->GetElement<UIElement>("keyboard");
+	info->UI.joystick = element->GetElement<UIElement>("joystick");
+	info->UI.network = element->GetElement<UIElement>("network");
+
+	UpdateUI(info);
+}
+
+void
+GameInfo::UpdateUI()
+{
+	for (int i = 0; i < MAX_PLAYERS; ++i) {
+		UpdateUI(&players[i]);
+	}
+}
+
+void
+GameInfo::UpdateUI(GameInfoPlayer *info)
+{
+	if (info->UI.name) {
+		if (info->name[0]) {
+			info->UI.name->Show();
+			info->UI.name->SetText(info->name);
+		} else {
+			info->UI.name->Hide();
+		}
+	}
+	if (info->UI.host) {
+		if (info->address.host) {
+			info->UI.host->Show();
+			info->UI.host->SetText(SDLNet_ResolveIP(&info->address));
+		} else {
+			info->UI.host->Hide();
+		}
+	}
+	if (info->UI.ping) {
+		// FIXME: not yet implemented
+		info->UI.ping->Hide();
+	}
+	if (info->UI.control) {
+		if (info->playerID == localID) {
+			info->UI.control->SetValue(CONTROL_KEYBOARD);
+		} else {
+			info->UI.control->SetValue(CONTROL_NETWORK);
+		}
+	}
+	if (info->UI.keyboard) {
+		if (info->playerID == localID) {
+			info->UI.keyboard->Show();
+		} else {
+			info->UI.keyboard->Hide();
+		}
+	}
+	if (info->UI.joystick) {
+		if (info->playerID == localID) {
+			info->UI.joystick->Show();
+		} else {
+			info->UI.joystick->Hide();
+		}
+	}
+	if (info->UI.network) {
+		if (info->playerID != localID) {
+			info->UI.network->Show();
+		} else {
+			info->UI.network->Hide();
+		}
 	}
 }

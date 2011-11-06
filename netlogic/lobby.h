@@ -94,7 +94,9 @@ protected:
 	UIElementRadioGroup *m_hostOrJoin;
 	UIElementCheckbox *m_globalGame;
 	UIElement *m_gameListArea;
+	UIElement *m_gameListElements[5];
 	UIElement *m_gameInfoArea;
+	UIElement *m_gameInfoPlayers[MAX_PLAYERS];
 	UIElement *m_playButton;
 };
 
