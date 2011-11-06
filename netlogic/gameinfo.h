@@ -113,7 +113,7 @@ public:
 
 protected:
 	void UpdateUI();
-	void UpdateUI(GameInfoPlayer *info);
+	void UpdateUI(GameInfoPlayer *player);
 };
 
 #endif // _gameinfo_h

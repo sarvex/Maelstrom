@@ -104,18 +104,18 @@ GameInfo::WriteToPacket(DynamicPacket &packet)
 void
 GameInfo::BindPlayerToUI(int index, UIElement *element)
 {
-	GameInfoPlayer *info = &players[index];
+	GameInfoPlayer *player = &players[index];
 
-	info->UI.enabled = element->GetElement<UIElementCheckbox>("enabled");
-	info->UI.name = element->GetElement<UIElement>("name");
-	info->UI.host = element->GetElement<UIElement>("host");
-	info->UI.ping = element->GetElement<UIElement>("ping");
-	info->UI.control = element->GetElement<UIElementRadioGroup>("control");
-	info->UI.keyboard = element->GetElement<UIElement>("keyboard");
-	info->UI.joystick = element->GetElement<UIElement>("joystick");
-	info->UI.network = element->GetElement<UIElement>("network");
+	player->UI.enabled = element->GetElement<UIElementCheckbox>("enabled");
+	player->UI.name = element->GetElement<UIElement>("name");
+	player->UI.host = element->GetElement<UIElement>("host");
+	player->UI.ping = element->GetElement<UIElement>("ping");
+	player->UI.control = element->GetElement<UIElementRadioGroup>("control");
+	player->UI.keyboard = element->GetElement<UIElement>("keyboard");
+	player->UI.joystick = element->GetElement<UIElement>("joystick");
+	player->UI.network = element->GetElement<UIElement>("network");
 
-	UpdateUI(info);
+	UpdateUI(player);
 }
 
 void
@@ -127,54 +127,54 @@ GameInfo::UpdateUI()
 }
 
 void
-GameInfo::UpdateUI(GameInfoPlayer *info)
+GameInfo::UpdateUI(GameInfoPlayer *player)
 {
-	if (info->UI.name) {
-		if (info->name[0]) {
-			info->UI.name->Show();
-			info->UI.name->SetText(info->name);
+	if (player->UI.name) {
+		if (player->name[0]) {
+			player->UI.name->Show();
+			player->UI.name->SetText(player->name);
 		} else {
-			info->UI.name->Hide();
+			player->UI.name->Hide();
 		}
 	}
-	if (info->UI.host) {
-		if (info->address.host) {
-			info->UI.host->Show();
-			info->UI.host->SetText(SDLNet_ResolveIP(&info->address));
+	if (player->UI.host) {
+		if (player->address.host) {
+			player->UI.host->Show();
+			player->UI.host->SetText(SDLNet_ResolveIP(&player->address));
 		} else {
-			info->UI.host->Hide();
+			player->UI.host->Hide();
 		}
 	}
-	if (info->UI.ping) {
+	if (player->UI.ping) {
 		// FIXME: not yet implemented
-		info->UI.ping->Hide();
+		player->UI.ping->Hide();
 	}
-	if (info->UI.control) {
-		if (info->playerID == localID) {
-			info->UI.control->SetValue(CONTROL_KEYBOARD);
+	if (player->UI.control) {
+		if (player->playerID == localID) {
+			player->UI.control->SetValue(CONTROL_KEYBOARD);
 		} else {
-			info->UI.control->SetValue(CONTROL_NETWORK);
+			player->UI.control->SetValue(CONTROL_NETWORK);
 		}
 	}
-	if (info->UI.keyboard) {
-		if (info->playerID == localID) {
-			info->UI.keyboard->Show();
+	if (player->UI.keyboard) {
+		if (player->playerID == localID) {
+			player->UI.keyboard->Show();
 		} else {
-			info->UI.keyboard->Hide();
+			player->UI.keyboard->Hide();
 		}
 	}
-	if (info->UI.joystick) {
-		if (info->playerID == localID) {
-			info->UI.joystick->Show();
+	if (player->UI.joystick) {
+		if (player->playerID == localID) {
+			player->UI.joystick->Show();
 		} else {
-			info->UI.joystick->Hide();
+			player->UI.joystick->Hide();
 		}
 	}
-	if (info->UI.network) {
-		if (info->playerID != localID) {
-			info->UI.network->Show();
+	if (player->UI.network) {
+		if (player->playerID != localID) {
+			player->UI.network->Show();
 		} else {
-			info->UI.network->Hide();
+			player->UI.network->Hide();
 		}
 	}
 }
