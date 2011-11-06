@@ -33,7 +33,7 @@
 					<Size h="30"/>
 					<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" x="14" y="71"/>
 					<Elements>
-						<DialogButton name="join" text="Join" default="true">
+						<DialogButton name="join" closeDialog="false" text="Join" default="true">
 							<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT"/>
 						</DialogButton>
 						<DialogLabel name="name" text="This is a name">
@@ -52,7 +52,7 @@
 					<Size h="30"/>
 					<Anchor anchorFrom="TOPLEFT" anchorTo="BOTTOMLEFT" anchor="game1"/>
 					<Elements>
-						<DialogButton name="join" text="Join">
+						<DialogButton name="join" closeDialog="false" text="Join">
 							<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT"/>
 						</DialogButton>
 						<DialogLabel name="name" text="This is a name">
@@ -71,7 +71,7 @@
 					<Size h="30"/>
 					<Anchor anchorFrom="TOPLEFT" anchorTo="BOTTOMLEFT" anchor="game2"/>
 					<Elements>
-						<DialogButton name="join" text="Join">
+						<DialogButton name="join" closeDialog="false" text="Join">
 							<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT"/>
 						</DialogButton>
 						<DialogLabel name="name" text="This is a name">
@@ -90,7 +90,7 @@
 					<Size h="30"/>
 					<Anchor anchorFrom="TOPLEFT" anchorTo="BOTTOMLEFT" anchor="game3"/>
 					<Elements>
-						<DialogButton name="join" text="Join">
+						<DialogButton name="join" closeDialog="false" text="Join">
 							<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT"/>
 						</DialogButton>
 						<DialogLabel name="name" text="This is a name">
@@ -109,7 +109,7 @@
 					<Size h="30"/>
 					<Anchor anchorFrom="TOPLEFT" anchorTo="BOTTOMLEFT" anchor="game4"/>
 					<Elements>
-						<DialogButton name="join" text="Join">
+						<DialogButton name="join" closeDialog="false" text="Join">
 							<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT"/>
 						</DialogButton>
 						<DialogLabel name="name" text="This is a name">

@@ -53,12 +53,15 @@ protected:
 	bool GetElement(const char *name, UIElement *&element);
 	void SetHostOrJoin(void*, int value);
 	void GlobalGameChanged(void*);
+	void JoinGameClicked(void *element);
 
 	void UpdateUI();
 
 	void AdvertiseGame();
 	void RemoveGame();
 	void GetGameList();
+	void GetGameInfo();
+	void JoinGame(GameInfo &game);
 	void ClearGameInfo();
 	void ClearGameList();
 
@@ -67,6 +70,7 @@ protected:
 	void ProcessPacket(DynamicPacket &packet);
 	void ProcessAnnouncePlayer(DynamicPacket &packet);
 	void ProcessRequestGameInfo(DynamicPacket &packet);
+	void ProcessRequestJoin(DynamicPacket &packet);
 	void ProcessGameServerList(DynamicPacket &packet);
 	void ProcessGameInfo(DynamicPacket &packet);
 

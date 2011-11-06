@@ -138,7 +138,11 @@ GameInfo::UpdateUI(GameInfoPlayer *player)
 		}
 	}
 	if (player->UI.host) {
-		if (player->address.host) {
+		if (player->playerID == localID) {
+			//player->UI.host->Show();
+			//player->UI.host->SetText("localhost");
+			player->UI.host->Hide();
+		} else if (player->address.host) {
 			player->UI.host->Show();
 			player->UI.host->SetText(SDLNet_ResolveIP(&player->address));
 		} else {

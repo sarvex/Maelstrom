@@ -99,6 +99,11 @@ LobbyDialogDelegate::OnLoad()
 		if (!GetElement(name, m_gameListElements[i])) {
 			return false;
 		}
+
+		UIElement *button = m_gameListElements[i]->GetElement<UIElement>("join");
+		if (button) {
+			button->SetClickCallback(this, &LobbyDialogDelegate::JoinGameClicked, m_gameListElements[i]);
+		}
 	}
 
 	count = SDL_arraysize(m_gameInfoPlayers);
@@ -158,8 +163,10 @@ LobbyDialogDelegate::OnTick()
 	    (now - m_lastRefresh) > GLOBAL_CHECK_INTERVAL) {
 		if (m_state == STATE_HOSTING) {
 			AdvertiseGame();
-		} else {
+		} else if (m_state == STATE_LISTING) {
 			GetGameList();
+		} else {
+			GetGameInfo();
 		}
 		m_lastRefresh = now;
 	}
@@ -215,6 +222,19 @@ LobbyDialogDelegate::GlobalGameChanged(void*)
 			RemoveGame();
 		} else {
 			ClearGameList();
+		}
+	}
+}
+
+void
+LobbyDialogDelegate::JoinGameClicked(void *_element)
+{
+	UIElement *element = (UIElement *)_element;
+	for (int i = 0; (unsigned)i < SDL_arraysize(m_gameListElements); ++i) {
+		if (element == m_gameListElements[i]) {
+			// We found the one that was clicked!
+			JoinGame(m_gameList[i]);
+			break;
 		}
 	}
 }
@@ -291,6 +311,30 @@ LobbyDialogDelegate::GetGameList()
 }
 
 void
+LobbyDialogDelegate::GetGameInfo()
+{
+	m_packet.StartLobbyMessage(LOBBY_REQUEST_GAME_INFO);
+	m_packet.address = m_game.players[0].address;
+	SDLNet_UDP_Send(gNetFD, -1, &m_packet);
+}
+
+void
+LobbyDialogDelegate::JoinGame(GameInfo &game)
+{
+	m_packet.StartLobbyMessage(LOBBY_REQUEST_JOIN);
+	m_packet.Write(game.gameID);
+	m_packet.Write(m_uniqueID);
+	m_packet.Write(prefs->GetString(PREFERENCES_HANDLE));
+	m_packet.address = game.players[0].address;;
+
+	SDLNet_UDP_Send(gNetFD, -1, &m_packet);
+
+	m_game.CopyFrom(game);
+	m_state = STATE_JOINING;
+	UpdateUI();
+}
+
+void
 LobbyDialogDelegate::ClearGameInfo()
 {
 	m_game.Reset();
@@ -348,12 +392,15 @@ LobbyDialogDelegate::ProcessPacket(DynamicPacket &packet)
 		} else if (cmd == LOBBY_REQUEST_GAME_INFO) {
 			ProcessRequestGameInfo(packet);
 		} else if (cmd == LOBBY_REQUEST_JOIN) {
-			//ProcessRequestJoin(packet);
+			ProcessRequestJoin(packet);
 		} else if (cmd == LOBBY_REQUEST_LEAVE) {
 			//ProcessRequestLeave(packet);
 		}
+		return;
 
-	} else if (m_state == STATE_LISTING) {
+	}
+
+	if (m_state == STATE_LISTING) {
 		if (cmd == LOBBY_GAME_SERVERS) {
 			if (m_globalGame->IsChecked()) {
 				ProcessGameServerList(packet);
@@ -361,20 +408,14 @@ LobbyDialogDelegate::ProcessPacket(DynamicPacket &packet)
 			return;
 		}
 
-		if (cmd == LOBBY_PING) {
-			// Somebody thinks we're still in a game lobby
-			//RejectPing(packet);
-		} else if (cmd == LOBBY_GAME_INFO) {
-			ProcessGameInfo(packet);
-		}
+	}
 
-	} else if (m_state == STATE_JOINING) {
-
-		if (cmd == LOBBY_PING) {
-			//ProcessPing(packet);
-		} else if (cmd == LOBBY_REQUEST_GAME_INFO) {
-			ProcessGameInfo(packet);
-		}
+	// These packets we handle in all the join states
+	if (cmd == LOBBY_PING) {
+		// Somebody thinks we're still in a game lobby
+		//RejectPing(packet);
+	} else if (cmd == LOBBY_GAME_INFO) {
+		ProcessGameInfo(packet);
 	}
 }
 
@@ -409,6 +450,61 @@ LobbyDialogDelegate::ProcessRequestGameInfo(DynamicPacket &packet)
 	m_reply.address = packet.address;
 
 	SDLNet_UDP_Send(gNetFD, -1, &m_reply);
+}
+
+void
+LobbyDialogDelegate::ProcessRequestJoin(DynamicPacket &packet)
+{
+	Uint32 gameID;
+	Uint32 playerID;
+	char name[MAX_NAMELEN+1];
+
+	if (!packet.Read(gameID) || gameID != m_game.gameID) {
+		return;
+	}
+	if (!packet.Read(playerID)) {
+		return;
+	}
+	if (!packet.Read(name, sizeof(name))) {
+		return;
+	}
+
+	// Find an empty slot
+	int slot;
+	for (slot = 0; slot < MAX_PLAYERS; ++slot) {
+		if (playerID == m_game.players[slot].playerID) {
+			// We already have this player, just update it.
+			break;
+		}
+	}
+	if (slot == MAX_PLAYERS) {
+		for (slot = 0; slot < MAX_PLAYERS; ++slot) {
+			if (!m_game.players[slot].playerID) {
+				break;
+			}
+		}
+	}
+	assert(slot < MAX_PLAYERS);
+
+	// Fill in the data
+	GameInfo::GameInfoPlayer *player = &m_game.players[slot];
+	player->playerID = playerID;
+	player->address = packet.address;
+	SDL_strlcpy(player->name, name, sizeof(player->name));
+
+	// Let everybody know!
+	m_reply.StartLobbyMessage(LOBBY_GAME_INFO);
+	m_game.WriteToPacket(m_reply);
+	for (slot = 0; slot < MAX_PLAYERS; ++slot) {
+		Uint32 playerID = m_game.players[slot].playerID;
+		if (playerID && playerID != m_uniqueID) {
+			m_reply.address = m_game.players[slot].address;
+			SDLNet_UDP_Send(gNetFD, -1, &m_reply);
+		}
+	}
+
+	// Update our own UI
+	UpdateUI();
 }
 
 void
