@@ -5,7 +5,7 @@ syntax:glob
 *.Tpo
 *.swp
 Maelstrom
-Maelstrom-netd
+MaelstromLobby
 Maelstrom.dmg
 Makefile
 autom4te.cache
