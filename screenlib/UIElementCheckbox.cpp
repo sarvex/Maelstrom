@@ -60,10 +60,24 @@ bool
 UIElementCheckbox::FinishLoading()
 {
 	// Extend the sensitive area to encompass the label
-	if (m_textArea.X() >= X()) {
-		SetWidth((m_textArea.X()+m_textArea.Width()) - X());
-	} else {
-		assert(!"Need code for labels on the left");
+	if (!m_textArea.IsEmpty()) {
+		if (m_textArea.X() >= X()) {
+printf("%p Setting width to encompass text (%d >= %d)\n", this, m_textArea.X(), X());
+			SetWidth((m_textArea.X()+m_textArea.Width()) - X());
+		} else {
+			assert(!"Need code for labels on the left");
+		}
+	}
+	if (!m_imageArea.IsEmpty()) {
+		if (m_imageArea.X() >= X()) {
+printf("%p Setting width to encompass image (%d >= %d)\n", this, m_imageArea.X(), X());
+			SetWidth((m_imageArea.X()+m_imageArea.Width()) - X());
+		} else {
+			assert(!"Need code for images on the left");
+		}
+		if (m_imageArea.Height() > Height()) {
+			SetHeight(m_imageArea.Height());
+		}
 	}
 	return UIElementButton::FinishLoading();
 }

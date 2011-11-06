@@ -288,7 +288,7 @@ MacDialogCheckbox::OnDraw()
 
 	color = m_element->GetCurrentColor();
 	x = m_element->X();
-	y = m_element->Y();
+	y = m_element->Y() + (m_element->Height() - CHECKBOX_SIZE)/2;
 
 	m_screen->DrawRect(x, y, CHECKBOX_SIZE, CHECKBOX_SIZE, color);
 
@@ -329,7 +329,7 @@ MacDialogRadioButton::OnDraw()
 
 	color = m_element->GetCurrentColor();
 	x = m_element->X() + 5;
-	y = m_element->Y() + 5;
+	y = m_element->Y() + 5 + (m_element->Height() - RADIOBUTTON_SIZE)/2;
 
 	/* Draw the circle */
 	m_screen->DrawLine(x+4, y, x+7, y, color);

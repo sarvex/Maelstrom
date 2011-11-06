@@ -89,6 +89,10 @@ public:
 		return m_rect.h;
 	}
 
+	bool IsEmpty() const {
+		return !m_rect.w || !m_rect.h;
+	}
+
 	void AddAnchoredArea(UIArea *area) {
 		m_anchoredAreas.add(area);
 	}
