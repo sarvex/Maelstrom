@@ -357,7 +357,7 @@ void HandleEvents(int timeout)
 	SDL_Event event;
 
 	do { 
-		while ( SDL_PollEvent(&event) ) {
+		while ( screen->PollEvent(&event) ) {
 			HandleEvent(&event);
 		}
 		if ( timeout ) {
@@ -372,7 +372,7 @@ int DropEvents(void)
 	SDL_Event event;
 	int keys = 0;
 
-	while ( SDL_PollEvent(&event) ) {
+	while ( screen->PollEvent(&event) ) {
 		if ( event.type == SDL_KEYDOWN ) {
 			++keys;
 		}
