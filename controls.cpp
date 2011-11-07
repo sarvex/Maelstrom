@@ -238,6 +238,10 @@ static void HandleEvent(SDL_Event *event)
 {
 	SDL_Keycode key;
 
+	if (ui->HandleEvent(*event)) {
+		return;
+	}
+
 	switch (event->type) {
 #ifdef SDL_INIT_JOYSTICK
 		/* -- Handle joystick axis motion */

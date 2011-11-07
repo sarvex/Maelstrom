@@ -80,6 +80,9 @@ void NewGame(void)
 	}
 
 	ui->ShowPanel(PANEL_GAME);
+#if defined(__IPHONEOS__) || defined(__ANDROID__)
+	ui->ShowPanel("touchcontrol");
+#endif
 
 	/* Play the game, dammit! */
 	while (gGameOn) {
@@ -98,6 +101,9 @@ void NewGame(void)
 		}
 	}
 	
+#if defined(__IPHONEOS__) || defined(__ANDROID__)
+	ui->HidePanel("touchcontrol");
+#endif
 	ui->HidePanel(PANEL_GAME);
 
 /* -- Do the game over stuff */

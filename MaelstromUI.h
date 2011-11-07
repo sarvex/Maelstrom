@@ -60,6 +60,21 @@ protected:
 };
 
 //////////////////////////////////////////////////////////////////////////////
+class UIElementControlButton : public UIElement
+{
+public:
+	UIElementControlButton(UIBaseElement *parent, const char *name, UIDrawEngine *drawEngine);
+
+	override bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
+
+	override void OnMouseDown();
+	override void OnMouseUp();
+
+protected:
+	unsigned char m_control;
+};
+
+//////////////////////////////////////////////////////////////////////////////
 class UIDrawEngineIcon : public UIDrawEngine
 {
 public:

@@ -206,6 +206,8 @@ MaelstromUI::CreateElement(UIBaseElement *parent, const char *type, const char *
 		element = new UIElement(parent, name, new UIDrawEngineSprite());
 	} else if (strcasecmp(type, "Title") == 0) {
 		element = new UIElement(parent, name, new UIDrawEngineTitle());
+	} else if (strcasecmp(type, "ControlButton") == 0) {
+		element = new UIElementControlButton(parent, name, new UIDrawEngine());
 	} else if (strcasecmp(type, "DialogLabel") == 0) {
 		element = new UIElement(parent, name, new MacDialogDrawEngine());
 	} else if (strcasecmp(type, "DialogButton") == 0) {
@@ -222,6 +224,62 @@ MaelstromUI::CreateElement(UIBaseElement *parent, const char *type, const char *
 		element = UIManager::CreateElement(parent, name, type);
 	}
 	return element;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+UIElementControlButton::UIElementControlButton(UIBaseElement *parent, const char *name, UIDrawEngine *drawEngine) :
+	UIElement(parent, name, drawEngine)
+{
+	m_mouseEnabled = true;
+}
+
+bool
+UIElementControlButton::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
+{
+	rapidxml::xml_attribute<> *attr;
+
+	if (!UIElement::Load(node, templates)) {
+		return false;
+	}
+
+	attr = node->first_attribute("action", 0, false);
+	if (!attr) {
+		error("Element '%s' missing attribute 'action'", node->name());
+		return false;
+	}
+
+	if (SDL_strcasecmp(attr->value(), "THRUST") == 0) {
+		m_control = THRUST_KEY;
+	} else if (SDL_strcasecmp(attr->value(), "RIGHT") == 0) {
+		m_control = RIGHT_KEY;
+	} else if (SDL_strcasecmp(attr->value(), "LEFT") == 0) {
+		m_control = LEFT_KEY;
+	} else if (SDL_strcasecmp(attr->value(), "SHIELD") == 0) {
+		m_control = SHIELD_KEY;
+	} else if (SDL_strcasecmp(attr->value(), "FIRE") == 0) {
+		m_control = FIRE_KEY;
+	} else if (SDL_strcasecmp(attr->value(), "PAUSE") == 0) {
+		m_control = PAUSE_KEY;
+	} else if (SDL_strcasecmp(attr->value(), "ABORT") == 0) {
+		m_control = ABORT_KEY;
+	} else {
+		error("Element '%s' has unknown action '%s'", node->name(), attr->value());
+		return false;
+	}
+
+	return true;
+}
+
+void
+UIElementControlButton::OnMouseDown()
+{
+	SetControl(m_control, 1);
+}
+
+void
+UIElementControlButton::OnMouseUp()
+{
+	SetControl(m_control, 0);
 }
 
 //////////////////////////////////////////////////////////////////////////////
