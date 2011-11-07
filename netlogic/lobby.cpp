@@ -145,6 +145,10 @@ LobbyDialogDelegate::OnHide()
 	// Start the game!
 	if (m_dialog->GetDialogStatus() > 0) {
 		SetState(STATE_PLAYING);
+		gStartLevel = 1;
+		gStartLives = 3;
+		gNoDelay = 0;
+
 		for (int i = 0; i < MAX_PLAYERS; ++i) {
 			GameInfoPlayer *player = m_game.GetPlayer(i);
 			if (player->playerID) {
