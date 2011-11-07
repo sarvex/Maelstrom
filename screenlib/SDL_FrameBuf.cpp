@@ -73,9 +73,10 @@ FrameBuf:: Init(int width, int height, Uint32 window_flags, Uint32 render_flags,
 	SDL_RenderSetViewport(renderer, &rect);
 
 	/* Set the blit clipping rectangle */
-	rect.x = 0;
-	rect.y = 0;
-	clip = rect;
+	clip.x = 0;
+	clip.y = 0;
+	clip.w = width;
+	clip.h = height;
 
 	/* Copy the image colormap */
 	if ( colors ) {

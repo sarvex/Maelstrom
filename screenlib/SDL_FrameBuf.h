@@ -68,10 +68,31 @@ public:
 
 	/* Event Routines */
 	int PollEvent(SDL_Event *event) {
-		return(SDL_PollEvent(event));
+		int result = SDL_PollEvent(event);
+		if (result > 0) {
+			ProcessEvent(event);
+		}
+		return result;
 	}
 	int WaitEvent(SDL_Event *event) {
-		return(SDL_WaitEvent(event));
+		int result = SDL_WaitEvent(event);
+		if (result > 0) {
+			ProcessEvent(event);
+		}
+		return result;
+	}
+	void ProcessEvent(SDL_Event *event) {
+		switch (event->type) {
+			case SDL_MOUSEMOTION:
+				event->motion.x -= rect.x;
+				event->motion.y -= rect.y;
+				break;
+			case SDL_MOUSEBUTTONDOWN:
+			case SDL_MOUSEBUTTONUP:
+				event->button.x -= rect.x;
+				event->button.y -= rect.y;
+				break;
+		}
 	}
 	void ToggleFullScreen(void) {
 		if (SDL_GetWindowFlags(window) & SDL_WINDOW_FULLSCREEN) {
