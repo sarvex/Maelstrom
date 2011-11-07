@@ -67,11 +67,13 @@ public:
 
 	override bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
 
+	override bool HandleEvent(const SDL_Event &event);
 	override void OnMouseDown();
 	override void OnMouseUp();
 
 protected:
 	unsigned char m_control;
+	SDL_FingerID m_finger;
 };
 
 //////////////////////////////////////////////////////////////////////////////

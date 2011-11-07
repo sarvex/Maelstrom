@@ -106,6 +106,22 @@ FrameBuf:: SetPalette(SDL_Color *colors)
 	}
 }
 
+// This routine or something like it should probably go in SDL
+bool
+FrameBuf::ConvertTouchCoordinates(const SDL_TouchFingerEvent &finger, int *x, int *y)
+{
+	int w, h;
+	SDL_Touch* inTouch = SDL_GetTouch(finger.touchId);
+	if (inTouch == NULL) {
+		return false;
+	}
+
+	SDL_GetWindowSize(window, &w, &h);
+	*x = (int)((((float)finger.x)/inTouch->xres)*w) - rect.x;
+	*y = (int)((((float)finger.y)/inTouch->yres)*h) - rect.y;
+	return true;
+}
+
 void
 FrameBuf:: QueueBlit(int dstx, int dsty, SDL_Texture *src,
 			int srcx, int srcy, int w, int h, clipval do_clip)

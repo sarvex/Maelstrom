@@ -230,7 +230,10 @@ MaelstromUI::CreateElement(UIBaseElement *parent, const char *type, const char *
 UIElementControlButton::UIElementControlButton(UIBaseElement *parent, const char *name, UIDrawEngine *drawEngine) :
 	UIElement(parent, name, drawEngine)
 {
+#ifndef __IPHONEOS__
+	// Use the mouse if touch control isn't available
 	m_mouseEnabled = true;
+#endif
 }
 
 bool
@@ -268,6 +271,35 @@ UIElementControlButton::Load(rapidxml::xml_node<> *node, const UITemplates *temp
 	}
 
 	return true;
+}
+
+bool
+UIElementControlButton::HandleEvent(const SDL_Event &event)
+{
+	if (UIElement::HandleEvent(event)) {
+		return true;
+	}
+
+	if (event.type == SDL_FINGERDOWN) {
+		// Convert the touch coordinate into something useful here
+		int x, y;
+
+		if (!m_screen->ConvertTouchCoordinates(event.tfinger, &x, &y)) {
+			return false;
+		}
+		if (ContainsPoint(x, y)) {
+			m_finger = event.tfinger.fingerId;
+			OnMouseDown();
+			return true;
+		}
+	}
+	if (event.type == SDL_FINGERUP && event.tfinger.fingerId == m_finger) {
+		m_finger = 0;
+		OnMouseUp();
+		return true;
+	}
+
+	return false;
 }
 
 void
