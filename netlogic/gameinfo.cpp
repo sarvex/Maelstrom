@@ -38,7 +38,7 @@ GameInfo::SetHostInfo(Uint32 gameID, const char *name)
 {
 	this->gameID = gameID;
 	players[HOST_PLAYER].playerID = gameID;
-	SDL_strlcpy(players[HOST_PLAYER].name, name,
+	SDL_strlcpy(players[HOST_PLAYER].name, name ? name : "",
 			sizeof(players[HOST_PLAYER].name));
 }
 
