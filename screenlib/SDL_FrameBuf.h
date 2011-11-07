@@ -96,6 +96,9 @@ public:
 	}
 	bool ConvertTouchCoordinates(const SDL_TouchFingerEvent &finger, int *x, int *y);
 
+	void EnableTextInput();
+	void DisableTextInput();
+
 	void ToggleFullScreen(void) {
 		if (SDL_GetWindowFlags(window) & SDL_WINDOW_FULLSCREEN) {
 			SDL_SetWindowFullscreen(window, SDL_FALSE);

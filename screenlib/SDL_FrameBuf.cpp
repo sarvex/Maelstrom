@@ -122,6 +122,33 @@ FrameBuf::ConvertTouchCoordinates(const SDL_TouchFingerEvent &finger, int *x, in
 	return true;
 }
 
+#ifdef __IPHONEOS__
+extern "C" {
+	extern int SDL_iPhoneKeyboardHide(SDL_Window * window);
+	extern int SDL_iPhoneKeyboardShow(SDL_Window * window);
+}
+#endif
+
+void
+FrameBuf::EnableTextInput()
+{
+	SDL_StartTextInput();
+
+#ifdef __IPHONEOS__
+	SDL_iPhoneKeyboardShow(window);
+#endif
+}
+
+void
+FrameBuf::DisableTextInput()
+{
+#ifdef __IPHONEOS__
+	SDL_iPhoneKeyboardHide(window);
+#endif
+
+	SDL_StopTextInput();
+}
+
 void
 FrameBuf:: QueueBlit(int dstx, int dsty, SDL_Texture *src,
 			int srcx, int srcy, int w, int h, clipval do_clip)

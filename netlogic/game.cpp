@@ -938,7 +938,7 @@ static void DoGameOver(void)
 		chars_in_handle = SDL_strlen(handle);
 
 		while ( screen->PollEvent(&event) ) /* Loop, flushing events */;
-		SDL_StartTextInput();
+		screen->EnableTextInput();
 		while ( label && !done ) {
 			screen->WaitEvent(&event);
 
@@ -975,7 +975,7 @@ static void DoGameOver(void)
 			}
 			ui->Draw();
 		}
-		SDL_StopTextInput();
+		screen->DisableTextInput();
 
 		if (*handle) {
 			for ( i = 8; i >= which ; --i ) {
