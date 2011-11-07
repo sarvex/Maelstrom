@@ -44,6 +44,8 @@ int
 FrameBuf:: Init(int width, int height, Uint32 window_flags, Uint32 render_flags,
 		SDL_Color *colors, SDL_Surface *icon)
 {
+	int w, h;
+
 	window = SDL_CreateWindow(NULL, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, window_flags);
 	if (!window) {
 		SetError("Couldn't create %dx%d window: %s", 
@@ -63,10 +65,16 @@ FrameBuf:: Init(int width, int height, Uint32 window_flags, Uint32 render_flags,
 	}
 
 	/* Set the UI area */
+	SDL_GetWindowSize(window, &w, &h);
+	rect.x = (w - width) / 2;
+	rect.y = (h - height) / 2;
 	rect.w = width;
 	rect.h = height;
+	SDL_RenderSetViewport(renderer, &rect);
 
 	/* Set the blit clipping rectangle */
+	rect.x = 0;
+	rect.y = 0;
 	clip = rect;
 
 	/* Copy the image colormap */
