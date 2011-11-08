@@ -350,7 +350,7 @@ LobbyDialogDelegate::CheckPings()
 		int i = 0;
 		while (i < m_gameList.length()) {
 			GameInfo &game = m_gameList[i];
-			game.UpdatePingStatus();
+			game.UpdatePingStatus(HOST_PLAYER);
 			if (game.GetPingStatus(HOST_PLAYER) == PING_TIMEDOUT) {
 //printf("Game timed out, removing from list\n");
 				m_gameList.remove(game);
@@ -805,7 +805,7 @@ LobbyDialogDelegate::ProcessGameInfo(DynamicPacket &packet)
 		}
 		if (timestamp) {
 			m_gameList[i].UpdatePingTime(HOST_PLAYER, timestamp);
-			m_gameList[i].UpdatePingStatus();
+			m_gameList[i].UpdatePingStatus(HOST_PLAYER);
 		}
 	} else {
 		if (game.gameID != m_game.gameID) {

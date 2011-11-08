@@ -209,18 +209,11 @@ GameInfo::UpdateUI(GameInfoPlayer *player)
 }
 
 void
-GameInfo::UpdatePingTime(int index, Uint32 timestamp)
+GameInfo::InitializePing()
 {
-	Uint32 now;
-	Uint32 elapsed;
-	GameInfoPlayer *player;
-
-	now = SDL_GetTicks();
-	elapsed = (now - timestamp);
-
-	player = GetPlayer(index);
-	player->ping.lastPing = now;
-	player->ping.roundTripTime = elapsed;
+	for (int i = 0; i < MAX_PLAYERS; ++i) {
+		InitializePing(i);
+	}
 }
 
 void
@@ -235,21 +228,45 @@ GameInfo::InitializePing(int index)
 }
 
 void
-GameInfo::UpdatePingStatus()
+GameInfo::UpdatePingTime(int index, Uint32 timestamp)
 {
 	Uint32 now;
-	Uint32 sinceLastPing;
+	Uint32 elapsed;
+	GameInfoPlayer *player;
 
 	now = SDL_GetTicks();
-	for (int i = 0; i < MAX_PLAYERS; ++i) {
-		GameInfoPlayer *player = GetPlayer(i);
-		if (!IsNetworkPlayer(i)) {
-			player->ping.status = PING_LOCAL;
-			continue;
-		}
+	elapsed = (now - timestamp);
 
-		sinceLastPing = int(now - player->ping.lastPing);
-		if (sinceLastPing < PING_INTERVAL) {
+	player = GetPlayer(index);
+	player->ping.lastPing = now;
+	if (player->ping.roundTripTime) {
+		// Use a weighted average 1/4 previous value, 3/4 new value
+		player->ping.roundTripTime = (player->ping.roundTripTime + 3*elapsed) / 4;
+	} else {
+		player->ping.roundTripTime = elapsed;
+	}
+}
+
+void
+GameInfo::UpdatePingStatus()
+{
+	for (int i = 0; i < MAX_PLAYERS; ++i) {
+		UpdatePingStatus(i);
+	}
+}
+
+void
+GameInfo::UpdatePingStatus(int index)
+{
+	GameInfoPlayer *player = GetPlayer(index);
+
+	if (!IsNetworkPlayer(index)) {
+		player->ping.status = PING_LOCAL;
+	} else {
+		Uint32 sinceLastPing;
+
+		sinceLastPing = int(SDL_GetTicks() - player->ping.lastPing);
+		if (sinceLastPing < 2*PING_INTERVAL) {
 			if (player->ping.roundTripTime <= 48) {
 printf("Game 0x%8.8x: player 0x%8.8x round trip time %d (GOOD)\n", gameID, player->playerID, player->ping.roundTripTime);
 				player->ping.status = PING_GOOD;
@@ -260,9 +277,6 @@ printf("Game 0x%8.8x: player 0x%8.8x round trip time %d (OKAY)\n", gameID, playe
 printf("Game 0x%8.8x: player 0x%8.8x round trip time %d (BAD)\n", gameID, player->playerID, player->ping.roundTripTime);
 				player->ping.status = PING_BAD;
 			}
-		} else if (sinceLastPing < 2*PING_INTERVAL) {
-printf("Game 0x%8.8x: player 0x%8.8x since last ping %d (OKAY)\n", gameID, player->playerID, sinceLastPing);
-			player->ping.status = PING_OKAY;
 		} else if (sinceLastPing < PING_TIMEOUT) {
 printf("Game 0x%8.8x: player 0x%8.8x since last ping %d (BAD)\n", gameID, player->playerID, sinceLastPing);
 			player->ping.status = PING_BAD;
@@ -270,7 +284,6 @@ printf("Game 0x%8.8x: player 0x%8.8x since last ping %d (BAD)\n", gameID, player
 printf("Game 0x%8.8x: player 0x%8.8x since last ping %d (TIMEDOUT)\n", gameID, player->playerID, sinceLastPing);
 			player->ping.status = PING_TIMEDOUT;
 		}
-
-		UpdateUI(player);
 	}
+	UpdateUI(player);
 }

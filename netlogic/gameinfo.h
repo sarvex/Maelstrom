@@ -148,14 +148,11 @@ public:
 	void UpdateUI();
 	void UpdateUI(GameInfoPlayer *player);
 
-	void InitializePing() {
-		for (int i = 0; i < MAX_PLAYERS; ++i) {
-			InitializePing(i);
-		}
-	}
+	void InitializePing();
 	void InitializePing(int index);
 	void UpdatePingTime(int index, Uint32 timestamp);
 	void UpdatePingStatus();
+	void UpdatePingStatus(int index);
 
 	PING_STATUS GetPingStatus(int index) {
 		if (IsNetworkPlayer(index)) {
