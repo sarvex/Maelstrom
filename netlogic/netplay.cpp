@@ -329,15 +329,21 @@ int SyncNetwork(void)
 
 		/* Check the frame number */
 		frame = SDLNet_Read32(&buf[1]);
+#ifdef DEBUG_NETWORK
 //error("Received a packet of frame %lu from player %d\r\n", frame, index+1);
+#endif
 		if ( frame != NextFrame ) {
 			/* We kept the last frame cached, so send it */
 			if ( frame == (NextFrame-1) ) {
+#ifdef DEBUG_NETWORK
 error("Transmitting packet for old frame (%lu)\r\n", frame);
+#endif
 				SDLNet_UDP_Send(gNetFD, sent.channel, OutBound[!CurrOut]);
 			} else if ( frame == (NextFrame+1) ) {
+#ifdef DEBUG_NETWORK
 error("Received packet for next frame! (%lu, current = %lu)\r\n",
 						frame, NextFrame);
+#endif
 				/* Send this player our current frame */
 				SDLNet_UDP_Send(gNetFD, sent.channel, OutBound[CurrOut]);
 				/* Cache this frame for next round,
@@ -347,9 +353,11 @@ error("Received packet for next frame! (%lu, current = %lu)\r\n",
 				NextLen[index] = sent.len-PDATA_OFFSET;
 				++NextSync;
 			}
+#ifdef DEBUG_NETWORK
 else
 error("Warning! Received packet for really old frame! (%lu, current = %lu)\r\n",
 							frame, NextFrame);
+#endif
 			/* Go to select, reset timeout */
 			continue;
 		}

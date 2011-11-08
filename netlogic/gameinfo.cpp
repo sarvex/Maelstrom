@@ -20,6 +20,7 @@
     slouken@libsdl.org
 */
 
+#include "../Maelstrom_Globals.h"
 #include "../screenlib/UIElement.h"
 #include "../screenlib/UIElementCheckbox.h"
 #include "../screenlib/UIElementRadio.h"
@@ -239,11 +240,11 @@ GameInfo::UpdatePingTime(int index, Uint32 timestamp)
 
 	player = GetPlayer(index);
 	player->ping.lastPing = now;
-	if (player->ping.roundTripTime) {
-		// Use a weighted average 1/4 previous value, 3/4 new value
-		player->ping.roundTripTime = (player->ping.roundTripTime + 3*elapsed) / 4;
-	} else {
+	if (!player->ping.roundTripTime) {
 		player->ping.roundTripTime = elapsed;
+	} else {
+		// Use a weighted average 2/3 previous value, 1/3 new value
+		player->ping.roundTripTime = (2*player->ping.roundTripTime + 1*elapsed) / 3;
 	}
 }
 
@@ -267,21 +268,36 @@ GameInfo::UpdatePingStatus(int index)
 
 		sinceLastPing = int(SDL_GetTicks() - player->ping.lastPing);
 		if (sinceLastPing < 2*PING_INTERVAL) {
-			if (player->ping.roundTripTime <= 48) {
-printf("Game 0x%8.8x: player 0x%8.8x round trip time %d (GOOD)\n", gameID, player->playerID, player->ping.roundTripTime);
+			if (player->ping.roundTripTime <= 2*FRAME_DELAY_MS) {
+#ifdef DEBUG_NETWORK
+printf("Game 0x%8.8x: player 0x%8.8x round trip time %d (GOOD)\n",
+	gameID, player->playerID, player->ping.roundTripTime);
+#endif
 				player->ping.status = PING_GOOD;
-			} else if (player->ping.roundTripTime <= 64) {
-printf("Game 0x%8.8x: player 0x%8.8x round trip time %d (OKAY)\n", gameID, player->playerID, player->ping.roundTripTime);
+			} else if (player->ping.roundTripTime <= 3*FRAME_DELAY_MS) {
+#ifdef DEBUG_NETWORK
+printf("Game 0x%8.8x: player 0x%8.8x round trip time %d (OKAY)\n",
+	gameID, player->playerID, player->ping.roundTripTime);
+#endif
 				player->ping.status = PING_OKAY;
 			} else {
-printf("Game 0x%8.8x: player 0x%8.8x round trip time %d (BAD)\n", gameID, player->playerID, player->ping.roundTripTime);
+#ifdef DEBUG_NETWORK
+printf("Game 0x%8.8x: player 0x%8.8x round trip time %d (BAD)\n",
+	gameID, player->playerID, player->ping.roundTripTime);
+#endif
 				player->ping.status = PING_BAD;
 			}
 		} else if (sinceLastPing < PING_TIMEOUT) {
-printf("Game 0x%8.8x: player 0x%8.8x since last ping %d (BAD)\n", gameID, player->playerID, sinceLastPing);
+#ifdef DEBUG_NETWORK
+printf("Game 0x%8.8x: player 0x%8.8x since last ping %d (BAD)\n",
+	gameID, player->playerID, sinceLastPing);
+#endif
 			player->ping.status = PING_BAD;
 		} else {
-printf("Game 0x%8.8x: player 0x%8.8x since last ping %d (TIMEDOUT)\n", gameID, player->playerID, sinceLastPing);
+#ifdef DEBUG_NETWORK
+printf("Game 0x%8.8x: player 0x%8.8x since last ping %d (TIMEDOUT)\n",
+	gameID, player->playerID, sinceLastPing);
+#endif
 			player->ping.status = PING_TIMEDOUT;
 		}
 	}
