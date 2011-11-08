@@ -84,6 +84,12 @@ LobbyDialogDelegate::OnLoad()
 	}
 	m_globalGame->SetClickCallback(this, &LobbyDialogDelegate::GlobalGameChanged);
 
+	m_deathmatch = m_dialog->GetElement<UIElementRadioGroup>("deathmatch");
+	if (!m_deathmatch) {
+		fprintf(stderr, "Warning: Couldn't find radio group 'deathmatch'\n");
+		return false;
+	}
+	m_deathmatch->SetValueCallback(this, &LobbyDialogDelegate::SetDeathmatch);
 	if (!GetElement("gamelist", m_gameListArea)) {
 		return false;
 	}
@@ -148,6 +154,7 @@ LobbyDialogDelegate::OnHide()
 		gStartLevel = 1;
 		gStartLives = 3;
 		gNoDelay = 0;
+		gDeathMatch = m_game.deathMatch;
 
 		for (int i = 0; i < MAX_PLAYERS; ++i) {
 			GameInfoPlayer *player = m_game.GetPlayer(i);
@@ -247,6 +254,12 @@ LobbyDialogDelegate::GlobalGameChanged(void*)
 }
 
 void
+LobbyDialogDelegate::SetDeathmatch(void*, int value)
+{
+	m_game.deathMatch = (Uint8)value;
+}
+
+void
 LobbyDialogDelegate::JoinGameClicked(void *_element)
 {
 	UIElement *element = (UIElement *)_element;
@@ -282,6 +295,7 @@ LobbyDialogDelegate::UpdateUI()
 		for (int i = 0; i < MAX_PLAYERS; ++i) {
 			m_game.BindPlayerToUI(i, m_gameInfoPlayers[i]);
 		}
+		m_deathmatch->SetValue(m_game.deathMatch);
 	}
 	if (m_state == STATE_HOSTING) {
 		m_playButton->SetDisabled(false);
@@ -491,6 +505,7 @@ void
 LobbyDialogDelegate::ClearGameInfo()
 {
 	m_game.Reset();
+	m_game.deathMatch = (Uint8)prefs->GetNumber("Network.Deathmatch");
 }
 
 void

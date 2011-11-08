@@ -53,6 +53,7 @@ protected:
 	bool GetElement(const char *name, UIElement *&element);
 	void SetHostOrJoin(void*, int value);
 	void GlobalGameChanged(void*);
+	void SetDeathmatch(void*, int value);
 	void JoinGameClicked(void *element);
 
 	void UpdateUI();
@@ -108,6 +109,7 @@ protected:
 
 	UIElementRadioGroup *m_hostOrJoin;
 	UIElementCheckbox *m_globalGame;
+	UIElementRadioGroup *m_deathmatch;
 	UIElement *m_gameListArea;
 	UIElement *m_gameListElements[5];
 	UIElement *m_gameInfoArea;
