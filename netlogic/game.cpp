@@ -169,12 +169,6 @@ GamePanelDelegate::OnShow()
 		if (m_multiplayerColor) {
 			m_multiplayerColor->Show();
 		}
-		if (m_fragsLabel) {
-			m_fragsLabel->Show();
-		}
-		if (m_frags) {
-			m_frags->Show();
-		}
 	} else {
 		if (m_multiplayerCaption) {
 			m_multiplayerCaption->Hide();
@@ -182,6 +176,15 @@ GamePanelDelegate::OnShow()
 		if (m_multiplayerColor) {
 			m_multiplayerColor->Hide();
 		}
+	}
+	if ( gDeathMatch ) {
+		if (m_fragsLabel) {
+			m_fragsLabel->Show();
+		}
+		if (m_frags) {
+			m_frags->Show();
+		}
+	} else {
 		if (m_fragsLabel) {
 			m_fragsLabel->Hide();
 		}
@@ -256,10 +259,12 @@ GamePanelDelegate::OnTick()
 				gSprites[i] = gSprites[gNumSprites];
 			}
 		}
-		OBJ_LOOP(i, gNumPlayers) {
-			if ( i == j )	// Don't shoot ourselves. :)
-				continue;
-			(void) gPlayers[i]->HitBy(gPlayers[j]);
+		if ( gDeathMatch ) {
+			OBJ_LOOP(i, gNumPlayers) {
+				if ( i == j )	// Don't shoot ourselves. :)
+					continue;
+				(void) gPlayers[i]->HitBy(gPlayers[j]);
+			}
 		}
 	}
 	if ( gEnemySprite ) {
@@ -883,13 +888,19 @@ static void DoGameOver(void)
 
 			sprintf(name, "rank%d", 1+i);
 			label = panel->GetElement<UIElement>(name);
-			if (label) {
-				sprintf(num1, "%7.1d", final[i].Score);
-				sprintf(num2, "%3.1d", final[i].Frags);
-				sprintf(buffer, "Player %d: %-.7s Points, %-.3s Frags", final[i].Player, num1, num2);
-				label->SetText(buffer);
-				label->Show();
+			if (!label) {
+				continue;
 			}
+			if (gDeathMatch) {
+				sprintf(num1, "%7d", final[i].Score);
+				sprintf(num2, "%3d", final[i].Frags);
+				sprintf(buffer, "Player %d: %s Points, %s Frags", final[i].Player, num1, num2);
+			} else {
+				sprintf(num1, "%7d", final[i].Score);
+				sprintf(buffer, "Player %d: %s Points", final[i].Player, num1);
+			}
+			label->SetText(buffer);
+			label->Show();
 		}
 	}
 
