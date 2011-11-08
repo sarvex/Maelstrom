@@ -58,13 +58,6 @@ UIDialog::Hide()
 }
 
 bool
-UIDialog::ShouldSaveData()
-{
-	// FIXME: Is this the behavior we want?
-	return (m_status > 0);
-}
-
-bool
 UIDialog::HandleEvent(const SDL_Event &event)
 {
 	if (UIPanel::HandleEvent(event)) {

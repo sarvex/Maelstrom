@@ -66,7 +66,6 @@ public:
 
 	override void Show();
 	override void Hide();
-	override bool ShouldSaveData();
 	override bool HandleEvent(const SDL_Event &event);
 
 protected:
