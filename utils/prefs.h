@@ -30,7 +30,7 @@ public:
 	bool Load();
 	bool Save();
 
-	void SetString(const char *key, const char *value);
+	void SetString(const char *key, const char *value, bool dirty = true);
 	void SetNumber(const char *key, int value);
 	void SetBool(const char *key, bool value);
 	void Set(const char *key, const char *value) {
@@ -59,6 +59,7 @@ public:
 protected:
 	char *m_file;
 	HashTable *m_values;
+	bool m_dirty;
 };
 
 template <typename T>

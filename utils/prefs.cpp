@@ -34,6 +34,7 @@ Prefs::Prefs(const char *file)
 {
 	m_file = SDL_strdup(file);
 	m_values = hash_create(NULL, hash_hash_string, hash_keymatch_string, hash_nuke_strings);
+	m_dirty = false;
 }
 
 Prefs::~Prefs()
@@ -84,7 +85,7 @@ Prefs::Load()
 			*next++ = '\0';
 		}
 
-		SetString(key, value);
+		SetString(key, value, false);
 
 		key = next;
 		while (*key && (*key == '\r' || *key == '\n')) {
@@ -110,6 +111,11 @@ Prefs::Save()
 	const char *key, *value;
 	void *iter;
 
+	// Only hit the disk if something actually changed.
+	if (!m_dirty) {
+		return true;
+	}
+
 	fp = PHYSFS_openWrite(m_file);
 	if (!fp) {
 		fprintf(stderr, "Warning: Couldn't open %s: %s\n",
@@ -131,11 +137,13 @@ Prefs::Save()
 	}
 	PHYSFS_close(fp);
 
+	m_dirty = false;
+
 	return true;
 }
 
 void
-Prefs::SetString(const char *key, const char *value)
+Prefs::SetString(const char *key, const char *value, bool dirty)
 {
 	const char *lastValue;
 
@@ -149,6 +157,10 @@ Prefs::SetString(const char *key, const char *value)
 		hash_remove(m_values, key);
 	}
 	hash_insert(m_values, SDL_strdup(key), SDL_strdup(value));
+
+	if (dirty) {
+		m_dirty = true;
+	}
 }
 
 void
