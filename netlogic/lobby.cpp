@@ -176,7 +176,7 @@ LobbyDialogDelegate::OnHide()
 }
 
 void
-LobbyDialogDelegate::OnTick()
+LobbyDialogDelegate::OnPoll()
 {
 	if (m_state == STATE_NONE) {
 		// Neither host nor join is checked

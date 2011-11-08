@@ -223,6 +223,18 @@ UIManager::DeletePanel(UIPanel *panel)
 }
 
 void
+UIManager::Poll()
+{
+	int i;
+
+	for (i = 0; i < m_visible.length(); ++i) {
+		UIPanel *panel = m_visible[i];
+
+		panel->Poll();
+	}
+}
+
+void
 UIManager::Draw(bool fullUpdate)
 {
 	int i;
@@ -231,6 +243,7 @@ UIManager::Draw(bool fullUpdate)
 	for (i = 0; i < m_visible.length(); ++i) {
 		UIPanel *panel = m_visible[i];
 
+		panel->Poll();
 		panel->Tick();
 	}
 

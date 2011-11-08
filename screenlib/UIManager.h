@@ -89,6 +89,7 @@ public:
 		DeletePanel(GetPanel(name, false));
 	}
 
+	void Poll();
 	void Draw(bool fullUpdate = true);
 	bool HandleEvent(const SDL_Event &event);
 

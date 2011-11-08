@@ -47,7 +47,7 @@ public:
 	override bool OnLoad();
 	override void OnShow();
 	override void OnHide();
-	override void OnTick();
+	override void OnPoll();
 
 protected:
 	bool GetElement(const char *name, UIElement *&element);

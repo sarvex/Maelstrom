@@ -311,7 +311,7 @@ int main(int argc, char *argv[])
 				RunQuitGame(0);
 			}
 		}
-		Delay(FRAME_DELAY);
+		DelayFrame();
 	}
 
 	ui->HidePanel(PANEL_MAIN);
@@ -511,4 +511,15 @@ void Message(const char *message)
 		screen->QueueBlit(x, y-screen->GetImageHeight(textimage)+2, textimage, NOCLIP);
 		fontserv->FreeText(textimage);
 	}
+}
+
+void DelayFrame(void)
+{
+	Uint32 ticks;
+
+	while ( ((ticks=SDL_GetTicks())-gLastDrawn) < FRAME_DELAY_MS ) {
+		ui->Poll();
+		SDL_Delay(1);
+	}
+	gLastDrawn = ticks;
 }

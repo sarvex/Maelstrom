@@ -136,6 +136,14 @@ UIPanel::HideAll()
 }
 
 void
+UIPanel::Poll()
+{
+	if (m_delegate) {
+		m_delegate->OnPoll();
+	}
+}
+
+void
 UIPanel::Tick()
 {
 	if (m_delegate) {

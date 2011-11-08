@@ -37,6 +37,7 @@
 
 /* Time in 60'th of second between frames */
 #define FRAME_DELAY		2
+#define FRAME_DELAY_MS		((FRAME_DELAY*1000)/60)
 
 #define MAX_SPRITES		100
 #define MAX_SPRITE_FRAMES	60

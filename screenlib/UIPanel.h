@@ -38,11 +38,27 @@ class UIPanelDelegate
 public:
 	UIPanelDelegate(UIPanel *panel) { m_panel = panel; }
 
+	// This is called after the panel is loaded
 	virtual bool OnLoad() { return true; }
+
+	// This is called after the panel is shown
 	virtual void OnShow() { }
+
+	// This is called after the panel is hidden
 	virtual void OnHide() { }
+
+	// This is called at least once per frame, before OnTick(),
+	// and more often if there is idle time between frames
+	virtual void OnPoll() { }
+
+	// This is called once per frame before the screen is drawn
 	virtual void OnTick() { }
+
+	// This is called after the panel is drawn, before the screen
+	// is updated, to allow any additional custom drawing.
 	virtual void OnDraw() { }
+
+	// This is called for events not handled by UI elements
 	virtual bool HandleEvent(const SDL_Event &event) { return false; }
 
 protected:
@@ -74,6 +90,7 @@ public:
 
 	void HideAll();
 
+	virtual void Poll();
 	virtual void Tick();
 	override void Draw();
 	override bool HandleEvent(const SDL_Event &event);

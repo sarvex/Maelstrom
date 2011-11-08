@@ -251,23 +251,23 @@ GameInfo::UpdatePingStatus()
 		sinceLastPing = int(now - player->ping.lastPing);
 		if (sinceLastPing < PING_INTERVAL) {
 			if (player->ping.roundTripTime <= 48) {
-//printf("Game 0x%8.8x: player 0x%8.8x round trip time %d (GOOD)\n", gameID, player->playerID, player->ping.roundTripTime);
+printf("Game 0x%8.8x: player 0x%8.8x round trip time %d (GOOD)\n", gameID, player->playerID, player->ping.roundTripTime);
 				player->ping.status = PING_GOOD;
 			} else if (player->ping.roundTripTime <= 64) {
-//printf("Game 0x%8.8x: player 0x%8.8x round trip time %d (OKAY)\n", gameID, player->playerID, player->ping.roundTripTime);
+printf("Game 0x%8.8x: player 0x%8.8x round trip time %d (OKAY)\n", gameID, player->playerID, player->ping.roundTripTime);
 				player->ping.status = PING_OKAY;
 			} else {
-//printf("Game 0x%8.8x: player 0x%8.8x round trip time %d (BAD)\n", gameID, player->playerID, player->ping.roundTripTime);
+printf("Game 0x%8.8x: player 0x%8.8x round trip time %d (BAD)\n", gameID, player->playerID, player->ping.roundTripTime);
 				player->ping.status = PING_BAD;
 			}
 		} else if (sinceLastPing < 2*PING_INTERVAL) {
-//printf("Game 0x%8.8x: player 0x%8.8x since last ping %d (OKAY)\n", gameID, player->playerID, sinceLastPing);
+printf("Game 0x%8.8x: player 0x%8.8x since last ping %d (OKAY)\n", gameID, player->playerID, sinceLastPing);
 			player->ping.status = PING_OKAY;
 		} else if (sinceLastPing < PING_TIMEOUT) {
-//printf("Game 0x%8.8x: player 0x%8.8x since last ping %d (BAD)\n", gameID, player->playerID, sinceLastPing);
+printf("Game 0x%8.8x: player 0x%8.8x since last ping %d (BAD)\n", gameID, player->playerID, sinceLastPing);
 			player->ping.status = PING_BAD;
 		} else {
-//printf("Game 0x%8.8x: player 0x%8.8x since last ping %d (TIMEDOUT)\n", gameID, player->playerID, sinceLastPing);
+printf("Game 0x%8.8x: player 0x%8.8x since last ping %d (TIMEDOUT)\n", gameID, player->playerID, sinceLastPing);
 			player->ping.status = PING_TIMEDOUT;
 		}
 

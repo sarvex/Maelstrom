@@ -93,11 +93,7 @@ void NewGame(void)
 
 		/* Timing handling -- Delay the FRAME_DELAY */
 		if ( ! gNoDelay ) {
-			Uint32 ticks;
-			while ( ((ticks=Ticks)-gLastDrawn) < FRAME_DELAY ) {
-				SDL_Delay(1);
-			}
-			gLastDrawn = ticks;
+			DelayFrame();
 		}
 	}
 	
