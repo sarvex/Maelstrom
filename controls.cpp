@@ -342,6 +342,14 @@ static void HandleEvent(SDL_Event *event)
 			}
 			break;
 
+		case SDL_WINDOWEVENT:
+			if (event->window.event == SDL_WINDOWEVENT_MINIMIZED) {
+				SetControl(MINIMIZE_KEY, 1);
+			} if (event->window.event == SDL_WINDOWEVENT_RESTORED) {
+				SetControl(MINIMIZE_KEY, 0);
+			}
+			break;
+
 		case SDL_QUIT:
 			SetControl(ABORT_KEY, 1);
 			break;

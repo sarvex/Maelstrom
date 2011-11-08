@@ -220,6 +220,12 @@ GamePanelDelegate::OnTick()
 
 	/* -- Send Sync! signal to all players, and handle keyboard. */
 	if ( SyncNetwork() < 0 ) {
+		if ( gPaused & ~0x1 ) {
+			/* One of the other players is minimized and may not
+			   be able to send packets (iOS), so don't abort yet.
+			*/
+			return;
+		}
 		error("Game aborted!\n");
 		gGameOn = 0;
 		return;

@@ -482,6 +482,32 @@ printf("\n");
 	return(Object::Move(Freeze));
 }
 
+static void
+SetPaused(int bit, bool enabled)
+{
+	if (enabled) {
+		sound->PlaySound(gPauseSound, 5);
+		gPaused |= bit;
+	} else {
+		gPaused &= ~bit;
+	}
+}
+static void
+TogglePause()
+{
+	if ( gPaused & 0x01 ) {
+		SetPaused(0x01, false);
+	} else {
+		SetPaused(0x01, true);
+	}
+}
+static void
+SetMinimized(int index, bool enabled)
+{
+	int bit = (1 << (1+index));
+	SetPaused(bit, enabled);
+}
+
 void
 Player::HandleKeys(void)
 {
@@ -498,12 +524,10 @@ Player::HandleKeys(void)
 				/* Only handle Pause and Abort while dead */
 				if ( ! Alive() || Exploding ) {
 					if ( inbuf[++i] == PAUSE_KEY ) {
-						if ( gPaused > 0 ) {
-							--gPaused;
-						} else {
-							sound->PlaySound(gPauseSound, 5);
-							++gPaused;
-						}
+						TogglePause();
+					}
+					if ( inbuf[i] == MINIMIZE_KEY ) {
+						SetMinimized(Index, true);
 					}
 					if ( inbuf[i] == ABORT_KEY )
 						gGameOn = 0;
@@ -527,12 +551,10 @@ Player::HandleKeys(void)
 						Shooting = 1;
 						break;
 					case PAUSE_KEY:
-						if ( gPaused > 0 ) {
-							--gPaused;
-						} else {
-							sound->PlaySound(gPauseSound, 5);
-							++gPaused;
-						}
+						TogglePause();
+						break;
+					case MINIMIZE_KEY:
+						SetMinimized(Index, true);
 						break;
 					case ABORT_KEY:
 						gGameOn = 0;
@@ -560,6 +582,9 @@ Player::HandleKeys(void)
 						break;
 					case FIRE_KEY:
 						Shooting = 0;
+						break;
+					case MINIMIZE_KEY:
+						SetMinimized(Index, false);
 						break;
 					case ABORT_KEY:
 						/* Do nothing on release */;
