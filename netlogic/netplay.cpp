@@ -238,6 +238,7 @@ int SyncNetwork(void)
 	Uint32 seed, frame;
 	unsigned char buf[BUFSIZ];
 	int index, nleft;
+	int timeout;
 
 	/* Set the next inbound packet buffer */
 	TOGGLE(CurrIn);
@@ -262,15 +263,27 @@ int SyncNetwork(void)
 	sent.maxlen = sizeof(buf);
 
 	/* Wait for Ack's */
+	timeout = 0;
 	while ( nleft ) {
-		int ready = SDLNet_CheckSockets(SocketSet, 1000+60*gOurPlayer);
+		int ready = SDLNet_CheckSockets(SocketSet, 100);
+		if ( ready < 0 ) {
+			error("Network error: SDLNet_CheckSockets()");
+			return(-1);
+		}
 		if ( ready == 0 ) {
-error("Timed out waiting for frame %ld\r\n", NextFrame);
+			error("Timed out waiting for frame %ld\r\n", NextFrame);
+
 			/* Timeout, resend the sync packet */
 			for ( index=0; index<gNumPlayers; ++index ) {
 				if ( SyncPtr[index] == NULL ) {
 					SDLNet_UDP_Send(gNetFD, index+1, OutBound[CurrOut]);
 				}
+			}
+
+			/* Don't wait forever */
+			++timeout;
+			if ( timeout == (PING_TIMEOUT/100) ) {
+				return(-1);
 			}
 		}
 		if ( ready <= 0 ) {
