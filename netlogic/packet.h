@@ -85,6 +85,10 @@ public:
 		pos += sizeof(value);
 	}
 	void Write(const char *value) {
+		if (!value) {
+			value = "";
+		}
+
 		size_t len = SDL_strlen(value);
 		if (len > 255) {
 			len = 255;
