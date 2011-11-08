@@ -113,7 +113,13 @@ UIPanel::Hide()
 
 	// Save data to preferences
 	if (ShouldSaveData()) {
-		SaveData(GetUI()->GetPrefs());
+		Prefs *prefs = GetUI()->GetPrefs();
+
+		// Save any data bindings to the preferences
+		SaveData(prefs);
+
+		// Save the preferences to disk (comment to just save at exit)
+		prefs->Save();
 	}
 
 	if (m_delegate) {
