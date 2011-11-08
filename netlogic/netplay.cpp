@@ -283,6 +283,8 @@ int SyncNetwork(void)
 			/* Don't wait forever */
 			++timeout;
 			if ( timeout == (PING_TIMEOUT/100) ) {
+				// Reset our current input state
+				TOGGLE(CurrIn);
 				return(-1);
 			}
 		}
