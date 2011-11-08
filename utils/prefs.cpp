@@ -18,6 +18,7 @@
 
 #include "SDL.h"
 #include "physfs.h"
+#include "array.h"
 #include "hashtable.h"
 
 #include "prefs.h"
@@ -28,6 +29,12 @@ hash_nuke_strings(const void *key, const void *value, void *data)
 {
 	SDL_free((char*)key);
 	SDL_free((char*)value);
+}
+
+static int
+sort_keys(const void *a, const void *b)
+{
+	return SDL_strcasecmp(*(const char **)a, *(const char **)b);
 }
 
 Prefs::Prefs(const char *file)
@@ -123,9 +130,16 @@ Prefs::Save()
 		return false;
 	}
 
+	array<const char *> keys;
 	iter = NULL;
 	while (hash_iter(m_values, (const void **)&key, (const void **)&value, &iter)) {
-		if (!writeString(fp, key) ||
+		keys.add(key);
+	}
+	qsort(&keys[0], keys.length(), sizeof(key), sort_keys);
+	
+	for (int i = 0; i < keys.length(); ++i) {
+		hash_find(m_values, keys[i], (const void **)&value);
+		if (!writeString(fp, keys[i]) ||
 		    !writeString(fp, "=") ||
 		    !writeString(fp, value) ||
 		    !writeString(fp, "\r\n")) {
