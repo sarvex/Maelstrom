@@ -1,4 +1,5 @@
 
+#include "SDL_main.h"
 
 // The real main function in game/main.cpp
 extern int MaelstromMain(int argc, char *argv[]);
