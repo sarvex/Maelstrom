@@ -20,9 +20,12 @@
     slouken@libsdl.org
 */
 
-/* Definitions useful for our sprite world */
-
 #include "rect.h"
+
+#ifndef VERSION
+#define VERSION "4.0.0"
+#endif
+#define	VERSION_STRING		VERSION ".N"
 
 #define SCREEN_WIDTH		640
 #define SCREEN_HEIGHT		480
@@ -56,6 +59,7 @@
 #define	SHIELD_WIDTH		55
 #define	INITIAL_BONUS		2000
 
+#define	PLAYER_HITS		3
 #define	ENEMY_HITS		3
 #define	HOMING_HITS		9
 #define	STEEL_SPECIAL		10
@@ -70,6 +74,8 @@
 #define	NOVA_PTS		1000
 #define	STEEL_PTS		100
 #define	ENEMY_PTS		1000
+#define	PLAYER_PTS		1000
+#define	DEFAULT_PTS		0
 
 #define	HOMING_MOVE		6
 #define GRAVITY_MOVE		3
@@ -78,6 +84,25 @@
 #define	MOON_FACTOR		4
 #define	NUM_PRIZES		8
 #define	LUCK_ODDS		3
+
+#define	INITIAL_SHIELD		((60/FRAME_DELAY) * 3)
+#define	SAFE_TIME		(120/FRAME_DELAY)
+#define	MAX_SHIELD		((60/FRAME_DELAY) * 5)
+#define	DISPLAY_DELAY		(60/FRAME_DELAY)
+#define	BONUS_DELAY		(30/FRAME_DELAY)
+#define	STAR_DELAY		(30/FRAME_DELAY)
+#define	DEAD_DELAY		(3 * (60/FRAME_DELAY))
+#define	BOOM_MIN		(20/FRAME_DELAY)
+#define	ENEMY_SHOT_DELAY	(10/FRAME_DELAY)
+
+#define	PRIZE_DURATION		(10 * (60/FRAME_DELAY))
+#define	MULT_DURATION		(6 * (60/FRAME_DELAY))
+#define	BONUS_DURATION		(10 * (60/FRAME_DELAY))
+#define	SHOT_DURATION		(1 * (60/FRAME_DELAY))
+#define	POINT_DURATION		(2 * (60/FRAME_DELAY))
+#define	DAMAGED_DURATION	(10 * (60/FRAME_DELAY))
+#define	FREEZE_DURATION		(10 * (60/FRAME_DELAY))
+#define	SHAKE_DURATION		(5 * (60/FRAME_DELAY))
 
 /* ----------------------------------------------------------------- */
 /* -- Structures and typedefs */
@@ -101,3 +126,14 @@ typedef	struct {
 	SDL_Texture *sprite[MAX_SPRITE_FRAMES];
 	Uint8 *mask[MAX_SPRITE_FRAMES];
 } Blit, *BlitPtr;
+
+typedef struct {
+	int damage;
+	int x;
+	int y;
+	int xvel;
+	int yvel;
+	int ttl;
+	Rect hitRect;
+} Shot, *ShotPtr;
+

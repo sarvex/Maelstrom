@@ -28,7 +28,7 @@
 
 Object::Object(int X, int Y, int Xvec, int Yvec, Blit *blit, int PhaseTime)
 {
-	Points = DEFAULT_POINTS;
+	Points = DEFAULT_PTS;
 
 	Set_Blit(blit);
 	if ( (phasetime=PhaseTime) != NO_PHASE_CHANGE )

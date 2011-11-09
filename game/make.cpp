@@ -25,7 +25,6 @@
 #include "netplay.h"
 #include "object.h"
 #include "player.h"
-#include "globals.h"
 #include "objects.h"
 #include "shinobi.h"
 

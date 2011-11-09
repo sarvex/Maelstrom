@@ -27,7 +27,7 @@
 #include <ctype.h>
 
 #include "Maelstrom_Globals.h"
-#include "load.h"
+#include "player.h"
 #include "../screenlib/UIDialog.h"
 #include "../screenlib/UIElement.h"
 #include "../screenlib/UIElementRadio.h"
@@ -249,23 +249,23 @@ static void HandleEvent(SDL_Event *event)
 			/* X-Axis - rotate right/left */
 			if ( event->jaxis.axis == 0 ) {
 				if ( event->jaxis.value < -8000 ) {
-					SetControl(LEFT_KEY, 1);
-					SetControl(RIGHT_KEY, 0);
+					OurShip->SetControl(LEFT_KEY, 1);
+					OurShip->SetControl(RIGHT_KEY, 0);
 				} else
 				if ( event->jaxis.value > 8000 ) {
-					SetControl(RIGHT_KEY, 1);
-					SetControl(LEFT_KEY, 0);
+					OurShip->SetControl(RIGHT_KEY, 1);
+					OurShip->SetControl(LEFT_KEY, 0);
 				} else {
-					SetControl(LEFT_KEY, 0);
-					SetControl(RIGHT_KEY, 0);
+					OurShip->SetControl(LEFT_KEY, 0);
+					OurShip->SetControl(RIGHT_KEY, 0);
 				}
 			} else
 			/* Y-Axis - accelerate */
 			if ( event->jaxis.axis == 1 ) {
 				if ( event->jaxis.value < -8000 ) {
-					SetControl(THRUST_KEY, 1);
+					OurShip->SetControl(THRUST_KEY, 1);
 				} else {
-					SetControl(THRUST_KEY, 0);
+					OurShip->SetControl(THRUST_KEY, 0);
 				}
 			}
 			break;
@@ -275,17 +275,17 @@ static void HandleEvent(SDL_Event *event)
 		case SDL_JOYBUTTONUP:
 			if ( event->jbutton.state == SDL_PRESSED ) {
 				if ( event->jbutton.button == 0 ) {
-					SetControl(FIRE_KEY, 1);
+					OurShip->SetControl(FIRE_KEY, 1);
 				} else
 				if ( event->jbutton.button == 1 ) {
-					SetControl(SHIELD_KEY, 1);
+					OurShip->SetControl(SHIELD_KEY, 1);
 				}
 			} else {
 				if ( event->jbutton.button == 0 ) {
-					SetControl(FIRE_KEY, 0);
+					OurShip->SetControl(FIRE_KEY, 0);
 				} else
 				if ( event->jbutton.button == 1 ) {
-					SetControl(SHIELD_KEY, 0);
+					OurShip->SetControl(SHIELD_KEY, 0);
 				}
 			}
 			break;
@@ -305,53 +305,56 @@ static void HandleEvent(SDL_Event *event)
 			if ( event->key.state == SDL_PRESSED ) {
 				/* Check for various control keys */
 				if ( key == controls.gFireControl )
-					SetControl(FIRE_KEY, 1);
+					OurShip->SetControl(FIRE_KEY, 1);
 				else if ( key == controls.gTurnRControl )
-					SetControl(RIGHT_KEY, 1);
+					OurShip->SetControl(RIGHT_KEY, 1);
 				else if ( key == controls.gTurnLControl )
-					SetControl(LEFT_KEY, 1);
+					OurShip->SetControl(LEFT_KEY, 1);
 				else if ( key == controls.gShieldControl )
-					SetControl(SHIELD_KEY, 1);
+					OurShip->SetControl(SHIELD_KEY, 1);
 				else if ( key == controls.gThrustControl )
-					SetControl(THRUST_KEY, 1);
+					OurShip->SetControl(THRUST_KEY, 1);
 				else if ( key == controls.gPauseControl )
-					SetControl(PAUSE_KEY, 1);
+					OurShip->SetControl(PAUSE_KEY, 1);
 				else if ( key == controls.gQuitControl )
-					SetControl(ABORT_KEY, 1);
-				else if ( SpecialKey(event->key.keysym.sym) == 0 )
-					/* The key has been handled */;
-				else if ( key == SDLK_F3 ) {
+					OurShip->SetControl(ABORT_KEY, 1);
+			} else {
+				/* Update control key status */
+				if ( key == controls.gFireControl )
+					OurShip->SetControl(FIRE_KEY, 0);
+				else if ( key == controls.gTurnRControl )
+					OurShip->SetControl(RIGHT_KEY, 0);
+				else if ( key == controls.gTurnLControl )
+					OurShip->SetControl(LEFT_KEY, 0);
+				else if ( key == controls.gShieldControl )
+					OurShip->SetControl(SHIELD_KEY, 0);
+				else if ( key == controls.gThrustControl )
+					OurShip->SetControl(THRUST_KEY, 0);
+				else if ( key == SDLK_F1 ) {
+					/* Special key --
+						Switch displayed player
+					 */
+					RotatePlayerView();
+				} else if ( key == SDLK_F3 ) {
 					/* Special key --
 						Do a screen dump here.
 					 */
 					screen->ScreenDump("ScreenShot",
 								0, 0, 0, 0);
 				}
-			} else {
-				/* Update control key status */
-				if ( key == controls.gFireControl )
-					SetControl(FIRE_KEY, 0);
-				else if ( key == controls.gTurnRControl )
-					SetControl(RIGHT_KEY, 0);
-				else if ( key == controls.gTurnLControl )
-					SetControl(LEFT_KEY, 0);
-				else if ( key == controls.gShieldControl )
-					SetControl(SHIELD_KEY, 0);
-				else if ( key == controls.gThrustControl )
-					SetControl(THRUST_KEY, 0);
 			}
 			break;
 
 		case SDL_WINDOWEVENT:
 			if (event->window.event == SDL_WINDOWEVENT_MINIMIZED) {
-				SetControl(MINIMIZE_KEY, 1);
+				OurShip->SetControl(MINIMIZE_KEY, 1);
 			} if (event->window.event == SDL_WINDOWEVENT_RESTORED) {
-				SetControl(MINIMIZE_KEY, 0);
+				OurShip->SetControl(MINIMIZE_KEY, 0);
 			}
 			break;
 
 		case SDL_QUIT:
-			SetControl(ABORT_KEY, 1);
+			OurShip->SetControl(ABORT_KEY, 1);
 			break;
 	}
 }

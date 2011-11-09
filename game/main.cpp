@@ -37,6 +37,7 @@
 #include "init.h"
 #include "fastrand.h"
 #include "about.h"
+#include "game.h"
 #include "netplay.h"
 #include "main.h"
 
@@ -485,7 +486,7 @@ MainPanelDelegate::OnTick()
 
 	label = m_panel->GetElement<UIElement>("last_score");
 	if (label) {
-		sprintf(text, "%d", GetScore());
+		sprintf(text, "%d", gScore);
 		label->SetText(text);
 	}
 

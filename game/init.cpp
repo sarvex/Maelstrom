@@ -29,6 +29,7 @@
 #include "Maelstrom_Globals.h"
 #include "load.h"
 #include "init.h"
+#include "player.h"
 #include "colortable.h"
 #include "fastrand.h"
 #include "MaelstromUI.h"

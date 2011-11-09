@@ -30,7 +30,7 @@
 #include "../screenlib/UIElement.h"
 
 // Global variables set in this file...
-Uint32	gScore;
+int	gScore;
 int	gGameOn;
 int	gPaused;
 int	gWave;
@@ -1015,5 +1015,4 @@ static void DoGameOver(void)
 	ui->HidePanel(PANEL_GAMEOVER);
 
 }	/* -- DoGameOver */
-
 

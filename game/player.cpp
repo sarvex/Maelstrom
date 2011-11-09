@@ -24,7 +24,6 @@
 #include "netplay.h"
 #include "object.h"
 #include "player.h"
-#include "globals.h"
 #include "objects.h"
 
 // Define this to be invincible
@@ -649,9 +648,9 @@ Player::ExplodeSound(void)
 }
 
 void
-Player::AbortGame(void)
+Player::SetControl(unsigned char which, int toggle)
 {
-	QueueKey(KEY_PRESS, ABORT_KEY);
+	QueueKey(toggle ? KEY_PRESS : KEY_RELEASE, which);
 }
 
 /* Private functions... */
@@ -732,3 +731,20 @@ Uint8 gPlayerColors[MAX_PLAYERS][3] = {
 
 /* The players!! */
 Player *gPlayers[MAX_PLAYERS];
+
+/* Initialize the player sprites */
+int InitPlayerSprites(void)
+{
+	int index;
+
+	OBJ_LOOP(index, MAX_PLAYERS)
+		gPlayers[index] = new Player(index);
+	return(0);
+}
+
+/* Function to switch the displayed player */
+void RotatePlayerView()
+{
+	if ( ++gDisplayed == gNumPlayers )
+		gDisplayed = 0;
+}

@@ -23,6 +23,9 @@
 #ifndef _game_h
 #define _game_h
 
+/* ----------------------------------------------------------------- */
+/* -- UI */
+
 class UIElement;
 
 class GamePanelDelegate : public UIPanelDelegate
@@ -63,5 +66,10 @@ protected:
 	UIElement *m_fragsLabel;
 	UIElement *m_frags;
 };
+
+/* ----------------------------------------------------------------- */
+/* -- Game functions */
+
+extern void NewGame(void);
 
 #endif // _game_h

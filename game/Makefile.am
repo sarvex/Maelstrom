@@ -19,22 +19,18 @@ libgame_a_SOURCES =		\
 	game.h			\
 	gameinfo.cpp		\
 	gameinfo.h		\
-	globals.h		\
 	init.cpp		\
 	init.h			\
 	load.cpp		\
 	load.h			\
 	lobby.cpp		\
 	lobby.h			\
-	logic.cpp		\
-	logic.h			\
 	main.cpp		\
 	main.h			\
 	make.cpp		\
 	make.h			\
 	myerror.cpp		\
 	myerror.h		\
-	netlogic.h		\
 	netplay.cpp		\
 	netplay.h		\
 	object.cpp		\

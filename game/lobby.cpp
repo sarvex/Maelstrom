@@ -31,6 +31,7 @@
 #include "lobby.h"
 #include "protocol.h"
 #include "netplay.h"
+#include "game.h"
 
 // Update the game list every 3 seconds
 #define GLOBAL_SERVER_HOST	"obelix.dreamhost.com"

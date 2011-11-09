@@ -50,10 +50,10 @@ libgame_a_LIBADD =
 am_libgame_a_OBJECTS = MacDialog.$(OBJEXT) MaelstromUI.$(OBJEXT) \
 	about.$(OBJEXT) controls.$(OBJEXT) fastrand.$(OBJEXT) \
 	game.$(OBJEXT) gameinfo.$(OBJEXT) init.$(OBJEXT) \
-	load.$(OBJEXT) lobby.$(OBJEXT) logic.$(OBJEXT) main.$(OBJEXT) \
-	make.$(OBJEXT) myerror.$(OBJEXT) netplay.$(OBJEXT) \
-	object.$(OBJEXT) objects.$(OBJEXT) player.$(OBJEXT) \
-	rect.$(OBJEXT) scores.$(OBJEXT)
+	load.$(OBJEXT) lobby.$(OBJEXT) main.$(OBJEXT) make.$(OBJEXT) \
+	myerror.$(OBJEXT) netplay.$(OBJEXT) object.$(OBJEXT) \
+	objects.$(OBJEXT) player.$(OBJEXT) rect.$(OBJEXT) \
+	scores.$(OBJEXT)
 libgame_a_OBJECTS = $(am_libgame_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -203,15 +203,12 @@ libgame_a_SOURCES = \
 	load.h			\
 	lobby.cpp		\
 	lobby.h			\
-	logic.cpp		\
-	logic.h			\
 	main.cpp		\
 	main.h			\
 	make.cpp		\
 	make.h			\
 	myerror.cpp		\
 	myerror.h		\
-	netlogic.h		\
 	netplay.cpp		\
 	netplay.h		\
 	object.cpp		\
@@ -285,7 +282,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/init.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/load.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lobby.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/logic.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/make.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/myerror.Po@am__quote@

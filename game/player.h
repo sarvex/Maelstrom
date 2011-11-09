@@ -21,6 +21,8 @@
 */
 
 #include "protocol.h"
+#include "netplay.h"
+#include "object.h"
 
 /* Special features of the player */
 #define MACHINE_GUNS	0x01
@@ -69,7 +71,7 @@ public:
 	virtual void IncrScore(int score) {
 		Score += score;
 	}
-	virtual unsigned int GetScore(void) {
+	virtual int GetScore(void) {
 		if ( Score < 0 ) {
 			return(0);
 		} else {
@@ -131,7 +133,8 @@ public:
 			screen->FillRect(X, Y, 4, 4, ship_color);
 		}
 	}
-	virtual void AbortGame(void);
+
+	void SetControl(unsigned char which, int toggle);
 
 private:
 	int Index;
@@ -164,8 +167,6 @@ private:
 	int numshots;
 	Uint32 ship_color;
 
-	struct sockaddr_in *myaddr;
-
 	/* Create a new shot */
 	int MakeShot(int offset);
 	/* Rubout a flying shot */
@@ -178,3 +179,15 @@ private:
 /* The Players!! */
 extern Player *gPlayers[MAX_PLAYERS];
 extern Uint8   gPlayerColors[MAX_PLAYERS][3];
+
+/* Their shots! */
+extern Uint8   gPlayerShotColors[];
+extern SDL_Texture *gPlayerShot;
+extern Uint8   gEnemyShotColors[];
+extern SDL_Texture *gEnemyShot;
+
+/* Initialize the player sprites */
+int InitPlayerSprites();
+
+/* Function to switch the displayed player */
+void RotatePlayerView();

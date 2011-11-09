@@ -27,6 +27,7 @@
 #include "controls.h"
 #include "about.h"
 #include "game.h"
+#include "player.h"
 #include "lobby.h"
 #include "MacDialog.h"
 #include "../screenlib/UIElementButton.h"
@@ -305,13 +306,13 @@ UIElementControlButton::HandleEvent(const SDL_Event &event)
 void
 UIElementControlButton::OnMouseDown()
 {
-	SetControl(m_control, 1);
+	OurShip->SetControl(m_control, 1);
 }
 
 void
 UIElementControlButton::OnMouseUp()
 {
-	SetControl(m_control, 0);
+	OurShip->SetControl(m_control, 0);
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -38,7 +38,6 @@
 
 #include "myerror.h"
 #include "fastrand.h"
-#include "logic.h"
 #include "scores.h"
 #include "controls.h"
 
@@ -107,6 +106,35 @@ extern MPoint	gThrustOrigins[SHIP_FRAMES];
 extern MPoint	gVelocityTable[SHIP_FRAMES];
 extern StarPtr	gTheStars[MAX_STARS];
 extern Uint32	gStarColors[];
+
+// in game.cpp :
+extern int	gScore;
+extern int	gDisplayed;
+extern int	gGameOn;
+extern int	gPaused;
+extern int	gBoomDelay;
+extern int	gNextBoom;
+extern int	gBoomPhase;
+extern int	gNumRocks;
+extern int	gLastStar;
+extern int	gWhenDone;
+
+extern int	gMultiplierShown;
+extern int	gPrizeShown;
+extern int	gBonusShown;
+extern int	gWhenHoming;
+extern int	gWhenGrav;
+extern int	gWhenDamaged;
+
+extern int	gWhenNova;
+extern int	gShakeTime;
+extern int	gFreezeTime;
+
+extern int	gWave;
+class Object;
+extern Object  *gEnemySprite;
+extern int	gWhenEnemy;
+
 // in controls.cpp :
 extern Controls	controls;
 extern PrefsVariable<int> gSoundLevel;
