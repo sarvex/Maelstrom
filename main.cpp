@@ -265,6 +265,9 @@ int main(int argc, char *argv[])
 #ifdef __MACOSX__
 	//window_flags |= SDL_WINDOW_FULLSCREEN;
 #endif
+printf("Command line: ");
+for (int i = 0; i < argc; ++i) { printf("%s ", argv[i]); }
+printf("\n");
 	for ( progname=argv[0]; --argc; ++argv ) {
 		if ( strcmp(argv[1], "-fullscreen") == 0 ) {
 			window_flags |= SDL_WINDOW_FULLSCREEN;
@@ -274,7 +277,7 @@ int main(int argc, char *argv[])
 		} else if ( strcmp(argv[1], "-version") == 0 ) {
 			error("%s", Version);
 			exit(0);
-		} else {
+		} else if ( strcmp(argv[1], "-help") == 0 ) {
 			PrintUsage();
 		}
 	}
