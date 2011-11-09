@@ -33,8 +33,11 @@
 #include "netplay.h"
 
 // Update the game list every 3 seconds
-//#define GLOBAL_SERVER_HOST	"obelix.dreamhost.com"
-#define GLOBAL_SERVER_HOST	"localhost"
+#define GLOBAL_SERVER_HOST	"obelix.dreamhost.com"
+//#define GLOBAL_SERVER_HOST	"localhost"
+
+// Define this if you want local broadcast in addition to the global server
+#define LOBBY_BROADCAST
 
 
 LobbyDialogDelegate::LobbyDialogDelegate(UIPanel *panel) :
@@ -429,12 +432,14 @@ LobbyDialogDelegate::GetGameList()
 		SDLNet_UDP_Send(gNetFD, -1, &m_packet);
 	}
 
+#ifdef LOBBY_BROADCAST
 	// Get game info for local games
 	m_packet.StartLobbyMessage(LOBBY_REQUEST_GAME_INFO);
 	m_packet.Write(SDL_GetTicks());
 	m_packet.address.host = INADDR_BROADCAST;
 	m_packet.address.port = SDL_SwapBE16(NETPLAY_PORT);
 	SDLNet_UDP_Send(gNetFD, -1, &m_packet);
+#endif
 }
 
 void
