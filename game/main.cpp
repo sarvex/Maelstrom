@@ -263,12 +263,7 @@ int MaelstromMain(int argc, char *argv[])
 	SeedRandom(0L);
 
 	/* Parse command line arguments */
-#ifdef __MACOSX__
-	//window_flags |= SDL_WINDOW_FULLSCREEN;
-#endif
-printf("Command line: ");
-for (int i = 0; i < argc; ++i) { printf("%s ", argv[i]); }
-printf("\n");
+	window_flags |= SDL_WINDOW_FULLSCREEN;
 	for ( progname=argv[0]; --argc; ++argv ) {
 		if ( strcmp(argv[1], "-fullscreen") == 0 ) {
 			window_flags |= SDL_WINDOW_FULLSCREEN;

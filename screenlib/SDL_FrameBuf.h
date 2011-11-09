@@ -29,7 +29,7 @@
 */
 
 // Define this if you're rapidly iterating on UI screens
-#define FAST_ITERATION
+//#define FAST_ITERATION
 
 #include <stdio.h>
 
