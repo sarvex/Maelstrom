@@ -81,8 +81,9 @@ Maelstrom.app: Maelstrom$(EXEEXT)
 	unzip $@.zip
 	cp $< $@/Contents/MacOS/$<
 	strip $@/Contents/MacOS/$<
-	install_name_tool -change `otool -L $< | fgrep libSDL-1.2.0.dylib | awk '{print $$1}'` @executable_path/../Frameworks/libSDL-1.2.0.dylib $@/Contents/MacOS/$<
+	install_name_tool -change `otool -L $< | fgrep libSDL-1.3.0.dylib | awk '{print $$1}'` @executable_path/../Frameworks/libSDL-1.3.0.dylib $@/Contents/MacOS/$<
 	install_name_tool -change `otool -L $< | fgrep libSDL_net-1.2.0.dylib | awk '{print $$1}'` @executable_path/../Frameworks/libSDL_net-1.2.0.dylib $@/Contents/MacOS/$<
+	install_name_tool -change `otool -L $< | fgrep libphysfs.1.dylib | awk '{print $$1}'` @executable_path/../Frameworks/libphysfs.1.dylib $@/Contents/MacOS/$<
 	make append-data BINARY="$@/Contents/MacOS/$<"
 
 Maelstrom.dmg: Maelstrom.app
