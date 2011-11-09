@@ -20,41 +20,30 @@
     slouken@libsdl.org
 */
 
-#include "../Maelstrom_Globals.h"
-#include "object.h"
-#include "player.h"
-#include "globals.h"
-#include "netplay.h"
+#ifndef _about_h
+#define _about_h
 
+#include "Maelstrom_Globals.h"
 
-/* Initialize the player sprites */
-int InitPlayerSprites(void)
+class Object;
+
+class AboutPanelDelegate : public UIPanelDelegate
 {
-	int index;
-
-	OBJ_LOOP(index, MAX_PLAYERS)
-		gPlayers[index] = new Player(index);
-	return(0);
-}
-
-int SpecialKey(SDL_Keycode key)
-{
-	if ( key == SDLK_F1 ) {
-		/* Special key -- switch displayed player */
-		if ( ++gDisplayed == gNumPlayers )
-			gDisplayed = 0;
-		return(0);
+public:
+	AboutPanelDelegate(UIPanel *panel) : UIPanelDelegate(panel) {
+		numsprites = 0;
 	}
-	return(-1);
-}
+	virtual ~AboutPanelDelegate() {
+		assert(numsprites == 0);
+	}
 
-void SetControl(unsigned char which, int toggle)
-{
-	QueueKey(toggle ? KEY_PRESS : KEY_RELEASE, which);
-}
+	virtual void OnShow();
+	virtual void OnHide();
+	virtual void OnDraw();
 
-int GetScore(void)
-{
-	return gScore;
-}
+protected:
+	int numsprites;
+	Object *objects[MAX_SPRITES];
+};
 
+#endif // _about_h

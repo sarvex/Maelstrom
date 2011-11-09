@@ -174,12 +174,15 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 noinst_LIBRARIES = libutils.a
 libutils_a_SOURCES = \
-	hashtable.c		\
-	hashtable.h		\
-	physfsrwops.c		\
-	physfsrwops.h		\
-	prefs.cpp		\
-	prefs.h
+	array.h		\
+	hashtable.c	\
+	hashtable.h	\
+	physfsrwops.c	\
+	physfsrwops.h	\
+	prefs.cpp	\
+	prefs.h		\
+	rapidxml.h	\
+	rapidxml.hpp
 
 all: all-am
 

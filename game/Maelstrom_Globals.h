@@ -25,14 +25,14 @@
 
 #include <stdlib.h>
 
-#include "screenlib/SDL_FrameBuf.h"
-#include "screenlib/UIManager.h"
+#include "../screenlib/SDL_FrameBuf.h"
+#include "../screenlib/UIManager.h"
 
-#include "maclib/Mac_FontServ.h"
-#include "maclib/Mac_Sound.h"
-#include "maclib/Mac_Compat.h"
+#include "../maclib/Mac_FontServ.h"
+#include "../maclib/Mac_Sound.h"
+#include "../maclib/Mac_Compat.h"
 
-#include "utils/prefs.h"
+#include "../utils/prefs.h"
 
 #include "Maelstrom.h"
 

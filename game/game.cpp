@@ -20,8 +20,8 @@
     slouken@libsdl.org
 */
 
-#include "../Maelstrom_Globals.h"
-#include "../load.h"
+#include "Maelstrom_Globals.h"
+#include "load.h"
 #include "object.h"
 #include "player.h"
 #include "netplay.h"

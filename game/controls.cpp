@@ -28,9 +28,9 @@
 
 #include "Maelstrom_Globals.h"
 #include "load.h"
-#include "screenlib/UIDialog.h"
-#include "screenlib/UIElement.h"
-#include "screenlib/UIElementRadio.h"
+#include "../screenlib/UIDialog.h"
+#include "../screenlib/UIElement.h"
+#include "../screenlib/UIElementRadio.h"
 
 #define MAELSTROM_DATA	".Maelstrom-data"
 

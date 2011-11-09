@@ -20,11 +20,11 @@
     slouken@libsdl.org
 */
 
-#include "screenlib/SDL_FrameBuf.h"
-#include "screenlib/UIDialogButton.h"
-#include "screenlib/UIElementCheckbox.h"
-#include "screenlib/UIElementEditbox.h"
-#include "screenlib/UIElementRadio.h"
+#include "../screenlib/SDL_FrameBuf.h"
+#include "../screenlib/UIDialogButton.h"
+#include "../screenlib/UIElementCheckbox.h"
+#include "../screenlib/UIElementEditbox.h"
+#include "../screenlib/UIElementRadio.h"
 
 #include "MacDialog.h"
 

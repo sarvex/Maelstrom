@@ -23,7 +23,7 @@
 #ifndef _controls_h
 #define _controls_h
 
-#include "screenlib/UIDialog.h"
+#include "../screenlib/UIDialog.h"
 
 // Functions from controls.cc
 #ifdef USE_JOYSTICK

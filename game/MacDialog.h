@@ -23,8 +23,8 @@
 #ifndef _MacDialog_h
 #define _MacDialog_h
 
-#include "screenlib/UIDialog.h"
-#include "screenlib/UIDrawEngine.h"
+#include "../screenlib/UIDialog.h"
+#include "../screenlib/UIDrawEngine.h"
 
 class MacDialog : public UIDialog
 {

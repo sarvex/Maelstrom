@@ -22,8 +22,8 @@
 
 #include "Maelstrom_Globals.h"
 
-#include "screenlib/UIManager.h"
-#include "screenlib/UIDrawEngine.h"
+#include "../screenlib/UIManager.h"
+#include "../screenlib/UIDrawEngine.h"
 
 class HashTable;
 

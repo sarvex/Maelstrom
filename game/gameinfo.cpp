@@ -20,7 +20,7 @@
     slouken@libsdl.org
 */
 
-#include "../Maelstrom_Globals.h"
+#include "Maelstrom_Globals.h"
 #include "../screenlib/UIElement.h"
 #include "../screenlib/UIElementCheckbox.h"
 #include "../screenlib/UIElementRadio.h"

@@ -20,25 +20,16 @@
     slouken@libsdl.org
 */
 
-/* Game Logic interface routines and variables */
+#ifndef _load_h
+#define _load_h
 
-#include "netlogic/netlogic.h"
+#include "physfs.h"
+#include "../utils/physfsrwops.h"
 
-/* From logic.cpp */
-extern int  InitPlayerSprites(void);
-extern void SetControl(unsigned char which, int toggle);
-extern int  SpecialKey(SDL_Keycode key);
-extern int GetScore(void);
+#include "../screenlib/SDL_FrameBuf.h"
 
-/* From game.cpp */
-extern void NewGame(void);
+/* Functions exported from load.cpp */
+extern SDL_Texture *Load_Title(FrameBuf *screen, int title_id);
+extern SDL_Texture *GetCIcon(FrameBuf *screen, short cicn_id);
 
-/* From about.cpp */
-extern void DoAbout(void);
-
-/* From player.cpp */
-extern Uint8 gPlayerShotColors[];
-extern SDL_Texture *gPlayerShot;
-extern Uint8 gEnemyShotColors[];
-extern SDL_Texture *gEnemyShot;
-
+#endif /* _load_h */

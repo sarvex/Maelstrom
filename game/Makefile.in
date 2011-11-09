@@ -33,7 +33,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-subdir = netlogic
+subdir = game
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
@@ -45,13 +45,16 @@ CONFIG_CLEAN_FILES =
 LIBRARIES = $(noinst_LIBRARIES)
 AR = ar
 ARFLAGS = cru
-liblogic_a_AR = $(AR) $(ARFLAGS)
-liblogic_a_LIBADD =
-am_liblogic_a_OBJECTS = about.$(OBJEXT) game.$(OBJEXT) \
-	gameinfo.$(OBJEXT) lobby.$(OBJEXT) logic.$(OBJEXT) \
-	make.$(OBJEXT) netplay.$(OBJEXT) object.$(OBJEXT) \
-	objects.$(OBJEXT) player.$(OBJEXT)
-liblogic_a_OBJECTS = $(am_liblogic_a_OBJECTS)
+libgame_a_AR = $(AR) $(ARFLAGS)
+libgame_a_LIBADD =
+am_libgame_a_OBJECTS = MacDialog.$(OBJEXT) MaelstromUI.$(OBJEXT) \
+	about.$(OBJEXT) controls.$(OBJEXT) fastrand.$(OBJEXT) \
+	game.$(OBJEXT) gameinfo.$(OBJEXT) init.$(OBJEXT) \
+	load.$(OBJEXT) lobby.$(OBJEXT) logic.$(OBJEXT) main.$(OBJEXT) \
+	make.$(OBJEXT) myerror.$(OBJEXT) netplay.$(OBJEXT) \
+	object.$(OBJEXT) objects.$(OBJEXT) player.$(OBJEXT) \
+	rect.$(OBJEXT) scores.$(OBJEXT)
+libgame_a_OBJECTS = $(am_libgame_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -64,8 +67,8 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(liblogic_a_SOURCES)
-DIST_SOURCES = $(liblogic_a_SOURCES)
+SOURCES = $(libgame_a_SOURCES)
+DIST_SOURCES = $(libgame_a_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -174,19 +177,40 @@ target_os = @target_os@
 target_vendor = @target_vendor@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-noinst_LIBRARIES = liblogic.a
-liblogic_a_SOURCES = \
+noinst_LIBRARIES = libgame.a
+libgame_a_SOURCES = \
+	MacDialog.cpp		\
+	MacDialog.h		\
+	Maelstrom.h		\
+	MaelstromUI.cpp		\
+	MaelstromUI.h		\
+	Maelstrom_Globals.h	\
 	about.cpp		\
+	about.h			\
+	colortable.h		\
+	controls.cpp		\
+	controls.h		\
+	fastrand.cpp		\
+	fastrand.h		\
 	game.cpp		\
 	game.h			\
 	gameinfo.cpp		\
 	gameinfo.h		\
 	globals.h		\
+	init.cpp		\
+	init.h			\
+	load.cpp		\
+	load.h			\
 	lobby.cpp		\
 	lobby.h			\
 	logic.cpp		\
+	logic.h			\
+	main.cpp		\
+	main.h			\
 	make.cpp		\
 	make.h			\
+	myerror.cpp		\
+	myerror.h		\
 	netlogic.h		\
 	netplay.cpp		\
 	netplay.h		\
@@ -198,6 +222,10 @@ liblogic_a_SOURCES = \
 	player.cpp		\
 	player.h		\
 	protocol.h		\
+	rect.cpp		\
+	rect.h			\
+	scores.cpp		\
+	scores.h		\
 	shinobi.h
 
 all: all-am
@@ -213,9 +241,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  netlogic/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  game/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign  netlogic/Makefile
+	  $(AUTOMAKE) --foreign  game/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -236,10 +264,10 @@ $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 
 clean-noinstLIBRARIES:
 	-test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
-liblogic.a: $(liblogic_a_OBJECTS) $(liblogic_a_DEPENDENCIES) 
-	-rm -f liblogic.a
-	$(liblogic_a_AR) liblogic.a $(liblogic_a_OBJECTS) $(liblogic_a_LIBADD)
-	$(RANLIB) liblogic.a
+libgame.a: $(libgame_a_OBJECTS) $(libgame_a_DEPENDENCIES) 
+	-rm -f libgame.a
+	$(libgame_a_AR) libgame.a $(libgame_a_OBJECTS) $(libgame_a_LIBADD)
+	$(RANLIB) libgame.a
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -247,16 +275,26 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MacDialog.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MaelstromUI.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/about.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/controls.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fastrand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/game.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gameinfo.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/init.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/load.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lobby.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/logic.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/make.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/myerror.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/netplay.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/object.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/objects.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/player.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rect.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scores.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

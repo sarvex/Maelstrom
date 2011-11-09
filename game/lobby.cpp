@@ -24,7 +24,7 @@
 #include <time.h>
 
 #include "SDL_net.h"
-#include "../Maelstrom_Globals.h"
+#include "Maelstrom_Globals.h"
 #include "../screenlib/UIElement.h"
 #include "../screenlib/UIElementCheckbox.h"
 #include "../screenlib/UIElementRadio.h"

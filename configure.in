@@ -110,7 +110,7 @@ CXXFLAGS="$CXXFLAGS $CFLAGS"
 # Finally create all the generated files
 AC_OUTPUT([
 Makefile
-netlogic/Makefile
+game/Makefile
 screenlib/Makefile
 maclib/Makefile
 utils/Makefile

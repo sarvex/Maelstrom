@@ -4624,7 +4624,7 @@ esac
 CXXFLAGS="$CXXFLAGS $CFLAGS"
 
 # Finally create all the generated files
-ac_config_files="$ac_config_files Makefile netlogic/Makefile screenlib/Makefile maclib/Makefile utils/Makefile Maelstrom.spec"
+ac_config_files="$ac_config_files Makefile game/Makefile screenlib/Makefile maclib/Makefile utils/Makefile Maelstrom.spec"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -5227,7 +5227,7 @@ do
   case $ac_config_target in
     "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
-    "netlogic/Makefile") CONFIG_FILES="$CONFIG_FILES netlogic/Makefile" ;;
+    "game/Makefile") CONFIG_FILES="$CONFIG_FILES game/Makefile" ;;
     "screenlib/Makefile") CONFIG_FILES="$CONFIG_FILES screenlib/Makefile" ;;
     "maclib/Makefile") CONFIG_FILES="$CONFIG_FILES maclib/Makefile" ;;
     "utils/Makefile") CONFIG_FILES="$CONFIG_FILES utils/Makefile" ;;

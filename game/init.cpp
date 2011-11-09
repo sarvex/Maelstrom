@@ -32,7 +32,7 @@
 #include "colortable.h"
 #include "fastrand.h"
 #include "MaelstromUI.h"
-#include "screenlib/UIElement.h"
+#include "../screenlib/UIElement.h"
 
 
 #define GAME_PREFS_FILE	"Maelstrom_Prefs.txt"

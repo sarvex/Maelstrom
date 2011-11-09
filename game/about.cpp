@@ -20,7 +20,7 @@
     slouken@libsdl.org
 */
 
-#include "../Maelstrom_Globals.h"
+#include "Maelstrom_Globals.h"
 #include "object.h"
 #include "about.h"
 

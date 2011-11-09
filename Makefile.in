@@ -52,12 +52,9 @@ CONFIG_CLEAN_FILES = Maelstrom.spec
 am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS) $(noinst_PROGRAMS)
-am_Maelstrom_OBJECTS = MaelstromUI.$(OBJEXT) MacDialog.$(OBJEXT) \
-	controls.$(OBJEXT) fastrand.$(OBJEXT) init.$(OBJEXT) \
-	load.$(OBJEXT) main.$(OBJEXT) myerror.$(OBJEXT) rect.$(OBJEXT) \
-	scores.$(OBJEXT)
+am_Maelstrom_OBJECTS = main.$(OBJEXT)
 Maelstrom_OBJECTS = $(am_Maelstrom_OBJECTS)
-Maelstrom_DEPENDENCIES = netlogic/liblogic.a screenlib/libSDLscreen.a \
+Maelstrom_DEPENDENCIES = game/libgame.a screenlib/libSDLscreen.a \
 	maclib/libSDLmac.a utils/libutils.a
 am_MaelstromLobby_OBJECTS = MaelstromLobby.$(OBJEXT)
 MaelstromLobby_OBJECTS = $(am_MaelstromLobby_OBJECTS)
@@ -70,10 +67,6 @@ CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
-COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
-	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-CCLD = $(CC)
-LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = $(Maelstrom_SOURCES) $(MaelstromLobby_SOURCES)
 DIST_SOURCES = $(Maelstrom_SOURCES) $(MaelstromLobby_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
@@ -203,34 +196,9 @@ target_os = @target_os@
 target_vendor = @target_vendor@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-Maelstrom_SOURCES = \
-	Maelstrom.h		\
-	Maelstrom_Globals.h	\
-	MaelstromUI.cpp		\
-	MaelstromUI.h		\
-	MacDialog.cpp		\
-	MacDialog.h		\
-	buttonlist.h		\
-	colortable.h		\
-	controls.cpp		\
-	controls.h		\
-	fastrand.cpp		\
-	fastrand.h		\
-	init.cpp		\
-	load.cpp		\
-	load.h			\
-	logic.h			\
-	main.cpp		\
-	main.h			\
-	myerror.cpp		\
-	myerror.h		\
-	rect.cpp		\
-	rect.h			\
-	scores.cpp		\
-	scores.h
-
+Maelstrom_SOURCES = main.cpp
 Maelstrom_LDADD = \
-	netlogic/liblogic.a		\
+	game/libgame.a		\
 	screenlib/libSDLscreen.a	\
 	maclib/libSDLmac.a		\
 	utils/libutils.a		\
@@ -238,25 +206,25 @@ Maelstrom_LDADD = \
 
 MaelstromLobby_SOURCES = MaelstromLobby.cpp
 MaelstromLobby_LDADD = @INETLIB@
-SUBDIRS = netlogic screenlib maclib utils
+SUBDIRS = game screenlib maclib utils
 EXTRA_DIST = \
-	autogen.sh		\
-	VisualC.zip		\
-	PBProjects.tar.gz	\
-	MPWmake.sea.bin		\
+	Docs			\
+	COPYING			\
+	COPYING.GPL		\
 	CREDITS			\
 	Changelog		\
-	Docs			\
+	MPWmake.sea.bin		\
+	Maelstrom.spec		\
+	Maelstrom_Data.zip	\
+	PBProjects.tar.gz	\
 	README.joystick		\
 	README.network		\
 	README.options		\
 	README.simple		\
-	COPYING			\
-	COPYING.GPL		\
-	Maelstrom_Data.zip	\
+	VisualC.zip		\
+	autogen.sh		\
 	ico_o			\
-	icon.xpm		\
-	Maelstrom.spec
+	icon.xpm
 
 DIST_SUBDIRS = $(SUBDIRS)
 all: all-recursive
@@ -337,17 +305,8 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MacDialog.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MaelstromLobby.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MaelstromUI.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/controls.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fastrand.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/init.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/load.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/myerror.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rect.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scores.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

@@ -3,34 +3,10 @@
 bin_PROGRAMS = Maelstrom
 noinst_PROGRAMS = MaelstromLobby
 
-Maelstrom_SOURCES =		\
-	Maelstrom.h		\
-	Maelstrom_Globals.h	\
-	MaelstromUI.cpp		\
-	MaelstromUI.h		\
-	MacDialog.cpp		\
-	MacDialog.h		\
-	buttonlist.h		\
-	colortable.h		\
-	controls.cpp		\
-	controls.h		\
-	fastrand.cpp		\
-	fastrand.h		\
-	init.cpp		\
-	load.cpp		\
-	load.h			\
-	logic.h			\
-	main.cpp		\
-	main.h			\
-	myerror.cpp		\
-	myerror.h		\
-	rect.cpp		\
-	rect.h			\
-	scores.cpp		\
-	scores.h
+Maelstrom_SOURCES = main.cpp
 
 Maelstrom_LDADD = 			\
-	netlogic/liblogic.a		\
+	game/libgame.a		\
 	screenlib/libSDLscreen.a	\
 	maclib/libSDLmac.a		\
 	utils/libutils.a		\
@@ -40,26 +16,26 @@ MaelstromLobby_SOURCES = MaelstromLobby.cpp
 
 MaelstromLobby_LDADD = @INETLIB@
 
-SUBDIRS = netlogic screenlib maclib utils
+SUBDIRS = game screenlib maclib utils
 
 EXTRA_DIST =			\
-	autogen.sh		\
-	VisualC.zip		\
-	PBProjects.tar.gz	\
-	MPWmake.sea.bin		\
+	Docs			\
+	COPYING			\
+	COPYING.GPL		\
 	CREDITS			\
 	Changelog		\
-	Docs			\
+	MPWmake.sea.bin		\
+	Maelstrom.spec		\
+	Maelstrom_Data.zip	\
+	PBProjects.tar.gz	\
 	README.joystick		\
 	README.network		\
 	README.options		\
 	README.simple		\
-	COPYING			\
-	COPYING.GPL		\
-	Maelstrom_Data.zip	\
+	VisualC.zip		\
+	autogen.sh		\
 	ico_o			\
-	icon.xpm		\
-	Maelstrom.spec
+	icon.xpm
 
 DIST_SUBDIRS = $(SUBDIRS)
 

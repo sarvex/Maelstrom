@@ -22,8 +22,8 @@
 
 #include "SDL_net.h"
 
-#include "netlogic/packet.h"
-#include "netlogic/protocol.h"
+#include "game/packet.h"
+#include "game/protocol.h"
 #include "utils/array.h"
 
 

@@ -21,11 +21,6 @@
 */
 
 /* Definitions useful for our sprite world */
-/* Definitions that are particular to a particular logic module are
-   in "logicdir/logicdir.h", i.e. netlogic/netlogic.h
-   Note especially that this includes timing constants, etc.
-*/
-
 
 #include "rect.h"
 
