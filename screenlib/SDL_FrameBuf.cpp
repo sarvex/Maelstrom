@@ -46,6 +46,11 @@ FrameBuf:: Init(int width, int height, Uint32 window_flags, Uint32 render_flags,
 {
 	int w, h;
 
+#ifdef HACK_RESOLUTION
+	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");
+#endif
+	AdjustCoordinates(width, height);
+
 	window = SDL_CreateWindow(NULL, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, window_flags);
 	if (!window) {
 		SetError("Couldn't create %dx%d window: %s", 
@@ -75,8 +80,8 @@ FrameBuf:: Init(int width, int height, Uint32 window_flags, Uint32 render_flags,
 	/* Set the blit clipping rectangle */
 	clip.x = 0;
 	clip.y = 0;
-	clip.w = width;
-	clip.h = height;
+	clip.w = AdjustCoordinateX(width, true);
+	clip.h = AdjustCoordinateY(height, true);
 
 	/* Copy the image colormap */
 	if ( colors ) {
@@ -175,6 +180,8 @@ FrameBuf:: QueueBlit(int dstx, int dsty, SDL_Texture *src,
 		srcrect.w = dstrect.w;
 		srcrect.h = dstrect.h;
 	}
+	AdjustCoordinates(dstrect.x, dstrect.y);
+	AdjustCoordinates(dstrect.w, dstrect.h);
 	SDL_RenderCopy(renderer, src, &srcrect, &dstrect);
 }
 
@@ -234,6 +241,8 @@ FrameBuf:: ScreenDump(const char *prefix, int x, int y, int w, int h)
 	if (!h) {
 		h = Height();
 	}
+	AdjustCoordinates(x, y);
+	AdjustCoordinates(w, h);
 	rect.x = x;
 	rect.y = y;
 	rect.w = w;
