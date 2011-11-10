@@ -775,14 +775,10 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 	gClipRect.h = gBottom-gTop-2*SPRITES_WIDTH+STATUS_HEIGHT;
 	screen->ClipBlit(&gClipRect);
 
-	/* Do the Ambrosia Splash screen */
+	/* -- Throw up our intro screen */
 	screen->FadeOut();
-	ui->ShowPanel(PANEL_SPLASH);
+	ui->ShowPanel(PANEL_LOADING);
 	ui->Draw();
-
-	start = SDL_GetTicks();
-
-	/* Preload some of our data while the splash screen is up */
 
 	/* -- Load in the prize CICN's */
 	if ( LoadCICNS() < 0 )
@@ -793,20 +789,6 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 
 	/* -- Set up the velocity tables */
 	BuildVelocityTable();
-
-	/* Wait for the splash time to finish, or a keypress */
-	while ((SDL_GetTicks() - start) < 5000) {
-		if ( DropEvents() ) {
-			break;
-		}
-		SDL_Delay(100);
-	}
-
-	ui->DeletePanel(PANEL_SPLASH);
-
-	/* -- Throw up our intro screen */
-	ui->ShowPanel(PANEL_LOADING);
-	ui->Draw();
 
 	/* -- Load in our sprites and other needed resources */
 	spriteres = new Mac_Resource("Maelstrom Sprites");
