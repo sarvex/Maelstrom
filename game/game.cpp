@@ -80,7 +80,7 @@ void NewGame(void)
 	}
 
 	ui->ShowPanel(PANEL_GAME);
-#if defined(__IPHONEOS__) || defined(__ANDROID__)
+#ifdef USE_TOUCHCONTROL
 	ui->ShowPanel("touchcontrol");
 #endif
 
@@ -97,7 +97,7 @@ void NewGame(void)
 		}
 	}
 	
-#if defined(__IPHONEOS__) || defined(__ANDROID__)
+#ifdef USE_TOUCHCONTROL
 	ui->HidePanel("touchcontrol");
 #endif
 	ui->HidePanel(PANEL_GAME);
