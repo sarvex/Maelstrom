@@ -916,7 +916,7 @@ static void DoGameOver(void)
 	gScore = OurShip->GetScore();
 	LoadScores();
 	for ( i = 0; i<10; ++i ) {
-		if ( gScore > hScores[i].score ) {
+		if ( gScore > (int)hScores[i].score ) {
 			which = i;
 			break;
 		}

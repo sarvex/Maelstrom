@@ -674,7 +674,6 @@ void CleanUp(void)
 /* -- Perform some initializations and report failure if we choke */
 int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 {
-	Uint32 start;
 	int i;
 	SDL_Surface *icon;
 
