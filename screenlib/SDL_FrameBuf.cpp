@@ -124,6 +124,7 @@ FrameBuf::ConvertTouchCoordinates(const SDL_TouchFingerEvent &finger, int *x, in
 	SDL_GetWindowSize(window, &w, &h);
 	*x = (int)((((float)finger.x)/inTouch->xres)*w) - rect.x;
 	*y = (int)((((float)finger.y)/inTouch->yres)*h) - rect.y;
+	AdjustCoordinates(*x, *y, true);
 	return true;
 }
 
