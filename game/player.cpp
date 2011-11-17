@@ -73,10 +73,10 @@ Player::~Player()
 
 /* Note that the lives argument is ignored during deathmatches */
 void
-Player::NewGame(int lives)
+Player::NewGame(int lives, int deathMatch)
 {
 	Playing = 1;
-	if ( gDeathMatch )
+	if ( deathMatch )
 		Lives = 1;
 	else
 		Lives = lives;
@@ -146,7 +146,7 @@ Player::NewShip(void)
 	Dead = 0;
 	Exploding = 0;
 	Set_TTL(-1);
-	if ( ! gDeathMatch )
+	if ( ! gGameInfo.deathMatch )
 		--Lives;
 	return(Lives);
 }
@@ -156,7 +156,7 @@ void
 Player::IncrFrags(void)
 {
 	++Frags;
-	if ( gDeathMatch && (Frags >= gDeathMatch) ) {
+	if ( gGameInfo.deathMatch && (Frags >= gGameInfo.deathMatch) ) {
 		/* Game over, we got a stud. :) */
 		int i;
 		OBJ_LOOP(i, gNumPlayers) {
@@ -172,7 +172,7 @@ error("Killing player %d\n", i+1);
 void
 Player::IncrLives(int lives)
 {
-	if ( gDeathMatch && (lives > 0) )
+	if ( gGameInfo.deathMatch && (lives > 0) )
 		return;
 	Lives += lives;
 }
@@ -245,7 +245,7 @@ Player::BeenTimedOut(void)
 							*SCALE_FACTOR),
 		((SCREEN_HEIGHT/2)*SCALE_FACTOR)
 	);
-	if ( gDeathMatch )
+	if ( gGameInfo.deathMatch )
 		Dead = (DEAD_DELAY/2);
 	else
 		Dead = DEAD_DELAY;

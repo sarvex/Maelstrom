@@ -30,8 +30,6 @@ AboutPanelDelegate::OnShow()
 {
 	int x, y, off;
 
-	gNoDelay = 0;
-
 	x = (80) * SCALE_FACTOR;
 	y = (136) * SCALE_FACTOR;
 	off = 39 * SCALE_FACTOR;

@@ -102,7 +102,7 @@ protected:
 	Uint32 m_lastRefresh;
 	Uint32 m_requestSequence;
 
-	GameInfo m_game;
+	GameInfo &m_game;
 	array<GameInfo> m_gameList;
 
 	DynamicPacket m_packet, m_reply;

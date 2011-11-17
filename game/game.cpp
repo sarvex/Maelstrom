@@ -30,6 +30,7 @@
 #include "../screenlib/UIElement.h"
 
 // Global variables set in this file...
+GameInfo gGameInfo;
 int	gScore;
 int	gGameOn;
 int	gPaused;
@@ -66,15 +67,16 @@ void NewGame(void)
 	if ( CheckPlayers() < 0 )
 		return;
 
+	/* Start up the random number generator */
+	SeedRandom(gGameInfo.seed);
+
 	/* Send a "NEW_GAME" packet onto the network */
 	if ( gNumPlayers > 1 ) {
 		if ( gOurPlayer == 0 ) {
-			if ( Send_NewGame(&gStartLevel,&gStartLives,&gNoDelay)
-									< 0)
+			if ( Send_NewGame() < 0)
 				return;
 		} else {
-			if ( Await_NewGame(&gStartLevel,&gStartLives,&gNoDelay)
-									< 0 )
+			if ( Await_NewGame() < 0 )
 				return;
 		}
 	}
@@ -92,7 +94,7 @@ void NewGame(void)
 		screen->FadeIn();
 
 		/* Timing handling -- Delay the FRAME_DELAY */
-		if ( ! gNoDelay ) {
+		if ( ! gGameInfo.turbo ) {
 			DelayFrame();
 		}
 	}
@@ -151,9 +153,9 @@ GamePanelDelegate::OnShow()
 	/* Initialize some game variables */
 	gGameOn = 1;
 	gPaused = 0;
-	gWave = gStartLevel - 1;
+	gWave = gGameInfo.wave - 1;
 	for ( i=gNumPlayers; i--; )
-		gPlayers[i]->NewGame(gStartLives);
+		gPlayers[i]->NewGame(gGameInfo.lives, gGameInfo.deathMatch);
 	gLastStar = STAR_DELAY;
 	gLastDrawn = 0L;
 	gNumSprites = 0;
@@ -173,7 +175,7 @@ GamePanelDelegate::OnShow()
 			m_multiplayerColor->Hide();
 		}
 	}
-	if ( gDeathMatch ) {
+	if ( gGameInfo.deathMatch ) {
 		if (m_fragsLabel) {
 			m_fragsLabel->Show();
 		}
@@ -261,7 +263,7 @@ GamePanelDelegate::OnTick()
 				gSprites[i] = gSprites[gNumSprites];
 			}
 		}
-		if ( gDeathMatch ) {
+		if ( gGameInfo.deathMatch ) {
 			OBJ_LOOP(i, gNumPlayers) {
 				if ( i == j )	// Don't shoot ourselves. :)
 					continue;
@@ -736,7 +738,7 @@ GamePanelDelegate::NextWave()
 	gShakeTime = 0;
 	gFreezeTime = 0;
 
-	if (gWave != (gStartLevel - 1))
+	if (gWave != (gGameInfo.wave - 1))
 		DoBonus();
 
 	gWave++;
@@ -866,7 +868,7 @@ static void DoGameOver(void)
 		final[i].Score = gPlayers[i]->GetScore();
 		final[i].Frags = gPlayers[i]->GetFrags();
 	}
-	if ( gDeathMatch )
+	if ( gGameInfo.deathMatch )
 		qsort(final,gNumPlayers,sizeof(struct FinalScore),cmp_byfrags);
 	else
 		qsort(final,gNumPlayers,sizeof(struct FinalScore),cmp_byscore);
@@ -893,7 +895,7 @@ static void DoGameOver(void)
 			if (!label) {
 				continue;
 			}
-			if (gDeathMatch) {
+			if (gGameInfo.deathMatch) {
 				sprintf(num1, "%7d", final[i].Score);
 				sprintf(num2, "%3d", final[i].Frags);
 				sprintf(buffer, "Player %d: %s Points, %s Frags", final[i].Player, num1, num2);
@@ -925,8 +927,8 @@ static void DoGameOver(void)
 	/* -- They got a high score! */
 	gLastHigh = which;
 
-	if ((which != -1) && (gStartLevel == 1) && (gStartLives == 3) &&
-					(gNumPlayers == 1) && !gDeathMatch ) {
+	if ((which != -1) && (gNumPlayers == 1) &&
+			(gGameInfo.wave == 1) && (gGameInfo.lives == 3)) {
 		sound->PlaySound(gBonusShot, 5);
 
 		/* -- Let them enter their name */

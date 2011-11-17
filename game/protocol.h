@@ -191,7 +191,7 @@ enum LobbyProtocol {
 #define NETPLAY_PORT	0xAF00			/* port 44800 */
 
 /* The minimum length of a new packet buffer */
-#define NEW_PACKETLEN	(3+3*4)
+#define NEW_PACKETLEN	(1+1+sizeof(Uint32))
 
 /* Note: if you change MAX_PLAYERS, you need to modify the gPlayerColors
    array in player.cpp

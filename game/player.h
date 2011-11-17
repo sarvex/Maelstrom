@@ -46,7 +46,7 @@ public:
 	virtual int Kicking(void) {
 		return(Playing);
 	}
-	virtual void NewGame(int lives);
+	virtual void NewGame(int lives, int deathMatch);
 	virtual void NewWave(void);
 	/* NewShip() MUST be called before Move() */
 	virtual int NewShip(void);

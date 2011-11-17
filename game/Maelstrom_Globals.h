@@ -40,6 +40,7 @@
 #include "fastrand.h"
 #include "scores.h"
 #include "controls.h"
+#include "gameinfo.h"
 
 // Preferences keys
 #define PREFERENCES_HANDLE "Handle"
@@ -93,7 +94,6 @@ extern void  SetStar(int which);
 // in main.cpp : 
 extern Bool	gUpdateBuffer;
 extern Bool	gRunning;
-extern int	gNoDelay;
 
 // in init.cpp : 
 extern Sint32	gLastHigh;
@@ -143,9 +143,8 @@ extern PrefsVariable<int> gGammaCorrect;
 extern Scores	hScores[];
 
 // -- Variables specific to each game 
-// in main.cpp : 
-extern int	gStartLives;
-extern int	gStartLevel;
+// in game.cpp : 
+extern GameInfo gGameInfo;
 // in init.cpp : 
 extern Uint32	gLastDrawn;
 extern int	gNumSprites;

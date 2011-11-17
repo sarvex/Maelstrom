@@ -82,11 +82,13 @@ public:
 
 	void Reset();
 
+	void SetSinglePlayer(Uint8 wave, Uint8 lives, Uint8 turbo);
+
+	void SetMultiplayerHost(Uint32 gameID, const char *name);
+
 	void SetLocalID(Uint32 playerID) {
 		localID = playerID;
 	}
-
-	void SetHostInfo(Uint32 gameID, const char *name);
 
 	void CopyFrom(const GameInfo &rhs);
 
@@ -164,6 +166,10 @@ public:
 
 public:
 	Uint32 gameID;
+	Uint32 seed;
+	Uint8 wave;
+	Uint8 lives;
+	Uint8 turbo;
 	Uint8 deathMatch;
 	GameInfoPlayer players[MAX_PLAYERS];
 

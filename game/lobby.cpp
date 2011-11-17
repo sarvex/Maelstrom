@@ -42,7 +42,8 @@
 
 
 LobbyDialogDelegate::LobbyDialogDelegate(UIPanel *panel) :
-	UIDialogDelegate(panel)
+	UIDialogDelegate(panel),
+	m_game(gGameInfo)
 {
 	m_state = STATE_NONE;
 	m_uniqueID = 0;
@@ -155,10 +156,6 @@ LobbyDialogDelegate::OnHide()
 	// Start the game!
 	if (m_dialog->GetDialogStatus() > 0) {
 		SetState(STATE_PLAYING);
-		gStartLevel = 1;
-		gStartLives = 3;
-		gNoDelay = 0;
-		gDeathMatch = m_game.deathMatch;
 
 		for (int i = 0; i < MAX_PLAYERS; ++i) {
 			GameInfoPlayer *player = m_game.GetPlayer(i);
@@ -327,7 +324,7 @@ LobbyDialogDelegate::SetState(LOBBY_STATE state)
 			SendLeaveRequest();
 		}
 	} else if (state == STATE_HOSTING) {
-		m_game.SetHostInfo(m_uniqueID, prefs->GetString(PREFERENCES_HANDLE));
+		m_game.SetMultiplayerHost(m_uniqueID, prefs->GetString(PREFERENCES_HANDLE));
 	} else if (state == STATE_LISTING) {
 		ClearGameList();
 	}
@@ -659,6 +656,16 @@ LobbyDialogDelegate::ProcessPong(DynamicPacket &packet)
 void
 LobbyDialogDelegate::ProcessNewGame(DynamicPacket &packet)
 {
+	Uint8 playerIndex;
+	Uint32 gameID;
+
+	if (!packet.Read(playerIndex)) {
+		return;
+	}
+	if (!packet.Read(gameID) || gameID != m_game.gameID) {
+		return;
+	}
+
 	// Ooh, ooh, they're starting!
 	if (m_game.HasPlayer(packet.address)) {
 		m_playButton->OnClick();

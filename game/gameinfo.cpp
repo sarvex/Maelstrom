@@ -35,9 +35,25 @@ GameInfo::Reset()
 }
 
 void
-GameInfo::SetHostInfo(Uint32 gameID, const char *name)
+GameInfo::SetSinglePlayer(Uint8 wave, Uint8 lives, Uint8 turbo)
+{
+	this->gameID = 1;
+	this->seed = GetRandSeed();
+	this->wave = wave;
+	this->lives = lives;
+	this->turbo = turbo;
+	this->deathMatch = 0;
+}
+
+void
+GameInfo::SetMultiplayerHost(Uint32 gameID, const char *name)
 {
 	this->gameID = gameID;
+	this->seed = GetRandSeed();
+	this->wave = DEFAULT_START_WAVE;
+	this->lives = DEFAULT_START_LIVES;
+	this->turbo = DEFAULT_START_TURBO;
+	this->deathMatch = 0;
 	players[HOST_PLAYER].playerID = gameID;
 	SDL_strlcpy(players[HOST_PLAYER].name, name ? name : "",
 			sizeof(players[HOST_PLAYER].name));
@@ -47,6 +63,10 @@ void
 GameInfo::CopyFrom(const GameInfo &rhs)
 {
 	gameID = rhs.gameID;
+	seed = rhs.seed;
+	wave = rhs.wave;
+	lives = rhs.lives;
+	turbo = rhs.turbo;
 	deathMatch = rhs.deathMatch;
 
 	for (int i = 0; i < MAX_PLAYERS; ++i) {
@@ -67,6 +87,18 @@ bool
 GameInfo::ReadFromPacket(DynamicPacket &packet)
 {
 	if (!packet.Read(gameID)) {
+		return false;
+	}
+	if (!packet.Read(seed)) {
+		return false;
+	}
+	if (!packet.Read(wave)) {
+		return false;
+	}
+	if (!packet.Read(lives)) {
+		return false;
+	}
+	if (!packet.Read(turbo)) {
 		return false;
 	}
 	if (!packet.Read(deathMatch)) {
@@ -101,6 +133,10 @@ void
 GameInfo::WriteToPacket(DynamicPacket &packet)
 {
 	packet.Write(gameID);
+	packet.Write(seed);
+	packet.Write(wave);
+	packet.Write(lives);
+	packet.Write(turbo);
 	packet.Write(deathMatch);
 
 	for (int i = 0; i < MAX_PLAYERS; ++i) {

@@ -53,11 +53,8 @@ static const char *Version =
 "Maelstrom v1.4.3 (GPL version 4.0.0) -- 10/08/2011 by Sam Lantinga\n";
 
 // Global variables set in this file...
-int	gStartLives;
-int	gStartLevel;
 Bool	gUpdateBuffer;
 Bool	gRunning;
-int	gNoDelay;
 
 
 // Main Menu actions:
@@ -75,9 +72,9 @@ static void RunSinglePlayerGame()
 }
 static void RunPlayGame(void*)
 {
-	gStartLevel = 1;
-	gStartLives = 3;
-	gNoDelay = 0;
+	gGameInfo.SetSinglePlayer(DEFAULT_START_WAVE,
+	                          DEFAULT_START_LIVES,
+	                          DEFAULT_START_TURBO);
 	RunSinglePlayerGame();
 }
 static void RunQuitGame(void*)
@@ -135,30 +132,36 @@ static void CheatDialogDone(UIDialog *dialog, int status)
 {
 	UIElementEditbox *editbox;
 	UIElementCheckbox *checkbox;
+	Uint8 wave = DEFAULT_START_WAVE;
+	Uint8 lives = DEFAULT_START_LIVES;
+	Uint8 turbo = DEFAULT_START_TURBO;
 
 	if (status > 0) {
 		editbox = dialog->GetElement<UIElementEditbox>("level");
 		if (editbox) {
-			gStartLevel = editbox->GetNumber();
-			if (gStartLevel < 1 || gStartLevel > 40) {
-				return;
+			wave = editbox->GetNumber();
+			if (wave < 1 || wave > 40) {
+				wave = DEFAULT_START_WAVE;
 			}
 		}
 
 		editbox = dialog->GetElement<UIElementEditbox>("lives");
 		if (editbox) {
-			gStartLives = editbox->GetNumber();
-			if (gStartLives < 1 || gStartLives > 40) {
-				gStartLives = 3;
+			lives = editbox->GetNumber();
+			if (lives < 1 || lives > 40) {
+				lives = DEFAULT_START_LIVES;
 			}
 		}
 
 		checkbox = dialog->GetElement<UIElementCheckbox>("turbofunk");
-		gNoDelay = checkbox->IsChecked();
+		if (checkbox) {
+			turbo = checkbox->IsChecked();
+		}
 
 		Delay(SOUND_DELAY);
 		sound->PlaySound(gNewLife, 5);
 		Delay(SOUND_DELAY);
+		gGameInfo.SetSinglePlayer(wave, lives, turbo);
 		RunSinglePlayerGame();
 	}
 }

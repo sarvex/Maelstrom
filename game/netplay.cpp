@@ -34,7 +34,6 @@
 
 int   gNumPlayers;
 int   gOurPlayer;
-int   gDeathMatch;
 UDPsocket gNetFD;
 
 static int            GotPlayer[MAX_PLAYERS];
@@ -113,7 +112,6 @@ int InitNetData(bool hosting)
 	/* Initialize network game variables */
 	FoundUs   = 0;
 	gOurPlayer  = -1;
-	gDeathMatch = 0;
 	for ( i=0; i<MAX_PLAYERS; ++i ) {
 		GotPlayer[i] = 0;
 		SyncPtrs[0][i] = NULL;
@@ -192,9 +190,9 @@ int CheckPlayers(void)
 						gOurPlayer+1, gNumPlayers);
 		return(-1);
 	}
-	if ( (gNumPlayers == 1) && gDeathMatch ) {
+	if ( (gNumPlayers == 1) && gGameInfo.deathMatch ) {
 		error("Warning: No deathmatch in a single player game!\r\n");
-		gDeathMatch = 0;
+		gGameInfo.deathMatch = 0;
 	}
 
 	/* Now, so we can send to ourselves... */
@@ -365,13 +363,10 @@ error("Warning! Received packet for really old frame! (%lu, current = %lu)\r\n",
 		/* Do a consistency check!! */
 		Uint32 newseed = SDLNet_Read32(&buf[1+sizeof(frame)]);
 		if ( newseed != seed ) {
-//error("New seed (from player %d) is: 0x%x\r\n", index+1, newseed);
-			if ( gOurPlayer == 0 ) {
-				error(
-"Warning!! \a Frame consistency error with player %d!! (corrected)\r\n", index+1);
-SDL_Delay(3000);
-			} else	/* Player 1 sent us good seed */
-				SeedRandom(newseed);
+			/* We're hosed, to correct this we would have to sync the complete game state */
+			error(
+"Error!! \a Frame consistency error with player %d!!\r\n", index+1);
+			return(-1);
 		}
 
 		/* Okay, we finally have a valid timely packet */
@@ -423,20 +418,11 @@ inline void SuckPackets(void)
 	}
 }
 
-static inline void MakeNewPacket(int Wave, int Lives, int Turbo,
-					unsigned char *packet)
+static inline void MakeNewPacket(Uint32 gameID, unsigned char *packet)
 {
 	*packet++ = NEW_GAME;
 	*packet++ = gOurPlayer;
-	*packet++ = (unsigned char)Turbo;
-	SDLNet_Write32(Wave, packet);
-	packet += 4;
-	if ( gDeathMatch ) {
-		Lives = (gDeathMatch|0x8000);
-	}
-	SDLNet_Write32(Lives, packet);
-	packet += 4;
-	SDLNet_Write32(GetRandSeed(), packet);
+	SDLNet_Write32(gameID, packet);
 }
 
 /* Flash an error up on the screen and pause for 3 seconds */
@@ -449,13 +435,13 @@ static void ErrorMessage(const char *message)
 	SDL_Delay(3000);
 }
 
-/* This function sends a NEWGAME packet, and waits for all other players
+/* This function sends a NEW_GAME packet, and waits for all other players
    to respond in kind.
    This function is not very robust in handling errors such as multiple
    machines thinking they are the same player.  The address server is
    supposed to handle such things gracefully.
 */
-int Send_NewGame(int *Wave, int *Lives, int *Turbo)
+int Send_NewGame()
 {
 	Uint8 netbuf[BUFSIZ], sendbuf[NEW_PACKETLEN];
 	char message[BUFSIZ];
@@ -465,7 +451,7 @@ int Send_NewGame(int *Wave, int *Lives, int *Turbo)
 	UDPpacket newgame, sent;
 
 	/* Send all the packets */
-	MakeNewPacket(*Wave, *Lives, *Turbo, sendbuf);
+	MakeNewPacket(gGameInfo.gameID, sendbuf);
 	newgame.data = sendbuf;
 	newgame.len = sizeof(sendbuf);
 	SDLNet_UDP_Send(gNetFD, 0, &newgame);
@@ -526,6 +512,12 @@ int Send_NewGame(int *Wave, int *Lives, int *Turbo)
 			continue;
 		}
 
+		Uint32 gameID = SDLNet_Read32(&netbuf[2]);
+		if (gameID != gGameInfo.gameID) {
+			/* This must be for a different game */
+			continue;
+		}
+
 		/* Loop, check the address */
 		for ( i=gNumPlayers; i--; ) {
 			if ( acked[i] )
@@ -557,7 +549,7 @@ int Send_NewGame(int *Wave, int *Lives, int *Turbo)
 	return(0);
 }
 
-int Await_NewGame(int *Wave, int *Lives, int *Turbo)
+int Await_NewGame()
 {
 	unsigned char netbuf[BUFSIZ];
 	int len, gameon;
@@ -602,21 +594,11 @@ int Await_NewGame(int *Wave, int *Lives, int *Turbo)
 			continue;
 		}
 
-		/* Extract the RandomSeed and return the packet */
-		*Turbo = (int)netbuf[2];
-		len = 3;
-		*Wave = SDLNet_Read32(&netbuf[len]);
-		len += 4;
-		lives = SDLNet_Read32(&netbuf[len]);
-		len += 4;
-		if ( lives & 0x8000 )
-			gDeathMatch = (lives&(~0x8000));
-		else
-			*Lives = lives;
-		seed = SDLNet_Read32(&netbuf[len]);
-		len += 4;
-		SeedRandom(seed);
-//error("Seed is 0x%x\r\n", seed);
+		Uint32 gameID = SDLNet_Read32(&netbuf[2]);
+		if (gameID != gGameInfo.gameID) {
+			/* This must be for a different game */
+			continue;
+		}
 
 		netbuf[1] = gOurPlayer;
 		SDLNet_UDP_Send(gNetFD, 1, &sent);
