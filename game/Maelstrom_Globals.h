@@ -44,6 +44,7 @@
 
 // Preferences keys
 #define PREFERENCES_HANDLE "Handle"
+#define PREFERENCES_DEATHMATCH "Network.Deathmatch"
 
 // The Font Server :)
 extern FontServ *fontserv;

@@ -84,7 +84,7 @@ public:
 
 	void SetSinglePlayer(Uint8 wave, Uint8 lives, Uint8 turbo);
 
-	void SetMultiplayerHost(Uint32 gameID, const char *name);
+	void SetMultiplayerHost(Uint32 gameID, Uint8 deathMatch, const char *name);
 
 	void SetLocalID(Uint32 playerID) {
 		localID = playerID;

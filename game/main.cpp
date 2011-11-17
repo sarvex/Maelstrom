@@ -67,6 +67,7 @@ static void RunSinglePlayerGame()
 	if (InitNetData(false) < 0) {
 		return;
 	}
+	AddLocalPlayer(HOST_PLAYER);
 	NewGame();
 	HaltNetData();
 }

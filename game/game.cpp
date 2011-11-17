@@ -536,7 +536,7 @@ GamePanelDelegate::DoHousekeeping()
 	}
 
 	/* -- Make sure someone is still playing... */
-	bool PlayersLeft;
+	bool PlayersLeft = false;
 	for ( i=0; i < gNumPlayers; ++i ) {
 		if ( gPlayers[i]->Kicking() ) {
 			PlayersLeft = true;

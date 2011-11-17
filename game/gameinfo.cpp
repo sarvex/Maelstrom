@@ -37,6 +37,7 @@ GameInfo::Reset()
 void
 GameInfo::SetSinglePlayer(Uint8 wave, Uint8 lives, Uint8 turbo)
 {
+	Reset();
 	this->gameID = 1;
 	this->seed = GetRandSeed();
 	this->wave = wave;
@@ -46,14 +47,14 @@ GameInfo::SetSinglePlayer(Uint8 wave, Uint8 lives, Uint8 turbo)
 }
 
 void
-GameInfo::SetMultiplayerHost(Uint32 gameID, const char *name)
+GameInfo::SetMultiplayerHost(Uint32 gameID, Uint8 deathMatch, const char *name)
 {
 	this->gameID = gameID;
 	this->seed = GetRandSeed();
 	this->wave = DEFAULT_START_WAVE;
 	this->lives = DEFAULT_START_LIVES;
 	this->turbo = DEFAULT_START_TURBO;
-	this->deathMatch = 0;
+	this->deathMatch = deathMatch;
 	players[HOST_PLAYER].playerID = gameID;
 	SDL_strlcpy(players[HOST_PLAYER].name, name ? name : "",
 			sizeof(players[HOST_PLAYER].name));

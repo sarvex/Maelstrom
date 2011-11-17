@@ -168,21 +168,14 @@ int CheckPlayers(void)
 		if ( GotPlayer[i] )
 			++gNumPlayers;
 	}
-	/* Add ourselves if needed */
-	if ( gNumPlayers == 0 ) {
-		AddLocalPlayer(HOST_PLAYER);
-		gNumPlayers = 1;
-		FoundUs = 1;
-	}
 	for ( i=0; i<gNumPlayers; ++i ) {
 		if ( ! GotPlayer[i] ) {
-			error(
-"Player %d not specified!  Use the -player option for all players.\r\n", i+1);
+			error("Player %d not specified!\r\n", i+1);
 			return(-1);
 		}
 	}
 	if ( ! FoundUs ) {
-		error("Which player are you?  (Use the -player N option)\r\n");
+		error("Which player are you?\r\n");
 		return(-1);
 	}
 	if ( (gOurPlayer+1) > gNumPlayers ) {

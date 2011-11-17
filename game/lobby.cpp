@@ -324,7 +324,9 @@ LobbyDialogDelegate::SetState(LOBBY_STATE state)
 			SendLeaveRequest();
 		}
 	} else if (state == STATE_HOSTING) {
-		m_game.SetMultiplayerHost(m_uniqueID, prefs->GetString(PREFERENCES_HANDLE));
+		m_game.SetMultiplayerHost(m_uniqueID,
+			prefs->GetNumber(PREFERENCES_DEATHMATCH),
+			prefs->GetString(PREFERENCES_HANDLE));
 	} else if (state == STATE_LISTING) {
 		ClearGameList();
 	}
@@ -508,7 +510,6 @@ void
 LobbyDialogDelegate::ClearGameInfo()
 {
 	m_game.Reset();
-	m_game.deathMatch = (Uint8)prefs->GetNumber("Network.Deathmatch");
 }
 
 void
