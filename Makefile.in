@@ -38,8 +38,10 @@ noinst_PROGRAMS = MaelstromLobby$(EXEEXT)
 subdir = .
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Maelstrom.spec.in \
 	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
-	$(top_srcdir)/configure COPYING INSTALL config.guess \
-	config.sub depcomp install-sh missing mkinstalldirs
+	$(top_srcdir)/configure COPYING INSTALL \
+	build-scripts/config.guess build-scripts/config.sub \
+	build-scripts/depcomp build-scripts/install-sh \
+	build-scripts/missing build-scripts/mkinstalldirs
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
 	$(top_srcdir)/configure.in
@@ -47,7 +49,7 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
-mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+mkinstalldirs = $(SHELL) $(top_srcdir)/build-scripts/mkinstalldirs
 CONFIG_CLEAN_FILES = Maelstrom.spec
 am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
@@ -60,7 +62,7 @@ am_MaelstromLobby_OBJECTS = MaelstromLobby.$(OBJEXT)
 MaelstromLobby_OBJECTS = $(am_MaelstromLobby_OBJECTS)
 MaelstromLobby_DEPENDENCIES =
 DEFAULT_INCLUDES = -I.@am__isrc@
-depcomp = $(SHELL) $(top_srcdir)/depcomp
+depcomp = $(SHELL) $(top_srcdir)/build-scripts/depcomp
 am__depfiles_maybe = depfiles
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
