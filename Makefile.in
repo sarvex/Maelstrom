@@ -38,7 +38,7 @@ noinst_PROGRAMS = MaelstromLobby$(EXEEXT)
 subdir = .
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Maelstrom.spec.in \
 	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
-	$(top_srcdir)/configure COPYING INSTALL TODO config.guess \
+	$(top_srcdir)/configure COPYING INSTALL config.guess \
 	config.sub depcomp install-sh missing mkinstalldirs
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
