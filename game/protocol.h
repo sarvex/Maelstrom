@@ -197,9 +197,10 @@ enum LobbyProtocol {
    array in player.cpp
 */
 #define MAX_PLAYERS	3
+#define MAX_NODES	MAX_PLAYERS
 
-/* The index of the player hosting the game */
-#define HOST_PLAYER	0
+/* The index of the node hosting the game */
+#define HOST_NODE	0
 
 /* If the other side hasn't responded in 3 seconds, we'll drop them */
 #define PING_INTERVAL	1000

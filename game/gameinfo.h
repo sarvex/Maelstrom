@@ -30,7 +30,7 @@ class UIElement;
 class UIElementCheckbox;
 class UIElementRadioGroup;
 
-enum {
+enum PLAYER_CONTROL {
 	CONTROL_KEYBOARD = 1,
 	CONTROL_JOYSTICK,
 	CONTROL_NETWORK,
@@ -45,17 +45,31 @@ enum PING_STATUS {
 	NUM_PING_STATES
 };
 
-struct GameInfoPlayer
+// This represents a physical machine (host/port combo) on the network
+struct GameInfoNode
 {
-	Uint32 playerID;
+	Uint32 nodeID;
 	IPaddress address;
-	char name[MAX_NAMELEN+1];
 
 	struct {
 		Uint32 lastPing;
 		Uint32 roundTripTime;
 		PING_STATUS status;
 	} ping;
+
+};
+
+// This represents a player in the game, on a particular network node
+//
+// The hosting node may have any number of players
+// The other nodes may each only have one player, to simplify things
+// like the join/leave/kick process.
+//
+struct GameInfoPlayer
+{
+	Uint32 nodeID;
+	char name[MAX_NAMELEN+1];
+	Uint8 controlMask;
 
 	struct {
 		UIElement *element;
@@ -84,10 +98,10 @@ public:
 
 	void SetSinglePlayer(Uint8 wave, Uint8 lives, Uint8 turbo);
 
-	void SetMultiplayerHost(Uint32 gameID, Uint8 deathMatch, const char *name);
+	void SetMultiplayerHost(Uint8 deathMatch, const char *name);
 
-	void SetLocalID(Uint32 playerID) {
-		localID = playerID;
+	void SetLocalID(Uint32 uniqueID) {
+		localID = uniqueID;
 	}
 
 	void CopyFrom(const GameInfo &rhs);
@@ -95,56 +109,33 @@ public:
 	bool ReadFromPacket(DynamicPacket &packet);
 	void WriteToPacket(DynamicPacket &packet);
 
-	GameInfoPlayer *GetHost() {
-		return GetPlayer(HOST_PLAYER);
+	GameInfoNode *GetHost() {
+		return GetNode(HOST_NODE);
+	}
+	GameInfoNode *GetNode(int index) {
+		return &nodes[index];
+	}
+	GameInfoNode *GetNodeByID(Uint32 nodeID) {
+		for (int i = 0; i < MAX_NODES; ++i) {
+			if (nodeID == nodes[i].nodeID) {
+				return &nodes[i];
+			}
+		}
 	}
 	GameInfoPlayer *GetPlayer(int index) {
 		return &players[index];
 	}
-	GameInfoPlayer *GetPlayerByID(Uint32 playerID) {
-		for (int i = 0; i < MAX_PLAYERS; ++i) {
-			if (players[i].playerID == playerID) {
-				return &players[i];
-			}
-		}
-		return NULL;
-	}
 
-	bool HasPlayer(Uint32 playerID) {
-		for (int i = 0; i < MAX_PLAYERS; ++i) {
-			if (players[i].playerID == playerID) {
-				return true;
-			}
-		}
-		return false;
-	}
-	bool HasPlayer(const IPaddress &address) {
-		for (int i = 0; i < MAX_PLAYERS; ++i) {
-			if (players[i].address == address) {
-				return true;
-			}
-		}
-		return false;
-	}
+	bool HasNode(Uint32 nodeID);
+	bool HasNode(const IPaddress &address);
+	void RemoveNode(Uint32 nodeID);
 
-	bool IsNetworkPlayer(int index) {
-		if (!players[index].playerID) {
-			return false;
-		}
-		if (players[index].playerID == localID) {
-			return false;
-		}
-		return true;
+	bool IsHosting() {
+		return localID == gameID;
 	}
+	bool IsNetworkNode(int index);
 
-	bool IsFull() {
-		for (int i = 0; i < MAX_PLAYERS; ++i) {
-			if (!players[i].playerID) {
-				return false;
-			}
-		}
-		return true;
-	}
+	bool IsFull();
 
 	void BindPlayerToUI(int index, UIElement *element);
 	void UpdateUI();
@@ -155,14 +146,7 @@ public:
 	void UpdatePingTime(int index, Uint32 timestamp);
 	void UpdatePingStatus();
 	void UpdatePingStatus(int index);
-
-	PING_STATUS GetPingStatus(int index) {
-		if (IsNetworkPlayer(index)) {
-			return players[index].ping.status;
-		} else {
-			return PING_LOCAL;
-		}
-	}
+	PING_STATUS GetPingStatus(int index);
 
 public:
 	Uint32 gameID;
@@ -171,6 +155,7 @@ public:
 	Uint8 lives;
 	Uint8 turbo;
 	Uint8 deathMatch;
+	GameInfoNode nodes[MAX_NODES];
 	GameInfoPlayer players[MAX_PLAYERS];
 
 	Uint32 localID;

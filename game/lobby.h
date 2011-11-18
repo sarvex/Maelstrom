@@ -97,7 +97,6 @@ protected:
 		STATE_PLAYING
 	} m_state;
 
-	Uint32 m_uniqueID;
 	Uint32 m_lastPing;
 	Uint32 m_lastRefresh;
 	Uint32 m_requestSequence;

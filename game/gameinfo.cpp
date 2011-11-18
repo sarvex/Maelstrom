@@ -47,22 +47,30 @@ GameInfo::SetSinglePlayer(Uint8 wave, Uint8 lives, Uint8 turbo)
 }
 
 void
-GameInfo::SetMultiplayerHost(Uint32 gameID, Uint8 deathMatch, const char *name)
+GameInfo::SetMultiplayerHost(Uint8 deathMatch, const char *name)
 {
-	this->gameID = gameID;
+	this->gameID = localID;
 	this->seed = GetRandSeed();
 	this->wave = DEFAULT_START_WAVE;
 	this->lives = DEFAULT_START_LIVES;
 	this->turbo = DEFAULT_START_TURBO;
 	this->deathMatch = deathMatch;
-	players[HOST_PLAYER].playerID = gameID;
-	SDL_strlcpy(players[HOST_PLAYER].name, name ? name : "",
-			sizeof(players[HOST_PLAYER].name));
+
+	// We are the host node
+	nodes[HOST_NODE].nodeID = localID;
+
+	// We are the first player
+	GameInfoPlayer *player = GetPlayer(0);
+	player->nodeID = localID;
+	SDL_strlcpy(player->name, name ? name : "", sizeof(player->name));
+	player->controlMask = (CONTROL_KEYBOARD|CONTROL_JOYSTICK1);
 }
 
 void
 GameInfo::CopyFrom(const GameInfo &rhs)
 {
+	int i;
+
 	gameID = rhs.gameID;
 	seed = rhs.seed;
 	wave = rhs.wave;
@@ -70,23 +78,30 @@ GameInfo::CopyFrom(const GameInfo &rhs)
 	turbo = rhs.turbo;
 	deathMatch = rhs.deathMatch;
 
-	for (int i = 0; i < MAX_PLAYERS; ++i) {
-		players[i].playerID = rhs.players[i].playerID;
-		SDL_strlcpy(players[i].name, rhs.players[i].name,
-			sizeof(players[i].name));
-		if (players[i].address != rhs.players[i].address) {
-			players[i].address = rhs.players[i].address;
+	for (i = 0; i < MAX_NODES; ++i) {
+		nodes[i].nodeID = rhs.nodes[i].nodeID;
+		if (nodes[i].address != rhs.nodes[i].address) {
+			nodes[i].address = rhs.nodes[i].address;
 
 			// Reset the ping info
 			InitializePing(i);
 		}
 	}
+
+	for (i = 0; i < MAX_PLAYERS; ++i) {
+		players[i].nodeID = rhs.players[i].nodeID;
+		SDL_strlcpy(players[i].name, rhs.players[i].name,
+			sizeof(players[i].name));
+	}
+
 	UpdateUI();
 }
 
 bool
 GameInfo::ReadFromPacket(DynamicPacket &packet)
 {
+	int i;
+
 	if (!packet.Read(gameID)) {
 		return false;
 	}
@@ -106,14 +121,20 @@ GameInfo::ReadFromPacket(DynamicPacket &packet)
 		return false;
 	}
 
-	for (int i = 0; i < MAX_PLAYERS; ++i) {
-		if (!packet.Read(players[i].playerID)) {
+	for (i = 0; i < MAX_NODES; ++i) {
+		if (!packet.Read(nodes[i].nodeID)) {
 			return false;
 		}
-		if (!packet.Read(players[i].address.host)) {
+		if (!packet.Read(nodes[i].address.host)) {
 			return false;
 		}
-		if (!packet.Read(players[i].address.port)) {
+		if (!packet.Read(nodes[i].address.port)) {
+			return false;
+		}
+	}
+
+	for (i = 0; i < MAX_PLAYERS; ++i) {
+		if (!packet.Read(players[i].nodeID)) {
 			return false;
 		}
 		if (!packet.Read(players[i].name, sizeof(players[i].name))) {
@@ -123,8 +144,8 @@ GameInfo::ReadFromPacket(DynamicPacket &packet)
 
 	// We want to get the public address of the server
 	// If we already have one, we assume that's the fastest interface
-	if (!players[HOST_PLAYER].address.host) {
-		players[HOST_PLAYER].address = packet.address;
+	if (!nodes[HOST_NODE].address.host) {
+		nodes[HOST_NODE].address = packet.address;
 	}
 
 	return true;
@@ -133,6 +154,8 @@ GameInfo::ReadFromPacket(DynamicPacket &packet)
 void
 GameInfo::WriteToPacket(DynamicPacket &packet)
 {
+	int i;
+
 	packet.Write(gameID);
 	packet.Write(seed);
 	packet.Write(wave);
@@ -140,12 +163,77 @@ GameInfo::WriteToPacket(DynamicPacket &packet)
 	packet.Write(turbo);
 	packet.Write(deathMatch);
 
-	for (int i = 0; i < MAX_PLAYERS; ++i) {
-		packet.Write(players[i].playerID);
-		packet.Write(players[i].address.host);
-		packet.Write(players[i].address.port);
+	for (i = 0; i < MAX_NODES; ++i) {
+		packet.Write(nodes[i].nodeID);
+		packet.Write(nodes[i].address.host);
+		packet.Write(nodes[i].address.port);
+	}
+
+	for (i = 0; i < MAX_PLAYERS; ++i) {
+		packet.Write(players[i].nodeID);
 		packet.Write(players[i].name);
 	}
+}
+
+bool
+GameInfo::HasNode(Uint32 nodeID)
+{
+	for (int i = 0; i < MAX_NODES; ++i) {
+		if (nodes[i].nodeID == nodeID) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool
+GameInfo::HasNode(const IPaddress &address)
+{
+	for (int i = 0; i < MAX_NODES; ++i) {
+		if (nodes[i].address == address) {
+			return true;
+		}
+	}
+	return false;
+}
+
+void
+GameInfo::RemoveNode(Uint32 nodeID)
+{
+	int i;
+	for (i = 0; i < MAX_NODES; ++i) {
+		if (nodeID == nodes[i].nodeID) {
+			SDL_zero(nodes[i]);
+		}
+	}
+	for (i = 0; i < MAX_PLAYERS; ++i) {
+		if (nodeID == players[i].nodeID) {
+			SDL_zero(players[i]);
+		}
+	}
+}
+
+bool
+GameInfo::IsNetworkNode(int index)
+{
+	if (!nodes[index].nodeID) {
+		return false;
+	}
+	if (nodes[index].nodeID == localID) {
+		return false;
+	}
+	return true;
+}
+
+bool
+GameInfo::IsFull()
+{
+	for (int i = 0; i < MAX_PLAYERS; ++i) {
+		if (!players[i].nodeID) {
+			return false;
+		}
+	}
+	return true;
 }
 
 void
@@ -195,40 +283,41 @@ GameInfo::UpdateUI(GameInfoPlayer *player)
 		}
 	}
 	if (player->UI.host) {
-		if (player->playerID == localID) {
+		GameInfoNode *node = GetNodeByID(player->nodeID);
+		if (node->nodeID == localID) {
 			//player->UI.host->Show();
 			//player->UI.host->SetText("localhost");
 			player->UI.host->Hide();
-		} else if (player->address.host) {
+		} else if (node->address.host) {
 			player->UI.host->Show();
-			player->UI.host->SetText(SDLNet_ResolveIP(&player->address));
+			player->UI.host->SetText(SDLNet_ResolveIP(&node->address));
 		} else {
 			player->UI.host->Hide();
 		}
 	}
 	if (player->UI.control) {
-		if (player->playerID == localID) {
+		if (player->nodeID == localID) {
 			player->UI.control->SetValue(CONTROL_KEYBOARD);
 		} else {
 			player->UI.control->SetValue(CONTROL_NETWORK);
 		}
 	}
 	if (player->UI.keyboard) {
-		if (player->playerID == localID) {
+		if (player->nodeID == localID) {
 			player->UI.keyboard->Show();
 		} else {
 			player->UI.keyboard->Hide();
 		}
 	}
 	if (player->UI.joystick) {
-		if (player->playerID == localID) {
+		if (player->nodeID == localID) {
 			player->UI.joystick->Show();
 		} else {
 			player->UI.joystick->Hide();
 		}
 	}
 	if (player->UI.network) {
-		if (player->playerID != localID) {
+		if (player->nodeID != localID) {
 			player->UI.network->Show();
 		} else {
 			player->UI.network->Hide();
@@ -237,7 +326,7 @@ GameInfo::UpdateUI(GameInfoPlayer *player)
 	for (int i = 0; i < NUM_PING_STATES; ++i) {
 		UIElement *element = player->UI.ping_states[i];
 		if (element) {
-			if (player->ping.status == i) {
+			if (GetNodeByID(player->nodeID)->ping.status == i) {
 				element->Show();
 			} else {
 				element->Hide();
@@ -249,7 +338,7 @@ GameInfo::UpdateUI(GameInfoPlayer *player)
 void
 GameInfo::InitializePing()
 {
-	for (int i = 0; i < MAX_PLAYERS; ++i) {
+	for (int i = 0; i < MAX_NODES; ++i) {
 		InitializePing(i);
 	}
 }
@@ -257,11 +346,12 @@ GameInfo::InitializePing()
 void
 GameInfo::InitializePing(int index)
 {
-	if (IsNetworkPlayer(index)) {
-		GameInfoPlayer *player = GetPlayer(index);
-		player->ping.lastPing = SDL_GetTicks();
-		player->ping.roundTripTime = 0;
-		player->ping.status = PING_GOOD;
+	GameInfoNode *node = GetNode(index);
+
+	if (node->nodeID != localID) {
+		node->ping.lastPing = SDL_GetTicks();
+		node->ping.roundTripTime = 0;
+		node->ping.status = PING_GOOD;
 	}
 }
 
@@ -270,25 +360,25 @@ GameInfo::UpdatePingTime(int index, Uint32 timestamp)
 {
 	Uint32 now;
 	Uint32 elapsed;
-	GameInfoPlayer *player;
+	GameInfoNode *node;
 
 	now = SDL_GetTicks();
 	elapsed = (now - timestamp);
 
-	player = GetPlayer(index);
-	player->ping.lastPing = now;
-	if (!player->ping.roundTripTime) {
-		player->ping.roundTripTime = elapsed;
+	node = GetNode(index);
+	node->ping.lastPing = now;
+	if (!node->ping.roundTripTime) {
+		node->ping.roundTripTime = elapsed;
 	} else {
 		// Use a weighted average 2/3 previous value, 1/3 new value
-		player->ping.roundTripTime = (2*player->ping.roundTripTime + 1*elapsed) / 3;
+		node->ping.roundTripTime = (2*node->ping.roundTripTime + 1*elapsed) / 3;
 	}
 }
 
 void
 GameInfo::UpdatePingStatus()
 {
-	for (int i = 0; i < MAX_PLAYERS; ++i) {
+	for (int i = 0; i < MAX_NODES; ++i) {
 		UpdatePingStatus(i);
 	}
 }
@@ -296,47 +386,63 @@ GameInfo::UpdatePingStatus()
 void
 GameInfo::UpdatePingStatus(int index)
 {
-	GameInfoPlayer *player = GetPlayer(index);
+	GameInfoNode *node = GetNode(index);
 
-	if (!IsNetworkPlayer(index)) {
-		player->ping.status = PING_LOCAL;
+	if (!IsNetworkNode(index)) {
+		node->ping.status = PING_LOCAL;
 	} else {
 		Uint32 sinceLastPing;
 
-		sinceLastPing = int(SDL_GetTicks() - player->ping.lastPing);
+		sinceLastPing = int(SDL_GetTicks() - node->ping.lastPing);
 		if (sinceLastPing < 2*PING_INTERVAL) {
-			if (player->ping.roundTripTime <= 2*FRAME_DELAY_MS) {
+			if (node->ping.roundTripTime <= 2*FRAME_DELAY_MS) {
 #ifdef DEBUG_NETWORK
-printf("Game 0x%8.8x: player 0x%8.8x round trip time %d (GOOD)\n",
-	gameID, player->playerID, player->ping.roundTripTime);
+printf("Game 0x%8.8x: node 0x%8.8x round trip time %d (GOOD)\n",
+	gameID, node->nodeID, node->ping.roundTripTime);
 #endif
-				player->ping.status = PING_GOOD;
-			} else if (player->ping.roundTripTime <= 3*FRAME_DELAY_MS) {
+				node->ping.status = PING_GOOD;
+			} else if (node->ping.roundTripTime <= 3*FRAME_DELAY_MS) {
 #ifdef DEBUG_NETWORK
-printf("Game 0x%8.8x: player 0x%8.8x round trip time %d (OKAY)\n",
-	gameID, player->playerID, player->ping.roundTripTime);
+printf("Game 0x%8.8x: node 0x%8.8x round trip time %d (OKAY)\n",
+	gameID, node->nodeID, node->ping.roundTripTime);
 #endif
-				player->ping.status = PING_OKAY;
+				node->ping.status = PING_OKAY;
 			} else {
 #ifdef DEBUG_NETWORK
-printf("Game 0x%8.8x: player 0x%8.8x round trip time %d (BAD)\n",
-	gameID, player->playerID, player->ping.roundTripTime);
+printf("Game 0x%8.8x: node 0x%8.8x round trip time %d (BAD)\n",
+	gameID, node->nodeID, node->ping.roundTripTime);
 #endif
-				player->ping.status = PING_BAD;
+				node->ping.status = PING_BAD;
 			}
 		} else if (sinceLastPing < PING_TIMEOUT) {
 #ifdef DEBUG_NETWORK
-printf("Game 0x%8.8x: player 0x%8.8x since last ping %d (BAD)\n",
-	gameID, player->playerID, sinceLastPing);
+printf("Game 0x%8.8x: node 0x%8.8x since last ping %d (BAD)\n",
+	gameID, node->nodeID, sinceLastPing);
 #endif
-			player->ping.status = PING_BAD;
+			node->ping.status = PING_BAD;
 		} else {
 #ifdef DEBUG_NETWORK
-printf("Game 0x%8.8x: player 0x%8.8x since last ping %d (TIMEDOUT)\n",
-	gameID, player->playerID, sinceLastPing);
+printf("Game 0x%8.8x: node 0x%8.8x since last ping %d (TIMEDOUT)\n",
+	gameID, node->nodeID, sinceLastPing);
 #endif
-			player->ping.status = PING_TIMEDOUT;
+			node->ping.status = PING_TIMEDOUT;
 		}
 	}
-	UpdateUI(player);
+
+	// Update the UI for matching players
+	for (int i = 0; i < MAX_PLAYERS; ++i) {
+		if (players[i].nodeID == node->nodeID) {
+			UpdateUI(&players[i]);
+		}
+	}
+}
+
+PING_STATUS
+GameInfo::GetPingStatus(int index)
+{
+	if (IsNetworkNode(index)) {
+		return nodes[index].ping.status;
+	} else {
+		return PING_LOCAL;
+	}
 }
