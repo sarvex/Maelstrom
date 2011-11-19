@@ -31,9 +31,14 @@ class UIElementCheckbox;
 class UIElementRadioGroup;
 
 enum PLAYER_CONTROL {
-	CONTROL_KEYBOARD = 1,
-	CONTROL_JOYSTICK,
-	CONTROL_NETWORK,
+	CONTROL_NONE,
+	CONTROL_KEYBOARD  = 0x01,
+	CONTROL_JOYSTICK1 = 0x02,
+	CONTROL_JOYSTICK2 = 0x04,
+	CONTROL_JOYSTICK3 = 0x08,
+	CONTROL_NETWORK   = 0x10,
+	CONTROL_REPLAY    = 0x20,
+	CONTROL_LOCAL     = (CONTROL_KEYBOARD|CONTROL_JOYSTICK1)
 };
 
 enum PING_STATUS {
@@ -87,7 +92,7 @@ struct GameInfoPlayer
 class GameInfo
 {
 public:
-	GameInfo() { Reset(); }
+	GameInfo();
 
 	// Equality operator for array operations
 	bool operator ==(const GameInfo &rhs) {
@@ -96,46 +101,55 @@ public:
 
 	void Reset();
 
-	void SetSinglePlayer(Uint8 wave, Uint8 lives, Uint8 turbo);
-
-	void SetMultiplayerHost(Uint8 deathMatch, const char *name);
-
 	void SetLocalID(Uint32 uniqueID) {
 		localID = uniqueID;
 	}
+
+	void SetHost(const char *name, Uint8 wave, Uint8 lives, Uint8 turbo, Uint8 deathMatch);
+
+	bool AddLocalPlayer(const char *name, Uint8 controlMask);
+	bool AddNetworkPlayer(Uint32 nodeID, const IPaddress &address, const char *name);
 
 	void CopyFrom(const GameInfo &rhs);
 
 	bool ReadFromPacket(DynamicPacket &packet);
 	void WriteToPacket(DynamicPacket &packet);
 
-	GameInfoNode *GetHost() {
+	int GetNumNodes() const {
+		return numNodes;
+	}
+	const GameInfoNode *GetHost() const {
 		return GetNode(HOST_NODE);
 	}
-	GameInfoNode *GetNode(int index) {
+	const GameInfoNode *GetNode(int index) const {
 		return &nodes[index];
 	}
-	GameInfoNode *GetNodeByID(Uint32 nodeID) {
-		for (int i = 0; i < MAX_NODES; ++i) {
+	const GameInfoNode *GetNodeByID(Uint32 nodeID) const {
+		for (int i = 0; i < GetNumNodes(); ++i) {
 			if (nodeID == nodes[i].nodeID) {
 				return &nodes[i];
 			}
 		}
-	}
-	GameInfoPlayer *GetPlayer(int index) {
-		return &players[index];
+		return NULL;
 	}
 
-	bool HasNode(Uint32 nodeID);
-	bool HasNode(const IPaddress &address);
+	bool HasNode(Uint32 nodeID) const;
+	bool HasNode(const IPaddress &address) const;
 	void RemoveNode(Uint32 nodeID);
 
-	bool IsHosting() {
-		return localID == gameID;
+	int GetNumPlayers() const {
+		return numPlayers;
 	}
-	bool IsNetworkNode(int index);
+	const GameInfoPlayer *GetPlayer(int index) const {
+		return &players[index];
+	}
+	void RemovePlayer(int index);
 
-	bool IsFull();
+	bool IsHosting() const;
+	bool IsNetworkNode(int index) const;
+	bool IsNetworkPlayer(int index) const;
+
+	bool IsFull() const;
 
 	void BindPlayerToUI(int index, UIElement *element);
 	void UpdateUI();
@@ -155,10 +169,14 @@ public:
 	Uint8 lives;
 	Uint8 turbo;
 	Uint8 deathMatch;
-	GameInfoNode nodes[MAX_NODES];
-	GameInfoPlayer players[MAX_PLAYERS];
 
 	Uint32 localID;
+
+protected:
+	Uint8 numNodes;
+	GameInfoNode nodes[MAX_NODES];
+	Uint8 numPlayers;
+	GameInfoPlayer players[MAX_PLAYERS];
 };
 
 #endif // _gameinfo_h

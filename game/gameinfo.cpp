@@ -28,48 +28,106 @@
 #include "gameinfo.h"
 
 
-void
-GameInfo::Reset()
+GameInfo::GameInfo()
 {
-	SDL_zero(*this);
+	localID = rand();
+	Reset();
 }
 
 void
-GameInfo::SetSinglePlayer(Uint8 wave, Uint8 lives, Uint8 turbo)
+GameInfo::Reset()
+{
+	gameID = 0;
+	seed = 0;
+	wave = 0;
+	lives = 0;
+	turbo = 0;
+	deathMatch = 0;
+	numNodes = 0;
+	SDL_zero(nodes);
+	numPlayers = 0;
+	SDL_zero(players);
+}
+
+void
+GameInfo::SetHost(const char *name,
+		  Uint8 wave, Uint8 lives, Uint8 turbo, Uint8 deathMatch)
 {
 	Reset();
-	this->gameID = 1;
+
+	this->gameID = localID;
 	this->seed = GetRandSeed();
 	this->wave = wave;
 	this->lives = lives;
 	this->turbo = turbo;
-	this->deathMatch = 0;
-}
-
-void
-GameInfo::SetMultiplayerHost(Uint8 deathMatch, const char *name)
-{
-	this->gameID = localID;
-	this->seed = GetRandSeed();
-	this->wave = DEFAULT_START_WAVE;
-	this->lives = DEFAULT_START_LIVES;
-	this->turbo = DEFAULT_START_TURBO;
 	this->deathMatch = deathMatch;
 
 	// We are the host node
+	assert(HOST_NODE == 0);
 	nodes[HOST_NODE].nodeID = localID;
+	numNodes = 1;
 
 	// We are the first player
-	GameInfoPlayer *player = GetPlayer(0);
+	AddLocalPlayer(name, CONTROL_LOCAL);
+}
+
+bool
+GameInfo::AddLocalPlayer(const char *name, Uint8 controlMask)
+{
+	int slot;
+
+	if (IsFull()) {
+		return false;
+	}
+
+	if (!name) {
+		name = "";
+	}
+
+	slot = numPlayers;
+	GameInfoPlayer *player = &players[slot];
 	player->nodeID = localID;
-	SDL_strlcpy(player->name, name ? name : "", sizeof(player->name));
-	player->controlMask = (CONTROL_KEYBOARD|CONTROL_JOYSTICK1);
+	SDL_strlcpy(player->name, name, sizeof(player->name));
+	player->controlMask = controlMask;
+	++numPlayers;
+
+	UpdateUI(player);
+
+	return true;
+}
+
+bool
+GameInfo::AddNetworkPlayer(Uint32 nodeID, const IPaddress &address, const char *name)
+{
+	int slot;
+
+	if (IsFull()) {
+		return false;
+	}
+
+	slot = numNodes;
+	GameInfoNode *node = &nodes[slot];
+	node->nodeID = nodeID;
+	node->address = address;
+	InitializePing(slot);
+	++numNodes;
+
+	slot = numPlayers;
+	GameInfoPlayer *player = &players[slot];
+	player->nodeID = nodeID;
+	SDL_strlcpy(player->name, name, sizeof(player->name));
+	player->controlMask = CONTROL_NETWORK;
+	++numPlayers;
+
+	UpdateUI(player);
+
+	return true;
 }
 
 void
 GameInfo::CopyFrom(const GameInfo &rhs)
 {
-	int i;
+	int i, j;
 
 	gameID = rhs.gameID;
 	seed = rhs.seed;
@@ -79,20 +137,39 @@ GameInfo::CopyFrom(const GameInfo &rhs)
 	deathMatch = rhs.deathMatch;
 
 	for (i = 0; i < MAX_NODES; ++i) {
-		nodes[i].nodeID = rhs.nodes[i].nodeID;
-		if (nodes[i].address != rhs.nodes[i].address) {
-			nodes[i].address = rhs.nodes[i].address;
-
-			// Reset the ping info
-			InitializePing(i);
+		const GameInfoNode *node = rhs.GetNode(i);
+		if (nodes[i].nodeID != node->nodeID ||
+		    nodes[i].address != node->address) {
+			// See if this node was just slid down
+			for (j = i+1; j < MAX_NODES; ++j) {
+				if (nodes[j].nodeID == node->nodeID &&
+				    nodes[j].address == node->address) {
+					nodes[i].ping = nodes[j].ping;
+					break;
+				}
+			}
+			if (j == MAX_NODES) {
+				// Reset the ping info
+				InitializePing(i);
+			}
 		}
+		nodes[i].nodeID = node->nodeID;
+		nodes[i].address = node->address;
 	}
+	numNodes = rhs.numNodes;
 
 	for (i = 0; i < MAX_PLAYERS; ++i) {
-		players[i].nodeID = rhs.players[i].nodeID;
-		SDL_strlcpy(players[i].name, rhs.players[i].name,
+		const GameInfoPlayer *player = rhs.GetPlayer(i);
+		players[i].nodeID = player->nodeID;
+		SDL_memcpy(players[i].name, player->name,
 			sizeof(players[i].name));
+		if (players[i].nodeID == localID) {
+			players[i].controlMask = CONTROL_LOCAL;
+		} else {
+			players[i].controlMask = CONTROL_NETWORK;
+		}
 	}
+	numPlayers = rhs.numPlayers;
 
 	UpdateUI();
 }
@@ -121,6 +198,9 @@ GameInfo::ReadFromPacket(DynamicPacket &packet)
 		return false;
 	}
 
+	if (!packet.Read(numNodes)) {
+		return false;
+	}
 	for (i = 0; i < MAX_NODES; ++i) {
 		if (!packet.Read(nodes[i].nodeID)) {
 			return false;
@@ -133,12 +213,20 @@ GameInfo::ReadFromPacket(DynamicPacket &packet)
 		}
 	}
 
+	if (!packet.Read(numPlayers)) {
+		return false;
+	}
 	for (i = 0; i < MAX_PLAYERS; ++i) {
 		if (!packet.Read(players[i].nodeID)) {
 			return false;
 		}
 		if (!packet.Read(players[i].name, sizeof(players[i].name))) {
 			return false;
+		}
+		if (players[i].nodeID) {
+			players[i].controlMask = CONTROL_REPLAY;
+		} else {
+			players[i].controlMask = CONTROL_NONE;
 		}
 	}
 
@@ -163,12 +251,14 @@ GameInfo::WriteToPacket(DynamicPacket &packet)
 	packet.Write(turbo);
 	packet.Write(deathMatch);
 
+	packet.Write(numNodes);
 	for (i = 0; i < MAX_NODES; ++i) {
 		packet.Write(nodes[i].nodeID);
 		packet.Write(nodes[i].address.host);
 		packet.Write(nodes[i].address.port);
 	}
 
+	packet.Write(numPlayers);
 	for (i = 0; i < MAX_PLAYERS; ++i) {
 		packet.Write(players[i].nodeID);
 		packet.Write(players[i].name);
@@ -176,7 +266,7 @@ GameInfo::WriteToPacket(DynamicPacket &packet)
 }
 
 bool
-GameInfo::HasNode(Uint32 nodeID)
+GameInfo::HasNode(Uint32 nodeID) const
 {
 	for (int i = 0; i < MAX_NODES; ++i) {
 		if (nodes[i].nodeID == nodeID) {
@@ -187,7 +277,7 @@ GameInfo::HasNode(Uint32 nodeID)
 }
 
 bool
-GameInfo::HasNode(const IPaddress &address)
+GameInfo::HasNode(const IPaddress &address) const
 {
 	for (int i = 0; i < MAX_NODES; ++i) {
 		if (nodes[i].address == address) {
@@ -201,22 +291,62 @@ void
 GameInfo::RemoveNode(Uint32 nodeID)
 {
 	int i;
-	for (i = 0; i < MAX_NODES; ++i) {
+
+	i = 0;
+	while (i < GetNumNodes()) {
 		if (nodeID == nodes[i].nodeID) {
-			SDL_zero(nodes[i]);
+			SDL_memcpy(&nodes[i], &nodes[i+1],
+					(MAX_NODES-i-1)*sizeof(nodes[i]));
+			SDL_zero(nodes[MAX_NODES-1]);
+			--numNodes;
+		} else {
+			++i;
 		}
 	}
-	for (i = 0; i < MAX_PLAYERS; ++i) {
+
+	i = 0;
+	while (i < GetNumPlayers()) {
 		if (nodeID == players[i].nodeID) {
-			SDL_zero(players[i]);
+			RemovePlayer(i);
+		} else {
+			++i;
 		}
 	}
+
+	UpdateUI();
+}
+
+void
+GameInfo::RemovePlayer(int index)
+{
+	GameInfoPlayer *player;
+
+	for (int i = index; i < MAX_PLAYERS-1; ++i) {
+		player = &players[i];
+		player->nodeID = players[i+1].nodeID;
+		SDL_memcpy(player->name, players[i+1].name, sizeof(player->name));
+		player->controlMask = players[i+1].controlMask;
+	}
+	player = &players[MAX_PLAYERS-1];
+	player->nodeID = 0;
+	SDL_zero(player->name);
+	player->controlMask = 0;
+
+	--numPlayers;
+
+	UpdateUI();
 }
 
 bool
-GameInfo::IsNetworkNode(int index)
+GameInfo::IsHosting() const
 {
-	if (!nodes[index].nodeID) {
+	return localID == gameID;
+}
+
+bool
+GameInfo::IsNetworkNode(int index) const
+{
+	if (index >= GetNumNodes()) {
 		return false;
 	}
 	if (nodes[index].nodeID == localID) {
@@ -226,14 +356,21 @@ GameInfo::IsNetworkNode(int index)
 }
 
 bool
-GameInfo::IsFull()
+GameInfo::IsNetworkPlayer(int index) const
 {
-	for (int i = 0; i < MAX_PLAYERS; ++i) {
-		if (!players[i].nodeID) {
-			return false;
-		}
+	if (index >= GetNumPlayers()) {
+		return false;
+	}
+	if (players[index].nodeID == localID) {
+		return false;
 	}
 	return true;
+}
+
+bool
+GameInfo::IsFull() const
+{
+	return GetNumPlayers() == MAX_PLAYERS;
 }
 
 void
@@ -274,6 +411,10 @@ GameInfo::UpdateUI()
 void
 GameInfo::UpdateUI(GameInfoPlayer *player)
 {
+	if (!player->UI.element) {
+		return;
+	}
+
 	if (player->UI.name) {
 		if (player->name[0]) {
 			player->UI.name->Show();
@@ -283,16 +424,16 @@ GameInfo::UpdateUI(GameInfoPlayer *player)
 		}
 	}
 	if (player->UI.host) {
-		GameInfoNode *node = GetNodeByID(player->nodeID);
-		if (node->nodeID == localID) {
+		const GameInfoNode *node = GetNodeByID(player->nodeID);
+		if (!node) {
+			player->UI.host->Hide();
+		} else if (node->nodeID == localID) {
 			//player->UI.host->Show();
 			//player->UI.host->SetText("localhost");
 			player->UI.host->Hide();
-		} else if (node->address.host) {
+		} else {
 			player->UI.host->Show();
 			player->UI.host->SetText(SDLNet_ResolveIP(&node->address));
-		} else {
-			player->UI.host->Hide();
 		}
 	}
 	if (player->UI.control) {
@@ -326,7 +467,8 @@ GameInfo::UpdateUI(GameInfoPlayer *player)
 	for (int i = 0; i < NUM_PING_STATES; ++i) {
 		UIElement *element = player->UI.ping_states[i];
 		if (element) {
-			if (GetNodeByID(player->nodeID)->ping.status == i) {
+			const GameInfoNode *node = GetNodeByID(player->nodeID);
+			if (node && node->ping.status == i) {
 				element->Show();
 			} else {
 				element->Hide();
@@ -346,7 +488,7 @@ GameInfo::InitializePing()
 void
 GameInfo::InitializePing(int index)
 {
-	GameInfoNode *node = GetNode(index);
+	GameInfoNode *node = &nodes[index];
 
 	if (node->nodeID != localID) {
 		node->ping.lastPing = SDL_GetTicks();
@@ -365,7 +507,7 @@ GameInfo::UpdatePingTime(int index, Uint32 timestamp)
 	now = SDL_GetTicks();
 	elapsed = (now - timestamp);
 
-	node = GetNode(index);
+	node = &nodes[index];
 	node->ping.lastPing = now;
 	if (!node->ping.roundTripTime) {
 		node->ping.roundTripTime = elapsed;
@@ -378,7 +520,7 @@ GameInfo::UpdatePingTime(int index, Uint32 timestamp)
 void
 GameInfo::UpdatePingStatus()
 {
-	for (int i = 0; i < MAX_NODES; ++i) {
+	for (int i = 0; i < GetNumNodes(); ++i) {
 		UpdatePingStatus(i);
 	}
 }
@@ -386,7 +528,7 @@ GameInfo::UpdatePingStatus()
 void
 GameInfo::UpdatePingStatus(int index)
 {
-	GameInfoNode *node = GetNode(index);
+	GameInfoNode *node = &nodes[index];
 
 	if (!IsNetworkNode(index)) {
 		node->ping.status = PING_LOCAL;
@@ -430,7 +572,7 @@ printf("Game 0x%8.8x: node 0x%8.8x since last ping %d (TIMEDOUT)\n",
 	}
 
 	// Update the UI for matching players
-	for (int i = 0; i < MAX_PLAYERS; ++i) {
+	for (int i = 0; i < GetNumPlayers(); ++i) {
 		if (players[i].nodeID == node->nodeID) {
 			UpdateUI(&players[i]);
 		}

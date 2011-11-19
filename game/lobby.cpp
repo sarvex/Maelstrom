@@ -156,15 +156,13 @@ LobbyDialogDelegate::OnHide()
 	if (m_dialog->GetDialogStatus() > 0) {
 		SetState(STATE_PLAYING);
 
-		for (int i = 0; i < MAX_PLAYERS; ++i) {
-			GameInfoPlayer *player = m_game.GetPlayer(i);
-			if (player->nodeID) {
-				if (player->nodeID == m_game.localID) {
-					AddLocalPlayer(i);
-				} else {
-					GameInfoNode *node = m_game.GetNodeByID(player->nodeID);
-					AddNetworkPlayer(i, node->address);
-				}
+		for (int i = 0; i < m_game.GetNumPlayers(); ++i) {
+			const GameInfoPlayer *player = m_game.GetPlayer(i);
+			if (player->nodeID == m_game.localID) {
+				AddLocalPlayer(i);
+			} else {
+				const GameInfoNode *node = m_game.GetNodeByID(player->nodeID);
+				AddNetworkPlayer(i, node->address);
 			}
 		}
 		NewGame();
@@ -318,7 +316,7 @@ LobbyDialogDelegate::SetState(LOBBY_STATE state)
 	if (state == STATE_NONE) {
 		if (m_state == STATE_HOSTING) {
 			// Notify the players that the game is gone
-			for (int i = 0; i < MAX_NODES; ++i) {
+			for (int i = 0; i < m_game.GetNumNodes(); ++i) {
 				SendKick(i);
 			}
 		} else if (m_state == STATE_JOINING ||
@@ -327,9 +325,11 @@ LobbyDialogDelegate::SetState(LOBBY_STATE state)
 			SendLeaveRequest();
 		}
 	} else if (state == STATE_HOSTING) {
-		m_game.SetMultiplayerHost(
-			prefs->GetNumber(PREFERENCES_DEATHMATCH),
-			prefs->GetString(PREFERENCES_HANDLE));
+		m_game.SetHost(prefs->GetString(PREFERENCES_HANDLE),
+				DEFAULT_START_WAVE,
+				DEFAULT_START_LIVES,
+				DEFAULT_START_TURBO,
+				prefs->GetNumber(PREFERENCES_DEATHMATCH));
 	} else if (state == STATE_LISTING) {
 		ClearGameList();
 	}
@@ -370,7 +370,7 @@ LobbyDialogDelegate::CheckPings()
 		}
 	} else if (m_state == STATE_HOSTING) {
 		m_game.UpdatePingStatus();
-		for (int i = 0; i < MAX_NODES; ++i) {
+		for (int i = 0; i < m_game.GetNumNodes(); ++i) {
 			if (m_game.GetPingStatus(i) == PING_TIMEDOUT) {
 //printf("Player timed out, removing from lobby\n");
 				SendKick(i);
@@ -392,7 +392,7 @@ LobbyDialogDelegate::CheckPings()
 		m_packet.Write(m_game.localID);
 		m_packet.Write(SDL_GetTicks());
 
-		for (int i = 0; i < MAX_NODES; ++i) {
+		for (int i = 0; i < m_game.GetNumNodes(); ++i) {
 			if (m_game.IsNetworkNode(i)) {
 				m_packet.address = m_game.GetNode(i)->address;
 				
@@ -488,7 +488,7 @@ LobbyDialogDelegate::SendLeaveRequest()
 void
 LobbyDialogDelegate::SendKick(int index)
 {
-	GameInfoNode *node;
+	const GameInfoNode *node;
 
 	if (!m_game.IsNetworkNode(index)) {
 		return;
@@ -504,9 +504,6 @@ LobbyDialogDelegate::SendKick(int index)
 
 	// Now remove them from the game list
 	m_game.RemoveNode(node->nodeID);
-
-	// Update our own UI
-	UpdateUI();
 }
 
 void
@@ -650,7 +647,7 @@ LobbyDialogDelegate::ProcessPong(DynamicPacket &packet)
 		return;
 	}
 
-	for (int i = 0; i < MAX_NODES; ++i) {
+	for (int i = 0; i < m_game.GetNumNodes(); ++i) {
 		if (packet.address == m_game.GetNode(i)->address) {
 			m_game.UpdatePingTime(i, timestamp);
 		}
@@ -736,54 +733,23 @@ LobbyDialogDelegate::ProcessRequestJoin(DynamicPacket &packet)
 	if (!packet.Read(name, sizeof(name))) {
 		return;
 	}
-
-	// Find an empty slot
-	int slot;
-	for (slot = 0; slot < MAX_NODES; ++slot) {
-		if (nodeID == m_game.nodes[slot].nodeID) {
-			// We already have this node, ignore it
-			return;
-		}
+	if (m_game.HasNode(nodeID)) {
+		// We already have this node, ignore it
+		return;
 	}
-	if (slot == MAX_NODES) {
-		for (slot = 0; slot < MAX_NODES; ++slot) {
-			if (!m_game.nodes[slot].nodeID) {
-				break;
-			}
-		}
-	}
-	assert(slot < MAX_NODES);
 
-	GameInfoNode *node = m_game.GetNode(slot);
-	node->nodeID = nodeID;
-	node->address = packet.address;
-	m_game.InitializePing(slot);
-
-	for (slot = 0; slot < MAX_PLAYERS; ++slot) {
-		if (!m_game.players[slot].nodeID) {
-			break;
-		}
-	}
-	assert(slot < MAX_PLAYERS);
-
-	GameInfoPlayer *player = m_game.GetPlayer(slot);
-	player->nodeID = nodeID;
-	SDL_strlcpy(player->name, name, sizeof(player->name));
-	player->controlMask = CONTROL_NETWORK;
+	m_game.AddNetworkPlayer(nodeID, packet.address, name);
 
 	// Let everybody know!
 	m_reply.StartLobbyMessage(LOBBY_GAME_INFO);
 	m_reply.Write((Uint32)0);
 	m_game.WriteToPacket(m_reply);
-	for (slot = 0; slot < MAX_NODES; ++slot) {
-		if (m_game.IsNetworkNode(slot)) {
-			m_reply.address = m_game.nodes[slot].address;
+	for (int i = 0; i < m_game.GetNumNodes(); ++i) {
+		if (m_game.IsNetworkNode(i)) {
+			m_reply.address = m_game.GetNode(i)->address;
 			SDLNet_UDP_Send(gNetFD, -1, &m_reply);
 		}
 	}
-
-	// Update our own UI
-	UpdateUI();
 }
 
 void
@@ -804,9 +770,6 @@ LobbyDialogDelegate::ProcessRequestLeave(DynamicPacket &packet)
 
 	// Okay, clear them from the list!
 	m_game.RemoveNode(nodeID);
-
-	// Update our own UI
-	UpdateUI();
 }
 
 void
@@ -840,6 +803,7 @@ LobbyDialogDelegate::ProcessGameInfo(DynamicPacket &packet)
 			m_gameList[i].UpdatePingTime(HOST_NODE, timestamp);
 			m_gameList[i].UpdatePingStatus(HOST_NODE);
 		}
+		UpdateUI();
 	} else {
 		if (game.gameID != m_game.gameID) {
 			// Probably an old packet...
@@ -860,8 +824,6 @@ LobbyDialogDelegate::ProcessGameInfo(DynamicPacket &packet)
 			}
 		}
 	}
-
-	UpdateUI();
 }
 
 void

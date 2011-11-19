@@ -545,9 +545,8 @@ int Send_NewGame()
 int Await_NewGame()
 {
 	unsigned char netbuf[BUFSIZ];
-	int len, gameon;
+	int gameon;
 	UDPpacket sent;
-	Uint32 lives, seed;
 
 	/* Get ready to wait for server */
 	Message("Awaiting Player 1 (server)");
