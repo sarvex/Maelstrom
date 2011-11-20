@@ -140,6 +140,11 @@ public:
 	const GameInfoPlayer *GetPlayer(int index) const {
 		return &players[index];
 	}
+	const IPaddress &GetPlayerAddress(int index) const {
+		const GameInfoPlayer *player = GetPlayer(index);
+		const GameInfoNode *node = GetNodeByID(player->nodeID);
+		return node->address;
+	}
 	void RemovePlayer(int index);
 
 	bool IsHosting() const;

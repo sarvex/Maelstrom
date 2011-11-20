@@ -36,9 +36,7 @@ int   gNumPlayers;
 int   gOurPlayer;
 UDPsocket gNetFD;
 
-static int            GotPlayer[MAX_PLAYERS];
 static IPaddress      PlayAddr[MAX_PLAYERS];
-static int            FoundUs;
 static Uint32         NextFrame;
 UDPpacket            *OutBound[2];
 static int            CurrOut;
@@ -110,10 +108,9 @@ int InitNetData(bool hosting)
 	}
 
 	/* Initialize network game variables */
-	FoundUs   = 0;
+	gNumPlayers = 0;
 	gOurPlayer  = -1;
 	for ( i=0; i<MAX_PLAYERS; ++i ) {
-		GotPlayer[i] = 0;
 		SyncPtrs[0][i] = NULL;
 		SyncPtrs[1][i] = NULL;
 	}
@@ -145,47 +142,30 @@ void HaltNetData(void)
 	SDLNet_Quit();
 }
 
-void AddLocalPlayer(int playernum)
-{
-	gOurPlayer = playernum;
-	FoundUs = 1;
-	GotPlayer[playernum] = 1;
-}
-
-void AddNetworkPlayer(int playernum, const IPaddress &address)
-{
-	PlayAddr[playernum] = address;
-	GotPlayer[playernum] = 1;
-}
-
 /* This MUST be called after command line options have been processed. */
 int CheckPlayers(void)
 {
 	int i;
 
-	/* Check to make sure we have all the players */
-	for ( i=0, gNumPlayers=0; i<MAX_PLAYERS; ++i ) {
-		if ( GotPlayer[i] )
+	gNumPlayers = 0;
+	gOurPlayer  = -1;
+	for ( i=0; i<MAX_PLAYERS; ++i ) {
+		if (gGameInfo.IsValidPlayer(i)) {
+			if (gGameInfo.IsLocalPlayer(i)) {
+				gOurPlayer = i;
+			} else {
+				PlayAddr[i] = gGameInfo.GetPlayerAddress(i);
+			}
 			++gNumPlayers;
-	}
-	for ( i=0; i<gNumPlayers; ++i ) {
-		if ( ! GotPlayer[i] ) {
-			error("Player %d not specified!\r\n", i+1);
-			return(-1);
 		}
 	}
-	if ( ! FoundUs ) {
+	if (gNumPlayers == 0) {
+		error("No players specified!\r\n");
+		return(-1);
+	}
+	if (gOurPlayer < 0) {
 		error("Which player are you?\r\n");
 		return(-1);
-	}
-	if ( (gOurPlayer+1) > gNumPlayers ) {
-		error("You cannot be player %d in a %d player game.\r\n",
-						gOurPlayer+1, gNumPlayers);
-		return(-1);
-	}
-	if ( (gNumPlayers == 1) && gGameInfo.deathMatch ) {
-		error("Warning: No deathmatch in a single player game!\r\n");
-		gGameInfo.deathMatch = 0;
 	}
 
 	/* Now, so we can send to ourselves... */
@@ -201,7 +181,6 @@ int CheckPlayers(void)
 	}
 	return(0);
 }
-
 
 void QueueKey(unsigned char Op, unsigned char Type)
 {

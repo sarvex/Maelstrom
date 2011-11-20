@@ -25,9 +25,6 @@
 /* Functions in netplay.cpp */
 extern int   InitNetData(bool hosting);
 extern void  HaltNetData(void);
-extern int   AddPlayer(const char *playerstr);
-extern void  AddLocalPlayer(int playernum);
-extern void  AddNetworkPlayer(int playernum, const IPaddress &address);
 extern int   CheckPlayers(void);
 extern void  QueueKey(unsigned char Op, unsigned char Type);
 extern int   SyncNetwork(void);

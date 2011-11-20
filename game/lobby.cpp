@@ -155,19 +155,6 @@ LobbyDialogDelegate::OnHide()
 	// Start the game!
 	if (m_dialog->GetDialogStatus() > 0) {
 		SetState(STATE_PLAYING);
-
-		for (int i = 0; i < MAX_PLAYERS; ++i) {
-			const GameInfoPlayer *player = m_game.GetPlayer(i);
-			if (!player->nodeID) {
-				continue;
-			}
-			if (player->nodeID == m_game.localID) {
-				AddLocalPlayer(i);
-			} else {
-				const GameInfoNode *node = m_game.GetNodeByID(player->nodeID);
-				AddNetworkPlayer(i, node->address);
-			}
-		}
 		NewGame();
 	} else {
 		SetState(STATE_NONE);
