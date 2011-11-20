@@ -57,9 +57,8 @@ Replay::HandleNewGame()
 		m_game.CopyFrom(gGameInfo);
 		m_game.PrepareForReplay();
 	} else if (m_mode == REPLAY_PLAYBACK) {
-		m_game.PrepareForReplay();
-		gGameInfo.localID = m_game.localID;
 		gGameInfo.CopyFrom(m_game);
+		gGameInfo.PrepareForReplay();
 	}
 	m_data.Seek(0);
 }
