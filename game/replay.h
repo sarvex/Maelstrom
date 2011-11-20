@@ -65,6 +65,7 @@ public:
 protected:
 	REPLAY_MODE m_mode;
 	GameInfo m_game;
+	Uint32 m_seed;
 	DynamicPacket m_data;
 };
 

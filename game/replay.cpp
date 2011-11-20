@@ -25,6 +25,10 @@
 #include "replay.h"
 
 
+#define DELTA_SIZEMASK	0x7F
+#define DELTA_SEED	0x80
+
+
 Replay::Replay()
 {
 	m_mode = REPLAY_IDLE;
@@ -60,6 +64,7 @@ Replay::HandleNewGame()
 		gGameInfo.CopyFrom(m_game);
 		gGameInfo.PrepareForReplay();
 	}
+	m_seed = m_game.seed;
 	m_data.Seek(0);
 }
 
@@ -70,21 +75,28 @@ Replay::HandlePlayback()
 		return true;
 	}
 
-	// Check to make sure we haven't gotten a consistency error
-	Uint32 seed;
-	if (!m_data.Read(seed)) {
+	Uint8 delta;
+	if (!m_data.Read(delta)) {
 		// That's it, end of recording
 		return false;
 	}
-	if (seed != GetRandSeed()) {
+
+	// Check to make sure we haven't gotten a consistency error
+	if (delta & DELTA_SEED) {
+		if (!m_data.Read(m_seed)) {
+			error("Error in replay, missing data\r\n");
+			return false;
+		}
+	}
+	if (m_seed != GetRandSeed()) {
 		error("Error!! \a Frame consistency problem, aborting!!\r\n");
 		return false;
 	}
 
 	// Add the input for this frame
-	Uint16 size;
+	int size = (delta & DELTA_SIZEMASK);
 	Uint8 value;
-	if (!m_data.Read(size) || (m_data.Size() < (int)size)) {
+	if (m_data.Size() < size) {
 		error("Error in replay, missing data\r\n");
 		return false;
 	}
@@ -103,12 +115,21 @@ Replay::HandleRecording()
 	}
 
 	// Get the input for this frame
+	Uint8 delta;
 	Uint8 *data;
 	int len = GetSyncBuf(&data);
+	assert(len < DELTA_SIZEMASK);
+	delta = (Uint8)len;
 
 	// Add it to our data buffer
-	m_data.Write(GetRandSeed());
-	assert(len <= 0xFFFF);
-	m_data.Write((Uint16)len);
+	Uint32 seed = GetRandSeed();
+	if (seed != m_seed) {
+		delta |= DELTA_SEED;
+		m_data.Write(delta);
+		m_data.Write(seed);
+		m_seed = seed;
+	} else {
+		m_data.Write(delta);
+	}
 	m_data.Write(data, len);
 }
