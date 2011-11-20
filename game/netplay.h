@@ -26,11 +26,10 @@
 extern int   InitNetData(bool hosting);
 extern void  HaltNetData(void);
 extern int   CheckPlayers(void);
-extern void  QueueKey(unsigned char Op, unsigned char Type);
+extern void  QueueInput(Uint8 value);
 extern int   SyncNetwork(void);
-extern int   GetSyncBuf(int index, unsigned char **bufptr);
+extern int   GetSyncBuf(Uint8 **bufptr);
 extern int   Send_NewGame();
 
 /* Variables from netplay.cpp */
-extern int	gOurPlayer;
 extern UDPsocket gNetFD;

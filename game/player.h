@@ -141,7 +141,7 @@ public:
 	Uint8 GetControlType() {
 		return controlType;
 	}
-	void SetControl(unsigned char which, int toggle);
+	void SetControl(unsigned char which, bool enabled);
 
 private:
 	int Valid;
@@ -181,9 +181,12 @@ private:
 	int MakeShot(int offset);
 	/* Rubout a flying shot */
 	void KillShot(int index);
+
+	/* Encode/decode input */
+	Uint8 EncodeInput(unsigned char which, bool enabled);
+	bool DecodeInput(Uint8 value, unsigned char &which, bool &enabled);
 };
 
-#define OurShip	gPlayers[gOurPlayer]
 #define TheShip gPlayers[gDisplayed]
 
 /* The Players!! */
@@ -198,6 +201,9 @@ extern SDL_Texture *gEnemyShot;
 
 /* Initialize the player sprites */
 int InitPlayerSprites();
+
+/* Get the player for a particular control type */
+Player *GetControlPlayer(Uint8 controlType);
 
 /* Function to switch the displayed player */
 void RotatePlayerView();

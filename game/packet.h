@@ -89,14 +89,21 @@ public:
 			value = "";
 		}
 
-		size_t len = SDL_strlen(value);
-		if (len > 255) {
-			len = 255;
+		size_t amount = SDL_strlen(value);
+		if (amount > 255) {
+			amount = 255;
 		}
-		Write((Uint8)len);
-		Grow(len);
-		SDL_memcpy(&data[pos], value, len);
-		pos += len;
+		Write((Uint8)amount);
+		Grow(amount);
+		SDL_memcpy(&data[pos], value, amount);
+		pos += amount;
+	}
+	void Write(DynamicPacket &packet) {
+		size_t amount = packet.len - packet.pos;
+		Grow(amount);
+		SDL_memcpy(&data[pos], &packet.data[packet.pos], amount);
+		packet.pos += amount;
+		pos += amount;
 	}
 
 	bool Read(Uint8 &value) {
@@ -123,16 +130,16 @@ public:
 		return true;
 	}
 	bool Read(char *value, size_t maxlen) {
-		Uint8 len;
-		if (!Read(len)) {
+		Uint8 amount;
+		if (!Read(amount)) {
 			return false;
 		}
-		if (len > maxlen-1) {
+		if (amount > maxlen-1) {
 			return false;
 		}
-		SDL_memcpy(value, &data[pos], len);
-		value[len] = '\0';
-		pos += len;
+		SDL_memcpy(value, &data[pos], amount);
+		value[amount] = '\0';
+		pos += amount;
 		return true;
 	}
 

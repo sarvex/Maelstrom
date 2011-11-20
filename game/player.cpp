@@ -37,9 +37,12 @@ static void ThrustCallback(Uint8 theChannel)
 #ifdef DEBUG
 error("Thrust called back on channel %hu\n", theChannel);
 #endif
-	/* -- Check the control key */
-	if ( gPlayers[gOurPlayer]->IsThrusting() )
-		sound->PlaySound(gThrusterSound,1,theChannel,ThrustCallback);
+	for (int i = 0; i < MAX_PLAYERS; ++i) {
+		if ( gPlayers[i]->IsThrusting() ) {
+			sound->PlaySound(gThrusterSound,1,theChannel,ThrustCallback);
+			break;
+		}
+	}
 }	/* -- ThrustCallback */
 
 
@@ -509,94 +512,125 @@ SetMinimized(int index, bool enabled)
 	SetPaused(bit, enabled);
 }
 
+Uint8 
+Player::EncodeInput(unsigned char which, bool enabled)
+{
+	Uint8 value = 0;
+
+	assert(Index < 4);
+	assert(which < 16);
+	value |= (Index << 4);
+	value |= which;
+	if (enabled) {
+		value |= 0x80;
+	}
+	return value;
+}
+
+bool
+Player::DecodeInput(Uint8 value, unsigned char &which, bool &enabled)
+{
+	// Check to see if this input is for us
+	if (((value >> 4) & 3) != Index) {
+		return false;
+	}
+
+	which = (value & 0xf);
+	if (value & 0x80) {
+		enabled = true;
+	} else {
+		enabled = false;
+	}
+	return true;
+}
+
 void
 Player::HandleKeys(void)
 {
 	/* Wait for keystrokes and sync() */
-	unsigned char *inbuf;
+	Uint8 *inbuf;
 	int len, i;
+	unsigned char key;
+	bool down;
 
-	if ( (len=GetSyncBuf(Index, &inbuf)) <= 0 )
+	if ( (len=GetSyncBuf(&inbuf)) <= 0 )
 		return;
 
 	for ( i=0; i<len; ++i ) {
-		switch(inbuf[i]) {
-			case KEY_PRESS:
-				/* Only handle Pause and Abort while dead */
-				if ( ! Alive() || Exploding ) {
-					if ( inbuf[++i] == PAUSE_KEY ) {
-						TogglePause();
-					}
-					if ( inbuf[i] == MINIMIZE_KEY ) {
-						SetMinimized(Index, true);
-					}
-					if ( inbuf[i] == ABORT_KEY )
-						gGameOn = 0;
+		if (!DecodeInput(inbuf[i], key, down)) {
+			continue;
+		}
+
+		if (down) {
+			/* Only handle Pause and Abort while dead */
+			if ( ! Alive() || Exploding ) {
+				if ( key == PAUSE_KEY ) {
+					TogglePause();
+				}
+				if ( key == MINIMIZE_KEY ) {
+					SetMinimized(Index, true);
+				}
+				if ( key == ABORT_KEY )
+					gGameOn = 0;
+				break;
+			}
+			/* Regular key press handling */
+			switch(key) {
+				case THRUST_KEY:
+					Thrusting = 1;
 					break;
-				}
-				/* Regular key press handling */
-				switch(inbuf[++i]) {
-					case THRUST_KEY:
-						Thrusting = 1;
-						break;
-					case RIGHT_KEY:
-						Rotating |= 0x01;
-						break;
-					case LEFT_KEY:
-						Rotating |= 0x10;
-						break;
-					case SHIELD_KEY:
-						ShieldOn = 1;
-						break;
-					case FIRE_KEY:
-						Shooting = 1;
-						break;
-					case PAUSE_KEY:
-						TogglePause();
-						break;
-					case MINIMIZE_KEY:
-						SetMinimized(Index, true);
-						break;
-					case ABORT_KEY:
-						gGameOn = 0;
-						break;
-					default:
-						break;
-				}
-				break;
-
-			case KEY_RELEASE:
-				switch(inbuf[++i]) {
-					case THRUST_KEY:
-						Thrusting = 0;
-						if ( sound->Playing(gThrusterSound) )
-							sound->HaltSound(3);
-						break;
-					case RIGHT_KEY:
-						Rotating &= ~0x01;
-						break;
-					case LEFT_KEY:
-						Rotating &= ~0x10;
-						break;
-					case SHIELD_KEY:
-						ShieldOn = 0;
-						break;
-					case FIRE_KEY:
-						Shooting = 0;
-						break;
-					case MINIMIZE_KEY:
-						SetMinimized(Index, false);
-						break;
-					case ABORT_KEY:
-						/* Do nothing on release */;
-						break;
-					default:
-						break;
-				}
-				break;
-
-			default:
-				break;
+				case RIGHT_KEY:
+					Rotating |= 0x01;
+					break;
+				case LEFT_KEY:
+					Rotating |= 0x10;
+					break;
+				case SHIELD_KEY:
+					ShieldOn = 1;
+					break;
+				case FIRE_KEY:
+					Shooting = 1;
+					break;
+				case PAUSE_KEY:
+					TogglePause();
+					break;
+				case MINIMIZE_KEY:
+					SetMinimized(Index, true);
+					break;
+				case ABORT_KEY:
+					gGameOn = 0;
+					break;
+				default:
+					break;
+			}
+		} else {
+			switch(key) {
+				case THRUST_KEY:
+					Thrusting = 0;
+					if ( sound->Playing(gThrusterSound) )
+						sound->HaltSound(3);
+					break;
+				case RIGHT_KEY:
+					Rotating &= ~0x01;
+					break;
+				case LEFT_KEY:
+					Rotating &= ~0x10;
+					break;
+				case SHIELD_KEY:
+					ShieldOn = 0;
+					break;
+				case FIRE_KEY:
+					Shooting = 0;
+					break;
+				case MINIMIZE_KEY:
+					SetMinimized(Index, false);
+					break;
+				case ABORT_KEY:
+					/* Do nothing on release */;
+					break;
+				default:
+					break;
+			}
 		}
 	}
 }
@@ -661,9 +695,9 @@ Player::SetControlType(Uint8 controlType)
 }
 
 void
-Player::SetControl(unsigned char which, int toggle)
+Player::SetControl(unsigned char which, bool enabled)
 {
-	QueueKey(toggle ? KEY_PRESS : KEY_RELEASE, which);
+	QueueInput(EncodeInput(which, enabled));
 }
 
 /* Private functions... */
@@ -753,6 +787,17 @@ int InitPlayerSprites(void)
 	OBJ_LOOP(index, MAX_PLAYERS)
 		gPlayers[index] = new Player(index);
 	return(0);
+}
+
+/* Get the player for a particular control type */
+Player *GetControlPlayer(Uint8 controlType)
+{
+	for (int i = 0; i < MAX_PLAYERS; ++i) {
+		if (gPlayers[i]->GetControlType() & controlType) {
+			return gPlayers[i];
+		}
+	}
+	return NULL;
 }
 
 /* Function to switch the displayed player */

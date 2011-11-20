@@ -306,13 +306,19 @@ UIElementControlButton::HandleEvent(const SDL_Event &event)
 void
 UIElementControlButton::OnMouseDown()
 {
-	OurShip->SetControl(m_control, 1);
+	Player *player = GetControlPlayer(CONTROL_LOCAL);
+	if (player) {
+		player->SetControl(m_control, true);
+	}
 }
 
 void
 UIElementControlButton::OnMouseUp()
 {
-	OurShip->SetControl(m_control, 0);
+	Player *player = GetControlPlayer(CONTROL_LOCAL);
+	if (player) {
+		player->SetControl(m_control, false);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////////

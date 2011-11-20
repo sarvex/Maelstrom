@@ -132,6 +132,14 @@ public:
 		}
 		return NULL;
 	}
+	int GetNodeIndex(Uint32 nodeID) const {
+		for (int i = 0; i < GetNumNodes(); ++i) {
+			if (nodeID == nodes[i].nodeID) {
+				return i;
+			}
+		}
+		return -1;
+	}
 
 	bool HasNode(Uint32 nodeID) const;
 	bool HasNode(const IPaddress &address) const;

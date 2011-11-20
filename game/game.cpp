@@ -59,28 +59,47 @@ int	gWhenEnemy;
 static void DoGameOver(void);
 
 /* ----------------------------------------------------------------- */
+/* -- Setup the players for a new game */
+
+static bool SetupPlayers(void)
+{
+	if ( CheckPlayers() < 0 )
+		return false;
+
+	/* Set up the controls for the game */
+	gDisplayed = -1;
+	for (int i = 0; i < MAX_PLAYERS; ++i) {
+		if (gGameInfo.IsValidPlayer(i)) {
+			if (gGameInfo.IsLocalPlayer(i)) {
+				if (gDisplayed < 0) {
+					gDisplayed = i;
+				}
+			}
+			gPlayers[i]->SetControlType(gGameInfo.GetPlayer(i)->controlMask);
+		} else {
+			gPlayers[i]->SetControlType(CONTROL_NONE);
+		}
+	}
+	return true;
+}
+
+/* ----------------------------------------------------------------- */
 /* -- Start a new game */
 
 void NewGame(void)
 {
-	/* Make sure we have a valid player list */
-	if ( CheckPlayers() < 0 )
-		return;
-
 	/* Start up the random number generator */
 	SeedRandom(gGameInfo.seed);
+
+	/* Make sure we have a valid player list */
+	if ( !SetupPlayers() ) {
+		return;
+	}
 
 	/* Send a "NEW_GAME" packet onto the network */
 	if ( gGameInfo.IsMultiplayer() && gGameInfo.IsHosting() ) {
 		if ( Send_NewGame() < 0) {
 			return;
-		}
-	}
-	for (int i = 0; i < MAX_PLAYERS; ++i) {
-		if (gGameInfo.IsValidPlayer(i)) {
-			gPlayers[i]->SetControlType(gGameInfo.GetPlayer(i)->controlMask);
-		} else {
-			gPlayers[i]->SetControlType(CONTROL_NONE);
 		}
 	}
 
@@ -407,8 +426,7 @@ GamePanelDelegate::DrawStatus(Bool first)
 	if ( gGameInfo.IsMultiplayer() ) {
 		char caption[BUFSIZ];
 
-		sprintf(caption, "You are player %d --- displaying player %d",
-					gOurPlayer+1, gDisplayed+1);
+		sprintf(caption, "Displaying player %d", gDisplayed+1);
 		if (m_multiplayerCaption) {
 			m_multiplayerCaption->SetText(caption);
 		}
@@ -497,7 +515,7 @@ GamePanelDelegate::DrawStatus(Bool first)
 		if ((Score - lastLife[i]) >= NEW_LIFE) {
 			gPlayers[i]->IncrLives(1);
 			lastLife[i] = (Score / NEW_LIFE) * NEW_LIFE;
-			if ( i == gOurPlayer )
+			if ( gGameInfo.IsLocalPlayer(i) )
 				sound->PlaySound(gNewLife, 5);
 		}
 	}
@@ -650,24 +668,24 @@ GamePanelDelegate::DoBonus()
 		if (!gPlayers[i]->IsValid()) {
 			continue;
 		}
-		if ( i != gOurPlayer ) {
+		if (i != gDisplayed) {
 			gPlayers[i]->MultBonus();
 			continue;
 		}
 
-		if (OurShip->GetBonusMult() != 1) {
+		if (TheShip->GetBonusMult() != 1) {
 			if (bonus) {
-				sprintf(numbuf, "%-5.1d", OurShip->GetBonus());
+				sprintf(numbuf, "%-5.1d", TheShip->GetBonus());
 				bonus->SetText(numbuf);
 				bonus->Show();
 			}
 			bonus = panel->GetElement<UIElement>("multiplied_bonus");
 
-			OurShip->MultBonus();
+			TheShip->MultBonus();
 			Delay(SOUND_DELAY);
 			sound->PlaySound(gMultiplier, 5);
 
-			sprintf(numbuf, "multiplier%d", OurShip->GetBonusMult());
+			sprintf(numbuf, "multiplier%d", TheShip->GetBonusMult());
 			image = panel->GetElement<UIElement>(numbuf);
 			if (image) {
 				image->Show();
@@ -681,12 +699,12 @@ GamePanelDelegate::DoBonus()
 	sound->PlaySound(gFunk, 5);
 
 	if (bonus) {
-		sprintf(numbuf, "%-5.1d", OurShip->GetBonus());
+		sprintf(numbuf, "%-5.1d", TheShip->GetBonus());
 		bonus->SetText(numbuf);
 		bonus->Show();
 	}
 	if (score) {
-		sprintf(numbuf, "%-5.1d", OurShip->GetScore());
+		sprintf(numbuf, "%-5.1d", TheShip->GetScore());
 		score->SetText(numbuf);
 		score->Show();
 	}
@@ -694,11 +712,11 @@ GamePanelDelegate::DoBonus()
 	Delay(60);
 
 	/* -- Praise them or taunt them as the case may be */
-	if (OurShip->GetBonus() == 0) {
+	if (TheShip->GetBonus() == 0) {
 		Delay(SOUND_DELAY);
 		sound->PlaySound(gNoBonus, 5);
 	}
-	if (OurShip->GetBonus() > 10000) {
+	if (TheShip->GetBonus() > 10000) {
 		Delay(SOUND_DELAY);
 		sound->PlaySound(gPrettyGood, 5);
 	}
@@ -710,7 +728,7 @@ GamePanelDelegate::DoBonus()
 		if (!gPlayers[i]->IsValid()) {
 			continue;
 		}
-		if ( i != gOurPlayer ) {
+		if (i != gDisplayed) {
 			while ( gPlayers[i]->GetBonus() > 500 ) {
 				gPlayers[i]->IncrScore(500);
 				gPlayers[i]->IncrBonus(-500);
@@ -718,25 +736,25 @@ GamePanelDelegate::DoBonus()
 			continue;
 		}
 
-		while (OurShip->GetBonus() > 0) {
+		while (TheShip->GetBonus() > 0) {
 			while ( sound->Playing() )
 				Delay(SOUND_DELAY);
 
 			sound->PlaySound(gBonk, 5);
-			if ( OurShip->GetBonus() >= 500 ) {
-				OurShip->IncrScore(500);
-				OurShip->IncrBonus(-500);
+			if ( TheShip->GetBonus() >= 500 ) {
+				TheShip->IncrScore(500);
+				TheShip->IncrBonus(-500);
 			} else {
-				OurShip->IncrScore(OurShip->GetBonus());
-				OurShip->IncrBonus(-OurShip->GetBonus());
+				TheShip->IncrScore(TheShip->GetBonus());
+				TheShip->IncrBonus(-TheShip->GetBonus());
 			}
 	
 			if (bonus) {
-				sprintf(numbuf, "%-5.1d", OurShip->GetBonus());
+				sprintf(numbuf, "%-5.1d", TheShip->GetBonus());
 				bonus->SetText(numbuf);
 			}
 			if (score) {
-				sprintf(numbuf, "%-5.1d", OurShip->GetScore());
+				sprintf(numbuf, "%-5.1d", TheShip->GetScore());
 				score->SetText(numbuf);
 			}
 
@@ -780,7 +798,6 @@ GamePanelDelegate::NextWave()
 	gEnemySprite = NULL;
 
 	/* -- Initialize some variables */
-	gDisplayed = gOurPlayer;
 	gNumRocks = 0;
 	gShakeTime = 0;
 	gFreezeTime = 0;
@@ -970,7 +987,7 @@ static void DoGameOver(void)
 		Delay(SOUND_DELAY);
 
 	/* -- See if they got a high score */
-	gScore = OurShip->GetScore();
+	gScore = TheShip->GetScore();
 	LoadScores();
 	for ( i = 0; i<10; ++i ) {
 		if ( gScore > (int)hScores[i].score ) {
@@ -1054,7 +1071,7 @@ static void DoGameOver(void)
 				strcpy(hScores[i+1].name, hScores[i].name);
 			}
 			hScores[which].wave = gWave;
-			hScores[which].score = OurShip->GetScore();
+			hScores[which].score = TheShip->GetScore();
 			strcpy(hScores[which].name, handle);
 		}
 

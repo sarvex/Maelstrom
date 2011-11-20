@@ -234,8 +234,25 @@ ControlsDialogDelegate::SetKeycode(int index, SDL_Keycode keycode)
 	}
 }
 
+static Player *GetLocalPlayer()
+{
+	return GetControlPlayer(CONTROL_LOCAL);
+}
+
+static Player *GetKeyboardPlayer()
+{
+	return GetControlPlayer(CONTROL_KEYBOARD);
+}
+
+static Player *GetJoystickPlayer(Uint8 which)
+{
+	Uint8 joystickControl = (CONTROL_JOYSTICK1 << which);
+	return GetControlPlayer(joystickControl);
+}
+
 static void HandleEvent(SDL_Event *event)
 {
+	Player *player;
 	SDL_Keycode key;
 
 	if (ui->HandleEvent(*event)) {
@@ -247,25 +264,29 @@ static void HandleEvent(SDL_Event *event)
 		/* -- Handle joystick axis motion */
 		case SDL_JOYAXISMOTION:
 			/* X-Axis - rotate right/left */
+			player = GetJoystickPlayer(event->jaxis.which);
+			if (!player) {
+				break;
+			}
 			if ( event->jaxis.axis == 0 ) {
 				if ( event->jaxis.value < -8000 ) {
-					OurShip->SetControl(LEFT_KEY, 1);
-					OurShip->SetControl(RIGHT_KEY, 0);
+					player->SetControl(LEFT_KEY, 1);
+					player->SetControl(RIGHT_KEY, 0);
 				} else
 				if ( event->jaxis.value > 8000 ) {
-					OurShip->SetControl(RIGHT_KEY, 1);
-					OurShip->SetControl(LEFT_KEY, 0);
+					player->SetControl(RIGHT_KEY, 1);
+					player->SetControl(LEFT_KEY, 0);
 				} else {
-					OurShip->SetControl(LEFT_KEY, 0);
-					OurShip->SetControl(RIGHT_KEY, 0);
+					player->SetControl(LEFT_KEY, 0);
+					player->SetControl(RIGHT_KEY, 0);
 				}
 			} else
 			/* Y-Axis - accelerate */
 			if ( event->jaxis.axis == 1 ) {
 				if ( event->jaxis.value < -8000 ) {
-					OurShip->SetControl(THRUST_KEY, 1);
+					player->SetControl(THRUST_KEY, 1);
 				} else {
-					OurShip->SetControl(THRUST_KEY, 0);
+					player->SetControl(THRUST_KEY, 0);
 				}
 			}
 			break;
@@ -273,19 +294,23 @@ static void HandleEvent(SDL_Event *event)
 		/* -- Handle joystick button presses/releases */
 		case SDL_JOYBUTTONDOWN:
 		case SDL_JOYBUTTONUP:
+			player = GetJoystickPlayer(event->jbutton.which);
+			if (!player) {
+				break;
+			}
 			if ( event->jbutton.state == SDL_PRESSED ) {
 				if ( event->jbutton.button == 0 ) {
-					OurShip->SetControl(FIRE_KEY, 1);
+					player->SetControl(FIRE_KEY, 1);
 				} else
 				if ( event->jbutton.button == 1 ) {
-					OurShip->SetControl(SHIELD_KEY, 1);
+					player->SetControl(SHIELD_KEY, 1);
 				}
 			} else {
 				if ( event->jbutton.button == 0 ) {
-					OurShip->SetControl(FIRE_KEY, 0);
+					player->SetControl(FIRE_KEY, 0);
 				} else
 				if ( event->jbutton.button == 1 ) {
-					OurShip->SetControl(SHIELD_KEY, 0);
+					player->SetControl(SHIELD_KEY, 0);
 				}
 			}
 			break;
@@ -294,6 +319,10 @@ static void HandleEvent(SDL_Event *event)
 		/* -- Handle key presses/releases */
 		case SDL_KEYDOWN:
 			/* -- Handle ALT-ENTER hotkey */
+			player = GetKeyboardPlayer();
+			if (!player) {
+				break;
+			}
 	                if ( (event->key.keysym.sym == SDLK_RETURN) &&
 			     (event->key.keysym.mod & KMOD_ALT) ) {
 				screen->ToggleFullScreen();
@@ -301,35 +330,39 @@ static void HandleEvent(SDL_Event *event)
 			}
 		case SDL_KEYUP:
 			/* -- Handle normal key bindings */
+			player = GetKeyboardPlayer();
+			if (!player) {
+				break;
+			}
 			key = event->key.keysym.sym;
 			if ( event->key.state == SDL_PRESSED ) {
 				/* Check for various control keys */
 				if ( key == controls.gFireControl )
-					OurShip->SetControl(FIRE_KEY, 1);
+					player->SetControl(FIRE_KEY, 1);
 				else if ( key == controls.gTurnRControl )
-					OurShip->SetControl(RIGHT_KEY, 1);
+					player->SetControl(RIGHT_KEY, 1);
 				else if ( key == controls.gTurnLControl )
-					OurShip->SetControl(LEFT_KEY, 1);
+					player->SetControl(LEFT_KEY, 1);
 				else if ( key == controls.gShieldControl )
-					OurShip->SetControl(SHIELD_KEY, 1);
+					player->SetControl(SHIELD_KEY, 1);
 				else if ( key == controls.gThrustControl )
-					OurShip->SetControl(THRUST_KEY, 1);
+					player->SetControl(THRUST_KEY, 1);
 				else if ( key == controls.gPauseControl )
-					OurShip->SetControl(PAUSE_KEY, 1);
+					player->SetControl(PAUSE_KEY, 1);
 				else if ( key == controls.gQuitControl )
-					OurShip->SetControl(ABORT_KEY, 1);
+					player->SetControl(ABORT_KEY, 1);
 			} else {
 				/* Update control key status */
 				if ( key == controls.gFireControl )
-					OurShip->SetControl(FIRE_KEY, 0);
+					player->SetControl(FIRE_KEY, 0);
 				else if ( key == controls.gTurnRControl )
-					OurShip->SetControl(RIGHT_KEY, 0);
+					player->SetControl(RIGHT_KEY, 0);
 				else if ( key == controls.gTurnLControl )
-					OurShip->SetControl(LEFT_KEY, 0);
+					player->SetControl(LEFT_KEY, 0);
 				else if ( key == controls.gShieldControl )
-					OurShip->SetControl(SHIELD_KEY, 0);
+					player->SetControl(SHIELD_KEY, 0);
 				else if ( key == controls.gThrustControl )
-					OurShip->SetControl(THRUST_KEY, 0);
+					player->SetControl(THRUST_KEY, 0);
 				else if ( key == SDLK_F1 ) {
 					/* Special key --
 						Switch displayed player
@@ -346,15 +379,23 @@ static void HandleEvent(SDL_Event *event)
 			break;
 
 		case SDL_WINDOWEVENT:
+			player = GetLocalPlayer();
+			if (!player) {
+				break;
+			}
 			if (event->window.event == SDL_WINDOWEVENT_MINIMIZED) {
-				OurShip->SetControl(MINIMIZE_KEY, 1);
+				player->SetControl(MINIMIZE_KEY, 1);
 			} if (event->window.event == SDL_WINDOWEVENT_RESTORED) {
-				OurShip->SetControl(MINIMIZE_KEY, 0);
+				player->SetControl(MINIMIZE_KEY, 0);
 			}
 			break;
 
 		case SDL_QUIT:
-			OurShip->SetControl(ABORT_KEY, 1);
+			player = GetLocalPlayer();
+			if (!player) {
+				break;
+			}
+			player->SetControl(ABORT_KEY, 1);
 			break;
 	}
 }
