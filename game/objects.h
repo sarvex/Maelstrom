@@ -78,8 +78,12 @@ public:
 						gSprites[i] = gSprites[gNumSprites];
 					}
 				}
-				OBJ_LOOP(i, gNumPlayers)
+				OBJ_LOOP(i, MAX_PLAYERS) {
+					if (!gPlayers[i]->IsValid()) {
+						continue;
+					}
 					gPlayers[i]->CutThrust(SHAKE_DURATION);
+				}
 				gShakeTime = SHAKE_DURATION;
 				break;
 		}
@@ -144,8 +148,12 @@ public:
 					gSprites[i] = gSprites[gNumSprites];
 				}
 			}
-			OBJ_LOOP(i, gNumPlayers)
+			OBJ_LOOP(i, MAX_PLAYERS) {
+				if (!gPlayers[i]->IsValid()) {
+					continue;
+				}
 				gPlayers[i]->CutThrust(SHAKE_DURATION);
+			}
 			gShakeTime = SHAKE_DURATION;
 		}
 		return(-1);
@@ -298,7 +306,10 @@ public:
 			return(Object::Move(Frozen));
 
 		/* Warp the courses of the players */
-		OBJ_LOOP(i, gNumPlayers) {
+		OBJ_LOOP(i, MAX_PLAYERS) {
+			if (!gPlayers[i]->IsValid()) {
+				continue;
+			}
 			int X, Y, xAccel, yAccel;
 
 			if ( ! gPlayers[i]->Alive() )
@@ -337,18 +348,21 @@ public:
 
 	/* This is duplicated in the Shinobi class */
 	virtual int AcquireTarget(void) {
-		int i, newtarget=(-1);
+		int targets[MAX_PLAYERS];
+		int numTargets = 0;
 
-		for ( i=0; i<gNumPlayers; ++i ) {
-			if ( gPlayers[i]->Alive() )
-				break;
+		for ( int i=0; i < MAX_PLAYERS; ++i ) {
+			if (!gPlayers[i]->IsValid()) {
+				continue;
+			}
+			if ( gPlayers[i]->Alive() ) {
+				targets[numTargets++] = i;
+			}
 		}
-		if ( i != gNumPlayers ) {	// Player(s) alive!
-			do {
-				newtarget = FastRandom(gNumPlayers);
-			} while ( ! gPlayers[newtarget]->Alive() );
+		if (numTargets > 0) {
+			return targets[FastRandom(numTargets)];
 		}
-		return(newtarget);
+		return -1;
 	}
 
 	int Move(int Frozen) {

@@ -318,6 +318,12 @@ GameInfo::IsHosting() const
 }
 
 bool
+GameInfo::IsMultiplayer() const
+{
+	return (GetNumPlayers() > 1);
+}
+
+bool
 GameInfo::IsLocalNode(int index) const
 {
 	if (index >= GetNumNodes()) {
@@ -360,6 +366,18 @@ GameInfo::IsNetworkPlayer(int index) const
 		return false;
 	}
 	return (players[index].nodeID != localID);
+}
+
+int
+GameInfo::GetNumPlayers() const
+{
+	int numPlayers = 0;
+	for (int i = 0; i < MAX_PLAYERS; ++i) {
+		if (players[i].nodeID) {
+			++numPlayers;
+		}
+	}
+	return numPlayers;
 }
 
 bool

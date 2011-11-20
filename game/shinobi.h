@@ -51,18 +51,21 @@ public:
 
 	/* This is duplicated in the Homing class */
 	virtual int AcquireTarget(void) {
-		int i, newtarget=(-1);
+		int targets[MAX_PLAYERS];
+		int numTargets = 0;
 
-		for ( i=0; i<gNumPlayers; ++i ) {
-			if ( gPlayers[i]->Alive() )
-				break;
+		for ( int i=0; i < MAX_PLAYERS; ++i ) {
+			if (!gPlayers[i]->IsValid()) {
+				continue;
+			}
+			if ( gPlayers[i]->Alive() ) {
+				targets[numTargets++] = i;
+			}
 		}
-		if ( i != gNumPlayers ) {	// Player(s) alive!
-			do {
-				newtarget = FastRandom(gNumPlayers);
-			} while ( ! gPlayers[newtarget]->Alive() );
+		if (numTargets > 0) {
+			return targets[FastRandom(numTargets)];
 		}
-		return(newtarget);
+		return -1;
 	}
 
 

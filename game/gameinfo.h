@@ -148,12 +148,14 @@ public:
 	void RemovePlayer(int index);
 
 	bool IsHosting() const;
+	bool IsMultiplayer() const;
 	bool IsLocalNode(int index) const;
 	bool IsNetworkNode(int index) const;
 
 	bool IsValidPlayer(int index) const;
 	bool IsLocalPlayer(int index) const;
 	bool IsNetworkPlayer(int index) const;
+	int GetNumPlayers() const;
 
 	bool IsFull() const;
 

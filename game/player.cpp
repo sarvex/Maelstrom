@@ -50,6 +50,7 @@ Player:: Player(int index) : Object(0, 0, 0, 0, gPlayerShip, NO_PHASE_CHANGE)
 {
 	int i;
 
+	Valid = 0;
 	Index = index;
 	Score = 0;
 	for ( i=0; i<MAX_SHOTS; ++i ) {
@@ -103,8 +104,7 @@ Player::NewWave(void)
 	WasShielded = 0;
 	Sphase = 0;
 	SetPos(
-		((SCREEN_WIDTH/2-((gNumPlayers/2-Index)*(2*SPRITES_WIDTH)))
-							*SCALE_FACTOR),
+		((SCREEN_WIDTH/2-((gGameInfo.GetNumPlayers()/2-Index)*(2*SPRITES_WIDTH)))*SCALE_FACTOR),
 		((SCREEN_HEIGHT/2)*SCALE_FACTOR)
 	);
 	xvec = yvec = 0;
@@ -159,7 +159,10 @@ Player::IncrFrags(void)
 	if ( gGameInfo.deathMatch && (Frags >= gGameInfo.deathMatch) ) {
 		/* Game over, we got a stud. :) */
 		int i;
-		OBJ_LOOP(i, gNumPlayers) {
+		OBJ_LOOP(i, MAX_PLAYERS) {
+			if (!gPlayers[i]->IsValid()) {
+				continue;
+			}
 			gPlayers[i]->IncrLives(-1);
 			gPlayers[i]->Explode();
 #ifdef DEBUG
@@ -241,8 +244,7 @@ Player::BeenTimedOut(void)
 {
 	Exploding = 0;
 	SetPos(
-		((SCREEN_WIDTH/2-((gNumPlayers/2-Index)*(2*SPRITES_WIDTH)))
-							*SCALE_FACTOR),
+		((SCREEN_WIDTH/2-((gGameInfo.GetNumPlayers()/2-Index)*(2*SPRITES_WIDTH)))*SCALE_FACTOR),
 		((SCREEN_HEIGHT/2)*SCALE_FACTOR)
 	);
 	if ( gGameInfo.deathMatch )
@@ -648,6 +650,17 @@ Player::ExplodeSound(void)
 }
 
 void
+Player::SetControlType(Uint8 controlType)
+{
+	if (controlType == CONTROL_NONE) {
+		Valid = 0;
+	} else {
+		Valid = 1;
+	}
+	this->controlType = controlType;
+}
+
+void
 Player::SetControl(unsigned char which, int toggle)
 {
 	QueueKey(toggle ? KEY_PRESS : KEY_RELEASE, which);
@@ -745,6 +758,11 @@ int InitPlayerSprites(void)
 /* Function to switch the displayed player */
 void RotatePlayerView()
 {
-	if ( ++gDisplayed == gNumPlayers )
-		gDisplayed = 0;
+	for (int i = 0; i < MAX_PLAYERS; ++i) {
+		if ( ++gDisplayed == MAX_PLAYERS )
+			gDisplayed = 0;
+
+		if (gPlayers[gDisplayed]->IsValid())
+			break;
+	}
 }

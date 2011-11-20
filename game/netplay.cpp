@@ -108,7 +108,6 @@ int InitNetData(bool hosting)
 	}
 
 	/* Initialize network game variables */
-	gNumPlayers = 0;
 	gOurPlayer  = -1;
 	for ( i=0; i<MAX_PLAYERS; ++i ) {
 		SyncPtrs[0][i] = NULL;
@@ -147,21 +146,23 @@ int CheckPlayers(void)
 {
 	int i;
 
-	gNumPlayers = 0;
+	if (gGameInfo.GetNumPlayers() == 0) {
+		error("No players specified!\r\n");
+		return(-1);
+	}
+
+	gNumPlayers = gGameInfo.GetNumPlayers();
 	gOurPlayer  = -1;
 	for ( i=0; i<MAX_PLAYERS; ++i ) {
 		if (gGameInfo.IsValidPlayer(i)) {
 			if (gGameInfo.IsLocalPlayer(i)) {
-				gOurPlayer = i;
+				if (gOurPlayer < 0) {
+					gOurPlayer = i;
+				}
 			} else {
 				PlayAddr[i] = gGameInfo.GetPlayerAddress(i);
 			}
-			++gNumPlayers;
 		}
-	}
-	if (gNumPlayers == 0) {
-		error("No players specified!\r\n");
-		return(-1);
 	}
 	if (gOurPlayer < 0) {
 		error("Which player are you?\r\n");

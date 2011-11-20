@@ -34,5 +34,4 @@ extern int   Await_NewGame();
 
 /* Variables from netplay.cpp */
 extern int	gOurPlayer;
-extern int	gNumPlayers;
 extern UDPsocket gNetFD;

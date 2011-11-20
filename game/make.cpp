@@ -135,7 +135,11 @@ tryAgain:
 
 // -- Make sure it isn't appearing right next to the ship
 
-	for ( i=gNumPlayers; i--; ) {
+	OBJ_LOOP(i, MAX_PLAYERS) {
+		if (!gPlayers[i]->IsValid()) {
+			continue;
+		}
+
 		int	xDist, yDist;
 	
 		/* Make sure the player is alive. :) */
@@ -266,7 +270,11 @@ void MakeGravity(void)
 	
 	// -- Make sure it isn't appearing right next to the ship
 
-		for ( i=gNumPlayers; i--; ) {
+		OBJ_LOOP(i, MAX_PLAYERS) {
+			if (!gPlayers[i]->IsValid()) {
+				continue;
+			}
+
 			int	xDist, yDist;
 	
 			/* Make sure the player is alive. :) */

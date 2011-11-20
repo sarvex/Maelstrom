@@ -71,13 +71,20 @@ void NewGame(void)
 	SeedRandom(gGameInfo.seed);
 
 	/* Send a "NEW_GAME" packet onto the network */
-	if ( gNumPlayers > 1 ) {
-		if ( gOurPlayer == 0 ) {
+	if ( gGameInfo.IsMultiplayer() ) {
+		if ( gGameInfo.IsHosting() ) {
 			if ( Send_NewGame() < 0)
 				return;
 		} else {
 			if ( Await_NewGame() < 0 )
 				return;
+		}
+	}
+	for (int i = 0; i < MAX_PLAYERS; ++i) {
+		if (gGameInfo.IsValidPlayer(i)) {
+			gPlayers[i]->SetControlType(gGameInfo.GetPlayer(i)->controlMask);
+		} else {
+			gPlayers[i]->SetControlType(CONTROL_NONE);
 		}
 	}
 
@@ -154,13 +161,17 @@ GamePanelDelegate::OnShow()
 	gGameOn = 1;
 	gPaused = 0;
 	gWave = gGameInfo.wave - 1;
-	for ( i=gNumPlayers; i--; )
+	OBJ_LOOP(i, MAX_PLAYERS) {
+		if (!gPlayers[i]->IsValid()) {
+			continue;
+		}
 		gPlayers[i]->NewGame(gGameInfo.lives, gGameInfo.deathMatch);
+	}
 	gLastStar = STAR_DELAY;
 	gLastDrawn = 0L;
 	gNumSprites = 0;
 
-	if ( gNumPlayers > 1 ) {
+	if ( gGameInfo.IsMultiplayer() ) {
 		if (m_multiplayerCaption) {
 			m_multiplayerCaption->Show();
 		}
@@ -228,8 +239,12 @@ GamePanelDelegate::OnTick()
 		gGameOn = 0;
 		return;
 	}
-	OBJ_LOOP(i, gNumPlayers)
+	OBJ_LOOP(i, MAX_PLAYERS) {
+		if (!gPlayers[i]->IsValid()) {
+			continue;
+		}
 		gPlayers[i]->HandleKeys();
+	}
 
 	if ( gPaused ) {
 		return;
@@ -248,7 +263,10 @@ GamePanelDelegate::OnTick()
 	}
 
 	/* -- Do all hit detection */
-	OBJ_LOOP(j, gNumPlayers) {
+	OBJ_LOOP(j, MAX_PLAYERS) {
+		if (!gPlayers[j]->IsValid()) {
+			continue;
+		}
 		if ( ! gPlayers[j]->Alive() )
 			continue;
 
@@ -264,7 +282,10 @@ GamePanelDelegate::OnTick()
 			}
 		}
 		if ( gGameInfo.deathMatch ) {
-			OBJ_LOOP(i, gNumPlayers) {
+			OBJ_LOOP(i, MAX_PLAYERS) {
+				if (!gPlayers[i]->IsValid()) {
+					continue;
+				}
 				if ( i == j )	// Don't shoot ourselves. :)
 					continue;
 				(void) gPlayers[i]->HitBy(gPlayers[j]);
@@ -272,7 +293,10 @@ GamePanelDelegate::OnTick()
 		}
 	}
 	if ( gEnemySprite ) {
-		OBJ_LOOP(i, gNumPlayers) {
+		OBJ_LOOP(i, MAX_PLAYERS) {
+			if (!gPlayers[i]->IsValid()) {
+				continue;
+			}
 			if ( ! gPlayers[i]->Alive() )
 				continue;
 			(void) gPlayers[i]->HitBy(gEnemySprite);
@@ -291,7 +315,10 @@ GamePanelDelegate::OnTick()
 	if ( gShakeTime && (gShakeTime-- > 0) ) {
 		int shakeV;
 
-		OBJ_LOOP(i, gNumPlayers) {
+		OBJ_LOOP(i, MAX_PLAYERS) {
+			if (!gPlayers[i]->IsValid()) {
+				continue;
+			}
 			shakeV = FastRandom(SHAKE_FACTOR);
 			if ( ! gPlayers[i]->Alive() )
 				continue;
@@ -304,8 +331,12 @@ GamePanelDelegate::OnTick()
 	}
 
 	/* -- Move all of the sprites */
-	OBJ_LOOP(i, gNumPlayers)
+	OBJ_LOOP(i, MAX_PLAYERS) {
+		if (!gPlayers[i]->IsValid()) {
+			continue;
+		}
 		gPlayers[i]->Move(0);
+	}
 	OBJ_LOOP(i, gNumSprites) {
 		if ( gSprites[i]->Move(gFreezeTime) < 0 ) {
 			delete gSprites[i];
@@ -339,13 +370,21 @@ GamePanelDelegate::OnDraw()
 	/* -- Blit all the sprites */
 	OBJ_LOOP(i, gNumSprites)
 		gSprites[i]->BlitSprite();
-	OBJ_LOOP(i, gNumPlayers)
+	OBJ_LOOP(i, MAX_PLAYERS) {
+		if (!gPlayers[i]->IsValid()) {
+			continue;
+		}
 		gPlayers[i]->BlitSprite();
+	}
 
 	/* -- Show the player dots */
-	if ( gNumPlayers > 1 ) {
-		OBJ_LOOP(i, gNumPlayers)
+	if ( gGameInfo.IsMultiplayer() ) {
+		OBJ_LOOP(i, MAX_PLAYERS) {
+			if (!gPlayers[i]->IsValid()) {
+				continue;
+			}
 			gPlayers[i]->ShowDot();
+		}
 	}
 }
 
@@ -364,12 +403,12 @@ GamePanelDelegate::DrawStatus(Bool first)
 /* -- Draw the status display */
 
 	if (first && gWave == 1) {
-		OBJ_LOOP(i, gNumPlayers) {
+		OBJ_LOOP(i, MAX_PLAYERS) {
 			lastLife[i] = lastScores[i] = 0;
 		}
 	}
 
-	if ( gNumPlayers > 1 ) {
+	if ( gGameInfo.IsMultiplayer() ) {
 		char caption[BUFSIZ];
 
 		sprintf(caption, "You are player %d --- displaying player %d",
@@ -443,7 +482,10 @@ GamePanelDelegate::DrawStatus(Bool first)
 	}
 
 	/* Check for everyone else's new lives */
-	OBJ_LOOP(i, gNumPlayers) {
+	OBJ_LOOP(i, MAX_PLAYERS) {
+		if (!gPlayers[i]->IsValid()) {
+			continue;
+		}
 		Score = gPlayers[i]->GetScore();
 
 		if ( i == gDisplayed && m_score ) {
@@ -537,7 +579,10 @@ GamePanelDelegate::DoHousekeeping()
 
 	/* -- Make sure someone is still playing... */
 	bool PlayersLeft = false;
-	for ( i=0; i < gNumPlayers; ++i ) {
+	OBJ_LOOP(i, MAX_PLAYERS) {
+		if (!gPlayers[i]->IsValid()) {
+			continue;
+		}
 		if ( gPlayers[i]->Kicking() ) {
 			PlayersLeft = true;
 			break;
@@ -605,7 +650,10 @@ GamePanelDelegate::DoBonus()
 
 	bonus = panel->GetElement<UIElement>("bonus");
 	score = panel->GetElement<UIElement>("score");
-	OBJ_LOOP(i, gNumPlayers) {
+	OBJ_LOOP(i, MAX_PLAYERS) {
+		if (!gPlayers[i]->IsValid()) {
+			continue;
+		}
 		if ( i != gOurPlayer ) {
 			gPlayers[i]->MultBonus();
 			continue;
@@ -662,7 +710,10 @@ GamePanelDelegate::DoBonus()
 		Delay(SOUND_DELAY);
 
 	/* -- Count the score down */
-	OBJ_LOOP(i, gNumPlayers) {
+	OBJ_LOOP(i, MAX_PLAYERS) {
+		if (!gPlayers[i]->IsValid()) {
+			continue;
+		}
 		if ( i != gOurPlayer ) {
 			while ( gPlayers[i]->GetBonus() > 500 ) {
 				gPlayers[i]->IncrScore(500);
@@ -726,7 +777,7 @@ GamePanelDelegate::DoBonus()
 void
 GamePanelDelegate::NextWave()
 {
-	int	index, x, y;
+	int	i, x, y;
 	int	NewRoids;
 	short	temp;
 
@@ -809,12 +860,16 @@ GamePanelDelegate::NextWave()
 	gWhenDone = 0;
 
 	/* -- Create the ship's sprite */
-	for ( index=gNumPlayers; index--; )
-		gPlayers[index]->NewWave();
+	OBJ_LOOP(i, MAX_PLAYERS) {
+		if (!gPlayers[i]->IsValid()) {
+			continue;
+		}
+		gPlayers[i]->NewWave();
+	}
 	DrawStatus(true);
 
 	/* -- Create some asteroids */
-	for (index = 0; index < NewRoids; index++) {
+	for (i = 0; i < NewRoids; i++) {
 		int	randval;
 	
 		x = FastRandom(SCREEN_WIDTH) * SCALE_FACTOR;
@@ -862,16 +917,16 @@ static void DoGameOver(void)
 	Bool done = false;
 
 	/* Get the final scoring */
-	struct FinalScore *final = new struct FinalScore[gNumPlayers];
-	for ( i=0; i<gNumPlayers; ++i ) {
+	struct FinalScore *final = new struct FinalScore[MAX_PLAYERS];
+	for ( i=0; i<MAX_PLAYERS; ++i ) {
 		final[i].Player = i+1;
 		final[i].Score = gPlayers[i]->GetScore();
 		final[i].Frags = gPlayers[i]->GetFrags();
 	}
 	if ( gGameInfo.deathMatch )
-		qsort(final,gNumPlayers,sizeof(struct FinalScore),cmp_byfrags);
+		qsort(final,MAX_PLAYERS,sizeof(struct FinalScore),cmp_byfrags);
 	else
-		qsort(final,gNumPlayers,sizeof(struct FinalScore),cmp_byscore);
+		qsort(final,MAX_PLAYERS,sizeof(struct FinalScore),cmp_byscore);
 
 	panel = ui->GetPanel(PANEL_GAMEOVER);
 	if (!panel) {
@@ -885,8 +940,12 @@ static void DoGameOver(void)
 	}
 
 	/* Show the player ranking */
-	if ( gNumPlayers > 1 ) {
-		for ( i=0; i<gNumPlayers; ++i ) {
+	if ( gGameInfo.IsMultiplayer() ) {
+		OBJ_LOOP(i, MAX_PLAYERS) {
+			if (!gPlayers[i]->IsValid()) {
+				continue;
+			}
+
 			char name[32];
 			char buffer[BUFSIZ], num1[12], num2[12];
 
@@ -927,7 +986,7 @@ static void DoGameOver(void)
 	/* -- They got a high score! */
 	gLastHigh = which;
 
-	if ((which != -1) && (gNumPlayers == 1) &&
+	if ((which != -1) && !gGameInfo.IsMultiplayer() &&
 			(gGameInfo.wave == 1) && (gGameInfo.lives == 3)) {
 		sound->PlaySound(gBonusShot, 5);
 
@@ -1007,7 +1066,7 @@ static void DoGameOver(void)
 		sound->PlaySound(gGotPrize, 6);
 		SaveScores();
 	} else
-	if ( gNumPlayers > 1 )	/* Let them watch their ranking */
+	if ( gGameInfo.IsMultiplayer() )	/* Let them watch their ranking */
 		SDL_Delay(3000);
 
 	while ( sound->Playing() )

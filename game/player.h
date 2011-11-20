@@ -37,6 +37,9 @@ public:
 	Player(int index);
 	~Player();
 
+	virtual int IsValid(void) {
+		return(Valid);
+	}
 	virtual int IsPlayer(void) {
 		return(1);
 	}
@@ -134,9 +137,14 @@ public:
 		}
 	}
 
+	void SetControlType(Uint8 controlType);
+	Uint8 GetControlType() {
+		return controlType;
+	}
 	void SetControl(unsigned char which, int toggle);
 
 private:
+	int Valid;
 	int Index;
 	int Lives;
 	int Score;
@@ -166,6 +174,8 @@ private:
 	int target;
 	int numshots;
 	Uint32 ship_color;
+
+	Uint8 controlType;
 
 	/* Create a new shot */
 	int MakeShot(int offset);
