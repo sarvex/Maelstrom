@@ -525,7 +525,6 @@ GamePanelDelegate::DrawStatus(Bool first)
 		}
 	}
 
-	/* Check for everyone else's new lives */
 	OBJ_LOOP(i, MAX_PLAYERS) {
 		if (!gPlayers[i]->IsValid()) {
 			continue;
@@ -537,16 +536,18 @@ GamePanelDelegate::DrawStatus(Bool first)
 			m_score->SetText(numbuf);
 		}
 
-		if (lastScores[i] == Score)
-			continue;
+		if (!gGameInfo.deathMatch) {
+			if (lastScores[i] == Score)
+				continue;
 
-		/* -- See if they got a new life */
-		lastScores[i] = Score;
-		if ((Score - lastLife[i]) >= NEW_LIFE) {
-			gPlayers[i]->IncrLives(1);
-			lastLife[i] = (Score / NEW_LIFE) * NEW_LIFE;
-			if ( gGameInfo.IsLocalPlayer(i) )
-				sound->PlaySound(gNewLife, 5);
+			/* -- See if they got a new life */
+			lastScores[i] = Score;
+			if ((Score - lastLife[i]) >= NEW_LIFE) {
+				gPlayers[i]->IncrLives(1);
+				lastLife[i] = (Score / NEW_LIFE) * NEW_LIFE;
+				if ( gGameInfo.IsLocalPlayer(i) )
+					sound->PlaySound(gNewLife, 5);
+			}
 		}
 	}
 
