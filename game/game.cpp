@@ -244,6 +244,10 @@ GamePanelDelegate::OnTick()
 		return;
 	}
 
+	if ( gGameInfo.GetLocalState() & STATE_BONUS ) {
+		return;
+	}
+
 	/* -- Read in keyboard input for our ship */
 	HandleEvents(0);
 
