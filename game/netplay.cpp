@@ -109,6 +109,7 @@ int InitNetData(bool hosting)
 
 	/* Initialize network game variables */
 	gOurPlayer  = -1;
+	NextFrame = 0;
 	for ( i=0; i<MAX_PLAYERS; ++i ) {
 		SyncPtrs[0][i] = NULL;
 		SyncPtrs[1][i] = NULL;
@@ -275,11 +276,12 @@ int SyncNetwork(void)
 			continue;
 		}
 		if ( buf[0] == NEW_GAME ) {
-			/* Send it back if we are not the server.. */
-			if ( gOurPlayer != 0 ) {
-				buf[1] = gOurPlayer;
-				SDLNet_UDP_Send(gNetFD, -1, &sent);
-			}
+			/* FIXME: Convert this to the DynamicPacket */
+			buf[0] = NEW_GAME_ACK;
+			SDLNet_Write32(gGameInfo.gameID, &buf[1]);
+			SDLNet_Write32(gGameInfo.localID, &buf[4]);
+			sent.len = 9;
+			SDLNet_UDP_Send(gNetFD, -1, &sent);
 //error("NEW_GAME packet!\r\n");
 			continue;
 		}
@@ -391,13 +393,6 @@ inline void SuckPackets(void)
 	}
 }
 
-static inline void MakeNewPacket(Uint32 gameID, unsigned char *packet)
-{
-	*packet++ = NEW_GAME;
-	*packet++ = gOurPlayer;
-	SDLNet_Write32(gameID, packet);
-}
-
 /* Flash an error up on the screen and pause for 3 seconds */
 static void ErrorMessage(const char *message)
 {
@@ -409,42 +404,48 @@ static void ErrorMessage(const char *message)
 }
 
 /* This function sends a NEW_GAME packet, and waits for all other players
-   to respond in kind.
-   This function is not very robust in handling errors such as multiple
-   machines thinking they are the same player.  The address server is
-   supposed to handle such things gracefully.
+   to respond with NEW_GAME_ACK
 */
 int Send_NewGame()
 {
-	Uint8 netbuf[BUFSIZ], sendbuf[NEW_PACKETLEN];
 	char message[BUFSIZ];
-	int  nleft, n;
-	int  acked[MAX_PLAYERS];
-	int  i;
-	UDPpacket newgame, sent;
+	int  nleft;
+	Uint32 waiting[MAX_NODES];
+	int  i, j;
+	DynamicPacket newgame, packet;
 
 	/* Send all the packets */
-	MakeNewPacket(gGameInfo.gameID, sendbuf);
-	newgame.data = sendbuf;
-	newgame.len = sizeof(sendbuf);
+	newgame.Write((Uint8)NEW_GAME);
+	gGameInfo.WriteToPacket(newgame);
 	SDLNet_UDP_Send(gNetFD, 0, &newgame);
 
 	/* Get ready for responses */
-	memset(acked, 0, (sizeof acked));
-	sent.data = netbuf;
-	sent.maxlen = sizeof(netbuf);
+	nleft = 0;
+	for (i = 0; i < gGameInfo.GetNumNodes(); ++i) {
+		if (gGameInfo.IsNetworkNode(i)) {
+			++nleft;
+			waiting[i] = gGameInfo.GetNode(i)->nodeID;
+		} else {
+			waiting[i] = 0;
+		}
+	}
 
 	/* Wait for Ack's */
-	for ( nleft=gNumPlayers, n=0; nleft; ) {
+	while (nleft > 0) {
 		/* Show a status */
 		strcpy(message, "Waiting for players:");
-		for ( i=0; i<gNumPlayers; ++i ) {
-			if ( ! acked[i] )
-				sprintf(&message[strlen(message)], " %d", i+1);
+		for (i = 0; i < MAX_PLAYERS; ++i) {
+			const GameInfoPlayer *player = gGameInfo.GetPlayer(i);
+			for (j = 0; j < MAX_NODES; ++j) {
+				if (player->nodeID == waiting[j]) {
+					sprintf(&message[strlen(message)], " %d", i+1);
+					break;
+				}
+			}
 		}
 		Message(message);
 
-		if ( SDLNet_CheckSockets(SocketSet, 1000) <= 0 ) {
+		if ( SDLNet_CheckSockets(SocketSet, 100) <= 0 ) {
 			HandleEvents(0);
 			/* Peek at key buffer for Quit key */
 			for ( i=(PDATA_OFFSET+1); i<OutLen; i += 2 ) {
@@ -455,12 +456,8 @@ int Send_NewGame()
 			}
 			OutLen = PDATA_OFFSET;
 
-			/* Every three seconds...resend the new game packet */
-			if ( (n++)%3 != 0 )
-				continue;
-
-			for ( i=gNumPlayers; i--; ) {
-				if ( ! acked[i] ) {
+			for (i = 0; i < MAX_NODES; ++i) {
+				if ( waiting[i] ) {
 					SDLNet_UDP_Send(gNetFD, i+1, &newgame);
 				}
 			}
@@ -468,120 +465,37 @@ int Send_NewGame()
 		}
 
 		/* We are guaranteed that there is data here */
-		if ( SDLNet_UDP_Recv(gNetFD, &sent) <= 0 ) {
+		packet.Reset();
+		if ( SDLNet_UDP_Recv(gNetFD, &packet) <= 0 ) {
 			ErrorMessage("Network error receiving packets");
 			return(-1);
 		}
 
 		/* We have a packet! */
-		if ( netbuf[0] == LOBBY_MSG ) {
-			continue;
-		}
-		if ( netbuf[0] != NEW_GAME ) {
+		Uint8 cmd;
+		Uint32 gameID;
+		Uint32 nodeID;
+		if (!packet.Read(cmd) || cmd != NEW_GAME_ACK) {
 			/* Continue waiting */
-#ifdef VERBOSE
-			error("Unknown packet: 0x%x\r\n", netbuf[0]);
-#endif
 			continue;
 		}
-
-		Uint32 gameID = SDLNet_Read32(&netbuf[2]);
+		if (!packet.Read(gameID) || !packet.Read(nodeID)) {
+			continue;
+		}
 		if (gameID != gGameInfo.gameID) {
 			/* This must be for a different game */
 			continue;
 		}
-
-		/* Loop, check the address */
-		for ( i=gNumPlayers; i--; ) {
-			if ( acked[i] )
-				continue;
-
-			/* Check both the host AND port!! :-) */
-			if ( (sent.address.host != PlayAddr[i].host) ||
-			     (sent.address.port != PlayAddr[i].port) )
-				continue;
-
-			/* Check the player... */
-			if ( (i != gOurPlayer) && (netbuf[1] == gOurPlayer) ) {
-				/* Print message, sleep 3 seconds absolutely */
-				sprintf(message, 
-	"Error: Another player (%d) thinks they are player 1!\r\n", i+1);
-				ErrorMessage(message);
-				/* Suck up retransmission packets */
-				SuckPackets();
-				return(-1);
+		if (!nodeID) {
+			continue;
+		}
+		for (i = 0; i < MAX_NODES; ++i) {
+			if (nodeID == waiting[i]) {
+				waiting[i] = 0;
+				--nleft;
+				break;
 			}
-
-			/* Check them off our list.. */
-			--nleft;
-			acked[i] = 1;
-			break;
 		}
-	}
-	NextFrame = 0L;
-	return(0);
-}
-
-int Await_NewGame()
-{
-	unsigned char netbuf[BUFSIZ];
-	int gameon;
-	UDPpacket sent;
-
-	/* Get ready to wait for server */
-	Message("Awaiting Player 1 (server)");
-	sent.data = netbuf;
-	sent.maxlen = sizeof(netbuf);
-
-	gameon = 0;
-	while ( ! gameon ) {
-		if ( SDLNet_CheckSockets(SocketSet, 1000) <= 0 ) {
-			HandleEvents(0);
-			/* Peek at key buffer for Quit key */
-			for ( int i=(PDATA_OFFSET+1); i<OutLen; i += 2 ) {
-				if ( OutBuf[i] == ABORT_KEY ) {
-					OutLen = PDATA_OFFSET;
-					return(-1);
-				}
-			}
-			OutLen = PDATA_OFFSET;
-			continue;
-		}
-
-		/* We are guaranteed that there is data here */
-		if ( SDLNet_UDP_Recv(gNetFD, &sent) <= 0 ) {
-			ErrorMessage("Network error receiving packets");
-			return(-1);
-		}
-
-		/* We have a packet! */
-		if ( netbuf[0] == LOBBY_MSG ) {
-			continue;
-		}
-		if ( netbuf[0] != NEW_GAME ) {
-#ifdef VERBOSE
-			error(
-			"Await_NewGame(): Unknown packet: 0x%x\r\n", netbuf[0]);
-#endif
-			continue;
-		}
-
-		Uint32 gameID = SDLNet_Read32(&netbuf[2]);
-		if (gameID != gGameInfo.gameID) {
-			/* This must be for a different game */
-			continue;
-		}
-
-		netbuf[1] = gOurPlayer;
-		SDLNet_UDP_Send(gNetFD, 1, &sent);
-
-		/* Note that we don't guarantee delivery of the NEW_GAME ack.
-		   That's okay, we have the checksum.  We will hang on the very
-		   first frame, and we echo back all NEW_GAME packets at that
-		   point as well.
-		*/
-		NextFrame = 0L;
-		gameon = 1;
 	}
 	return(0);
 }

@@ -71,13 +71,9 @@ void NewGame(void)
 	SeedRandom(gGameInfo.seed);
 
 	/* Send a "NEW_GAME" packet onto the network */
-	if ( gGameInfo.IsMultiplayer() ) {
-		if ( gGameInfo.IsHosting() ) {
-			if ( Send_NewGame() < 0)
-				return;
-		} else {
-			if ( Await_NewGame() < 0 )
-				return;
+	if ( gGameInfo.IsMultiplayer() && gGameInfo.IsHosting() ) {
+		if ( Send_NewGame() < 0) {
+			return;
 		}
 	}
 	for (int i = 0; i < MAX_PLAYERS; ++i) {

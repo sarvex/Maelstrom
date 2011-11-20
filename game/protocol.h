@@ -181,10 +181,12 @@ enum LobbyProtocol {
 /* Network protocol for synchronization and keystrokes */
 
 #define LOBBY_MSG	0x00			/* Sent before game */
-#define NEW_GAME	0x01			/* Sent by players at start */
-#define SYNC_MSG	0x02			/* Sent during game */
-#define KEY_PRESS	0x04			/* Sent during game */
-#define KEY_RELEASE	0x08			/* Sent during game */
+#define NEW_GAME	0x01			/* Sent by host at start */
+#define NEW_GAME_ACK	0x02			/* Sent by players at start */
+#define SYNC_MSG	0x04			/* Sent during game */
+
+#define KEY_PRESS	0x01			/* Sent during game */
+#define KEY_RELEASE	0x02			/* Sent during game */
 
 /* The default port for Maelstrom games */
 #define LOBBY_PORT	0xAE00			/* port 44544 */

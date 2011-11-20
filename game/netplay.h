@@ -30,7 +30,6 @@ extern void  QueueKey(unsigned char Op, unsigned char Type);
 extern int   SyncNetwork(void);
 extern int   GetSyncBuf(int index, unsigned char **bufptr);
 extern int   Send_NewGame();
-extern int   Await_NewGame();
 
 /* Variables from netplay.cpp */
 extern int	gOurPlayer;

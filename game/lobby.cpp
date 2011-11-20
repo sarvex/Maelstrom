@@ -647,13 +647,13 @@ LobbyDialogDelegate::ProcessPong(DynamicPacket &packet)
 void
 LobbyDialogDelegate::ProcessNewGame(DynamicPacket &packet)
 {
-	Uint8 playerIndex;
-	Uint32 gameID;
+	GameInfo game;
 
-	if (!packet.Read(playerIndex)) {
+	if (!game.ReadFromPacket(packet)) {
 		return;
 	}
-	if (!packet.Read(gameID) || gameID != m_game.gameID) {
+	if (game.gameID != m_game.gameID) {
+		// Probably an old packet...
 		return;
 	}
 	if (m_game.IsHosting()) {
@@ -662,6 +662,17 @@ LobbyDialogDelegate::ProcessNewGame(DynamicPacket &packet)
 	}
 
 	// Ooh, ooh, they're starting!
+	m_game.CopyFrom(game);
+
+	// Send a response
+	m_reply.Reset();
+	m_reply.Write((Uint8)NEW_GAME_ACK);
+	m_reply.Write(m_game.gameID);
+	m_reply.Write(m_game.localID);
+	m_reply.address = packet.address;
+
+	SDLNet_UDP_Send(gNetFD, -1, &m_reply);
+
 	if (m_game.HasNode(packet.address)) {
 		m_playButton->OnClick();
 	}
