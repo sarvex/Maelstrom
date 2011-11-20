@@ -25,7 +25,7 @@
 #include "replay.h"
 
 // Define this to get extremely verbose debug printing
-#define DEBUG_REPLAY
+//#define DEBUG_REPLAY
 
 #define DELTA_SIZEMASK	0x7F
 #define DELTA_SEED	0x80

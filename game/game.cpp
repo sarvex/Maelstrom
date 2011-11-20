@@ -707,12 +707,7 @@ GamePanelDelegate::DoBonus()
 		label->Show();
 	}
 		
-	gPlayers[0]->Multiplier(5);
-
 	gGameInfo.SetLocalState(STATE_BONUS, true);
-
-	// Lock state into place (synchronize with other players and replay)
-	OnTick();
 
 	/* Fade out */
 	screen->FadeOut();

@@ -32,7 +32,7 @@
 #include "protocol.h"
 
 // Set this to 1 for normal debug info, and 2 for verbose packet logging
-#define DEBUG_NETWORK 2
+//#define DEBUG_NETWORK 1
 
 // Define this to simulate packet loss
 //#define DEBUG_PACKETLOSS 10

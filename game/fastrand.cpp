@@ -30,7 +30,7 @@
 
 #include "fastrand.h"
 
-#define SERIOUS_DEBUG
+//#define SERIOUS_DEBUG
 
 
 static Uint32 randomSeed;
