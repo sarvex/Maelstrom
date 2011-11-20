@@ -30,12 +30,15 @@
 
 #include "fastrand.h"
 
+#define SERIOUS_DEBUG
+
+
 static Uint32 randomSeed;
 
 void SeedRandom(Uint32 Seed)
 {
 #ifdef SERIOUS_DEBUG
-  fprintf(stderr, "SeedRandom(%lu)\n", Seed);
+  fprintf(stderr, "SeedRandom(%8.8x)\n", Seed);
 #endif
 	if ( ! Seed ) {
 		srand(time(NULL));
@@ -59,7 +62,7 @@ Uint16 FastRandom(Uint16 range)
 	register Uint32 regD2;
 
 #ifdef SERIOUS_DEBUG
-  fprintf(stderr, "FastRandom(%hd)  Seed in: %lu ", range, randomSeed);
+  fprintf(stderr, "FastRandom(%hd)  Seed in: %8.8x ", range, randomSeed);
 #endif
 	calc = randomSeed;
 	regD0 = 0x41A7;
@@ -95,7 +98,7 @@ Uint16 FastRandom(Uint16 range)
 	
 	randomSeed = regD0;
 #ifdef SERIOUS_DEBUG
-  fprintf(stderr, "Seed out: %lu ", randomSeed);
+  fprintf(stderr, "Seed out: %8.8x ", randomSeed);
 #endif
 	
 	if ((regD0 & 0x0000FFFF) == 0x8000)
