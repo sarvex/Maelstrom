@@ -199,7 +199,7 @@ static bool ProcessSync(int index, DynamicPacket &packet)
 	return true;
 }
 
-static int AwaitSync()
+static SYNC_RESULT AwaitSync()
 {
 	int i;
 	int timeout;
@@ -209,7 +209,7 @@ static int AwaitSync()
 	for (i = 0; i < MAX_NODES; ++i) {
 		if (CachedPacket[i].len > 0 && WaitingAcks[i]) {
 			if (!ProcessSync(i, CachedPacket[i])) {
-				return -1;
+				return SYNC_CORRUPT;
 			}
 			WaitingAcks[i] = 0;
 		}
@@ -229,7 +229,7 @@ static int AwaitSync()
 		int ready = SDLNet_CheckSockets(SocketSet, 100);
 		if (ready < 0) {
 			error("Network error: SDLNet_CheckSockets()\r\n");
-			return(-1);
+			return SYNC_NETERROR;
 		}
 		if (ready == 0) {
 #if DEBUG_NETWORK >= 1
@@ -245,7 +245,7 @@ error("Timed out waiting for frame %ld\r\n", NextFrame);
 			/* Don't wait forever */
 			++timeout;
 			if ( timeout == (PING_TIMEOUT/100) ) {
-				return(-1);
+				return SYNC_TIMEOUT;
 			}
 		}
 		if ( ready <= 0 ) {
@@ -256,7 +256,7 @@ error("Timed out waiting for frame %ld\r\n", NextFrame);
 		Packet.Reset();
 		if ( SDLNet_UDP_Recv(gNetFD, &Packet) <= 0 ) {
 			error("Network error: SDLNet_UDP_Recv()\r\n");
-			return(-1);
+			return SYNC_NETERROR;
 		}
 
 		/* We have a packet! */
@@ -322,7 +322,7 @@ error("Ignoring duplicate packet for frame %lu from player %d\r\n", frame, index
 
 			/* Do a consistency check!! */
 			if (!ProcessSync(index, Packet)) {
-				return -1;
+				return SYNC_CORRUPT;
 			}
 			WaitingAcks[index] = 0;
 		} else if (frame == (NextFrame-1)) {
@@ -352,16 +352,15 @@ error("Received packet for really old frame! (%lu, current = %lu)\r\n",
 							frame, NextFrame);
 #endif
 	}
-	return 0;
+	return SYNC_COMPLETE;
 }
 
-static int AdvanceFrame()
+static void AdvanceFrame()
 {
 	CurrOut = !CurrOut;
 	QueuedInput.Reset();
 	++NextFrame;
 	AdvancedFrame = true;
-	return 0;
 }
 
 /* This function is called every frame, and is used to flush the network
@@ -373,16 +372,18 @@ static int AdvanceFrame()
           otherwise we lose consistency.
 */
 	
-int SyncNetwork(void)
+SYNC_RESULT SyncNetwork(void)
 {
+	SYNC_RESULT result = SYNC_COMPLETE;
 	int i;
 
 	if (!AdvancedFrame) {
 		// We still have some nodes we're waiting on...
-		if (AwaitSync() < 0) {
-			return -1;
+		result = AwaitSync();
+		if (result == SYNC_COMPLETE) {
+			AdvanceFrame();
 		}
-		return AdvanceFrame();
+		return result;
 	}
 
 	FrameInput.Reset();
@@ -410,13 +411,15 @@ int SyncNetwork(void)
 		CurrPacket.Write(QueuedInput);
 
 		// Wait for sync packets from them
-		if (AwaitSync() < 0) {
-			AdvancedFrame = false;
-			return -1;
-		}
+		result = AwaitSync();
 	}
 
-	return AdvanceFrame();
+	if (result == SYNC_COMPLETE) {
+		AdvanceFrame();
+	} else {
+		AdvancedFrame = false;
+	}
+	return result;
 }
 
 /* This function retrieves the input for the frame */

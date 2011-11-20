@@ -20,17 +20,29 @@
     slouken@libsdl.org
 */
 
+#ifndef _netplay_h
+#define _netplay_h
+
 #include "SDL_net.h"
+
+enum SYNC_RESULT {
+	SYNC_COMPLETE,
+	SYNC_TIMEOUT,
+	SYNC_CORRUPT,
+	SYNC_NETERROR,
+};
 
 /* Functions in netplay.cpp */
 extern int   InitNetData(bool hosting);
 extern void  HaltNetData(void);
 extern int   CheckPlayers(void);
 extern void  QueueInput(Uint8 value);
-extern int   SyncNetwork(void);
+extern SYNC_RESULT SyncNetwork(void);
 extern int   GetSyncBuf(Uint8 **bufptr);
 extern int   Send_NewGame();
 
 /* Variables from netplay.cpp */
 extern UDPsocket gNetFD;
 extern Uint32 NextFrame;	// Exposed for debugging purposes
+
+#endif // _netplay_h

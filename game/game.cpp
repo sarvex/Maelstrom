@@ -236,6 +236,7 @@ void
 GamePanelDelegate::OnTick()
 {
 	int i, j;
+	SYNC_RESULT syncResult;
 
 	if (!gGameOn) {
 		// This generally shouldn't happen, but could if there were
@@ -251,14 +252,31 @@ GamePanelDelegate::OnTick()
 		gGameOn = 0;
 		return;
 	}
-	int syncResult = SyncNetwork();
+
+	syncResult = SyncNetwork();
+
+	// Update state and see if the local player aborted
 	if ( !UpdateGameState() ) {
 		gGameOn = 0;
 		return;
 	}
-	if (syncResult < 0) {
-		// We didn't get a full frame yet, don't process it
-		return;
+	switch (syncResult) {
+		case SYNC_TIMEOUT:
+			// The other players might be minimized or doing
+			// the bonus screen and may not be able to respond.
+			return;
+		case SYNC_CORRUPT:
+			// Uh oh...
+			error("Network sync error, game aborted!\r\n");
+			gGameOn = 0;
+			return;
+		case SYNC_NETERROR:
+			// Uh oh...
+			error("Network socket error, game aborted!\r\n");
+			gGameOn = 0;
+			return;
+		case SYNC_COMPLETE:
+			break;
 	}
 	gReplay.HandleRecording();
 
