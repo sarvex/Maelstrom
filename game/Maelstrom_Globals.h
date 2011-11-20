@@ -38,6 +38,7 @@
 
 #include "myerror.h"
 #include "fastrand.h"
+#include "replay.h"
 #include "scores.h"
 #include "controls.h"
 #include "gameinfo.h"
@@ -135,6 +136,7 @@ extern int	gWave;
 class Object;
 extern Object  *gEnemySprite;
 extern int	gWhenEnemy;
+extern Replay   gReplay;
 
 // in controls.cpp :
 extern Controls	controls;

@@ -31,6 +31,7 @@
 
 // Global variables set in this file...
 GameInfo gGameInfo;
+Replay  gReplay;
 int	gScore;
 int	gGameOn;
 int	gPaused;
@@ -88,6 +89,9 @@ static bool SetupPlayers(void)
 
 void NewGame(void)
 {
+	/* Start the replay */
+	gReplay.HandleNewGame();
+
 	/* Start up the random number generator */
 	SeedRandom(gGameInfo.seed);
 
@@ -238,11 +242,15 @@ GamePanelDelegate::OnTick()
 	/* -- Read in keyboard input for our ship */
 	HandleEvents(0);
 
-	if ( m_showingBonus ) {
+	if ( m_showingBonus || !gGameOn ) {
 		return;
 	}
 
 	/* -- Send Sync! signal to all players, and handle keyboard. */
+	if (!gReplay.HandlePlayback()) {
+		gGameOn = 0;
+		return;
+	}
 	if ( SyncNetwork() < 0 ) {
 		if ( gPaused & ~0x1 ) {
 			/* One of the other players is minimized and may not
@@ -254,6 +262,8 @@ GamePanelDelegate::OnTick()
 		gGameOn = 0;
 		return;
 	}
+	gReplay.HandleRecording();
+
 	OBJ_LOOP(i, MAX_PLAYERS) {
 		if (!gPlayers[i]->IsValid()) {
 			continue;

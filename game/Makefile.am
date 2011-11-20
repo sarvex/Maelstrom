@@ -43,6 +43,8 @@ libgame_a_SOURCES =		\
 	protocol.h		\
 	rect.cpp		\
 	rect.h			\
+	replay.cpp		\
+	replay.h		\
 	scores.cpp		\
 	scores.h		\
 	shinobi.h

@@ -53,7 +53,7 @@ am_libgame_a_OBJECTS = MacDialog.$(OBJEXT) MaelstromUI.$(OBJEXT) \
 	load.$(OBJEXT) lobby.$(OBJEXT) main.$(OBJEXT) make.$(OBJEXT) \
 	myerror.$(OBJEXT) netplay.$(OBJEXT) object.$(OBJEXT) \
 	objects.$(OBJEXT) player.$(OBJEXT) rect.$(OBJEXT) \
-	scores.$(OBJEXT)
+	replay.$(OBJEXT) scores.$(OBJEXT)
 libgame_a_OBJECTS = $(am_libgame_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/build-scripts/depcomp
@@ -220,6 +220,8 @@ libgame_a_SOURCES = \
 	protocol.h		\
 	rect.cpp		\
 	rect.h			\
+	replay.cpp		\
+	replay.h		\
 	scores.cpp		\
 	scores.h		\
 	shinobi.h
@@ -289,6 +291,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/objects.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/player.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rect.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/replay.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scores.Po@am__quote@
 
 .cpp.o:

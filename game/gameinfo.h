@@ -115,6 +115,8 @@ public:
 	bool ReadFromPacket(DynamicPacket &packet);
 	void WriteToPacket(DynamicPacket &packet);
 
+	void PrepareForReplay();
+
 	int GetNumNodes() const {
 		return numNodes;
 	}

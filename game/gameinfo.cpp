@@ -254,6 +254,23 @@ GameInfo::WriteToPacket(DynamicPacket &packet)
 	}
 }
 
+void
+GameInfo::PrepareForReplay()
+{
+	// Clean up the game info for privacy and so replay works
+	gameID = localID;
+
+	SDL_zero(nodes);
+	numNodes = 0;
+
+	for (int i = 0; i < MAX_PLAYERS; ++i) {
+		if (IsValidPlayer(i)) {
+			players[i].nodeID = localID;
+			players[i].controlMask = CONTROL_REPLAY;
+		}
+	}
+}
+
 bool
 GameInfo::HasNode(Uint32 nodeID) const
 {

@@ -69,6 +69,9 @@ public:
 	int Tell() {
 		return pos;
 	}
+	int Size() {
+		return len;
+	}
 
 	void Write(Uint8 value) {
 		Grow(sizeof(value));
@@ -94,16 +97,17 @@ public:
 			amount = 255;
 		}
 		Write((Uint8)amount);
-		Grow(amount);
-		SDL_memcpy(&data[pos], value, amount);
-		pos += amount;
+		Write(value, amount);
 	}
 	void Write(DynamicPacket &packet) {
 		size_t amount = packet.len - packet.pos;
-		Grow(amount);
-		SDL_memcpy(&data[pos], &packet.data[packet.pos], amount);
+		Write(&packet.data[packet.pos], amount);
 		packet.pos += amount;
-		pos += amount;
+	}
+	void Write(const void *value, size_t size) {
+		Grow(size);
+		SDL_memcpy(&data[pos], value, size);
+		pos += size;
 	}
 
 	bool Read(Uint8 &value) {
