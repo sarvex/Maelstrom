@@ -319,7 +319,7 @@ error("Received packet for next frame! (%lu, current = %lu)\r\n",
 		}
 #if DEBUG_NETWORK >= 1
 else
-error("Warning! Received packet for really old frame! (%lu, current = %lu)\r\n",
+error("Received packet for really old frame! (%lu, current = %lu)\r\n",
 							frame, NextFrame);
 #endif
 	}
