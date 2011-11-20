@@ -107,7 +107,7 @@ public:
 
 	void SetHost(const char *name, Uint8 wave, Uint8 lives, Uint8 turbo, Uint8 deathMatch);
 
-	bool AddLocalPlayer(const char *name, Uint8 controlMask);
+	void SetPlayerSlot(int slot, const char *name, Uint8 controlMask);
 	bool AddNetworkPlayer(Uint32 nodeID, const IPaddress &address, const char *name);
 
 	void CopyFrom(const GameInfo &rhs);
@@ -137,16 +137,17 @@ public:
 	bool HasNode(const IPaddress &address) const;
 	void RemoveNode(Uint32 nodeID);
 
-	int GetNumPlayers() const {
-		return numPlayers;
-	}
 	const GameInfoPlayer *GetPlayer(int index) const {
 		return &players[index];
 	}
 	void RemovePlayer(int index);
 
 	bool IsHosting() const;
+	bool IsLocalNode(int index) const;
 	bool IsNetworkNode(int index) const;
+
+	bool IsValidPlayer(int index) const;
+	bool IsLocalPlayer(int index) const;
 	bool IsNetworkPlayer(int index) const;
 
 	bool IsFull() const;
@@ -175,7 +176,6 @@ public:
 protected:
 	Uint8 numNodes;
 	GameInfoNode nodes[MAX_NODES];
-	Uint8 numPlayers;
 	GameInfoPlayer players[MAX_PLAYERS];
 };
 

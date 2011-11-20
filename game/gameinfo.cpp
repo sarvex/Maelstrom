@@ -45,7 +45,6 @@ GameInfo::Reset()
 	deathMatch = 0;
 	numNodes = 0;
 	SDL_zero(nodes);
-	numPlayers = 0;
 	SDL_zero(players);
 }
 
@@ -68,32 +67,22 @@ GameInfo::SetHost(const char *name,
 	numNodes = 1;
 
 	// We are the first player
-	AddLocalPlayer(name, CONTROL_LOCAL);
+	SetPlayerSlot(0, name, CONTROL_LOCAL);
 }
 
-bool
-GameInfo::AddLocalPlayer(const char *name, Uint8 controlMask)
+void
+GameInfo::SetPlayerSlot(int slot, const char *name, Uint8 controlMask)
 {
-	int slot;
-
-	if (IsFull()) {
-		return false;
-	}
-
-	if (!name) {
-		name = "";
-	}
-
-	slot = numPlayers;
 	GameInfoPlayer *player = &players[slot];
-	player->nodeID = localID;
-	SDL_strlcpy(player->name, name, sizeof(player->name));
+	if (controlMask == CONTROL_NETWORK) {
+		player->nodeID = 0;
+	} else {
+		player->nodeID = localID;
+	}
+	SDL_strlcpy(player->name, name ? name : "", sizeof(player->name));
 	player->controlMask = controlMask;
-	++numPlayers;
 
 	UpdateUI(player);
-
-	return true;
 }
 
 bool
@@ -112,12 +101,17 @@ GameInfo::AddNetworkPlayer(Uint32 nodeID, const IPaddress &address, const char *
 	InitializePing(slot);
 	++numNodes;
 
-	slot = numPlayers;
+	for (slot = 0; slot < MAX_PLAYERS; ++slot) {
+		if (!players[slot].nodeID) {
+			break;
+		}
+	}
+	assert(slot < MAX_PLAYERS);
+
 	GameInfoPlayer *player = &players[slot];
 	player->nodeID = nodeID;
 	SDL_strlcpy(player->name, name, sizeof(player->name));
 	player->controlMask = CONTROL_NETWORK;
-	++numPlayers;
 
 	UpdateUI(player);
 
@@ -169,7 +163,6 @@ GameInfo::CopyFrom(const GameInfo &rhs)
 			players[i].controlMask = CONTROL_NETWORK;
 		}
 	}
-	numPlayers = rhs.numPlayers;
 
 	UpdateUI();
 }
@@ -213,9 +206,6 @@ GameInfo::ReadFromPacket(DynamicPacket &packet)
 		}
 	}
 
-	if (!packet.Read(numPlayers)) {
-		return false;
-	}
 	for (i = 0; i < MAX_PLAYERS; ++i) {
 		if (!packet.Read(players[i].nodeID)) {
 			return false;
@@ -258,7 +248,6 @@ GameInfo::WriteToPacket(DynamicPacket &packet)
 		packet.Write(nodes[i].address.port);
 	}
 
-	packet.Write(numPlayers);
 	for (i = 0; i < MAX_PLAYERS; ++i) {
 		packet.Write(players[i].nodeID);
 		packet.Write(players[i].name);
@@ -304,37 +293,22 @@ GameInfo::RemoveNode(Uint32 nodeID)
 		}
 	}
 
-	i = 0;
-	while (i < GetNumPlayers()) {
+	for (i = 0; i < MAX_PLAYERS; ++i) {
 		if (nodeID == players[i].nodeID) {
 			RemovePlayer(i);
-		} else {
-			++i;
 		}
 	}
-
-	UpdateUI();
 }
 
 void
 GameInfo::RemovePlayer(int index)
 {
-	GameInfoPlayer *player;
-
-	for (int i = index; i < MAX_PLAYERS-1; ++i) {
-		player = &players[i];
-		player->nodeID = players[i+1].nodeID;
-		SDL_memcpy(player->name, players[i+1].name, sizeof(player->name));
-		player->controlMask = players[i+1].controlMask;
-	}
-	player = &players[MAX_PLAYERS-1];
+	GameInfoPlayer *player = &players[index];
 	player->nodeID = 0;
 	SDL_zero(player->name);
-	player->controlMask = 0;
+	player->controlMask = CONTROL_NETWORK;
 
-	--numPlayers;
-
-	UpdateUI();
+	UpdateUI(player);
 }
 
 bool
@@ -344,33 +318,59 @@ GameInfo::IsHosting() const
 }
 
 bool
+GameInfo::IsLocalNode(int index) const
+{
+	if (index >= GetNumNodes()) {
+		return false;
+	}
+	return (nodes[index].nodeID == localID);
+}
+
+bool
 GameInfo::IsNetworkNode(int index) const
 {
 	if (index >= GetNumNodes()) {
 		return false;
 	}
-	if (nodes[index].nodeID == localID) {
+	return (nodes[index].nodeID != localID);
+}
+
+bool
+GameInfo::IsValidPlayer(int index) const
+{
+	if (!players[index].nodeID) {
 		return false;
 	}
 	return true;
+}
+
+bool
+GameInfo::IsLocalPlayer(int index) const
+{
+	if (!players[index].nodeID) {
+		return false;
+	}
+	return (players[index].nodeID == localID);
 }
 
 bool
 GameInfo::IsNetworkPlayer(int index) const
 {
-	if (index >= GetNumPlayers()) {
+	if (!players[index].nodeID) {
 		return false;
 	}
-	if (players[index].nodeID == localID) {
-		return false;
-	}
-	return true;
+	return (players[index].nodeID != localID);
 }
 
 bool
 GameInfo::IsFull() const
 {
-	return GetNumPlayers() == MAX_PLAYERS;
+	for (int i = 0; i < MAX_PLAYERS; ++i) {
+		if (!players[i].nodeID) {
+			return false;
+		}
+	}
+	return true;
 }
 
 void
@@ -572,7 +572,7 @@ printf("Game 0x%8.8x: node 0x%8.8x since last ping %d (TIMEDOUT)\n",
 	}
 
 	// Update the UI for matching players
-	for (int i = 0; i < GetNumPlayers(); ++i) {
+	for (int i = 0; i < MAX_PLAYERS; ++i) {
 		if (players[i].nodeID == node->nodeID) {
 			UpdateUI(&players[i]);
 		}
