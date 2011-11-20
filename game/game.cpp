@@ -243,11 +243,6 @@ GamePanelDelegate::OnTick()
 		return;
 	}
 
-	// Delay processing until after bonus screen is done
-	if (gGameInfo.GetLocalState() & STATE_BONUS) {
-		return;
-	}
-
 	/* -- Read in keyboard input for our ship */
 	HandleEvents(0);
 
@@ -256,19 +251,13 @@ GamePanelDelegate::OnTick()
 		gGameOn = 0;
 		return;
 	}
-	if ( SyncNetwork() < 0 ) {
-		if ( gPaused ) {
-			/* One of the other players may be minimized and not
-			   be able to send packets (iOS), so don't abort yet.
-			*/
-			return;
-		}
-		error("Game aborted!\n");
+	int syncResult = SyncNetwork();
+	if ( !UpdateGameState() ) {
 		gGameOn = 0;
 		return;
 	}
-	if ( !UpdateGameState() ) {
-		gGameOn = 0;
+	if (syncResult < 0) {
+		// We didn't get a full frame yet, don't process it
 		return;
 	}
 	gReplay.HandleRecording();
@@ -700,9 +689,8 @@ GamePanelDelegate::DoBonus()
 
 	gGameInfo.SetLocalState(STATE_BONUS, true);
 
-	// Update the state afterward so playback stops for replays
-	SyncNetwork();
-	UpdateGameState();
+	// Lock state into place (synchronize with other players and replay)
+	OnTick();
 
 	/* Fade out */
 	screen->FadeOut();

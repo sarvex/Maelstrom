@@ -100,7 +100,7 @@ printf("Replay complete!\n");
 		}
 	}
 	if (m_seed != GetRandSeed()) {
-		error("Error!! \a Frame consistency problem, aborting!!\r\n");
+		error("Error!! \a consistency problem expecting seed %8.8x, got seed %8.8x, aborting!!\r\n", m_seed, GetRandSeed());
 		return false;
 	}
 
@@ -112,15 +112,14 @@ printf("Replay complete!\n");
 		return false;
 	}
 #ifdef DEBUG_REPLAY
-static int foo = 0;
-printf("Read %d bytes for frame %d", size, foo++);
+printf("Read %d bytes for frame %d", size, NextFrame);
 #endif
 	while (size--) {
 		m_data.Read(value);
 		QueueInput(value);
 	}
 #ifdef DEBUG_REPLAY
-printf(", pos = %d\n", m_data.Tell());
+printf(", pos = %d, seed = %8.8x\n", m_data.Tell(), m_seed);
 #endif
 	return true;
 }
@@ -164,7 +163,6 @@ Replay::HandleRecording()
 	}
 	m_data.Write(data, size);
 #ifdef DEBUG_REPLAY
-static int foo = 0;
-printf("Wrote %d bytes for frame %d, size = %d\n", size, foo++, m_data.Size());
+printf("Wrote %d bytes for frame %d, size = %d, seed = %8.8x\n", size, NextFrame, m_data.Size(), m_seed);
 #endif
 }

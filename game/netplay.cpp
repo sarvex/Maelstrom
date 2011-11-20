@@ -32,7 +32,7 @@
 #include "protocol.h"
 
 // Set this to 1 for normal debug info, and 2 for verbose packet logging
-#define DEBUG_NETWORK 1
+#define DEBUG_NETWORK 2
 
 // Define this to simulate packet loss
 //#define DEBUG_PACKETLOSS 10
@@ -41,13 +41,17 @@
 UDPsocket gNetFD;
 
 static SDLNet_SocketSet SocketSet;
-static Uint32           NextFrame;
+Uint32 NextFrame;
+static bool AdvancedFrame;
 
 /* We keep one packet backlogged for retransmission */
 static DynamicPacket OutBound[2];
 static int           CurrOut;
 #define CurrPacket	OutBound[CurrOut]
 #define LastPacket	OutBound[!CurrOut]
+
+/* The nodes we're currently waiting on for sync acks */
+static Uint32 WaitingAcks[MAX_NODES];
 
 /* We cache one packet if the other player is ahead of us */
 static DynamicPacket Packet;
@@ -93,9 +97,11 @@ int InitNetData(bool hosting)
 
 	/* Initialize network game variables */
 	NextFrame = 0;
+	AdvancedFrame = true;
 	OutBound[0].Reset();
 	OutBound[1].Reset();
 	CurrOut = 0;
+	SDL_zero(WaitingAcks);
 	for (i = 0; i < MAX_NODES; ++i) {
 		CachedPacket[i].Reset();
 	}
@@ -158,6 +164,16 @@ void QueueInput(Uint8 value)
 	QueuedInput.Write(value);
 }
 
+static bool WaitingForAck()
+{
+	for (int i = 0; i < MAX_NODES; ++i) {
+		if (WaitingAcks[i]) {
+			return true;
+		}
+	}
+	return false;
+}
+
 static bool ProcessSync(int index, DynamicPacket &packet)
 {
 	Uint32 seed;
@@ -170,7 +186,7 @@ static bool ProcessSync(int index, DynamicPacket &packet)
 
 	if (seed != GetRandSeed()) {
 		/* We're hosed, to correct this we would have to sync the complete game state */
-		error("Error!! \a Frame consistency problem, aborting!!\r\n");
+		error("Error!! \a consistency problem expecting seed %8.8x, got seed %8.8x, aborting!!\r\n", GetRandSeed(), seed);
 		return false;
 	}
 
@@ -183,7 +199,7 @@ static bool ProcessSync(int index, DynamicPacket &packet)
 	return true;
 }
 
-static int AwaitSync(int nleft, Uint32 waiting[MAX_NODES])
+static int AwaitSync()
 {
 	int i;
 	int timeout;
@@ -191,19 +207,25 @@ static int AwaitSync(int nleft, Uint32 waiting[MAX_NODES])
 
 	// See if we have cached network packets
 	for (i = 0; i < MAX_NODES; ++i) {
-		if (CachedPacket[i].len > 0 && waiting[i]) {
+		if (CachedPacket[i].len > 0 && WaitingAcks[i]) {
 			if (!ProcessSync(i, CachedPacket[i])) {
 				return -1;
 			}
-			waiting[i] = 0;
-			--nleft;
+			WaitingAcks[i] = 0;
 		}
 		CachedPacket[i].Reset();
 	}
 
+	// Send the packet to anyone still waiting
+	for (i = 0; i < MAX_NODES; ++i) {
+		if (WaitingAcks[i]) {
+			SDLNet_UDP_Send(gNetFD, i+1, &CurrPacket);
+		}
+	}
+
 	/* Wait for Ack's */
 	timeout = 0;
-	while ( nleft ) {
+	while (WaitingForAck()) {
 		int ready = SDLNet_CheckSockets(SocketSet, 100);
 		if (ready < 0) {
 			error("Network error: SDLNet_CheckSockets()\r\n");
@@ -215,7 +237,7 @@ error("Timed out waiting for frame %ld\r\n", NextFrame);
 #endif
 			/* Timeout, resend the sync packet */
 			for (i = 0; i < MAX_NODES; ++i) {
-				if (waiting[i]) {
+				if (WaitingAcks[i]) {
 					SDLNet_UDP_Send(gNetFD, i+1, &CurrPacket);
 				}
 			}
@@ -291,7 +313,7 @@ error("Received a packet of frame %lu from player %d\r\n", frame, index+1);
 #endif
 		if (frame == NextFrame) {
 			/* Ignore it if it is a duplicate packet */
-			if (!waiting[index]) {
+			if (!WaitingAcks[index]) {
 #if DEBUG_NETWORK >= 1
 error("Ignoring duplicate packet for frame %lu from player %d\r\n", frame, index+1);
 #endif
@@ -302,8 +324,7 @@ error("Ignoring duplicate packet for frame %lu from player %d\r\n", frame, index
 			if (!ProcessSync(index, Packet)) {
 				return -1;
 			}
-			waiting[index] = 0;
-			--nleft;
+			WaitingAcks[index] = 0;
 		} else if (frame == (NextFrame-1)) {
 			/* We kept the last frame cached, so send it */
 #if DEBUG_NETWORK >= 1
@@ -334,6 +355,15 @@ error("Received packet for really old frame! (%lu, current = %lu)\r\n",
 	return 0;
 }
 
+static int AdvanceFrame()
+{
+	CurrOut = !CurrOut;
+	QueuedInput.Reset();
+	++NextFrame;
+	AdvancedFrame = true;
+	return 0;
+}
+
 /* This function is called every frame, and is used to flush the network
    buffers, sending sync and keystroke packets.
    It is called AFTER the keyboard is polled, and BEFORE GetSyncBuf() is
@@ -346,25 +376,28 @@ error("Received packet for really old frame! (%lu, current = %lu)\r\n",
 int SyncNetwork(void)
 {
 	int i;
-	int nleft;
-	Uint32 waiting[MAX_NODES];
 
-	// Get the queued input
+	if (!AdvancedFrame) {
+		// We still have some nodes we're waiting on...
+		if (AwaitSync() < 0) {
+			return -1;
+		}
+		return AdvanceFrame();
+	}
+
 	FrameInput.Reset();
 	QueuedInput.Seek(0);
 	FrameInput.Write(QueuedInput);
 
 	// See if we need to do network synchronization
-	nleft = 0;
 	for (i = 0; i < gGameInfo.GetNumNodes(); ++i) {
 		if (gGameInfo.IsNetworkNode(i)) {
-			++nleft;
-			waiting[i] = gGameInfo.GetNode(i)->nodeID;
+			WaitingAcks[i] = gGameInfo.GetNode(i)->nodeID;
 		} else {
-			waiting[i] = 0;
+			WaitingAcks[i] = 0;
 		}
 	}
-	if (nleft > 0) {
+	if (WaitingForAck()) {
 		// Create the sync packet
 		CurrPacket.Reset();
 		CurrPacket.Write((Uint8)SYNC_MSG);
@@ -376,21 +409,14 @@ int SyncNetwork(void)
 		QueuedInput.Seek(0);
 		CurrPacket.Write(QueuedInput);
 
-		// Send the packet to all the players
-		SDLNet_UDP_Send(gNetFD, 0, &CurrPacket);
-
 		// Wait for sync packets from them
-		if (AwaitSync(nleft, waiting) < 0) {
+		if (AwaitSync() < 0) {
+			AdvancedFrame = false;
 			return -1;
 		}
-
-		CurrOut = !CurrOut;
 	}
 
-	QueuedInput.Reset();
-	++NextFrame;
-
-	return(0);
+	return AdvanceFrame();
 }
 
 /* This function retrieves the input for the frame */
@@ -406,8 +432,6 @@ int GetSyncBuf(Uint8 **bufptr)
 int Send_NewGame()
 {
 	char message[BUFSIZ];
-	int  nleft;
-	Uint32 waiting[MAX_NODES];
 	int  i, j;
 	DynamicPacket newgame;
 
@@ -417,24 +441,22 @@ int Send_NewGame()
 	SDLNet_UDP_Send(gNetFD, 0, &newgame);
 
 	/* Get ready for responses */
-	nleft = 0;
 	for (i = 0; i < gGameInfo.GetNumNodes(); ++i) {
 		if (gGameInfo.IsNetworkNode(i)) {
-			++nleft;
-			waiting[i] = gGameInfo.GetNode(i)->nodeID;
+			WaitingAcks[i] = gGameInfo.GetNode(i)->nodeID;
 		} else {
-			waiting[i] = 0;
+			WaitingAcks[i] = 0;
 		}
 	}
 
 	/* Wait for Ack's */
-	while (nleft > 0) {
+	while (WaitingForAck()) {
 		/* Show a status */
 		strcpy(message, "Waiting for players:");
 		for (i = 0; i < MAX_PLAYERS; ++i) {
 			const GameInfoPlayer *player = gGameInfo.GetPlayer(i);
 			for (j = 0; j < MAX_NODES; ++j) {
-				if (player->nodeID == waiting[j]) {
+				if (player->nodeID == WaitingAcks[j]) {
 					sprintf(&message[strlen(message)], " %d", i+1);
 					break;
 				}
@@ -449,7 +471,7 @@ int Send_NewGame()
 		}
 		if (ready == 0) {
 			for (i = 0; i < MAX_NODES; ++i) {
-				if (waiting[i]) {
+				if (WaitingAcks[i]) {
 					SDLNet_UDP_Send(gNetFD, i+1, &newgame);
 				}
 			}
@@ -482,9 +504,8 @@ int Send_NewGame()
 			continue;
 		}
 		for (i = 0; i < MAX_NODES; ++i) {
-			if (nodeID == waiting[i]) {
-				waiting[i] = 0;
-				--nleft;
+			if (nodeID == WaitingAcks[i]) {
+				WaitingAcks[i] = 0;
 				break;
 			}
 		}
