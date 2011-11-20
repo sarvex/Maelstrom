@@ -41,6 +41,14 @@ enum PLAYER_CONTROL {
 	CONTROL_LOCAL     = (CONTROL_KEYBOARD|CONTROL_JOYSTICK1)
 };
 
+enum NODE_STATE_FLAG {
+	STATE_NONE	= 0x00,
+	STATE_ABORT	= 0x01,
+	STATE_PAUSE	= 0x02,
+	STATE_BONUS	= 0x04,
+	STATE_MINIMIZE	= 0x08,
+};
+
 enum PING_STATUS {
 	PING_LOCAL,
 	PING_GOOD,
@@ -55,6 +63,7 @@ struct GameInfoNode
 {
 	Uint32 nodeID;
 	IPaddress address;
+	Uint8 state;
 
 	struct {
 		Uint32 lastPing;
@@ -142,6 +151,9 @@ public:
 		}
 		return -1;
 	}
+	int GetLocalIndex() const {
+		return GetNodeIndex(localID);
+	}
 
 	bool HasNode(Uint32 nodeID) const;
 	bool HasNode(const IPaddress &address) const;
@@ -168,6 +180,15 @@ public:
 	int GetNumPlayers() const;
 
 	bool IsFull() const;
+
+	void SetNodeState(int index, Uint8 state);
+	Uint8 GetNodeState(int index) const;
+
+	void SetLocalState(Uint8 state, bool enabled);
+	void ToggleLocalState(Uint8 state);
+	Uint8 GetLocalState() const {
+		return GetNodeState(GetLocalIndex());
+	}
 
 	void BindPlayerToUI(int index, UIElement *element);
 	void UpdateUI();

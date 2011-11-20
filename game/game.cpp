@@ -143,8 +143,6 @@ GamePanelDelegate::OnLoad()
 	int i;
 	char name[32];
 
-	m_showingBonus = false;
-
 	/* Initialize our panel variables */
 	m_score = m_panel->GetElement<UIElement>("score");
 	m_shield = m_panel->GetElement<UIElement>("shield");
@@ -239,12 +237,19 @@ GamePanelDelegate::OnTick()
 {
 	int i, j;
 
-	/* -- Read in keyboard input for our ship */
-	HandleEvents(0);
-
-	if ( m_showingBonus || !gGameOn ) {
+	if (!gGameOn) {
+		// This generally shouldn't happen, but could if there were
+		// a consistency error during a replay at the bonus screen.
 		return;
 	}
+
+	// Delay processing until after bonus screen is done
+	if (gGameInfo.GetLocalState() & STATE_BONUS) {
+		return;
+	}
+
+	/* -- Read in keyboard input for our ship */
+	HandleEvents(0);
 
 	/* -- Send Sync! signal to all players, and handle keyboard. */
 	if (!gReplay.HandlePlayback()) {
@@ -252,13 +257,17 @@ GamePanelDelegate::OnTick()
 		return;
 	}
 	if ( SyncNetwork() < 0 ) {
-		if ( gPaused & ~0x1 ) {
-			/* One of the other players is minimized and may not
+		if ( gPaused ) {
+			/* One of the other players may be minimized and not
 			   be able to send packets (iOS), so don't abort yet.
 			*/
 			return;
 		}
 		error("Game aborted!\n");
+		gGameOn = 0;
+		return;
+	}
+	if ( !UpdateGameState() ) {
 		gGameOn = 0;
 		return;
 	}
@@ -382,7 +391,7 @@ GamePanelDelegate::OnDraw()
 	/* Draw the status frame */
 	DrawStatus(false);
 
-	if ( m_showingBonus ) {
+	if ( gGameInfo.GetLocalState() & STATE_BONUS ) {
 		return;
 	}
 
@@ -548,6 +557,36 @@ GamePanelDelegate::DrawStatus(Bool first)
 }	/* -- DrawStatus */
 
 /* ----------------------------------------------------------------- */
+/* -- Update game state based on node state */
+
+bool
+GamePanelDelegate::UpdateGameState()
+{
+	int i;
+	int paused;
+
+	// Check for game over
+	for (i = 0; i < gGameInfo.GetNumNodes(); ++i) {
+		if (gGameInfo.GetNodeState(i) & STATE_ABORT) {
+			return false;
+		}
+	}
+
+	// Check for pause status
+	paused = 0;
+	for (i = 0; i < gGameInfo.GetNumNodes(); ++i) {
+		paused |= gGameInfo.GetNodeState(i);
+	}
+	if ((paused & (STATE_PAUSE|STATE_MINIMIZE)) &&
+	    !(gPaused & (STATE_PAUSE|STATE_MINIMIZE))) {
+		sound->PlaySound(gPauseSound, 5);
+	}
+	gPaused = paused;
+
+	return true;
+}
+
+/* ----------------------------------------------------------------- */
 /* -- Do some housekeeping! */
 
 void
@@ -657,7 +696,13 @@ GamePanelDelegate::DoBonus()
 		label->Show();
 	}
 		
-	m_showingBonus = true;
+	gPlayers[0]->Multiplier(5);
+
+	gGameInfo.SetLocalState(STATE_BONUS, true);
+
+	// Update the state afterward so playback stops for replays
+	SyncNetwork();
+	UpdateGameState();
 
 	/* Fade out */
 	screen->FadeOut();
@@ -787,7 +832,7 @@ GamePanelDelegate::DoBonus()
 
 	ui->HidePanel(PANEL_BONUS);
 
-	m_showingBonus = false;
+	gGameInfo.SetLocalState(STATE_BONUS, false);
 
 	/* Fade out and prepare for drawing the next wave */
 	screen->FadeOut();

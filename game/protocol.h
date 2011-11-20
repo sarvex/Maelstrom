@@ -185,9 +185,6 @@ enum LobbyProtocol {
 #define NEW_GAME_ACK	0x02			/* Sent by players at start */
 #define SYNC_MSG	0x04			/* Sent during game */
 
-#define KEY_PRESS	0x01			/* Sent during game */
-#define KEY_RELEASE	0x02			/* Sent during game */
-
 /* The default port for Maelstrom games */
 #define LOBBY_PORT	0xAE00			/* port 44544 */
 #define NETPLAY_PORT	0xAF00			/* port 44800 */

@@ -234,11 +234,6 @@ ControlsDialogDelegate::SetKeycode(int index, SDL_Keycode keycode)
 	}
 }
 
-static Player *GetLocalPlayer()
-{
-	return GetControlPlayer(CONTROL_LOCAL);
-}
-
 static Player *GetKeyboardPlayer()
 {
 	return GetControlPlayer(CONTROL_KEYBOARD);
@@ -318,84 +313,86 @@ static void HandleEvent(SDL_Event *event)
 
 		/* -- Handle key presses/releases */
 		case SDL_KEYDOWN:
-			/* -- Handle ALT-ENTER hotkey */
+			key = event->key.keysym.sym;
+
 			player = GetKeyboardPlayer();
 			if (!player) {
 				break;
 			}
-	                if ( (event->key.keysym.sym == SDLK_RETURN) &&
-			     (event->key.keysym.mod & KMOD_ALT) ) {
+
+			/* Check for various control keys */
+			if ( key == controls.gFireControl )
+				player->SetControl(FIRE_KEY, 1);
+			else if ( key == controls.gTurnRControl )
+				player->SetControl(RIGHT_KEY, 1);
+			else if ( key == controls.gTurnLControl )
+				player->SetControl(LEFT_KEY, 1);
+			else if ( key == controls.gShieldControl )
+				player->SetControl(SHIELD_KEY, 1);
+			else if ( key == controls.gThrustControl )
+				player->SetControl(THRUST_KEY, 1);
+			break;
+
+		case SDL_KEYUP:
+			key = event->key.keysym.sym;
+
+			/* -- Handle special control keys */
+			if ( key == SDLK_F1 ) {
+				/* Special key --
+					Switch displayed player
+				 */
+				RotatePlayerView();
+				break;
+			} else if ( key == SDLK_F3 ) {
+				/* Special key --
+					Do a screen dump here.
+				 */
+				screen->ScreenDump("ScreenShot",
+							0, 0, 0, 0);
+				break;
+			} else if ( key == SDLK_RETURN &&
+				    (event->key.keysym.mod & KMOD_ALT) ) {
+				/* Special key --
+					Toggle fullscreen mode
+				 */
 				screen->ToggleFullScreen();
 				break;
+			} else if ( key == controls.gPauseControl ) {
+				gGameInfo.ToggleLocalState(STATE_PAUSE);
+				break;
+			} else if ( key == controls.gQuitControl ) {
+				gGameInfo.SetLocalState(STATE_ABORT, true);
+				break;
 			}
-		case SDL_KEYUP:
-			/* -- Handle normal key bindings */
+
 			player = GetKeyboardPlayer();
 			if (!player) {
 				break;
 			}
-			key = event->key.keysym.sym;
-			if ( event->key.state == SDL_PRESSED ) {
-				/* Check for various control keys */
-				if ( key == controls.gFireControl )
-					player->SetControl(FIRE_KEY, 1);
-				else if ( key == controls.gTurnRControl )
-					player->SetControl(RIGHT_KEY, 1);
-				else if ( key == controls.gTurnLControl )
-					player->SetControl(LEFT_KEY, 1);
-				else if ( key == controls.gShieldControl )
-					player->SetControl(SHIELD_KEY, 1);
-				else if ( key == controls.gThrustControl )
-					player->SetControl(THRUST_KEY, 1);
-				else if ( key == controls.gPauseControl )
-					player->SetControl(PAUSE_KEY, 1);
-				else if ( key == controls.gQuitControl )
-					player->SetControl(ABORT_KEY, 1);
-			} else {
-				/* Update control key status */
-				if ( key == controls.gFireControl )
-					player->SetControl(FIRE_KEY, 0);
-				else if ( key == controls.gTurnRControl )
-					player->SetControl(RIGHT_KEY, 0);
-				else if ( key == controls.gTurnLControl )
-					player->SetControl(LEFT_KEY, 0);
-				else if ( key == controls.gShieldControl )
-					player->SetControl(SHIELD_KEY, 0);
-				else if ( key == controls.gThrustControl )
-					player->SetControl(THRUST_KEY, 0);
-				else if ( key == SDLK_F1 ) {
-					/* Special key --
-						Switch displayed player
-					 */
-					RotatePlayerView();
-				} else if ( key == SDLK_F3 ) {
-					/* Special key --
-						Do a screen dump here.
-					 */
-					screen->ScreenDump("ScreenShot",
-								0, 0, 0, 0);
-				}
-			}
+
+			/* Update control key status */
+			if ( key == controls.gFireControl )
+				player->SetControl(FIRE_KEY, 0);
+			else if ( key == controls.gTurnRControl )
+				player->SetControl(RIGHT_KEY, 0);
+			else if ( key == controls.gTurnLControl )
+				player->SetControl(LEFT_KEY, 0);
+			else if ( key == controls.gShieldControl )
+				player->SetControl(SHIELD_KEY, 0);
+			else if ( key == controls.gThrustControl )
+				player->SetControl(THRUST_KEY, 0);
 			break;
 
 		case SDL_WINDOWEVENT:
-			player = GetLocalPlayer();
-			if (!player) {
-				break;
-			}
 			if (event->window.event == SDL_WINDOWEVENT_MINIMIZED) {
-				player->SetControl(MINIMIZE_KEY, 1);
+				gGameInfo.SetLocalState(STATE_MINIMIZE, true);
 			} if (event->window.event == SDL_WINDOWEVENT_RESTORED) {
-				player->SetControl(MINIMIZE_KEY, 0);
+				gGameInfo.SetLocalState(STATE_MINIMIZE, false);
 			}
 			break;
 
 		case SDL_QUIT:
-			player = GetLocalPlayer();
-			if (!player) {
-				break;
-			}
-			player->SetControl(ABORT_KEY, 1);
+			gGameInfo.SetLocalState(STATE_ABORT, true);
 			break;
 	}
 }

@@ -483,32 +483,6 @@ printf("\n");
 	return(Object::Move(Freeze));
 }
 
-static void
-SetPaused(int bit, bool enabled)
-{
-	if (enabled) {
-		sound->PlaySound(gPauseSound, 5);
-		gPaused |= bit;
-	} else {
-		gPaused &= ~bit;
-	}
-}
-static void
-TogglePause()
-{
-	if ( gPaused & 0x01 ) {
-		SetPaused(0x01, false);
-	} else {
-		SetPaused(0x01, true);
-	}
-}
-static void
-SetMinimized(int index, bool enabled)
-{
-	int bit = (1 << (1+index));
-	SetPaused(bit, enabled);
-}
-
 Uint8 
 Player::EncodeInput(unsigned char which, bool enabled)
 {
@@ -559,16 +533,7 @@ Player::HandleKeys(void)
 		}
 
 		if (down) {
-			/* Only handle Pause and Abort while dead */
 			if ( ! Alive() || Exploding ) {
-				if ( key == PAUSE_KEY ) {
-					TogglePause();
-				}
-				if ( key == MINIMIZE_KEY ) {
-					SetMinimized(Index, true);
-				}
-				if ( key == ABORT_KEY )
-					gGameOn = 0;
 				break;
 			}
 			/* Regular key press handling */
@@ -587,15 +552,6 @@ Player::HandleKeys(void)
 					break;
 				case FIRE_KEY:
 					Shooting = 1;
-					break;
-				case PAUSE_KEY:
-					TogglePause();
-					break;
-				case MINIMIZE_KEY:
-					SetMinimized(Index, true);
-					break;
-				case ABORT_KEY:
-					gGameOn = 0;
 					break;
 				default:
 					break;
@@ -618,12 +574,6 @@ Player::HandleKeys(void)
 					break;
 				case FIRE_KEY:
 					Shooting = 0;
-					break;
-				case MINIMIZE_KEY:
-					SetMinimized(Index, false);
-					break;
-				case ABORT_KEY:
-					/* Do nothing on release */;
 					break;
 				default:
 					break;

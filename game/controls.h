@@ -48,7 +48,6 @@ extern void	ShowDawn(void);
 #define FIRE_KEY	0x05
 #define PAUSE_KEY	0x06
 #define ABORT_KEY	0x07
-#define MINIMIZE_KEY	0x08
 
 /* The controls structure */
 class Controls

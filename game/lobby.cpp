@@ -155,7 +155,21 @@ LobbyDialogDelegate::OnHide()
 	// Start the game!
 	if (m_dialog->GetDialogStatus() > 0) {
 		SetState(STATE_PLAYING);
+#define REPLAY_TEST
+#ifdef REPLAY_TEST
+gReplay.SetMode(REPLAY_RECORDING);
+#endif
 		NewGame();
+
+#ifdef REPLAY_TEST
+gReplay.SetMode(REPLAY_PLAYBACK);
+	HaltNetData();
+	if (InitNetData(false) < 0) {
+		return;
+	}
+	NewGame();
+#endif
+
 	} else {
 		SetState(STATE_NONE);
 	}

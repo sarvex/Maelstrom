@@ -306,6 +306,13 @@ UIElementControlButton::HandleEvent(const SDL_Event &event)
 void
 UIElementControlButton::OnMouseDown()
 {
+	if (m_control == PAUSE_KEY) {
+		return;
+	}
+	if (m_control == ABORT_KEY) {
+		return;
+	}
+
 	Player *player = GetControlPlayer(CONTROL_LOCAL);
 	if (player) {
 		player->SetControl(m_control, true);
@@ -315,6 +322,15 @@ UIElementControlButton::OnMouseDown()
 void
 UIElementControlButton::OnMouseUp()
 {
+	if (m_control == PAUSE_KEY) {
+		gGameInfo.ToggleLocalState(STATE_PAUSE);
+		return;
+	}
+	if (m_control == ABORT_KEY) {
+		gGameInfo.SetLocalState(STATE_ABORT, true);
+		return;
+	}
+
 	Player *player = GetControlPlayer(CONTROL_LOCAL);
 	if (player) {
 		player->SetControl(m_control, false);

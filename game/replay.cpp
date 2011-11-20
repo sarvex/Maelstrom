@@ -24,6 +24,8 @@
 #include "netplay.h"
 #include "replay.h"
 
+// Define this to get extremely verbose debug printing
+#define DEBUG_REPLAY
 
 #define DELTA_SIZEMASK	0x7F
 #define DELTA_SEED	0x80
@@ -60,12 +62,14 @@ Replay::HandleNewGame()
 	if (m_mode == REPLAY_RECORDING) {
 		m_game.CopyFrom(gGameInfo);
 		m_game.PrepareForReplay();
+		m_data.Reset();
+		m_pausedInput.Reset();
 	} else if (m_mode == REPLAY_PLAYBACK) {
 		gGameInfo.CopyFrom(m_game);
 		gGameInfo.PrepareForReplay();
+		m_data.Seek(0);
 	}
 	m_seed = m_game.seed;
-	m_data.Seek(0);
 }
 
 bool
@@ -75,9 +79,16 @@ Replay::HandlePlayback()
 		return true;
 	}
 
+	if (gPaused) {
+		return true;
+	}
+
 	Uint8 delta;
 	if (!m_data.Read(delta)) {
 		// That's it, end of recording
+#ifdef DEBUG_REPLAY
+printf("Replay complete!\n");
+#endif
 		return false;
 	}
 
@@ -100,10 +111,17 @@ Replay::HandlePlayback()
 		error("Error in replay, missing data\r\n");
 		return false;
 	}
+#ifdef DEBUG_REPLAY
+static int foo = 0;
+printf("Read %d bytes for frame %d", size, foo++);
+#endif
 	while (size--) {
 		m_data.Read(value);
 		QueueInput(value);
 	}
+#ifdef DEBUG_REPLAY
+printf(", pos = %d\n", m_data.Tell());
+#endif
 	return true;
 }
 
@@ -115,11 +133,18 @@ Replay::HandleRecording()
 	}
 
 	// Get the input for this frame
-	Uint8 delta;
 	Uint8 *data;
-	int len = GetSyncBuf(&data);
-	assert(len < DELTA_SIZEMASK);
-	delta = (Uint8)len;
+	int size = GetSyncBuf(&data);
+
+	// If we're paused, save this data for the next unpaused frame
+	if (gPaused) {
+		m_pausedInput.Write(data, size);
+		return;
+	}
+	assert(size+m_pausedInput.Size() < DELTA_SIZEMASK);
+
+	Uint8 delta;
+	delta = (Uint8)size+m_pausedInput.Size();
 
 	// Add it to our data buffer
 	Uint32 seed = GetRandSeed();
@@ -131,5 +156,15 @@ Replay::HandleRecording()
 	} else {
 		m_data.Write(delta);
 	}
-	m_data.Write(data, len);
+
+	if (m_pausedInput.Size() > 0) {
+		m_pausedInput.Seek(0);
+		m_data.Write(m_pausedInput);
+		m_pausedInput.Reset();
+	}
+	m_data.Write(data, size);
+#ifdef DEBUG_REPLAY
+static int foo = 0;
+printf("Wrote %d bytes for frame %d, size = %d\n", size, foo++, m_data.Size());
+#endif
 }

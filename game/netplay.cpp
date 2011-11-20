@@ -32,7 +32,7 @@
 #include "protocol.h"
 
 // Set this to 1 for normal debug info, and 2 for verbose packet logging
-//#define DEBUG_NETWORK 1
+#define DEBUG_NETWORK 1
 
 // Define this to simulate packet loss
 //#define DEBUG_PACKETLOSS 10
@@ -161,14 +161,22 @@ void QueueInput(Uint8 value)
 static bool ProcessSync(int index, DynamicPacket &packet)
 {
 	Uint32 seed;
+	Uint8 state;
 
-	if (!packet.Read(seed) || seed != GetRandSeed()) {
+	if (!packet.Read(seed) || !packet.Read(state)) {
+		error("Received short packet\r\n");
+		return false;
+	}
+
+	if (seed != GetRandSeed()) {
 		/* We're hosed, to correct this we would have to sync the complete game state */
 		error("Error!! \a Frame consistency problem, aborting!!\r\n");
 		return false;
 	}
 
-	// FIXME: Should we validate that the input is for players from this node?
+	gGameInfo.SetNodeState(index, state);
+
+	// Should we validate that the input is for players from this node?
 	//        ... nah... :)
 	FrameInput.Write(packet);
 
@@ -341,8 +349,6 @@ int SyncNetwork(void)
 	int nleft;
 	Uint32 waiting[MAX_NODES];
 
-	++NextFrame;
-
 	// Get the queued input
 	FrameInput.Reset();
 	QueuedInput.Seek(0);
@@ -366,6 +372,7 @@ int SyncNetwork(void)
 		CurrPacket.Write(gGameInfo.localID);
 		CurrPacket.Write(NextFrame);
 		CurrPacket.Write(GetRandSeed());
+		CurrPacket.Write(gGameInfo.GetLocalState());
 		QueuedInput.Seek(0);
 		CurrPacket.Write(QueuedInput);
 
@@ -381,6 +388,7 @@ int SyncNetwork(void)
 	}
 
 	QueuedInput.Reset();
+	++NextFrame;
 
 	return(0);
 }

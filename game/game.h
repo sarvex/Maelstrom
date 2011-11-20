@@ -41,13 +41,12 @@ public:
 
 protected:
 	void DrawStatus(Bool first);
+	bool UpdateGameState();
 	void DoHousekeeping();
 	void DoBonus();
 	void NextWave();
 
 protected:
-	bool m_showingBonus;
-
 	UIElement *m_score;
 	UIElement *m_shield;
 	UIElement *m_wave;

@@ -67,6 +67,7 @@ protected:
 	GameInfo m_game;
 	Uint32 m_seed;
 	DynamicPacket m_data;
+	DynamicPacket m_pausedInput;
 };
 
 #endif // _replay_h

@@ -261,7 +261,8 @@ GameInfo::PrepareForReplay()
 	gameID = localID;
 
 	SDL_zero(nodes);
-	numNodes = 0;
+	nodes[HOST_NODE].nodeID = localID;
+	numNodes = 1;
 
 	for (int i = 0; i < MAX_PLAYERS; ++i) {
 		if (IsValidPlayer(i)) {
@@ -406,6 +407,38 @@ GameInfo::IsFull() const
 		}
 	}
 	return true;
+}
+
+void
+GameInfo::SetLocalState(Uint8 state, bool enabled)
+{
+	if (enabled) {
+		nodes[GetLocalIndex()].state |= state;
+	} else {
+		nodes[GetLocalIndex()].state &= ~state;
+	}
+}
+
+void
+GameInfo::ToggleLocalState(Uint8 state)
+{
+	if (GetLocalState() & state) {
+		SetLocalState(state, false);
+	} else {
+		SetLocalState(state, true);
+	}
+}
+
+void
+GameInfo::SetNodeState(int index, Uint8 state)
+{
+	nodes[index].state = state;
+}
+
+Uint8
+GameInfo::GetNodeState(int index) const
+{
+	return nodes[index].state;
 }
 
 void

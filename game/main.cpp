@@ -67,7 +67,19 @@ static void RunSinglePlayerGame()
 	if (InitNetData(false) < 0) {
 		return;
 	}
+#define REPLAY_TEST
+#ifdef REPLAY_TEST
+gReplay.SetMode(REPLAY_RECORDING);
+#endif
 	NewGame();
+#ifdef REPLAY_TEST
+gReplay.SetMode(REPLAY_PLAYBACK);
+	HaltNetData();
+	if (InitNetData(false) < 0) {
+		return;
+	}
+	NewGame();
+#endif
 	HaltNetData();
 }
 static void RunPlayGame(void*)
