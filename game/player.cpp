@@ -34,9 +34,6 @@
 
 static void ThrustCallback(Uint8 theChannel)
 {
-#ifdef DEBUG
-error("Thrust called back on channel %hu\n", theChannel);
-#endif
 	for (int i = 0; i < MAX_PLAYERS; ++i) {
 		if ( gPlayers[i]->IsThrusting() ) {
 			sound->PlaySound(gThrusterSound,1,theChannel,ThrustCallback);
