@@ -1060,7 +1060,8 @@ static void DoGameOver(void)
 	/* -- They got a high score! */
 	gLastHigh = which;
 
-	if ((which != -1) && !gGameInfo.IsMultiplayer() &&
+	if ((which != -1) &&
+			!gGameInfo.IsMultiplayer() && !gReplay.IsPlaying() &&
 			(gGameInfo.wave == 1) && (gGameInfo.lives == 3)) {
 		sound->PlaySound(gBonusShot, 5);
 
