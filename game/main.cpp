@@ -67,19 +67,7 @@ static void RunSinglePlayerGame()
 	if (InitNetData(false) < 0) {
 		return;
 	}
-#define REPLAY_TEST
-#ifdef REPLAY_TEST
-gReplay.SetMode(REPLAY_RECORDING);
-#endif
 	NewGame();
-#ifdef REPLAY_TEST
-gReplay.SetMode(REPLAY_PLAYBACK);
-	HaltNetData();
-	if (InitNetData(false) < 0) {
-		return;
-	}
-	NewGame();
-#endif
 	HaltNetData();
 }
 static void RunPlayGame(void*)
@@ -89,6 +77,19 @@ static void RunPlayGame(void*)
 				DEFAULT_START_LIVES,
 				DEFAULT_START_TURBO, 0);
 	RunSinglePlayerGame();
+}
+static void RunReplayGame(const char *file)
+{
+	if (!gReplay.Load(file)) {
+		return;
+	}
+
+	gReplay.SetMode(REPLAY_PLAYBACK);
+	RunSinglePlayerGame();
+}
+static void RunLastReplay(void*)
+{
+	RunReplayGame("LastScore");
 }
 static void RunQuitGame(void*)
 {
@@ -311,6 +312,12 @@ int MaelstromMain(int argc, char *argv[])
 	ui->ShowPanel(PANEL_MAIN);
 
 	while ( gRunning ) {
+		// If we got a reply event, start it up!
+		if (gReplayFile) {
+			RunReplayGame(gReplayFile);
+			SDL_free(gReplayFile);
+			gReplayFile = NULL;
+		}
 
 		ui->Draw();
 
@@ -321,6 +328,11 @@ int MaelstromMain(int argc, char *argv[])
 		while ( screen->PollEvent(&event) ) {
 			if ( ui->HandleEvent(event) )
 				continue;
+
+			/* -- Handle file drop requests */
+			if ( event.type == SDL_DROPFILE ) {
+				gReplayFile = event.drop.file;
+			}
 
 			/* -- Handle window close requests */
 			if ( event.type == SDL_QUIT ) {
@@ -436,6 +448,11 @@ MainPanelDelegate::OnLoad()
 	button = m_panel->GetElement<UIElementButton>("SetVolume8");
 	if (button) {
 		button->SetClickCallback(new SetVolumeCallback(8));
+	}
+
+	button = m_panel->GetElement<UIElementButton>("play_last");
+	if (button) {
+		button->SetClickCallback(RunLastReplay);
 	}
 
 	return true;

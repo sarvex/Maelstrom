@@ -98,6 +98,7 @@ extern Bool	gUpdateBuffer;
 extern Bool	gRunning;
 
 // in init.cpp : 
+extern char    *gReplayFile;
 extern Sint32	gLastHigh;
 extern Rect	gScrnRect;
 extern SDL_Rect	gClipRect;

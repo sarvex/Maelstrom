@@ -1,4 +1,5 @@
 
+ACLOCAL_AMFLAGS = -I acinclude
 
 bin_PROGRAMS = Maelstrom
 noinst_PROGRAMS = MaelstromLobby

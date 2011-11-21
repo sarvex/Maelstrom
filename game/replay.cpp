@@ -20,8 +20,12 @@
     slouken@libsdl.org
 */
 
+#include <zlib.h>
+#include "physfs.h"
+
 #include "Maelstrom_Globals.h"
 #include "netplay.h"
+#include "player.h"
 #include "replay.h"
 
 // Define this to get extremely verbose debug printing
@@ -42,23 +46,270 @@ Replay::SetMode(REPLAY_MODE mode)
 	m_mode = mode;
 }
 
-bool
-Replay::Load(const char *file)
+/* The file format is as follows:
+
+	Uint8 version
+	Uint32 frameCount
+	Uint8 finalPlayer
+	Uint8 finalWave
+	{
+		Uint32 score;
+		Uint8  frags;
+	} finalScore[MAX_PLAYERS]
+
+	Uint32 gameSize
+	GameInfo game
+
+	Uint32 dataSize
+	Uint32 compressed_size
+	Uint8 compressed_data[]
+*/
+
+// This is a temporary hack
+static PHYSFS_File *
+CopyTempReplay(const char *file)
 {
-	assert(!"Not yet implemented");
+	FILE *rfp;
+	PHYSFS_File *wfp;
+	const char *base;
+	char path[1024];
+	char data[1024];
+	size_t size;
+
+	base = SDL_max(SDL_strrchr(file, '/'), SDL_strrchr(file, '\\'));
+	if (base) {
+		base = base+1;
+	} else {
+		base = file;
+	}
+
+	PHYSFS_mkdir("tmp");
+	SDL_snprintf(path, sizeof(path), "tmp/%s", base);
+
+	rfp = fopen(file, "rb");
+	if (!rfp) {
+		fprintf(stderr, "Couldn't open %s\n", file);
+		return NULL;
+	}
+
+	wfp = PHYSFS_openWrite(path);
+	if (!wfp) {
+		fprintf(stderr, "Couldn't write to %s: %s\n", path, PHYSFS_getLastError());
+		fclose(rfp);
+		return NULL;
+	}
+
+	while ((size = fread(data, 1, sizeof(data), rfp)) > 0) {
+		if (!PHYSFS_writeBytes(wfp, data, size)) {
+			goto physfs_write_error;
+		}
+	}
+	if (!PHYSFS_close(wfp)) {
+		goto physfs_write_error;
+	}
+	fclose(rfp);
+
+	return PHYSFS_openRead(path);
+
+physfs_write_error:
+	fprintf(stderr, "Error writing to %s: %s\n", path, PHYSFS_getLastError());
+	fclose(rfp);
+	PHYSFS_close(wfp);
+	PHYSFS_delete(path);
+	return NULL;
+}
+
+bool
+Replay::Load(const char *file, bool headerOnly)
+{
+	char path[1024];
+	PHYSFS_File *fp;
+	DynamicPacket data;
+	uLongf destLen;
+	Uint32 size;
+	Uint32 compressedSize;
+
+	// Open the file
+	if (SDL_strchr(file, '/') == NULL) {
+		SDL_snprintf(path, sizeof(path), "%s/%s.%s", REPLAY_DIRECTORY, file, REPLAY_FILETYPE);
+		file = path;
+	}
+	fp = PHYSFS_openRead(file);
+	if (!fp) {
+		// If the file is outside our sandbox, try to copy it in
+		fp = CopyTempReplay(file);
+	}
+	if (!fp) {
+		fprintf(stderr, "Couldn't read %s: %s\n", file, PHYSFS_getLastError());
+		return false;
+	}
+
+	Uint8 version;
+	if (!PHYSFS_readBytes(fp, &version, 1)) {
+		goto physfs_read_error;
+	}
+	if (version != REPLAY_VERSION) {
+		fprintf(stderr, "Unsupported version %d, expected %d\n", version, REPLAY_VERSION);
+		goto error_return;
+	}
+	if (!PHYSFS_readULE32(fp, &m_frameCount)) {
+		goto physfs_read_error;
+	}
+	if (!PHYSFS_readBytes(fp, &m_finalPlayer, 1)) {
+		goto physfs_read_error;
+	}
+	if (!PHYSFS_readBytes(fp, &m_finalWave, 1)) {
+		goto physfs_read_error;
+	}
+	for (int i = 0; i < MAX_PLAYERS; ++i) {
+		if (!PHYSFS_readULE32(fp, &m_finalScore[i].Score)) {
+			goto physfs_read_error;
+		}
+		if (!PHYSFS_readBytes(fp, &m_finalScore[i].Frags, 1)) {
+			goto physfs_read_error;
+		}
+	}
+
+	if (!headerOnly) {
+		if (!PHYSFS_readULE32(fp, &size)) {
+			goto physfs_read_error;
+		}
+		data.Reset();
+		data.Grow(size);
+		if (!PHYSFS_readBytes(fp, data.data, size)) {
+			goto physfs_read_error;
+		}
+		data.len = size;
+		if (!m_game.ReadFromPacket(data)) {
+			fprintf(stderr, "Couldn't read game information from %s", file);
+			goto error_return;
+		}
+
+		if (!PHYSFS_readULE32(fp, &size)) {
+			goto physfs_read_error;
+		}
+		m_data.Reset();
+		m_data.Grow(size);
+
+		if (!PHYSFS_readULE32(fp, &compressedSize)) {
+			goto physfs_read_error;
+		}
+		data.Reset();
+		data.Grow(compressedSize);
+
+		if (!PHYSFS_readBytes(fp, data.data, compressedSize)) {
+			goto physfs_read_error;
+		}
+		destLen = size;
+		if (uncompress(m_data.Data(), &destLen, data.Data(), compressedSize) != Z_OK) {
+			fprintf(stderr, "Error uncompressing replay data\n");
+			goto error_return;
+		}
+		m_data.len = size;
+	}
+
+	// We're done!
+	PHYSFS_close(fp);
+	return true;
+
+physfs_read_error:
+	fprintf(stderr, "Error reading from %s: %s\n", file, PHYSFS_getLastError());
+error_return:
+	PHYSFS_close(fp);
 	return false;
 }
 
 bool
 Replay::Save(const char *file)
 {
-	assert(!"Not yet implemented");
+	char path[1024];
+	PHYSFS_File *fp;
+	DynamicPacket data;
+	uLongf destLen;
+
+	// Create the directory if needed
+	PHYSFS_mkdir(REPLAY_DIRECTORY);
+
+	// Open the file
+	if (SDL_strchr(file, '/') == NULL) {
+		SDL_snprintf(path, sizeof(path), "%s/%s.%s", REPLAY_DIRECTORY, file, REPLAY_FILETYPE);
+		file = path;
+	}
+	fp = PHYSFS_openWrite(file);
+	if (!fp) {
+		fprintf(stderr, "Couldn't write to %s: %s\n", file, PHYSFS_getLastError());
+		return false;
+	}
+
+	Uint8 version = REPLAY_VERSION;
+	if (!PHYSFS_writeBytes(fp, &version, 1)) {
+		goto physfs_write_error;
+	}
+	if (!PHYSFS_writeULE32(fp, m_frameCount)) {
+		goto physfs_write_error;
+	}
+	if (!PHYSFS_writeBytes(fp, &m_finalPlayer, 1)) {
+		goto physfs_write_error;
+	}
+	if (!PHYSFS_writeBytes(fp, &m_finalWave, 1)) {
+		goto physfs_write_error;
+	}
+	for (int i = 0; i < MAX_PLAYERS; ++i) {
+		if (!PHYSFS_writeULE32(fp, m_finalScore[i].Score)) {
+			goto physfs_write_error;
+		}
+		if (!PHYSFS_writeBytes(fp, &m_finalScore[i].Frags, 1)) {
+			goto physfs_write_error;
+		}
+	}
+
+	data.Reset();
+	m_game.WriteToPacket(data);
+	if (!PHYSFS_writeULE32(fp, data.Size())) {
+		goto physfs_write_error;
+	}
+	if (!PHYSFS_writeBytes(fp, data.Data(), data.Size())) {
+		goto physfs_write_error;
+	}
+
+	destLen = compressBound(m_data.Size());
+	data.Reset();
+	data.Grow(destLen);
+	if (compress(data.Data(), &destLen, m_data.Data(), m_data.Size()) != Z_OK) {
+		fprintf(stderr, "Error compressing replay data\n");
+		goto error_return;
+	}
+	if (!PHYSFS_writeULE32(fp, m_data.Size())) {
+		goto physfs_write_error;
+	}
+	if (!PHYSFS_writeULE32(fp, data.Size())) {
+		goto physfs_write_error;
+	}
+	if (!PHYSFS_writeBytes(fp, data.Data(), data.Size())) {
+		goto physfs_write_error;
+	}
+
+	// We're done!
+	if (!PHYSFS_close(fp)) {
+		goto physfs_write_error;
+	}
+	return true;
+
+physfs_write_error:
+	fprintf(stderr, "Error writing to %s: %s\n", file, PHYSFS_getLastError());
+error_return:
+	PHYSFS_close(fp);
+	PHYSFS_delete(path);
 	return false;
 }
 
 void
 Replay::HandleNewGame()
 {
+	if (m_mode == REPLAY_IDLE) {
+		m_mode = REPLAY_RECORDING;
+	}
+
 	if (m_mode == REPLAY_RECORDING) {
 		m_game.CopyFrom(gGameInfo);
 		m_game.PrepareForReplay();
@@ -70,6 +321,10 @@ Replay::HandleNewGame()
 		m_data.Seek(0);
 	}
 	m_seed = m_game.seed;
+	m_frameCount = 0;
+	m_finalPlayer = 0;
+	m_finalWave = 0;
+	SDL_zero(m_finalScore);
 }
 
 bool
@@ -111,15 +366,15 @@ printf("Replay complete!\n");
 		error("Error in replay, missing data\r\n");
 		return false;
 	}
-#ifdef DEBUG_REPLAY
-printf("Read %d bytes for frame %d", size, NextFrame);
-#endif
-	while (size--) {
+	for (int i = 0; i < size; ++i) {
 		m_data.Read(value);
 		QueueInput(value);
 	}
+
+	++m_frameCount;
+
 #ifdef DEBUG_REPLAY
-printf(", pos = %d, seed = %8.8x\n", m_data.Tell(), m_seed);
+printf("Read %d bytes for frame %d, pos = %d, seed = %8.8x\n", size, m_frameCount, m_data.Tell(), m_seed);
 #endif
 	return true;
 }
@@ -162,7 +417,29 @@ Replay::HandleRecording()
 		m_pausedInput.Reset();
 	}
 	m_data.Write(data, size);
+
+	++m_frameCount;
+
 #ifdef DEBUG_REPLAY
-printf("Wrote %d bytes for frame %d, size = %d, seed = %8.8x\n", size, NextFrame, m_data.Size(), m_seed);
+printf("Wrote %d bytes for frame %d, size = %d, seed = %8.8x\n", size, m_frameCount, m_data.Size(), m_seed);
 #endif
+}
+
+void
+Replay::HandleGameOver()
+{
+	if (m_mode != REPLAY_RECORDING) {
+		return;
+	}
+
+	m_finalPlayer = gDisplayed;
+	m_finalWave = gWave;
+
+	for (int i = 0; i < MAX_PLAYERS; ++i) {
+		m_finalScore[i].Score = gPlayers[i]->GetScore();
+		m_finalScore[i].Frags = gPlayers[i]->GetFrags();
+	}
+
+	// Save this as the last score
+	Save("LastScore");
 }

@@ -990,6 +990,8 @@ static void DoGameOver(void)
 	int chars_in_handle = 0;
 	Bool done = false;
 
+	gReplay.HandleGameOver();
+
 	/* Get the final scoring */
 	struct FinalScore *final = new struct FinalScore[MAX_PLAYERS];
 	for ( i=0; i<MAX_PLAYERS; ++i ) {
@@ -1003,9 +1005,7 @@ static void DoGameOver(void)
 		qsort(final,MAX_PLAYERS,sizeof(struct FinalScore),cmp_byscore);
 
 	panel = ui->GetPanel(PANEL_GAMEOVER);
-	if (!panel) {
-		return;
-	}
+	assert(panel);	// There's cleanup further down we need to do...
 	panel->HideAll();
 
 	image = panel->GetElement<UIElement>("image");
@@ -1149,6 +1149,12 @@ static void DoGameOver(void)
 	HandleEvents(0);
 
 	ui->HidePanel(PANEL_GAMEOVER);
+
+	/* Make sure we clear the game info so we don't crash trying to
+	   update UI in a future replay
+	*/
+	gGameInfo.Reset();
+	gReplay.SetMode(REPLAY_IDLE);
 
 }	/* -- DoGameOver */
 

@@ -41,7 +41,7 @@
 UDPsocket gNetFD;
 
 static SDLNet_SocketSet SocketSet;
-Uint32 NextFrame;
+static Uint32 NextFrame;
 static bool AdvancedFrame;
 
 /* We keep one packet backlogged for retransmission */

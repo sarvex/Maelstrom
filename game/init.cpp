@@ -47,6 +47,7 @@ FrameBuf *screen = NULL;
 UIManager *ui = NULL;
 Mac_Resource *spriteres = NULL;
 
+char   *gReplayFile;
 Sint32	gLastHigh;
 Uint32	gLastDrawn;
 int     gNumSprites;
@@ -719,6 +720,9 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 		return(-1);
 	}
 
+	/* We will handle drag and drop events */
+	SDL_EventState(SDL_DROPFILE, SDL_ENABLE);
+
 	/* Initialize the screen */
 	screen = new FrameBuf;
 	if (screen->Init(SCREEN_WIDTH, SCREEN_HEIGHT, window_flags, render_flags,
@@ -730,6 +734,14 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 	screen->Clear();
 	screen->Update();
 	SDL_FreeSurface(icon);
+
+	/* Get startup events, which shows the window on Mac OS X */
+	SDL_Event event;
+	while (SDL_PollEvent(&event)) {
+		if (event.type == SDL_DROPFILE) {
+			gReplayFile = event.drop.file;
+		}
+	}
 
 	/* Load the Font Server and fonts */
 	fontserv = new FontServ(screen, "Maelstrom Fonts");

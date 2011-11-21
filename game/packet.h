@@ -72,6 +72,9 @@ public:
 	int Size() {
 		return len;
 	}
+	Uint8 *Data() {
+		return data;
+	}
 
 	void Write(Uint8 value) {
 		Grow(sizeof(value));
@@ -147,7 +150,6 @@ public:
 		return true;
 	}
 
-protected:
 	void Grow(size_t additionalSize) {
 		if (len+additionalSize > (size_t)maxlen) {
 			while (len+additionalSize > (size_t)maxlen) {

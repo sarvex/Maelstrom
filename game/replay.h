@@ -33,6 +33,8 @@
 // game logic, etc.
 //
 #define REPLAY_VERSION	1
+#define REPLAY_DIRECTORY "Scores"
+#define REPLAY_FILETYPE "mreplay"
 
 enum REPLAY_MODE {
 	REPLAY_IDLE,
@@ -55,19 +57,28 @@ public:
 		return m_mode == REPLAY_RECORDING;
 	}
 
-	bool Load(const char *file);
+	bool Load(const char *file, bool headerOnly = false);
 	bool Save(const char *file);
 
 	void HandleNewGame();
 	bool HandlePlayback();
 	void HandleRecording();
+	void HandleGameOver();
 
 protected:
 	REPLAY_MODE m_mode;
 	GameInfo m_game;
 	Uint32 m_seed;
+	Uint32 m_frameCount;
 	DynamicPacket m_data;
 	DynamicPacket m_pausedInput;
+
+	Uint8 m_finalPlayer;
+	Uint8 m_finalWave;
+	struct FinalScore {
+		Uint32 Score;
+		Uint8 Frags;
+	} m_finalScore[MAX_PLAYERS];
 };
 
 #endif // _replay_h

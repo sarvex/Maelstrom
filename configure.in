@@ -77,6 +77,9 @@ http://icculus.org/physfs
 ])
 fi
 
+dnl Check for zlib
+CHECK_ZLIB
+
 dnl Set up the icon object file, for Mingw32
 case "$target" in
     *-*-mingw32*)

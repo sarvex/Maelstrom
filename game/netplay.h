@@ -43,6 +43,5 @@ extern int   Send_NewGame();
 
 /* Variables from netplay.cpp */
 extern UDPsocket gNetFD;
-extern Uint32 NextFrame;	// Exposed for debugging purposes
 
 #endif // _netplay_h
