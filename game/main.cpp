@@ -476,7 +476,7 @@ MainPanelDelegate::OnTick()
 	}
 	gUpdateBuffer = false;
 
-	for (int index = 0; index < 10; index++) {
+	for (int index = 0; index < NUM_SCORES; index++) {
 		Uint8 R, G, B;
 
 		if ( gLastHigh == index ) {

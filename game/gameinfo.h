@@ -117,6 +117,7 @@ public:
 	void SetHost(const char *name, Uint8 wave, Uint8 lives, Uint8 turbo, Uint8 deathMatch);
 
 	void SetPlayerSlot(int slot, const char *name, Uint8 controlMask);
+	void SetPlayerName(int slot, const char *name);
 	bool AddNetworkPlayer(Uint32 nodeID, const IPaddress &address, const char *name);
 
 	void CopyFrom(const GameInfo &rhs);

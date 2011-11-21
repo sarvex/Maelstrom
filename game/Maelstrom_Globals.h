@@ -143,7 +143,7 @@ extern Controls	controls;
 extern PrefsVariable<int> gSoundLevel;
 extern PrefsVariable<int> gGammaCorrect;
 // int scores.cpp :
-extern Scores	hScores[];
+extern Scores	hScores[NUM_SCORES];
 
 // -- Variables specific to each game 
 // in game.cpp : 

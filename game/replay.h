@@ -33,9 +33,9 @@
 // game logic, etc.
 //
 #define REPLAY_VERSION	1
-#define REPLAY_DIRECTORY "Scores"
+#define REPLAY_DIRECTORY "Games"
 #define REPLAY_FILETYPE "mreplay"
-#define LAST_REPLAY	"LastScore"
+#define LAST_REPLAY	"LastGame."REPLAY_FILETYPE
 
 enum REPLAY_MODE {
 	REPLAY_IDLE,
@@ -77,9 +77,12 @@ public:
 		// Return the approximage length of the replay, in seconds
 		return (float)m_frameCount / 30.0f;
 	}
+	GameInfo &GetGameInfo() {
+		return m_game;
+	}
 
 	bool Load(const char *file, bool headerOnly = false);
-	bool Save(const char *file);
+	bool Save(const char *file = NULL);
 
 	void HandleNewGame();
 	bool HandlePlayback();

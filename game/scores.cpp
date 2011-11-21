@@ -24,85 +24,114 @@
    This file handles the cheat dialogs and the high score file
 */
 
-#ifdef unix
-#include <sys/types.h>
-#include <sys/stat.h>
-#endif
-#include <stdio.h>
+#include <stdlib.h>	// for qsort()
 
-#include "SDL_endian.h"
+#include "physfs.h"
 
 #include "Maelstrom_Globals.h"
-#include "load.h"
+#include "scores.h"
+#include "../utils/array.h"
 
-#define MAELSTROM_SCORES	"Maelstrom-Scores"
-#define NUM_SCORES		10		// Do not change this!
-
-/* Everyone can write to scores file if defined to 0 */
-#define SCORES_PERMMASK		0
 
 Scores hScores[NUM_SCORES];
 
-void LoadScores(void)
+int SortScores(const void *_a, const void *_b)
 {
-	SDL_RWops *scores_src;
-	int i;
+	const Scores *a = (const Scores *)_a;
+	const Scores *b = (const Scores *)_b;
 
-	memset(&hScores, 0, sizeof(hScores));
-
-	scores_src = PHYSFSRWOPS_openRead(MAELSTROM_SCORES);
-	if ( scores_src != NULL ) {
-		for ( i=0; i<NUM_SCORES; ++i ) {
-			SDL_RWread(scores_src, hScores[i].name,
-			           sizeof(hScores[i].name), 1);
-			hScores[i].wave = SDL_ReadBE32(scores_src);
-			hScores[i].score = SDL_ReadBE32(scores_src);
+	if (a->score == b->score) {
+		if (a->wave == b->wave) {
+			return SDL_strcmp(a->name, b->name);
 		}
-		SDL_RWclose(scores_src);
+		return b->wave - a->wave;
 	}
+	return b->score - a->score;
 }
 
-void SaveScores(void)
+void LoadScores(void)
 {
-	SDL_RWops *scores_src;
+	char path[1024];
+	Replay replay;
+	Scores score;
+	array<Scores> scores;
 	int i;
-#ifdef unix
-	int omask;
-#endif
 
-#ifdef unix
-	omask=umask(SCORES_PERMMASK);
-#endif
-	scores_src = PHYSFSRWOPS_openWrite(MAELSTROM_SCORES);
-	if ( scores_src != NULL ) {
-		for ( i=0; i<NUM_SCORES; ++i ) {
-			SDL_RWwrite(scores_src, hScores[i].name,
-			            sizeof(hScores[i].name), 1);
-			SDL_WriteBE32(scores_src, hScores[i].wave);
-			SDL_WriteBE32(scores_src, hScores[i].score);
+	FreeScores();
+
+	// Load all the games
+	char **rc = PHYSFS_enumerateFiles(REPLAY_DIRECTORY);
+	char **f;
+	for (f = rc; *f; ++f) {
+		if (SDL_strcmp(*f, LAST_REPLAY) == 0) {
+			continue;
 		}
-		SDL_RWclose(scores_src);
-	} else {
-		error("Warning: Couldn't save scores to %s\n",
-						MAELSTROM_SCORES);
+		if (!replay.Load(*f, true)) {
+			continue;
+		}
+
+		SDL_strlcpy(score.name, replay.GetDisplayName(), sizeof(score.name));
+		score.wave = replay.GetFinalWave();
+		score.score = replay.GetFinalScore();
+		score.file = *f;
+		scores.add(score);
 	}
-#ifdef unix
-	umask(omask);
-#endif
+
+	// Take the top 10
+	if (scores.length() > 0) {
+		qsort(&scores[0], scores.length(), sizeof(scores[0]), SortScores);
+	}
+	for (i = 0; i < scores.length() && i < NUM_SCORES; ++i) {
+		hScores[i] = scores[i];
+		hScores[i].file = SDL_strdup(scores[i].file);
+	}
+
+	// Trim the rest
+	for ( ; i < scores.length(); ++i) {
+		SDL_snprintf(path, sizeof(path), "%s/%s", REPLAY_DIRECTORY, scores[i].file);
+		PHYSFS_delete(path);
+	}
+
+	PHYSFS_freeList(rc);
+}
+
+void FreeScores(void)
+{
+	// Free the existing scores
+	int i;
+	for (i = 0; i < NUM_SCORES; ++i) {
+		if (hScores[i].file) {
+			SDL_free(hScores[i].file);
+		}
+	}
+	SDL_zero(hScores);
+
 }
 
 void ZapHighScores(UIDialog *dialog, int status)
 {
-	if (status) {
-		memset(hScores, 0, sizeof(hScores));
-		SaveScores();
-		gLastHigh = -1;
+	char path[1024];
 
-		/* Fade the screen and redisplay scores */
-		screen->FadeOut();
-		Delay(SOUND_DELAY);
-		sound->PlaySound(gExplosionSound, 5);
-		gUpdateBuffer = true;
+	if (!status) {
+		return;
 	}
+
+	// Delete all the games
+	char **rc = PHYSFS_enumerateFiles(REPLAY_DIRECTORY);
+	char **f;
+	for (f = rc; *f; ++f) {
+		SDL_snprintf(path, sizeof(path), "%s/%s", REPLAY_DIRECTORY, *f);
+		PHYSFS_delete(path);
+	}
+	PHYSFS_freeList(rc);
+
+	FreeScores();
+	gLastHigh = -1;
+
+	/* Fade the screen and redisplay scores */
+	screen->FadeOut();
+	Delay(SOUND_DELAY);
+	sound->PlaySound(gExplosionSound, 5);
+	gUpdateBuffer = true;
 }
 

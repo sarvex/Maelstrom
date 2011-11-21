@@ -85,6 +85,14 @@ GameInfo::SetPlayerSlot(int slot, const char *name, Uint8 controlMask)
 	UpdateUI(player);
 }
 
+void
+GameInfo::SetPlayerName(int slot, const char *name)
+{
+	GameInfoPlayer *player = &players[slot];
+	SDL_strlcpy(player->name, name ? name : "", sizeof(player->name));
+	UpdateUI(player);
+}
+
 bool
 GameInfo::AddNetworkPlayer(Uint32 nodeID, const IPaddress &address, const char *name)
 {

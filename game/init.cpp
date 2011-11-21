@@ -641,6 +641,7 @@ static void BuildVelocityTable(void)
 */
 void CleanUp(void)
 {
+	FreeScores();
 	SaveControls();
 	if ( spriteres ) {
 		delete spriteres;

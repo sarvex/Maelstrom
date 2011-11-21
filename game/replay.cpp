@@ -131,7 +131,7 @@ Replay::Load(const char *file, bool headerOnly)
 
 	// Open the file
 	if (SDL_strchr(file, '/') == NULL) {
-		SDL_snprintf(path, sizeof(path), "%s/%s.%s", REPLAY_DIRECTORY, file, REPLAY_FILETYPE);
+		SDL_snprintf(path, sizeof(path), "%s/%s", REPLAY_DIRECTORY, file);
 		file = path;
 	}
 	fp = PHYSFS_openRead(file);
@@ -230,9 +230,12 @@ Replay::Save(const char *file)
 	// Create the directory if needed
 	PHYSFS_mkdir(REPLAY_DIRECTORY);
 
-	// Open the file
-	if (SDL_strchr(file, '/') == NULL) {
-		SDL_snprintf(path, sizeof(path), "%s/%s.%s", REPLAY_DIRECTORY, file, REPLAY_FILETYPE);
+	// If we aren't given a file, construct one from the game data
+	if (!file) {
+		SDL_snprintf(path, sizeof(path), "%s/%s_%d_%d_%8.8x.%s", REPLAY_DIRECTORY, GetDisplayName(), GetFinalScore(), GetFinalWave(), m_seed, REPLAY_FILETYPE);
+		file = path;
+	} else if (SDL_strchr(file, '/') == NULL) {
+		SDL_snprintf(path, sizeof(path), "%s/%s", REPLAY_DIRECTORY, file);
 		file = path;
 	}
 	fp = PHYSFS_openWrite(file);
@@ -443,7 +446,4 @@ Replay::HandleGameOver()
 		m_finalScore[i].Score = gPlayers[i]->GetScore();
 		m_finalScore[i].Frags = gPlayers[i]->GetFrags();
 	}
-
-	// Save this as the last score
-	Save(LAST_REPLAY);
 }

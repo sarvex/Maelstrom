@@ -20,17 +20,24 @@
     slouken@libsdl.org
 */
 
+#ifndef _scores_h
+#define _scores_h
+
 class UIDialog;
 
-// Functions from scores.cc
-extern void	LoadScores(void);
-extern void	SaveScores(void);
-extern void	ZapHighScores(UIDialog *dialog, int status);
+// Functions from scores.cpp
+extern void LoadScores(void);
+extern void FreeScores(void);
+extern void ZapHighScores(UIDialog *dialog, int status);
 
 /* The high scores structure */
 typedef	struct {
 	char name[20];
 	Uint32 wave;
 	Uint32 score;	
+	char *file;
 } Scores;
 
+#define NUM_SCORES	10
+
+#endif // _scores_h

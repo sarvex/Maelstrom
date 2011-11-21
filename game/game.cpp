@@ -1055,20 +1055,19 @@ static void DoGameOver(void)
 		Delay(SOUND_DELAY);
 
 	/* -- See if they got a high score */
-	LoadScores();
-	for ( i = 0; i<10; ++i ) {
-		if ( TheShip->GetScore() >= (int)hScores[i].score ) {
-			which = i;
-			break;
+	if (gReplay.IsRecording() && !gGameInfo.IsMultiplayer() &&
+	    (gGameInfo.wave == 1) && (gGameInfo.lives == 3)) {
+		for ( i = 0; i<NUM_SCORES; ++i ) {
+			if ( TheShip->GetScore() >= (int)hScores[i].score ) {
+				which = i;
+				break;
+			}
 		}
 	}
 
-	/* -- They got a high score! */
 	gLastHigh = which;
 
-	if ((which != -1) &&
-			!gGameInfo.IsMultiplayer() && !gReplay.IsPlaying() &&
-			(gGameInfo.wave == 1) && (gGameInfo.lives == 3)) {
+	if (which != -1) {
 		sound->PlaySound(gBonusShot, 5);
 
 		/* -- Let them enter their name */
@@ -1133,34 +1132,34 @@ static void DoGameOver(void)
 		screen->DisableTextInput();
 
 		if (*handle) {
-			for ( i = 8; i >= which ; --i ) {
-				hScores[i + 1].score = hScores[i].score;
-				hScores[i + 1].wave = hScores[i].wave;
-				strcpy(hScores[i+1].name, hScores[i].name);
-			}
-			hScores[which].wave = gWave;
-			hScores[which].score = TheShip->GetScore();
-			strcpy(hScores[which].name, handle);
+			GameInfo &info = gReplay.GetGameInfo();
+			info.SetPlayerName(gDisplayed, handle);
+			gReplay.Save();
+			LoadScores();
 		}
 
 		sound->HaltSound();
 		sound->PlaySound(gGotPrize, 6);
-		SaveScores();
-	} else
-	if ( gGameInfo.IsMultiplayer() )	/* Let them watch their ranking */
+
+	} else if ( gGameInfo.IsMultiplayer() )	/* Let them watch their ranking */
 		SDL_Delay(3000);
+
+	if (gReplay.IsRecording()) {
+		// Save this as the last game
+		gReplay.Save(LAST_REPLAY);
+	}
+	gReplay.SetMode(REPLAY_IDLE);
+
+	/* Make sure we clear the game info so we don't crash trying to
+	   update UI in a future replay
+	*/
+	gGameInfo.Reset();
 
 	while ( sound->Playing() )
 		Delay(SOUND_DELAY);
 	HandleEvents(0);
 
 	ui->HidePanel(PANEL_GAMEOVER);
-
-	/* Make sure we clear the game info so we don't crash trying to
-	   update UI in a future replay
-	*/
-	gGameInfo.Reset();
-	gReplay.SetMode(REPLAY_IDLE);
 
 }	/* -- DoGameOver */
 
