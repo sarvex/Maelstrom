@@ -1056,7 +1056,8 @@ static void DoGameOver(void)
 
 	/* -- See if they got a high score */
 	if (gReplay.IsRecording() && !gGameInfo.IsMultiplayer() &&
-	    (gGameInfo.wave == 1) && (gGameInfo.lives == 3)) {
+	    (gGameInfo.wave == 1) && (gGameInfo.lives == 3) &&
+	    TheShip->GetScore() > 0) {
 		for ( i = 0; i<NUM_SCORES; ++i ) {
 			if ( TheShip->GetScore() >= (int)hScores[i].score ) {
 				which = i;
