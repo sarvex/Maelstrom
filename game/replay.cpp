@@ -279,6 +279,7 @@ Replay::Save(const char *file)
 		fprintf(stderr, "Error compressing replay data\n");
 		goto error_return;
 	}
+	data.len = destLen;
 	if (!PHYSFS_writeULE32(fp, m_data.Size())) {
 		goto physfs_write_error;
 	}
