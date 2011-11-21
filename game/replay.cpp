@@ -170,21 +170,21 @@ Replay::Load(const char *file, bool headerOnly)
 		}
 	}
 
-	if (!headerOnly) {
-		if (!PHYSFS_readULE32(fp, &size)) {
-			goto physfs_read_error;
-		}
-		data.Reset();
-		data.Grow(size);
-		if (!PHYSFS_readBytes(fp, data.data, size)) {
-			goto physfs_read_error;
-		}
-		data.len = size;
-		if (!m_game.ReadFromPacket(data)) {
-			fprintf(stderr, "Couldn't read game information from %s", file);
-			goto error_return;
-		}
+	if (!PHYSFS_readULE32(fp, &size)) {
+		goto physfs_read_error;
+	}
+	data.Reset();
+	data.Grow(size);
+	if (!PHYSFS_readBytes(fp, data.data, size)) {
+		goto physfs_read_error;
+	}
+	data.len = size;
+	if (!m_game.ReadFromPacket(data)) {
+		fprintf(stderr, "Couldn't read game information from %s", file);
+		goto error_return;
+	}
 
+	if (!headerOnly) {
 		if (!PHYSFS_readULE32(fp, &size)) {
 			goto physfs_read_error;
 		}
@@ -445,5 +445,5 @@ Replay::HandleGameOver()
 	}
 
 	// Save this as the last score
-	Save("LastScore");
+	Save(LAST_REPLAY);
 }

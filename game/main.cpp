@@ -89,7 +89,7 @@ static void RunReplayGame(const char *file)
 }
 static void RunLastReplay(void*)
 {
-	RunReplayGame("LastScore");
+	RunReplayGame(LAST_REPLAY);
 }
 static void RunQuitGame(void*)
 {
@@ -515,8 +515,12 @@ MainPanelDelegate::OnTick()
 
 	label = m_panel->GetElement<UIElement>("last_score");
 	if (label) {
-		sprintf(text, "%d", gScore);
-		label->SetText(text);
+		if (gReplay.Load(LAST_REPLAY, true)) {
+			sprintf(text, "%d", gReplay.GetFinalScore());
+			label->SetText(text);
+		} else {
+			label->SetText("0");
+		}
 	}
 
 	label = m_panel->GetElement<UIElement>("volume");

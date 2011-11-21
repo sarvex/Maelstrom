@@ -35,6 +35,7 @@
 #define REPLAY_VERSION	1
 #define REPLAY_DIRECTORY "Scores"
 #define REPLAY_FILETYPE "mreplay"
+#define LAST_REPLAY	"LastScore"
 
 enum REPLAY_MODE {
 	REPLAY_IDLE,
@@ -50,14 +51,31 @@ public:
 	// You should never change this while the game is running
 	void SetMode(REPLAY_MODE mode);
 
-	bool IsPlaying() {
+	bool IsPlaying() const {
 		return m_mode == REPLAY_PLAYBACK;
 	}
-	bool IsRecording() {
+	bool IsRecording() const {
 		return m_mode == REPLAY_RECORDING;
 	}
-	int GetDisplayPlayer() {
+
+	int GetDisplayPlayer() const {
 		return m_finalPlayer;
+	}
+	const char *GetDisplayName() const {
+		return m_game.GetPlayer(GetDisplayPlayer())->name;
+	}
+	int GetFinalWave() const {
+		return m_finalWave;
+	}
+	int GetFinalScore() const {
+		return m_finalScore[GetDisplayPlayer()].Score;
+	}
+	int GetFinalFrags() const {
+		return m_finalScore[GetDisplayPlayer()].Frags;
+	}
+	float GetReplayTime() const {
+		// Return the approximage length of the replay, in seconds
+		return (float)m_frameCount / 30.0f;
 	}
 
 	bool Load(const char *file, bool headerOnly = false);

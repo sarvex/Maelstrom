@@ -111,7 +111,6 @@ extern StarPtr	gTheStars[MAX_STARS];
 extern Uint32	gStarColors[];
 
 // in game.cpp :
-extern int	gScore;
 extern int	gDisplayed;
 extern int	gGameOn;
 extern int	gPaused;

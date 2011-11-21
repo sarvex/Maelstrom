@@ -32,7 +32,6 @@
 // Global variables set in this file...
 GameInfo gGameInfo;
 Replay  gReplay;
-int	gScore;
 int	gGameOn;
 int	gPaused;
 int	gWave;
@@ -1056,10 +1055,9 @@ static void DoGameOver(void)
 		Delay(SOUND_DELAY);
 
 	/* -- See if they got a high score */
-	gScore = TheShip->GetScore();
 	LoadScores();
 	for ( i = 0; i<10; ++i ) {
-		if ( gScore > (int)hScores[i].score ) {
+		if ( TheShip->GetScore() >= (int)hScores[i].score ) {
 			which = i;
 			break;
 		}
