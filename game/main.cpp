@@ -185,6 +185,21 @@ static void RunScreenshot(void*)
 	screen->ScreenDump("ScoreDump", 64, 48, 298, 384);
 }
 
+class RunReplayCallback : public UIClickCallback
+{
+public:
+	RunReplayCallback(int index) : m_index(index) { }
+
+	virtual void operator()() {
+		const char *file = hScores[m_index].file;
+		if (file) {
+			RunReplayGame(file);
+		}
+	}
+private:
+	int m_index;
+};
+
 class SetVolumeCallback : public UIClickCallback
 {
 public:
@@ -354,6 +369,8 @@ int MaelstromMain(int argc, char *argv[])
 bool
 MainPanelDelegate::OnLoad()
 {
+	char name[128];
+	int i;
 	UIElement *label;
 	UIElementButton *button;
 
@@ -413,43 +430,21 @@ MainPanelDelegate::OnLoad()
 		button->SetClickCallback(RunScreenshot);
 	}
 
-	button = m_panel->GetElement<UIElementButton>("SetVolume0");
-	if (button) {
-		button->SetClickCallback(new SetVolumeCallback(0));
-	}
-	button = m_panel->GetElement<UIElementButton>("SetVolume1");
-	if (button) {
-		button->SetClickCallback(new SetVolumeCallback(1));
-	}
-	button = m_panel->GetElement<UIElementButton>("SetVolume2");
-	if (button) {
-		button->SetClickCallback(new SetVolumeCallback(2));
-	}
-	button = m_panel->GetElement<UIElementButton>("SetVolume3");
-	if (button) {
-		button->SetClickCallback(new SetVolumeCallback(3));
-	}
-	button = m_panel->GetElement<UIElementButton>("SetVolume4");
-	if (button) {
-		button->SetClickCallback(new SetVolumeCallback(4));
-	}
-	button = m_panel->GetElement<UIElementButton>("SetVolume5");
-	if (button) {
-		button->SetClickCallback(new SetVolumeCallback(5));
-	}
-	button = m_panel->GetElement<UIElementButton>("SetVolume6");
-	if (button) {
-		button->SetClickCallback(new SetVolumeCallback(6));
-	}
-	button = m_panel->GetElement<UIElementButton>("SetVolume7");
-	if (button) {
-		button->SetClickCallback(new SetVolumeCallback(7));
-	}
-	button = m_panel->GetElement<UIElementButton>("SetVolume8");
-	if (button) {
-		button->SetClickCallback(new SetVolumeCallback(8));
+	for (i = 0; i < 9; ++i) {
+		SDL_snprintf(name, sizeof(name), "SetVolume%d", i);
+		button = m_panel->GetElement<UIElementButton>(name);
+		if (button) {
+			button->SetClickCallback(new SetVolumeCallback(i));
+		}
 	}
 
+	for (i = 0; i < NUM_SCORES; ++i) {
+		SDL_snprintf(name, sizeof(name), "play_%d", i);
+		button = m_panel->GetElement<UIElementButton>(name);
+		if (button) {
+			button->SetClickCallback(new RunReplayCallback(i));
+		}
+	}
 	button = m_panel->GetElement<UIElementButton>("play_last");
 	if (button) {
 		button->SetClickCallback(RunLastReplay);
