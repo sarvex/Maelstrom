@@ -454,12 +454,16 @@ GamePanelDelegate::DrawStatus(Bool first)
 	}
 
 	if ( gGameInfo.IsMultiplayer() ) {
-		char caption[BUFSIZ];
+#ifndef USE_TOUCHCONTROL
+		if (gReplay.IsPlaying()) {
+			char caption[BUFSIZ];
 
-		sprintf(caption, "Displaying player %d", gDisplayed+1);
-		if (m_multiplayerCaption) {
-			m_multiplayerCaption->SetText(caption);
+			sprintf(caption, "Displaying player %d - press F1 to change", gDisplayed+1);
+			if (m_multiplayerCaption) {
+				m_multiplayerCaption->SetText(caption);
+			}
 		}
+#endif // USE_TOUCHCONTROL
 
 		/* Fill in the color by the frag count */
 		if (m_multiplayerColor) {
