@@ -162,7 +162,7 @@ UIElement::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 
 	child = node->first_node("ImageArea", 0, false);
 	if (child) {
-		if (!m_textArea.Load(child)) {
+		if (!m_imageArea.Load(child)) {
 			fprintf(stderr, "Warning: Couldn't load ImageArea\n");
 			return false;
 		}
