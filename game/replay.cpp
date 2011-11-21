@@ -316,16 +316,19 @@ Replay::HandleNewGame()
 		m_game.PrepareForReplay();
 		m_data.Reset();
 		m_pausedInput.Reset();
+
+		// We'll be recording new info here.
+		m_frameCount = 0;
+		m_finalPlayer = 0;
+		m_finalWave = 0;
+		SDL_zero(m_finalScore);
+
 	} else if (m_mode == REPLAY_PLAYBACK) {
 		gGameInfo.CopyFrom(m_game);
 		gGameInfo.PrepareForReplay();
 		m_data.Seek(0);
 	}
 	m_seed = m_game.seed;
-	m_frameCount = 0;
-	m_finalPlayer = 0;
-	m_finalWave = 0;
-	SDL_zero(m_finalScore);
 }
 
 bool

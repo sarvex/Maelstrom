@@ -68,7 +68,11 @@ static bool SetupPlayers(void)
 		return false;
 
 	/* Set up the controls for the game */
-	gDisplayed = -1;
+	if (gReplay.IsPlaying()) {
+		gDisplayed = gReplay.GetDisplayPlayer();
+	} else {
+		gDisplayed = -1;
+	}
 	for (int i = 0; i < MAX_PLAYERS; ++i) {
 		if (gGameInfo.IsValidPlayer(i)) {
 			if (gGameInfo.IsLocalPlayer(i)) {

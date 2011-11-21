@@ -56,6 +56,9 @@ public:
 	bool IsRecording() {
 		return m_mode == REPLAY_RECORDING;
 	}
+	int GetDisplayPlayer() {
+		return m_finalPlayer;
+	}
 
 	bool Load(const char *file, bool headerOnly = false);
 	bool Save(const char *file);
