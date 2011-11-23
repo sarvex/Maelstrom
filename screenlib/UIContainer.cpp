@@ -73,7 +73,9 @@ UIContainer::LayoutChildren()
 	anchor = NULL;
 	for (i = 0; i < m_elements.length(); ++i) {
 		if (m_elements[i]->IsShown()) {
-			m_elements[i]->SetAnchor(TOPLEFT, TOPLEFT, this);
+			m_elements[i]->SetAnchor(TOPLEFT, TOPLEFT, this,
+						HasBorder() ? 1 : 0,
+						HasBorder() ? 1 : 0);
 			anchor = m_elements[i];
 			break;
 		}
@@ -105,8 +107,14 @@ UIContainer::LayoutChildren()
 				}
 			}
 		}
+		if (HasBorder()) {
+			h += 2;
+		}
 		if (anchor) {
 			w = (anchor->X() - X()) + anchor->Width();
+			if (HasBorder()) {
+				w += 1;
+			}
 		}
 	} else {
 		// Width is the max of children, height is the sum of children
@@ -117,11 +125,17 @@ UIContainer::LayoutChildren()
 				}
 			}
 		}
+		if (HasBorder()) {
+			w += 2;
+		}
 		if (anchor) {
 			h = (anchor->Y() - Y()) + anchor->Height();
+			if (HasBorder()) {
+				h += 1;
+			}
 		}
 	}
-	SetSize(w, h, true);
+	AutoSize(w, h);
 
 	m_layoutInProgress = false;
 }

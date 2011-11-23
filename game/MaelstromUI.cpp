@@ -214,6 +214,8 @@ MaelstromUI::CreateElement(UIBaseElement *parent, const char *type, const char *
 		element = new UIElementControlButton(parent, name, new UIDrawEngine());
 	} else if (strcasecmp(type, "DialogLabel") == 0) {
 		element = new UIElement(parent, name, new MacDialogDrawEngine());
+	} else if (strcasecmp(type, "DialogContainer") == 0) {
+		element = new UIContainer(parent, name, new MacDialogDrawEngine());
 	} else if (strcasecmp(type, "DialogButton") == 0) {
 		element = new UIDialogButton(parent, name, new MacDialogButton());
 	} else if (strcasecmp(type, "DialogCheckbox") == 0) {
