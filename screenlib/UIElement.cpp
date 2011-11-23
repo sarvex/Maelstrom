@@ -154,7 +154,7 @@ UIElement::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 
 	attr = node->first_attribute("image", 0, false);
 	if (attr) {
-		if (!ParseImage(attr->value())) {
+		if (!SetImage(attr->value())) {
 			fprintf(stderr, "Warning: Couldn't load image '%s'\n", attr->value());
 			return false;
 		}
@@ -269,28 +269,6 @@ UIElement::ParseFont(char *text)
 
 	SetFont(fontName, fontSize, fontStyle);
 	SDL_free(text);
-
-	return true;
-}
-
-bool
-UIElement::ParseImage(const char *file)
-{
-	SDL_Surface *bmp;
-	SDL_Texture *image;
-
-	bmp = SDL_LoadBMP_RW(PHYSFSRWOPS_openRead(file), 1);
-	if (!bmp) {
-		return false;
-	}
-
-	image = m_screen->LoadImage(bmp);
-	SDL_FreeSurface(bmp);
-	if (!image) {
-		return false;
-	}
-
-	SetImage(image);
 
 	return true;
 }
@@ -480,6 +458,28 @@ void
 UIElement::SetTextShadowColor(Uint32 color)
 {
 	m_textShadowColor = color;
+}
+
+bool
+UIElement::SetImage(const char *file)
+{
+	SDL_Surface *bmp;
+	SDL_Texture *image;
+
+	bmp = SDL_LoadBMP_RW(PHYSFSRWOPS_openRead(file), 1);
+	if (!bmp) {
+		return false;
+	}
+
+	image = m_screen->LoadImage(bmp);
+	SDL_FreeSurface(bmp);
+	if (!image) {
+		return false;
+	}
+
+	SetImage(image);
+
+	return true;
 }
 
 void

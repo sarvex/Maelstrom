@@ -154,6 +154,7 @@ public:
 	}
 
 	// Image information
+	bool SetImage(const char *file);
 	void SetImage(SDL_Texture *image);
 	SDL_Texture *GetImage() const {
 		return m_image;
@@ -211,7 +212,6 @@ protected:
 protected:
 	bool LoadColor(rapidxml::xml_node<> *node, const char *name, Uint32 &value);
 	bool ParseFont(char *text);
-	bool ParseImage(const char *file);
 
 	override void UpdateDisabledState();
 };
