@@ -155,12 +155,25 @@ public:
 
 	virtual void Show() {
 		m_shown = true;
+		if (m_parent) {
+			m_parent->OnChildShown(this);
+		}
 	}
 	virtual void Hide() {
 		m_shown = false;
+		if (m_parent) {
+			m_parent->OnChildHidden(this);
+		}
 	}
 	bool IsShown() const {
 		return m_shown;
+	}
+	virtual void OnRectChanged() {
+		UIArea::OnRectChanged();
+
+		if (m_parent) {
+			m_parent->OnChildRectChanged(this);
+		}
 	}
 
 	void SetDisabled(bool disabled);
@@ -171,6 +184,10 @@ public:
 
 	virtual void Draw();
 	virtual bool HandleEvent(const SDL_Event &event);
+
+	virtual void OnChildShown(UIBaseElement *child) { }
+	virtual void OnChildHidden(UIBaseElement *child) { }
+	virtual void OnChildRectChanged(UIBaseElement *child) { }
 
 protected:
 	FrameBuf *m_screen;

@@ -30,6 +30,7 @@
 #include "player.h"
 #include "lobby.h"
 #include "MacDialog.h"
+#include "../screenlib/UIContainer.h"
 #include "../screenlib/UIElementButton.h"
 #include "../screenlib/UIElementCheckbox.h"
 #include "../screenlib/UIElementEditbox.h"
@@ -199,6 +200,8 @@ MaelstromUI::CreateElement(UIBaseElement *parent, const char *type, const char *
 		element = new UIElement(parent, name, new UIDrawEngine());
 	} else if (strcasecmp(type, "Image") == 0) {
 		element = new UIElement(parent, name, new UIDrawEngine());
+	} else if (strcasecmp(type, "Container") == 0) {
+		element = new UIContainer(parent, name, new UIDrawEngine());
 	} else if (strcasecmp(type, "Button") == 0) {
 		element = new UIElementButton(parent, name, new UIDrawEngine());
 	} else if (strcasecmp(type, "Icon") == 0) {

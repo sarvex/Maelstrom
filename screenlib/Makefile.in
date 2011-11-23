@@ -50,12 +50,12 @@ ARFLAGS = cru
 libSDLscreen_a_AR = $(AR) $(ARFLAGS)
 libSDLscreen_a_LIBADD =
 am_libSDLscreen_a_OBJECTS = SDL_FrameBuf.$(OBJEXT) UIArea.$(OBJEXT) \
-	UIBaseElement.$(OBJEXT) UIDialog.$(OBJEXT) \
-	UIDialogButton.$(OBJEXT) UIDrawEngine.$(OBJEXT) \
-	UIElement.$(OBJEXT) UIElementButton.$(OBJEXT) \
-	UIElementCheckbox.$(OBJEXT) UIElementEditbox.$(OBJEXT) \
-	UIElementRadio.$(OBJEXT) UIManager.$(OBJEXT) UIPanel.$(OBJEXT) \
-	UITemplates.$(OBJEXT)
+	UIBaseElement.$(OBJEXT) UIContainer.$(OBJEXT) \
+	UIDialog.$(OBJEXT) UIDialogButton.$(OBJEXT) \
+	UIDrawEngine.$(OBJEXT) UIElement.$(OBJEXT) \
+	UIElementButton.$(OBJEXT) UIElementCheckbox.$(OBJEXT) \
+	UIElementEditbox.$(OBJEXT) UIElementRadio.$(OBJEXT) \
+	UIManager.$(OBJEXT) UIPanel.$(OBJEXT) UITemplates.$(OBJEXT)
 libSDLscreen_a_OBJECTS = $(am_libSDLscreen_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/build-scripts/depcomp
@@ -192,6 +192,8 @@ libSDLscreen_a_SOURCES = \
 	UIArea.h		\
 	UIBaseElement.cpp	\
 	UIBaseElement.h		\
+	UIContainer.cpp		\
+	UIContainer.h		\
 	UIDialog.cpp		\
 	UIDialog.h		\
 	UIDialogButton.cpp	\
@@ -267,6 +269,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SDL_FrameBuf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UIArea.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UIBaseElement.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UIContainer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UIDialog.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UIDialogButton.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UIDrawEngine.Po@am__quote@
