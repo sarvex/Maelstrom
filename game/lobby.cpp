@@ -406,20 +406,22 @@ LobbyDialogDelegate::SetState(LOBBY_STATE state)
 	if (m_state == STATE_HOSTING && m_globalGame->IsChecked()) {
 		RemoveGame();
 	}
+	if (m_state == STATE_HOSTING) {
+		// Save the control preferences
+		for (i = 0; i < MAX_PLAYERS; ++i) {
+			char name[128];
+			SDL_snprintf(name, sizeof(name), "Player%d.Controls", i+1);
+			prefs->SetNumber(name, m_game.GetPlayer(i)->controlMask);
+		}
+		prefs->Save();
+	}
+
 	if (state == STATE_NONE) {
 		if (m_state == STATE_HOSTING) {
 			// Notify the players that the game is gone
 			for (i = 0; i < m_game.GetNumNodes(); ++i) {
 				SendKick(i);
 			}
-
-			// Save the control preferences
-			for (i = 0; i < MAX_PLAYERS; ++i) {
-				char name[128];
-				SDL_snprintf(name, sizeof(name), "Player%d.Controls", i+1);
-				prefs->SetNumber(name, m_game.GetPlayer(i)->controlMask);
-			}
-			prefs->Save();
 		} else if (m_state == STATE_JOINING ||
 			   m_state == STATE_JOINED) {
 			// Notify the host that we're gone
