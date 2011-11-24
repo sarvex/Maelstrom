@@ -72,10 +72,8 @@ static void RunSinglePlayerGame()
 }
 static void RunPlayGame(void*)
 {
-	gGameInfo.SetHost(prefs->GetString(PREFERENCES_HANDLE),
-				DEFAULT_START_WAVE,
-				DEFAULT_START_LIVES,
-				DEFAULT_START_TURBO, 0);
+	gGameInfo.SetHost(DEFAULT_START_WAVE, DEFAULT_START_LIVES, DEFAULT_START_TURBO, 0);
+	gGameInfo.SetPlayerSlot(0, prefs->GetString(PREFERENCES_HANDLE), CONTROL_LOCAL);
 	RunSinglePlayerGame();
 }
 static void RunReplayGame(const char *file)
@@ -175,8 +173,8 @@ static void CheatDialogDone(UIDialog *dialog, int status)
 		Delay(SOUND_DELAY);
 		sound->PlaySound(gNewLife, 5);
 		Delay(SOUND_DELAY);
-		gGameInfo.SetHost(prefs->GetString(PREFERENCES_HANDLE),
-					wave, lives, turbo, 0);
+		gGameInfo.SetHost(wave, lives, turbo, 0);
+		gGameInfo.SetPlayerSlot(0, prefs->GetString(PREFERENCES_HANDLE), CONTROL_LOCAL);
 		RunSinglePlayerGame();
 	}
 }

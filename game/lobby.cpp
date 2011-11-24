@@ -48,15 +48,21 @@ public:
 		m_lobby(lobby), m_dialog(dialog), m_game(game), m_index(index), m_controlType(controlType) { }
 
 	virtual void operator()() {
-		// Select the control and hide the dialog
-		if (m_controlType == CONTROL_NONE) {
+		// Kick any player that was connected
+		if (m_controlType != CONTROL_NETWORK) {
 			const GameInfoPlayer *player = m_game.GetPlayer(m_index);
 			int nodeIndex = m_game.GetNodeIndex(player->nodeID);
 			if (nodeIndex >= 0) {
 				m_lobby->SendKick(nodeIndex);
 			}
 		}
-		m_game.SetPlayerControls(m_index, m_controlType);
+
+		// Select the control and hide the dialog
+		if (IS_LOCAL_CONTROL(m_controlType)) {
+			m_game.SetPlayerSlot(m_index, prefs->GetString(PREFERENCES_HANDLE), m_controlType);
+		} else {
+			m_game.SetPlayerSlot(m_index, NULL, m_controlType);
+		}
 		m_dialog->Hide();
 	}
 
@@ -420,17 +426,22 @@ LobbyDialogDelegate::SetState(LOBBY_STATE state)
 			SendLeaveRequest();
 		}
 	} else if (state == STATE_HOSTING) {
-		m_game.SetHost(prefs->GetString(PREFERENCES_HANDLE),
-				DEFAULT_START_WAVE,
+		m_game.SetHost(DEFAULT_START_WAVE,
 				DEFAULT_START_LIVES,
 				DEFAULT_START_TURBO,
 				prefs->GetNumber(PREFERENCES_DEATHMATCH));
 
 		// Set up the controls for this game
 		for (i = 0; i < MAX_PLAYERS; ++i) {
+			Uint8 controlType;
 			char name[128];
 			SDL_snprintf(name, sizeof(name), "Player%d.Controls", i+1);
-			m_game.SetPlayerControls(i, prefs->GetNumber(name, (i == 0 ? CONTROL_LOCAL : CONTROL_NETWORK)));
+			controlType = prefs->GetNumber(name, (i == 0 ? CONTROL_LOCAL : CONTROL_NETWORK));
+			if (IS_LOCAL_CONTROL(controlType)) {
+				m_game.SetPlayerSlot(i, prefs->GetString(PREFERENCES_HANDLE), controlType);
+			} else {
+				m_game.SetPlayerSlot(i, NULL, controlType);
+			}
 		}
 	} else if (state == STATE_LISTING) {
 		ClearGameList();

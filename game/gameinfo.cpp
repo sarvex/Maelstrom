@@ -49,8 +49,7 @@ GameInfo::Reset()
 }
 
 void
-GameInfo::SetHost(const char *name,
-		  Uint8 wave, Uint8 lives, Uint8 turbo, Uint8 deathMatch)
+GameInfo::SetHost(Uint8 wave, Uint8 lives, Uint8 turbo, Uint8 deathMatch)
 {
 	Reset();
 
@@ -65,21 +64,20 @@ GameInfo::SetHost(const char *name,
 	assert(HOST_NODE == 0);
 	nodes[HOST_NODE].nodeID = localID;
 	numNodes = 1;
-
-	// We are the first player
-	SetPlayerSlot(0, name, CONTROL_LOCAL);
 }
 
 void
 GameInfo::SetPlayerSlot(int slot, const char *name, Uint8 controlMask)
 {
 	GameInfoPlayer *player = &players[slot];
-	if (controlMask == CONTROL_NETWORK) {
-		player->nodeID = 0;
-	} else {
-		player->nodeID = localID;
-	}
+
 	SDL_strlcpy(player->name, name ? name : "", sizeof(player->name));
+
+	if (IS_LOCAL_CONTROL(controlMask) {
+		player->nodeID = localID;
+	} else {
+		player->nodeID = 0;
+	}
 	player->controlMask = controlMask;
 
 	UpdateUI(player);
@@ -89,15 +87,9 @@ void
 GameInfo::SetPlayerName(int slot, const char *name)
 {
 	GameInfoPlayer *player = &players[slot];
-	SDL_strlcpy(player->name, name ? name : "", sizeof(player->name));
-	UpdateUI(player);
-}
 
-void
-GameInfo::SetPlayerControls(int slot, Uint8 controlMask)
-{
-	GameInfoPlayer *player = &players[slot];
-	player->controlMask = controlMask;
+	SDL_strlcpy(player->name, name ? name : "", sizeof(player->name));
+
 	UpdateUI(player);
 }
 
@@ -175,8 +167,10 @@ GameInfo::CopyFrom(const GameInfo &rhs)
 			sizeof(players[i].name));
 		if (players[i].nodeID == localID) {
 			players[i].controlMask = CONTROL_LOCAL;
-		} else {
+		} else if (players[i].nodeID != 0) {
 			players[i].controlMask = CONTROL_NETWORK;
+		} else {
+			players[i].controlMask = CONTROL_NONE;
 		}
 	}
 
