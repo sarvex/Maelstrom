@@ -24,6 +24,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "physfs.h"
 #include "Mac_Wave.h"
 
 static Wave wave;
@@ -35,6 +36,12 @@ int main(int argc, char *argv[])
 	char wavname[128];
 	Uint16 *ids, rate;
 	int i;
+
+	if (!PHYSFS_init(argv[0])) {
+		fprintf(stderr, "Couldn't initialize PHYSFS: %s\n", PHYSFS_getLastError());
+		exit(2);
+	}
+	PHYSFS_setSaneConfig("galaxygameworks", "macres", NULL, 0, 0);
 
 	rate = 0;
 	if ( (argc >= 3) && (strcmp(argv[1], "-rate") == 0) ) {
