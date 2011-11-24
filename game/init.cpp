@@ -206,8 +206,8 @@ static void InitShots(void)
 	int xx = 30;
 
 	/* Load the shot images */
-	gPlayerShot = screen->LoadImage(SHOT_SIZE,SHOT_SIZE,gPlayerShotColors);
-	gEnemyShot = screen->LoadImage(SHOT_SIZE, SHOT_SIZE, gEnemyShotColors);
+	gPlayerShot = screen->LoadImage(SHOT_SIZE, SHOT_SIZE, gPlayerShotColors, NULL, "PlayerShot.bmp");
+	gEnemyShot = screen->LoadImage(SHOT_SIZE, SHOT_SIZE, gEnemyShotColors, NULL, "EnemyShot.bmp");
 
 	/* Now setup the shot origin table */
 
@@ -1087,7 +1087,9 @@ static int LoadSprite(Mac_Resource *spriteres,
 		SetRect(&aBlit->hitRect, left, top, right, bottom);
 				
 		/* Load the image */
-		aBlit->sprite[index] = screen->LoadImage(32, 32, S->data, mask);
+char file[32];
+sprintf(file, "ICN#%d.bmp", baseID+index);
+		aBlit->sprite[index] = screen->LoadImage(32, 32, S->data, mask, file);
 		if ( aBlit->sprite[index] == NULL ) {
 			error(
 	"LoadSprite(%d+%d): Couldn't convert sprite image!\n", baseID, index);
@@ -1208,7 +1210,9 @@ static int LoadSmallSprite(Mac_Resource *spriteres,
 		SetRect(&aBlit->hitRect, left, top, right, bottom);
 
 		/* Load the image */
-		aBlit->sprite[index] = screen->LoadImage(16, 16, S->data, mask);
+char file[32];
+sprintf(file, "ics#%d.bmp", baseID+index);
+		aBlit->sprite[index] = screen->LoadImage(16, 16, S->data, mask, file);
 		if ( aBlit->sprite[index] == NULL ) {
 			error(
 	"LoadSprite(%d+%d): Couldn't convert sprite image!\n", baseID, index);

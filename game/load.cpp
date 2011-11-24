@@ -43,7 +43,7 @@ SDL_Texture *Load_Title(FrameBuf *screen, int title_id)
 	}
 
 	/* Create an image from the BMP */
-	title = screen->LoadImage(bmp->w, bmp->h, (Uint8 *)bmp->pixels, NULL);
+	title = screen->LoadImage(bmp);
 	SDL_FreeSurface(bmp);
 	return(title);
 }
@@ -83,7 +83,8 @@ SDL_Texture *GetCIcon(FrameBuf *screen, short cicn_id)
 	}
 	SDL_RWclose(cicn_src);
 
-	cicn = screen->LoadImage(w, h, pixels, mask);
+	sprintf(file, "Maelstrom_Icon#%d.bmp", cicn_id);
+	cicn = screen->LoadImage(w, h, pixels, mask, file);
 	delete[] pixels;
 	delete[] mask;
 	if ( cicn == NULL ) {

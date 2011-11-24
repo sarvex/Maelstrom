@@ -374,7 +374,7 @@ UIDrawEngineSprite::Load(rapidxml::xml_node<> *node, const UITemplates *template
 {
 	rapidxml::xml_attribute<> *attr;
 	int baseID;
-	Mac_ResData *S, *M;
+	//Mac_ResData *S, *M;
 
 	if (!UIDrawEngine::Load(node, templates)) {
 		return false;
@@ -388,6 +388,7 @@ UIDrawEngineSprite::Load(rapidxml::xml_node<> *node, const UITemplates *template
 	baseID = SDL_atoi(attr->value());
 
 	/* Load the image */
+/*
 	SDL_Texture *image = NULL;
 	if ((S = spriteres->Resource("icl8", baseID)) != NULL &&
 	    (M = spriteres->Resource("ICN#", baseID)) != NULL) {
@@ -398,6 +399,7 @@ UIDrawEngineSprite::Load(rapidxml::xml_node<> *node, const UITemplates *template
 		return false;
 	}
 	m_element->SetImage(image);
+*/
 
 	return true;
 }
