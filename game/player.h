@@ -176,6 +176,7 @@ private:
 	Uint32 ship_color;
 
 	Uint8 controlType;
+	Uint32 controlState;
 
 	/* Create a new shot */
 	int MakeShot(int offset);

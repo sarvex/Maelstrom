@@ -124,6 +124,7 @@ Player::NewShip(void)
 {
 	if ( Lives == 0 )
 		return(-1);
+	controlState = 0;
 	solid = 1;
 	shootable = 1;
 	Set_Blit(gPlayerShip);
@@ -644,6 +645,16 @@ Player::SetControlType(Uint8 controlType)
 void
 Player::SetControl(unsigned char which, bool enabled)
 {
+	// Don't spam the network with duplicate state changes
+	if (!!(controlState & (1 << which)) == enabled) {
+		return;
+	}
+	if (enabled) {
+		controlState |= (1 << which);
+	} else {
+		controlState &= ~(1 << which);
+	}
+
 	QueueInput(EncodeInput(which, enabled));
 }
 
