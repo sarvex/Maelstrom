@@ -258,11 +258,11 @@ static void HandleEvent(SDL_Event *event)
 #ifdef SDL_INIT_JOYSTICK
 		/* -- Handle joystick axis motion */
 		case SDL_JOYAXISMOTION:
-			/* X-Axis - rotate right/left */
 			player = GetJoystickPlayer(event->jaxis.which);
 			if (!player) {
 				break;
 			}
+			/* X-Axis - rotate right/left */
 			if ( event->jaxis.axis == 0 ) {
 				if ( event->jaxis.value < -8000 ) {
 					player->SetControl(LEFT_KEY, 1);
@@ -278,11 +278,34 @@ static void HandleEvent(SDL_Event *event)
 			} else
 			/* Y-Axis - accelerate */
 			if ( event->jaxis.axis == 1 ) {
-				if ( event->jaxis.value < -8000 ) {
+				if ( event->jaxis.value < -16000 ) {
 					player->SetControl(THRUST_KEY, 1);
 				} else {
 					player->SetControl(THRUST_KEY, 0);
 				}
+			}
+			break;
+
+		/* -- Handle joystick axis motion */
+		case SDL_JOYHATMOTION:
+			player = GetJoystickPlayer(event->jhat.which);
+			if (!player) {
+				break;
+			}
+			if ( event->jhat.value & SDL_HAT_LEFT ) {
+				player->SetControl(LEFT_KEY, 1);
+			} else {
+				player->SetControl(LEFT_KEY, 0);
+			}
+			if ( event->jhat.value & SDL_HAT_RIGHT ) {
+				player->SetControl(RIGHT_KEY, 1);
+			} else {
+				player->SetControl(RIGHT_KEY, 0);
+			}
+			if ( event->jhat.value & SDL_HAT_UP ) {
+				player->SetControl(THRUST_KEY, 1);
+			} else {
+				player->SetControl(THRUST_KEY, 0);
 			}
 			break;
 
