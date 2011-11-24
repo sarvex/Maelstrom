@@ -29,7 +29,7 @@
 */
 
 // Define this if you're rapidly iterating on UI screens
-#define FAST_ITERATION
+//#define FAST_ITERATION
 
 // Define these if you want to try out the quick resolution hacks
 //#define HACK_1024x768
