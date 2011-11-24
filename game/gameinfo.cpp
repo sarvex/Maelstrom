@@ -93,6 +93,14 @@ GameInfo::SetPlayerName(int slot, const char *name)
 	UpdateUI(player);
 }
 
+void
+GameInfo::SetPlayerControls(int slot, Uint8 controlMask)
+{
+	GameInfoPlayer *player = &players[slot];
+	player->controlMask = controlMask;
+	UpdateUI(player);
+}
+
 bool
 GameInfo::AddNetworkPlayer(Uint32 nodeID, const IPaddress &address, const char *name)
 {
@@ -110,7 +118,8 @@ GameInfo::AddNetworkPlayer(Uint32 nodeID, const IPaddress &address, const char *
 	++numNodes;
 
 	for (slot = 0; slot < MAX_PLAYERS; ++slot) {
-		if (!players[slot].nodeID) {
+		if (!players[slot].nodeID &&
+		    players[slot].controlMask == CONTROL_NETWORK) {
 			break;
 		}
 	}
@@ -119,7 +128,6 @@ GameInfo::AddNetworkPlayer(Uint32 nodeID, const IPaddress &address, const char *
 	GameInfoPlayer *player = &players[slot];
 	player->nodeID = nodeID;
 	SDL_strlcpy(player->name, name, sizeof(player->name));
-	player->controlMask = CONTROL_NETWORK;
 
 	UpdateUI(player);
 
@@ -410,7 +418,8 @@ bool
 GameInfo::IsFull() const
 {
 	for (int i = 0; i < MAX_PLAYERS; ++i) {
-		if (!players[i].nodeID) {
+		if (!players[i].nodeID &&
+		    players[i].controlMask == CONTROL_NETWORK) {
 			return false;
 		}
 	}
@@ -460,13 +469,9 @@ GameInfo::BindPlayerToUI(int index, UIElement *element)
 	}
 
 	player->UI.element = element;
-	player->UI.enabled = element->GetElement<UIElementCheckbox>("enabled");
 	player->UI.name = element->GetElement<UIElement>("name");
 	player->UI.host = element->GetElement<UIElement>("host");
-	player->UI.control = element->GetElement<UIElementRadioGroup>("control");
-	player->UI.keyboard = element->GetElement<UIElement>("keyboard");
-	player->UI.joystick = element->GetElement<UIElement>("joystick");
-	player->UI.network = element->GetElement<UIElement>("network");
+	player->UI.control = element->GetElement<UIElement>("control");
 
 	for (int i = 0; i < NUM_PING_STATES; ++i) {
 		SDL_snprintf(name, sizeof(name), "ping%d", i);
@@ -513,32 +518,9 @@ GameInfo::UpdateUI(GameInfoPlayer *player)
 		}
 	}
 	if (player->UI.control) {
-		if (player->nodeID == localID) {
-			player->UI.control->SetValue(CONTROL_KEYBOARD);
-		} else {
-			player->UI.control->SetValue(CONTROL_NETWORK);
-		}
-	}
-	if (player->UI.keyboard) {
-		if (player->nodeID == localID) {
-			player->UI.keyboard->Show();
-		} else {
-			player->UI.keyboard->Hide();
-		}
-	}
-	if (player->UI.joystick) {
-		if (player->nodeID == localID) {
-			player->UI.joystick->Show();
-		} else {
-			player->UI.joystick->Hide();
-		}
-	}
-	if (player->UI.network) {
-		if (player->nodeID != localID) {
-			player->UI.network->Show();
-		} else {
-			player->UI.network->Hide();
-		}
+		char name[128];
+		SDL_snprintf(name, sizeof(name), "Images/control%d.bmp", player->controlMask);
+		player->UI.control->SetImage(name);
 	}
 	for (int i = 0; i < NUM_PING_STATES; ++i) {
 		UIElement *element = player->UI.ping_states[i];

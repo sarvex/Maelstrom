@@ -25,6 +25,7 @@
 
 #include "protocol.h"
 #include "packet.h"
+#include "controls.h"
 
 class UIElement;
 class UIElementCheckbox;
@@ -36,9 +37,14 @@ enum PLAYER_CONTROL {
 	CONTROL_JOYSTICK1 = 0x02,
 	CONTROL_JOYSTICK2 = 0x04,
 	CONTROL_JOYSTICK3 = 0x08,
-	CONTROL_NETWORK   = 0x10,
-	CONTROL_REPLAY    = 0x20,
+	CONTROL_TOUCH     = 0x10,
+	CONTROL_NETWORK   = 0x20,
+	CONTROL_REPLAY    = 0x40,
+#ifdef USE_TOUCHCONTROL
+	CONTROL_LOCAL     = CONTROL_TOUCH
+#else
 	CONTROL_LOCAL     = (CONTROL_KEYBOARD|CONTROL_JOYSTICK1)
+#endif
 };
 
 enum NODE_STATE_FLAG {
@@ -87,13 +93,9 @@ struct GameInfoPlayer
 
 	struct {
 		UIElement *element;
-		UIElementCheckbox *enabled;
 		UIElement *name;
 		UIElement *host;
-		UIElementRadioGroup *control;
-		UIElement *keyboard;
-		UIElement *joystick;
-		UIElement *network;
+		UIElement *control;
 		UIElement *ping_states[NUM_PING_STATES];
 	} UI;
 };
@@ -118,6 +120,7 @@ public:
 
 	void SetPlayerSlot(int slot, const char *name, Uint8 controlMask);
 	void SetPlayerName(int slot, const char *name);
+	void SetPlayerControls(int slot, Uint8 controlMask);
 	bool AddNetworkPlayer(Uint32 nodeID, const IPaddress &address, const char *name);
 
 	void CopyFrom(const GameInfo &rhs);

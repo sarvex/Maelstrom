@@ -41,6 +41,94 @@
 #define LOBBY_BROADCAST
 
 
+class SelectControlCallback : public UIClickCallback
+{
+public:
+	SelectControlCallback(LobbyDialogDelegate *lobby, UIElement *dialog, GameInfo &game, int index, Uint8 controlType) :
+		m_lobby(lobby), m_dialog(dialog), m_game(game), m_index(index), m_controlType(controlType) { }
+
+	virtual void operator()() {
+		// Select the control and hide the dialog
+		if (m_controlType == CONTROL_NONE) {
+			const GameInfoPlayer *player = m_game.GetPlayer(m_index);
+			int nodeIndex = m_game.GetNodeIndex(player->nodeID);
+			if (nodeIndex >= 0) {
+				m_lobby->SendKick(nodeIndex);
+			}
+		}
+		m_game.SetPlayerControls(m_index, m_controlType);
+		m_dialog->Hide();
+	}
+
+private:
+	LobbyDialogDelegate *m_lobby;
+	UIElement *m_dialog;
+	GameInfo &m_game;
+	int m_index;
+	Uint8 m_controlType;
+};
+
+class ControlClickCallback : public UIClickCallback
+{
+public:
+	ControlClickCallback(LobbyDialogDelegate *lobby, UIElement *button, UIElement *dialog, GameInfo &game, int index) :
+		m_lobby(lobby), m_button(button), m_dialog(dialog), m_game(game), m_index(index) { }
+
+	virtual void operator()() {
+		if (!m_game.IsLocalPlayer(m_index) && !m_game.IsHosting()) {
+			return;
+		}
+
+		// Show the control dialog
+		SetControl(CONTROL_NONE, (m_index > 0) && m_game.IsHosting());
+#ifdef USE_TOUCHCONTROL
+		SetControl(CONTROL_TOUCH, true);
+		SetControl(CONTROL_KEYBOARD, false);
+		SetControl(CONTROL_KEYBOARD|CONTROL_JOYSTICK1, false);
+		SetControl(CONTROL_JOYSTICK1, false);
+		SetControl(CONTROL_JOYSTICK2, false);
+		SetControl(CONTROL_JOYSTICK3, false);
+#else
+		SetControl(CONTROL_TOUCH, false);
+		SetControl(CONTROL_KEYBOARD, true);
+		SetControl(CONTROL_KEYBOARD|CONTROL_JOYSTICK1, true);
+		SetControl(CONTROL_JOYSTICK1, SDL_NumJoysticks() > 0);
+		SetControl(CONTROL_JOYSTICK2, SDL_NumJoysticks() > 1);
+		SetControl(CONTROL_JOYSTICK3, SDL_NumJoysticks() > 2);
+#endif
+		SetControl(CONTROL_NETWORK, (m_index > 0) && m_game.IsHosting());
+
+		m_dialog->SetAnchor(LEFT, RIGHT, m_button, -4, 0);
+		m_dialog->Show();
+	}
+
+private:
+	void SetControl(Uint8 control, bool enabled) {
+		char name[128];
+		UIElement *element;
+
+		SDL_snprintf(name, sizeof(name), "control%d", control);
+		element = m_dialog->GetElement<UIElement>(name);
+		if (!element) {
+			return;
+		}
+		if (enabled) {
+			element->SetClickCallback(new SelectControlCallback(m_lobby, m_dialog, m_game, m_index, control));
+			element->Show();
+		} else {
+			element->Hide();
+		}
+	}
+
+private:
+	LobbyDialogDelegate *m_lobby;
+	UIElement *m_button;
+	UIElement *m_dialog;
+	GameInfo &m_game;
+	int m_index;
+};
+
+
 LobbyDialogDelegate::LobbyDialogDelegate(UIPanel *panel) :
 	UIDialogDelegate(panel),
 	m_game(gGameInfo)
@@ -117,11 +205,18 @@ LobbyDialogDelegate::OnLoad()
 		}
 	}
 
+	UIElement *controlDropdown = m_dialog->GetElement<UIElement>("control_dropdown");
+
 	count = SDL_arraysize(m_gameInfoPlayers);
 	for (i = 0; i < count; ++i) {
 		SDL_snprintf(name, sizeof(name), "player%d", i+1);
 		if (!GetElement(name, m_gameInfoPlayers[i])) {
 			return false;
+		}
+
+		UIElement *controlButton = m_gameInfoPlayers[i]->GetElement<UIElement>("control");
+		if (controlButton && controlDropdown) {
+			controlButton->SetClickCallback(new ControlClickCallback(this, controlButton, controlDropdown, m_game, i));
 		}
 	}
 
@@ -299,6 +394,8 @@ LobbyDialogDelegate::UpdateUI()
 void
 LobbyDialogDelegate::SetState(LOBBY_STATE state)
 {
+	int i;
+
 	// Handle any state transitions here
 	if (m_state == STATE_HOSTING && m_globalGame->IsChecked()) {
 		RemoveGame();
@@ -306,9 +403,17 @@ LobbyDialogDelegate::SetState(LOBBY_STATE state)
 	if (state == STATE_NONE) {
 		if (m_state == STATE_HOSTING) {
 			// Notify the players that the game is gone
-			for (int i = 0; i < m_game.GetNumNodes(); ++i) {
+			for (i = 0; i < m_game.GetNumNodes(); ++i) {
 				SendKick(i);
 			}
+
+			// Save the control preferences
+			for (i = 0; i < MAX_PLAYERS; ++i) {
+				char name[128];
+				SDL_snprintf(name, sizeof(name), "Player%d.Controls", i+1);
+				prefs->SetNumber(name, m_game.GetPlayer(i)->controlMask);
+			}
+			prefs->Save();
 		} else if (m_state == STATE_JOINING ||
 			   m_state == STATE_JOINED) {
 			// Notify the host that we're gone
@@ -320,6 +425,13 @@ LobbyDialogDelegate::SetState(LOBBY_STATE state)
 				DEFAULT_START_LIVES,
 				DEFAULT_START_TURBO,
 				prefs->GetNumber(PREFERENCES_DEATHMATCH));
+
+		// Set up the controls for this game
+		for (i = 0; i < MAX_PLAYERS; ++i) {
+			char name[128];
+			SDL_snprintf(name, sizeof(name), "Player%d.Controls", i+1);
+			m_game.SetPlayerControls(i, prefs->GetNumber(name, (i == 0 ? CONTROL_LOCAL : CONTROL_NETWORK)));
+		}
 	} else if (state == STATE_LISTING) {
 		ClearGameList();
 	}

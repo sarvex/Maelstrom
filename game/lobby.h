@@ -49,6 +49,8 @@ public:
 	override void OnHide();
 	override void OnPoll();
 
+	void SendKick(int index);
+
 protected:
 	bool GetElement(const char *name, UIElement *&element);
 	void SetHostOrJoin(void*, int value);
@@ -66,7 +68,6 @@ protected:
 	void JoinGame(GameInfo &game);
 	void SendJoinRequest();
 	void SendLeaveRequest();
-	void SendKick(int index);
 	void ClearGameInfo();
 	void ClearGameList();
 
