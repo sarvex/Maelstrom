@@ -24,6 +24,7 @@
 #include <stdlib.h>
 
 #include "SDL.h"
+#include "physfs.h"
 #include "Mac_Resource.h"
 
 int main(int argc, char *argv[])
@@ -37,6 +38,12 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "Usage: %s <Mac Resource File>\n", argv[0]);
 		exit(1);
 	}
+
+	if (!PHYSFS_init(argv[0])) {
+		fprintf(stderr, "Couldn't initialize PHYSFS: %s\n", PHYSFS_getLastError());
+		exit(2);
+	}
+	PHYSFS_setSaneConfig("galaxygameworks", "macres", NULL, 0, 0);
 
 	res = new Mac_Resource(argv[1]);
 	if ( res->Error() ) {
