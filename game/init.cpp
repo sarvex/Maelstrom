@@ -704,16 +704,6 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 		}
 	}
 
-#ifdef SDL_INIT_JOYSTICK
-	/* Initialize the first joystick */
-	if ( SDL_NumJoysticks() > 0 ) {
-		if ( SDL_JoystickOpen(0) == NULL ) {
-			error("Warning: Couldn't open joystick '%s' : %s\n",
-				SDL_JoystickName(0), SDL_GetError());
-		}
-	}
-#endif
-
 	/* Load the Maelstrom icon */
 	icon = SDL_LoadBMP_RW(PHYSFSRWOPS_openRead("icon.bmp"), 1);
 	if ( icon == NULL ) {

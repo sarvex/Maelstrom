@@ -102,6 +102,7 @@ void NewGame(void)
 	if ( !SetupPlayers() ) {
 		return;
 	}
+	InitPlayerControls();
 
 	/* Send a "NEW_GAME" packet onto the network */
 	if ( gGameInfo.IsMultiplayer() && gGameInfo.IsHosting() ) {
@@ -136,6 +137,8 @@ void NewGame(void)
 /* -- Do the game over stuff */
 
 	DoGameOver();
+
+	QuitPlayerControls();
 
 	ui->ShowPanel(PANEL_MAIN);
 }	/* -- NewGame */

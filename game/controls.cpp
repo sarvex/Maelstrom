@@ -397,6 +397,45 @@ static void HandleEvent(SDL_Event *event)
 	}
 }
 
+#define MAX_JOYSTICKS	MAX_PLAYERS
+
+static Uint8 joystickMasks[MAX_JOYSTICKS] = {
+	CONTROL_JOYSTICK1,
+	CONTROL_JOYSTICK2,
+	CONTROL_JOYSTICK3
+};
+static SDL_Joystick *joysticks[MAX_JOYSTICKS];
+	
+void InitPlayerControls(void)
+{
+	Uint8 controlMask = 0;
+	unsigned i;
+
+	for (i = 0; i < MAX_PLAYERS; ++i) {
+		controlMask |= gPlayers[i]->GetControlType();
+	}
+
+	for (i = 0; i < MAX_JOYSTICKS; ++i) {
+		if (!(controlMask & joystickMasks[i])) {
+			continue;
+		}
+		joysticks[i] = SDL_JoystickOpen(i);
+		if (joysticks[i] == NULL) {
+			error("Warning: Couldn't open joystick '%s' : %s\n",
+				SDL_JoystickName(i), SDL_GetError());
+		}
+	}
+}
+
+void QuitPlayerControls(void)
+{
+	for (int i = 0; i < MAX_JOYSTICKS; ++i) {
+		if (joysticks[i]) {
+			SDL_JoystickClose(joysticks[i]);
+			joysticks[i] = NULL;
+		}
+	}
+}
 
 /* This function gives a good way to delay a specified amount of time
    while handling keyboard/joystick events, or just to poll for events.

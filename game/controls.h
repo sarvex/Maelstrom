@@ -35,10 +35,10 @@ extern void	CalibrateJoystick(char *joystick);
 #endif
 extern void	LoadControls(void);
 extern void	SaveControls(void);
-extern int	PollEvent(SDL_Event *event, int timeout);
+extern void	InitPlayerControls(void);
+extern void	QuitPlayerControls(void);
 extern void	HandleEvents(int timeout);
 extern int	DropEvents(void);
-extern void	ShowDawn(void);
 
 /* Generic key control definitions */
 #define THRUST_KEY	0x01
