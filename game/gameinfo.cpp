@@ -166,7 +166,9 @@ GameInfo::CopyFrom(const GameInfo &rhs)
 		SDL_memcpy(players[i].name, player->name,
 			sizeof(players[i].name));
 		if (players[i].nodeID == localID) {
-			players[i].controlMask = CONTROL_LOCAL;
+			if (players[i].controlMask == CONTROL_NONE) {
+				players[i].controlMask = CONTROL_LOCAL;
+			}
 		} else if (players[i].nodeID != 0) {
 			players[i].controlMask = CONTROL_NETWORK;
 		} else {
