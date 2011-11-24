@@ -434,18 +434,20 @@ void InitPlayerControls(void)
 	Uint8 controlMask = 0;
 	unsigned i;
 
-	for (i = 0; i < MAX_PLAYERS; ++i) {
-		controlMask |= gPlayers[i]->GetControlType();
-	}
-
-	for (i = 0; i < MAX_JOYSTICKS; ++i) {
-		if (!(controlMask & joystickMasks[i])) {
-			continue;
+	if (SDL_NumJoysticks() > 0) {
+		for (i = 0; i < MAX_PLAYERS; ++i) {
+			controlMask |= gPlayers[i]->GetControlType();
 		}
-		joysticks[i] = SDL_JoystickOpen(i);
-		if (joysticks[i] == NULL) {
-			error("Warning: Couldn't open joystick '%s' : %s\n",
-				SDL_JoystickName(i), SDL_GetError());
+
+		for (i = 0; i < MAX_JOYSTICKS; ++i) {
+			if (!(controlMask & joystickMasks[i])) {
+				continue;
+			}
+			joysticks[i] = SDL_JoystickOpen(i);
+			if (joysticks[i] == NULL) {
+				error("Warning: Couldn't open joystick '%s' : %s\n",
+					SDL_JoystickName(i), SDL_GetError());
+			}
 		}
 	}
 }
