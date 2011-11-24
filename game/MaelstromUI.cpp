@@ -318,7 +318,7 @@ UIElementControlButton::OnMouseDown()
 		return;
 	}
 
-	Player *player = GetControlPlayer(CONTROL_LOCAL);
+	Player *player = GetControlPlayer(CONTROL_TOUCH);
 	if (player) {
 		player->SetControl(m_control, true);
 	}
@@ -336,7 +336,7 @@ UIElementControlButton::OnMouseUp()
 		return;
 	}
 
-	Player *player = GetControlPlayer(CONTROL_LOCAL);
+	Player *player = GetControlPlayer(CONTROL_TOUCH);
 	if (player) {
 		player->SetControl(m_control, false);
 	}
