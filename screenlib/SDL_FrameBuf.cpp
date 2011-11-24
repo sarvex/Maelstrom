@@ -274,7 +274,7 @@ FrameBuf:: ScreenDump(const char *prefix, int x, int y, int w, int h)
 }
 
 SDL_Texture *
-FrameBuf:: LoadImage(int w, int h, Uint8 *pixels, Uint8 *mask, const char *file)
+FrameBuf:: LoadImage(int w, int h, Uint8 *pixels, Uint8 *mask)
 {
 	SDL_Texture *texture;
 	Uint32 *artwork;
@@ -320,9 +320,6 @@ FrameBuf:: LoadImage(int w, int h, Uint8 *pixels, Uint8 *mask, const char *file)
 		}
 	}
 
-SDL_Surface *surface = SDL_CreateRGBSurfaceFrom(artwork, w, h, 32, w*4, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
-SDL_SaveBMP(surface, file);
-SDL_FreeSurface(surface);
 	texture = LoadImage(w, h, artwork);
 	if ( mask ) {
 		SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
