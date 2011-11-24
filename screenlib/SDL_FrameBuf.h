@@ -239,10 +239,10 @@ public:
 		SDL_RenderFillRect(renderer, &rect);
 	}
 
-	/* Load and convert an 8-bit image with the given mask */
-	SDL_Texture *LoadImage(int w, int h, Uint8 *pixels, Uint8 *mask = NULL);
-	SDL_Texture *LoadImage(int w, int h, Uint32 *pixels);
+	/* Load a texture image */
+	SDL_Texture *LoadImage(const char *file);
 	SDL_Texture *LoadImage(SDL_Surface *surface);
+	SDL_Texture *LoadImage(int w, int h, Uint32 *pixels);
 	int GetImageWidth(SDL_Texture *image) {
 		int w, h;
 		SDL_QueryTexture(image, NULL, NULL, &w, &h);

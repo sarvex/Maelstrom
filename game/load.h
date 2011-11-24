@@ -30,6 +30,7 @@
 
 /* Functions exported from load.cpp */
 extern SDL_Texture *Load_Title(FrameBuf *screen, int title_id);
-extern SDL_Texture *GetCIcon(FrameBuf *screen, short cicn_id);
+extern SDL_Texture *GetCIcon(FrameBuf *screen, short id);
+extern SDL_Texture *GetSprite(FrameBuf *screen, short id, bool large);
 
 #endif /* _load_h */

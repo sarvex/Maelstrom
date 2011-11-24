@@ -107,7 +107,7 @@ static size_t physfsrwops_read(SDL_RWops *rw, void *ptr, size_t size, size_t max
             SDL_SetError("PhysicsFS error: %s", PHYSFS_getLastError());
     } /* if */
 
-    return ((size_t) rc);
+    return ((size_t) rc/size);
 } /* physfsrwops_read */
 
 

@@ -21,6 +21,7 @@
 
 #include <signal.h>
 
+#include "../utils/physfsrwops.h"
 #include "Mac_Sound.h"
 #include "Mac_Compat.h"
 
@@ -88,11 +89,7 @@ static void FillAudio(void *udata, Uint8 *stream, int len)
 
 Sound:: Sound(const char *soundfile, Uint8 vol)
 {
-	Wave         *wave;
-	Mac_Resource *soundres;
 	int           i, p;
-	Uint16       *ids;
-	Mac_ResData  *snd;
 
 	/* Initialize variables */
 	volume  = 0;
@@ -101,51 +98,25 @@ Sound:: Sound(const char *soundfile, Uint8 vol)
 	InitHash();
 	errstr = NULL;
 
-	/* Load the sounds from the resource files */
-	soundres = new Mac_Resource(soundfile);
-	if ( soundres->Error() ) {
-		error("%s", soundres->Error());
-		return;
-	}
-	if ( soundres->NumResources("snd ") == 0 ) {
-		error("No sound resources in '%s'", soundfile);
-		return;
-	}
-	ids = soundres->ResourceIDs("snd ");
-	wave = NULL;
-	for ( i=0; ids[i] != 0xFFFF; ++i ) {
-		snd = soundres->Resource("snd ", ids[i]);
-		if ( snd == NULL ) {
-			error("%s", soundres->Error());
-			delete soundres;
-			return;
-		}
-		wave = new Wave(snd, DSP_FREQUENCY);
-		if ( wave->Error() ) {
-			error("%s", wave->Error());
-			delete wave;
-			delete soundres;
-			return;
-		}
-		Hash(ids[i], wave);
-	}
-	delete soundres;
-	spec = wave->Spec();
 	/* Allow ~ 1/30 second time-lag in audio buffer -- samples is x^2  */
-	spec->samples = (wave->Frequency()*wave->SampleSize())/30;
-	for ( p = 0; spec->samples > 1; ++p )
-		spec->samples /= 2;
+	spec.freq = DSP_FREQUENCY;
+	spec.format = AUDIO_U8;
+	spec.channels = 1;
+	spec.silence = 0x80;
+	spec.samples = (spec.freq*spec.channels)/30;
+	for ( p = 0; spec.samples > 1; ++p )
+		spec.samples /= 2;
 	++p;
 	for ( i = 0; i < p; ++i )
-		spec->samples *= 2;
-	spec->callback = FillAudio;
-	spec->userdata = (void *)this;
+		spec.samples *= 2;
+	spec.callback = FillAudio;
+	spec.userdata = (void *)this;
 
 	/* Empty the channels and start the music :-) */
 	HaltSound();
 	if ( vol == 0 ) {
 		bogus_running = 1;
-		bogus_audio = SDL_CreateThread(BogusAudioThread, "Fake Audio", spec);
+		bogus_audio = SDL_CreateThread(BogusAudioThread, "Fake Audio", &spec);
 	} else {
 		Volume(vol);
 	}
@@ -179,7 +150,7 @@ Sound:: Volume(Uint8 vol)
 		}
 
 		/* Try to open the audio */
-		if ( SDL_OpenAudio(spec, NULL) < 0 )
+		if ( SDL_OpenAudio(&spec, NULL) < 0 )
 			vol = 0;		/* Fake sound */
 		active = 1;
 		SDL_PauseAudio(0);		/* Go! */
@@ -195,13 +166,39 @@ Sound:: Volume(Uint8 vol)
 
 		/* Run bogus sound thread */
 		bogus_running = 1;
-		bogus_audio = SDL_CreateThread(BogusAudioThread, "Fake Audio", spec);
+		bogus_audio = SDL_CreateThread(BogusAudioThread, "Fake Audio", &spec);
 		if ( bogus_audio == NULL ) {
 			/* Oh well... :-) */
 		}
 	}
 	playing = active;
 	return(volume);
+}
+
+Wave *
+Sound:: LoadSound(Uint16 sndID)
+{
+	char file[128];
+	SDL_RWops *fp;
+	Wave *wave;
+	SDL_AudioSpec spec;
+
+	SDL_snprintf(file, sizeof(file), "Sounds/snd_%d.wav", sndID);
+	fp = PHYSFSRWOPS_openRead(file);
+	if (!fp) {
+		fprintf(stderr, "Couldn't open %s\n", file);
+		return NULL;
+	}
+
+	wave = new Wave;
+	if (!SDL_LoadWAV_RW(fp, 1, &spec, &wave->data, &wave->size)) {
+		fprintf(stderr, "Couldn't decode audio from %s\n", file);
+		delete wave;
+		return NULL;
+	}
+	Hash(sndID, wave);
+
+	return wave;
 }
 
 int
@@ -214,13 +211,16 @@ Sound:: PlaySound(Uint16 sndID, Uint8 priority, Uint8 channel,
 		return(-1);
 
 	wave = Hash(sndID);
+	if ( wave == NULL ) {
+		wave = LoadSound(sndID);
+	}
 	if ( wave == NULL )
 		return(-1);
 
 	channels[channel].ID = sndID;
 	channels[channel].priority = priority;
-	channels[channel].len = wave->DataLeft();
-	channels[channel].src = wave->Data();
+	channels[channel].len = wave->size;
+	channels[channel].src = wave->data;
 	channels[channel].callback = callback;
 #ifdef DEBUG_SOUND
 printf("Playing sound %hu on channel %d\n", sndID, channel);

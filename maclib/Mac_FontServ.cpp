@@ -26,6 +26,7 @@
 #include <ctype.h>
 #include <string.h>
 
+#include "physfs.h"
 #include "SDL_types.h"
 #include "bitesex.h"
 #include "Mac_FontServ.h"
@@ -68,33 +69,58 @@ struct FOND {
 	/* The Kerning Table */
 };
 
+
+static Uint8 *GetFontData(const char *type, int ID)
+{
+	char file[128];
+	PHYSFS_File *fp;
+	PHYSFS_sint64 size;
+	Uint8 *data;
+
+	SDL_snprintf(file, sizeof(file), "Fonts/Maelstrom_%s#%d", type, ID);
+	fp = PHYSFS_openRead(file);
+	if (!fp) {
+		fprintf(stderr, "Couldn't open %s: %s\n", file, PHYSFS_getLastError());
+		return NULL;
+	}
+
+	size = PHYSFS_fileLength(fp);
+	data = new Uint8[size];
+	if (PHYSFS_readBytes(fp, data, size) != size) {
+		fprintf(stderr, "Couldn't read data from %s: %s\n", file, PHYSFS_getLastError());
+		PHYSFS_close(fp);
+		delete[] data;
+		return NULL;
+	}
+
+	PHYSFS_close(fp);
+	return data;
+}
+
 FontServ:: FontServ(FrameBuf *_screen, const char *fontfile)
 {
 	screen = _screen;
-	fontres = new Mac_Resource(fontfile);
- 
-	if ( fontres->Error() ) {
-		SetError("Couldn't load resources from %s", fontfile);
-		return;
-	}
-	if ( fontres->NumResources("FOND") == 0 ) {
-		SetError("FontServ: No 'FOND' resources in %s", fontfile);
-		return;
-	}
 	errstr = NULL;
 }
 
 FontServ:: ~FontServ()
 {
-	delete fontres;
 }
 
 
 MFont *
 FontServ:: NewFont(const char *fontname, int ptsize)
 {
-	Mac_ResData *fond;
-	Uint8 *data;
+	static struct {
+		const char *fontname;
+		int ID;
+	} fonts[] = {
+		{ "Chicago", 0 },
+		{ "New York", 2 },
+		{ "Geneva", 3 },
+	};
+
+	Uint8 *fond, *data;
 	struct FOND Fond;
 	struct Font_entry Fent;
 	int nchars;		/* number of chars including 'missing char' */
@@ -103,14 +129,20 @@ FontServ:: NewFont(const char *fontname, int ptsize)
 	MFont *font;
 
 	/* Get the font family */
-	fond = fontres->Resource("FOND", fontname);
+	fond = NULL;
+	for (i = 0; i < (int)SDL_arraysize(fonts); ++i) {
+		if (SDL_strcmp(fontname, fonts[i].fontname) == 0) {
+			fond = GetFontData("FOND", fonts[i].ID);
+			break;
+		}
+	}
 	if ( fond == NULL ) {
 		SetError("Warning: Font family '%s' not found", fontname);
 		return(NULL);
 	}
+	data = fond;
 
 	/* Find out what font ID we need */
-	data = fond->data;
         copy_short(Fond.flags, data);
         copy_short(Fond.ID, data);
         copy_short(Fond.firstCH, data);
@@ -134,6 +166,7 @@ FontServ:: NewFont(const char *fontname, int ptsize)
 		if ( (Fent.size == ptsize) && ! Fent.style )
 			break;
 	} 
+	delete[] fond;
 	if ( i == Fond.num_fonts ) {
 		SetError(
 		"Warning: Font family '%s' doesn't have %d pt fonts",
@@ -146,7 +179,7 @@ FontServ:: NewFont(const char *fontname, int ptsize)
 	font->name = new char[strlen(fontname)+1];
 	strcpy(font->name, fontname);
 	font->ptsize = ptsize;
-	font->nfnt = fontres->Resource("NFNT", Fent.ID);
+	font->nfnt = GetFontData("NFNT", Fent.ID);
 	if ( font->nfnt == NULL ) {
 		delete font;
 		SetError(
@@ -157,7 +190,7 @@ FontServ:: NewFont(const char *fontname, int ptsize)
 	/* Now that we have the resource, fiddle with the font structure
 	   so we can use it.  (Code taken from 'mac2bdf' -- Thanks! :)
 	 */
-	font->header = (struct FontHdr *)(font->nfnt)->data;
+	font->header = (struct FontHdr *)font->nfnt;
 	if ( ((font->header->fontType & ~3) != PROPFONT) &&
 			((font->header->fontType & ~3) != FIXEDFONT) ) {
 		swapfont = 1;
@@ -186,7 +219,7 @@ FontServ:: NewFont(const char *fontname, int ptsize)
 	nwords= (font->header)->rowWords * (font->header)->fRectHeight;
 	
 	/* Read the tables.  They follow sequentially in the resource */
-	font->bitImage = (Uint16 *)((font->nfnt)->data+sizeof(*font->header));
+	font->bitImage = (Uint16 *)(font->nfnt+sizeof(*font->header));
 	font->locTable = (Uint16 *)(font->bitImage+nwords);
 	font->owTable = (Sint16 *)(font->locTable+nchars+1);
 	
@@ -207,6 +240,7 @@ void
 FontServ:: FreeFont(MFont *font)
 {
 	delete[] font->name;
+	delete[] font->nfnt;
 	delete font;
 }
 

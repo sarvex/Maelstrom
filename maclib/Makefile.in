@@ -14,7 +14,6 @@
 
 @SET_MAKE@
 
-
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
@@ -34,7 +33,6 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-noinst_PROGRAMS = macres$(EXEEXT) playwave$(EXEEXT) snd2wav$(EXEEXT)
 subdir = maclib
 DIST_COMMON = README $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	COPYING
@@ -51,19 +49,8 @@ AR = ar
 ARFLAGS = cru
 libSDLmac_a_AR = $(AR) $(ARFLAGS)
 libSDLmac_a_LIBADD =
-am_libSDLmac_a_OBJECTS = Mac_FontServ.$(OBJEXT) Mac_Resource.$(OBJEXT) \
-	Mac_Sound.$(OBJEXT) Mac_Wave.$(OBJEXT)
+am_libSDLmac_a_OBJECTS = Mac_FontServ.$(OBJEXT) Mac_Sound.$(OBJEXT)
 libSDLmac_a_OBJECTS = $(am_libSDLmac_a_OBJECTS)
-PROGRAMS = $(noinst_PROGRAMS)
-am_macres_OBJECTS = macres.$(OBJEXT)
-macres_OBJECTS = $(am_macres_OBJECTS)
-macres_DEPENDENCIES = libSDLmac.a
-am_playwave_OBJECTS = playwave.$(OBJEXT)
-playwave_OBJECTS = $(am_playwave_OBJECTS)
-playwave_DEPENDENCIES = libSDLmac.a
-am_snd2wav_OBJECTS = snd2wav.$(OBJEXT)
-snd2wav_OBJECTS = $(am_snd2wav_OBJECTS)
-snd2wav_DEPENDENCIES = libSDLmac.a
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/build-scripts/depcomp
 am__depfiles_maybe = depfiles
@@ -76,10 +63,8 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(libSDLmac_a_SOURCES) $(macres_SOURCES) $(playwave_SOURCES) \
-	$(snd2wav_SOURCES)
-DIST_SOURCES = $(libSDLmac_a_SOURCES) $(macres_SOURCES) \
-	$(playwave_SOURCES) $(snd2wav_SOURCES)
+SOURCES = $(libSDLmac_a_SOURCES)
+DIST_SOURCES = $(libSDLmac_a_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -197,22 +182,10 @@ libSDLmac_a_SOURCES = \
 	Mac_Compat.h		\
 	Mac_FontServ.cpp	\
 	Mac_FontServ.h		\
-	Mac_Resource.cpp	\
-	Mac_Resource.h		\
 	Mac_Sound.cpp		\
 	Mac_Sound.h		\
-	Mac_Wave.cpp		\
-	Mac_Wave.h		\
-	applefile.h		\
-	macbinary.h		\
 	bitesex.h
 
-macres_SOURCES = macres.cpp
-macres_LDADD = libSDLmac.a
-playwave_SOURCES = playwave.cpp
-playwave_LDADD = libSDLmac.a
-snd2wav_SOURCES = snd2wav.cpp
-snd2wav_LDADD = libSDLmac.a
 all: all-am
 
 .SUFFIXES:
@@ -254,18 +227,6 @@ libSDLmac.a: $(libSDLmac_a_OBJECTS) $(libSDLmac_a_DEPENDENCIES)
 	$(libSDLmac_a_AR) libSDLmac.a $(libSDLmac_a_OBJECTS) $(libSDLmac_a_LIBADD)
 	$(RANLIB) libSDLmac.a
 
-clean-noinstPROGRAMS:
-	-test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
-macres$(EXEEXT): $(macres_OBJECTS) $(macres_DEPENDENCIES) 
-	@rm -f macres$(EXEEXT)
-	$(CXXLINK) $(macres_OBJECTS) $(macres_LDADD) $(LIBS)
-playwave$(EXEEXT): $(playwave_OBJECTS) $(playwave_DEPENDENCIES) 
-	@rm -f playwave$(EXEEXT)
-	$(CXXLINK) $(playwave_OBJECTS) $(playwave_LDADD) $(LIBS)
-snd2wav$(EXEEXT): $(snd2wav_OBJECTS) $(snd2wav_DEPENDENCIES) 
-	@rm -f snd2wav$(EXEEXT)
-	$(CXXLINK) $(snd2wav_OBJECTS) $(snd2wav_LDADD) $(LIBS)
-
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 
@@ -273,12 +234,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Mac_FontServ.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Mac_Resource.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Mac_Sound.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Mac_Wave.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/macres.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/playwave.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/snd2wav.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -370,7 +326,7 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LIBRARIES) $(PROGRAMS)
+all-am: Makefile $(LIBRARIES)
 installdirs:
 install: install-am
 install-exec: install-exec-am
@@ -398,8 +354,7 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-generic clean-noinstLIBRARIES clean-noinstPROGRAMS \
-	mostlyclean-am
+clean-am: clean-generic clean-noinstLIBRARIES mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
@@ -457,14 +412,14 @@ uninstall-am:
 .MAKE: install-am install-strip
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
-	clean-noinstLIBRARIES clean-noinstPROGRAMS ctags distclean \
-	distclean-compile distclean-generic distclean-tags distdir dvi \
-	dvi-am html html-am info info-am install install-am \
-	install-data install-data-am install-dvi install-dvi-am \
-	install-exec install-exec-am install-html install-html-am \
-	install-info install-info-am install-man install-pdf \
-	install-pdf-am install-ps install-ps-am install-strip \
-	installcheck installcheck-am installdirs maintainer-clean \
+	clean-noinstLIBRARIES ctags distclean distclean-compile \
+	distclean-generic distclean-tags distdir dvi dvi-am html \
+	html-am info info-am install install-am install-data \
+	install-data-am install-dvi install-dvi-am install-exec \
+	install-exec-am install-html install-html-am install-info \
+	install-info-am install-man install-pdf install-pdf-am \
+	install-ps install-ps-am install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic pdf pdf-am ps ps-am tags uninstall \
 	uninstall-am

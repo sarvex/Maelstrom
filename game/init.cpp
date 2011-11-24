@@ -45,7 +45,6 @@ FontServ *fontserv = NULL;
 MFont    *fonts[NUM_FONTS];
 FrameBuf *screen = NULL;
 UIManager *ui = NULL;
-Mac_Resource *spriteres = NULL;
 
 char   *gReplayFile;
 Sint32	gLastHigh;
@@ -79,13 +78,11 @@ SDL_Texture *gTripleFireIcon, *gShieldIcon;
 // Local functions used in this file.
 static void DrawLoadBar(int stage);
 static int InitSprites(void);
-static int LoadBlits(Mac_Resource *spriteres);
+static int LoadBlits(void);
 static int LoadCICNS(void);
 static void BackwardsSprite(BlitPtr *theBlit, BlitPtr oldBlit);
-static int LoadSprite(Mac_Resource *spriteres,
-			BlitPtr *theBlit, int baseID, int numFrames);
-static int LoadSmallSprite(Mac_Resource *spriteres,
-			BlitPtr *theBlit, int baseID, int numFrames);
+static int LoadLargeSprite(BlitPtr *theBlit, int baseID, int numFrames);
+static int LoadSmallSprite(BlitPtr *theBlit, int baseID, int numFrames);
 
 /* ----------------------------------------------------------------- */
 /* -- Draw a loading status bar */
@@ -206,8 +203,8 @@ static void InitShots(void)
 	int xx = 30;
 
 	/* Load the shot images */
-	gPlayerShot = screen->LoadImage(SHOT_SIZE,SHOT_SIZE,gPlayerShotColors);
-	gEnemyShot = screen->LoadImage(SHOT_SIZE, SHOT_SIZE, gEnemyShotColors);
+	gPlayerShot = screen->LoadImage("Images/shot_player.bmp");
+	gEnemyShot = screen->LoadImage("Images/shot_enemy.bmp");
 
 	/* Now setup the shot origin table */
 
@@ -643,10 +640,6 @@ void CleanUp(void)
 {
 	FreeScores();
 	SaveControls();
-	if ( spriteres ) {
-		delete spriteres;
-		spriteres = NULL;
-	}
 	if ( ui ) {
 		delete ui;
 		ui = NULL;
@@ -792,14 +785,7 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 	/* -- Set up the velocity tables */
 	BuildVelocityTable();
 
-	/* -- Load in our sprites and other needed resources */
-	spriteres = new Mac_Resource("Maelstrom Sprites");
-
-	if ( spriteres->Error() ) {
-		error("%s\n", spriteres->Error());
-		return(-1);
-	}
-	if ( LoadBlits(spriteres) < 0 ) {
+	if ( LoadBlits() < 0 ) {
 		return(-1);
 	}
 
@@ -819,7 +805,7 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 /* ----------------------------------------------------------------- */
 /* -- Load in the blits */
 
-static int LoadBlits(Mac_Resource *spriteres)
+static int LoadBlits(void)
 {
 	int stage = 1;
 
@@ -827,152 +813,152 @@ static int LoadBlits(Mac_Resource *spriteres)
 
 /* -- Load in the thrusters */
 
-	if ( LoadSmallSprite(spriteres, &gThrust1, 400, SHIP_FRAMES) < 0 )
+	if ( LoadSmallSprite(&gThrust1, 400, SHIP_FRAMES) < 0 )
 		return(-1);
 	DrawLoadBar(stage++);
 
-	if ( LoadSmallSprite(spriteres, &gThrust2, 500, SHIP_FRAMES) < 0 )
+	if ( LoadSmallSprite(&gThrust2, 500, SHIP_FRAMES) < 0 )
 		return(-1);
 	DrawLoadBar(stage++);
 
 /* -- Load in the player's ship */
 
-	if ( LoadSprite(spriteres, &gPlayerShip, 200, SHIP_FRAMES) < 0 )
+	if ( LoadLargeSprite(&gPlayerShip, 200, SHIP_FRAMES) < 0 )
 		return(-1);
 	DrawLoadBar(stage++);
 
 /* -- Load in the large rock */
 
-	if ( LoadSprite(spriteres, &gRock1R, 500, 60) < 0 )
+	if ( LoadLargeSprite(&gRock1R, 500, 60) < 0 )
 		return(-1);
 	BackwardsSprite(&gRock1L, gRock1R);
 	DrawLoadBar(stage++);
 
 /* -- Load in the medium rock */
 
-	if ( LoadSprite(spriteres, &gRock2R, 400, 40) < 0 )
+	if ( LoadLargeSprite(&gRock2R, 400, 40) < 0 )
 		return(-1);
 	BackwardsSprite(&gRock2L, gRock2R);
 	DrawLoadBar(stage++);
 
 /* -- Load in the small rock */
 
-	if ( LoadSmallSprite(spriteres, &gRock3R, 300, 20) < 0 )
+	if ( LoadSmallSprite(&gRock3R, 300, 20) < 0 )
 		return(-1);
 	BackwardsSprite(&gRock3L, gRock3R);
 	DrawLoadBar(stage++);
 
 /* -- Load in the explosion */
 
-	if ( LoadSprite(spriteres, &gExplosion, 600, 12) < 0 )
+	if ( LoadLargeSprite(&gExplosion, 600, 12) < 0 )
 		return(-1);
 	DrawLoadBar(stage++);
 
 /* -- Load in the 2x multiplier */
 
-	if ( LoadSprite(spriteres, &gMult[0], 2000, 1) < 0 )
+	if ( LoadLargeSprite(&gMult[0], 2000, 1) < 0 )
 		return(-1);
 	DrawLoadBar(stage++);
 
 /* -- Load in the 3x multiplier */
 
-	if ( LoadSprite(spriteres, &gMult[1], 2002, 1) < 0 )
+	if ( LoadLargeSprite(&gMult[1], 2002, 1) < 0 )
 		return(-1);
 	DrawLoadBar(stage++);
 
 /* -- Load in the 4x multiplier */
 
-	if ( LoadSprite(spriteres, &gMult[2], 2004, 1) < 0 )
+	if ( LoadLargeSprite(&gMult[2], 2004, 1) < 0 )
 		return(-1);
 	DrawLoadBar(stage++);
 
 /* -- Load in the 5x multiplier */
 
-	if ( LoadSprite(spriteres, &gMult[3], 2006, 1) < 0 )
+	if ( LoadLargeSprite(&gMult[3], 2006, 1) < 0 )
 		return(-1);
 	DrawLoadBar(stage++);
 
 /* -- Load in the steel asteroid */
 
-	if ( LoadSprite(spriteres, &gSteelRoidL, 700, 40) < 0 )
+	if ( LoadLargeSprite(&gSteelRoidL, 700, 40) < 0 )
 		return(-1);
 	BackwardsSprite(&gSteelRoidR, gSteelRoidL);
 	DrawLoadBar(stage++);
 
 /* -- Load in the prize */
 
-	if ( LoadSprite(spriteres, &gPrize, 800, 30) < 0 )
+	if ( LoadLargeSprite(&gPrize, 800, 30) < 0 )
 		return(-1);
 	DrawLoadBar(stage++);
 
 /* -- Load in the bonus */
 
-	if ( LoadSprite(spriteres, &gBonusBlit, 900, 10) < 0 )
+	if ( LoadLargeSprite(&gBonusBlit, 900, 10) < 0 )
 		return(-1);
 	DrawLoadBar(stage++);
 
 /* -- Load in the bonus */
 
-	if ( LoadSprite(spriteres, &gPointBlit, 1000, 6) < 0 )
+	if ( LoadLargeSprite(&gPointBlit, 1000, 6) < 0 )
 		return(-1);
 	DrawLoadBar(stage++);
 
 /* -- Load in the vortex */
 
-	if ( LoadSprite(spriteres, &gVortexBlit, 1100, 10) < 0 )
+	if ( LoadLargeSprite(&gVortexBlit, 1100, 10) < 0 )
 		return(-1);
 	DrawLoadBar(stage++);
 
 /* -- Load in the homing mine */
 
-	if ( LoadSprite(spriteres, &gMineBlitR, 1200, 40) < 0 )
+	if ( LoadLargeSprite(&gMineBlitR, 1200, 40) < 0 )
 		return(-1);
 	BackwardsSprite(&gMineBlitL, gMineBlitR);
 	DrawLoadBar(stage++);
 
 /* -- Load in the shield */
 
-	if ( LoadSprite(spriteres, &gShieldBlit, 1300, 2) < 0 )
+	if ( LoadLargeSprite(&gShieldBlit, 1300, 2) < 0 )
 		return(-1);
 	DrawLoadBar(stage++);
 
 /* -- Load in the nova */
 
-	if ( LoadSprite(spriteres, &gNova, 1400, 18) < 0 )
+	if ( LoadLargeSprite(&gNova, 1400, 18) < 0 )
 		return(-1);
 	DrawLoadBar(stage++);
 
 /* -- Load in the ship explosion */
 
-	if ( LoadSprite(spriteres, &gShipExplosion, 1500, 21) < 0 )
+	if ( LoadLargeSprite(&gShipExplosion, 1500, 21) < 0 )
 		return(-1);
 	DrawLoadBar(stage++);
 
 /* -- Load in the shrapnel */
 
-	if ( LoadSprite(spriteres, &gShrapnel1, 1800, 50) < 0 )
+	if ( LoadLargeSprite(&gShrapnel1, 1800, 50) < 0 )
 		return(-1);
 	DrawLoadBar(stage++);
 
-	if ( LoadSprite(spriteres, &gShrapnel2, 1900, 42) < 0 )
+	if ( LoadLargeSprite(&gShrapnel2, 1900, 42) < 0 )
 		return(-1);
 	DrawLoadBar(stage++);
 
 /* -- Load in the damaged ship */
 
-	if ( LoadSprite(spriteres, &gDamagedShip, 1600, 10) < 0 )
+	if ( LoadLargeSprite(&gDamagedShip, 1600, 10) < 0 )
 		return(-1);
 	DrawLoadBar(stage++);
 
 /* -- Load in the enemy ship */
 
-	if ( LoadSprite(spriteres, &gEnemyShip, 1700, 40) < 0 )
+	if ( LoadLargeSprite(&gEnemyShip, 1700, 40) < 0 )
 		return(-1);
 	DrawLoadBar(stage++);
 
 /* -- Load in the enemy ship */
 
-	if ( LoadSprite(spriteres, &gEnemyShip2, 2100, 40) < 0 )
+	if ( LoadLargeSprite(&gEnemyShip2, 2100, 40) < 0 )
 		return(-1);
 	DrawLoadBar(stage++);
 
@@ -1020,94 +1006,6 @@ static void BackwardsSprite(BlitPtr *theBlit, BlitPtr oldBlit)
 
 
 /* ----------------------------------------------------------------- */
-/* -- Load in the sprites we use */
-
-static int LoadSprite(Mac_Resource *spriteres,
-			BlitPtr *theBlit, int baseID, int numFrames)
-{
-	Mac_ResData *S, *M;
-	int	index;
-	BlitPtr	aBlit;
-	Uint32	offset;
-	int	top, left, bottom, right;
-	int	row, col;
-	Uint8	*mask;
-
-	aBlit = new Blit;
-	aBlit->numFrames = numFrames;
-	aBlit->isSmall = 0;
-
-	left = 32;
-	right = 0;
-	top = 32;
-	bottom = 0;
-
-	/* -- Load in the image data */
-	for (index = 0; index < numFrames; index++) {
-
-		M = spriteres->Resource("ICN#", baseID+index);
-		if ( M == NULL ) {
-			error(
-	"LoadSprite(%d+%d): Couldn't load ICN# resource!\n", baseID, index);
-			return(-1);
-		}
-		mask = M->data+128;
-		
-		S = spriteres->Resource("icl8", baseID+index);
-		if ( S == NULL ) {
-			error(
-	"LoadSprite(%d+%d): Couldn't load icl8 resource!\n", baseID, index);
-			return(-1);
-		}
-
-		/* -- Figure out the hit rectangle */
-		/* -- Do the top/left first */
-		for ( row=0; row<32; ++row ) {
-			for ( col=0; col<32; ++col ) {
-				offset = (row*32)+col;
-				if ((mask[offset/8]>>(7-(offset%8))) & 0x01){
-					if ( row < top )
-						top = row;
-					if ( col < left )
-						left = col;
-				}
-			}
-		}
-		for ( row=31; row>top; --row ) {
-			for ( col=31; col>left; --col ) {
-				offset = (row*32)+col;
-				if ((mask[offset/8]>>(7-(offset%8))) & 0x01){
-					if ( row > bottom )
-						bottom = row;
-					if ( col > right )
-						right = col;
-				}
-			}
-		}
-		SetRect(&aBlit->hitRect, left, top, right, bottom);
-				
-		/* Load the image */
-		aBlit->sprite[index] = screen->LoadImage(32, 32, S->data, mask);
-		if ( aBlit->sprite[index] == NULL ) {
-			error(
-	"LoadSprite(%d+%d): Couldn't convert sprite image!\n", baseID, index);
-			return(-1);
-		}
-
-		/* Create the bytemask */
-		M->length = (M->length-128)*8;
-		aBlit->mask[index] = new Uint8[M->length];
-		for ( offset=0; offset<M->length; ++offset ) {
-			aBlit->mask[index][offset] = 
-				((mask[offset/8]>>(7-(offset%8)))&0x01);
-		}
-	}
-	(*theBlit) = aBlit;
-	return(0);
-}	/* -- LoadSprite */
-
-
-/* ----------------------------------------------------------------- */
 /* -- Load in the prize CICN's */
 
 static int LoadCICNS(void)
@@ -1132,9 +1030,6 @@ static int LoadCICNS(void)
 		return(-1);
 	if ( (gShieldIcon = GetCIcon(screen, 137)) == NULL )
 		return(-1);
-	// This was only used for the main menu, which is XML now.
-	//if ( (gKeyIcon = GetCIcon(screen, 100)) == NULL )
-	//	return(-1);
 	return(0);
 }	/* -- LoadCICNS */
 
@@ -1142,51 +1037,56 @@ static int LoadCICNS(void)
 /* ----------------------------------------------------------------- */
 /* -- Load in the sprites we use */
 
-static int LoadSmallSprite(Mac_Resource *spriteres,
-				BlitPtr *theBlit, int baseID, int numFrames)
+static int LoadSprite(bool large, BlitPtr *theBlit, int baseID, int numFrames)
 {
-	Mac_ResData *S, *M;
+	char	file[128];
+	int	size;
+	SDL_Surface *surface;
 	int	index;
 	BlitPtr	aBlit;
-	Uint32	offset;
+	Uint32	offset, length;
 	int	top, left, bottom, right;
 	int	row, col;
 	Uint8	*mask;
 
 	aBlit = new Blit;
 	aBlit->numFrames = numFrames;
-	aBlit->isSmall = 1;
+	aBlit->isSmall = !large;
 
-	left = 16;
+	size = large ? 32 : 16;
+	left = size;
 	right = 0;
-	top = 16;
+	top = size;
 	bottom = 0;
 
 	/* -- Load in the image data */
-
 	for (index = 0; index < numFrames; index++) {
+		SDL_snprintf(file, sizeof(file), "Sprites/Maelstrom_%s#%d.bmp", large ? "icl" : "ics", baseID+index);
+		surface = SDL_LoadBMP_RW(PHYSFSRWOPS_openRead(file), 1);
 
-		M = spriteres->Resource("ics#", baseID+index);
-		if ( M == NULL ) {
-			error(
-	"LoadSmallSprite(%d+%d): Couldn't load ics# resource!\n", baseID,index);
+		if ( surface == NULL ) {
+			error("LoadSprite(): Couldn't load image %s\n", file);
 			return(-1);
 		}
-		mask = M->data+32;
-
-		S = spriteres->Resource("ics8", baseID+index);
-		if ( S == NULL ) {
-			error(
-	"LoadSmallSprite(%d+%d): Couldn't load ics8 resource!\n", baseID,index);
+		if ( surface->w != size || surface->h != size ) {
+			SDL_FreeSurface(surface);
+			error("LoadSprite(): Image not %dx%d: %s\n", size, size, file);
 			return(-1);
 		}
+		if ( surface->format->BitsPerPixel != 32 ) {
+			SDL_FreeSurface(surface);
+			error("LoadSprite(): Image not 32-bit: %s\n", file);
+			return(-1);
+		}
+		/* FIXME: Handle different surface formats/endianness */
+		mask = (Uint8*)surface->pixels + 3;
 
 		/* -- Figure out the hit rectangle */
 		/* -- Do the top/left first */
-		for ( row=0; row<16; ++row ) {
-			for ( col=0; col<16; ++col ) {
-				offset = (row*16)+col;
-				if ((mask[offset/8]>>(7-(offset%8))) & 0x01){
+		for ( row=0; row<size; ++row ) {
+			for ( col=0; col<size; ++col ) {
+				offset = ((row*size)+col)*4;
+				if (mask[offset]) {
 					if ( row < top )
 						top = row;
 					if ( col < left )
@@ -1194,10 +1094,10 @@ static int LoadSmallSprite(Mac_Resource *spriteres,
 				}
 			}
 		}
-		for ( row=15; row>top; --row ) {
-			for ( col=15; col>left; --col ) {
-				offset = (row*16)+col;
-				if ((mask[offset/8]>>(7-(offset%8))) & 0x01){
+		for ( row=size-1; row>top; --row ) {
+			for ( col=size-1; col>left; --col ) {
+				offset = ((row*size)+col)*4;
+				if (mask[offset]) {
 					if ( row > bottom )
 						bottom = row;
 					if ( col > right )
@@ -1208,22 +1108,33 @@ static int LoadSmallSprite(Mac_Resource *spriteres,
 		SetRect(&aBlit->hitRect, left, top, right, bottom);
 
 		/* Load the image */
-		aBlit->sprite[index] = screen->LoadImage(16, 16, S->data, mask);
+		aBlit->sprite[index] = screen->LoadImage(surface);
 		if ( aBlit->sprite[index] == NULL ) {
-			error(
-	"LoadSprite(%d+%d): Couldn't convert sprite image!\n", baseID, index);
+			error("LoadSprite(): Couldn't convert sprite image to texture for %s\n", file);
 			return(-1);
 		}
 
 		/* Create the bytemask */
-		M->length = (M->length-32)*8;
-		aBlit->mask[index] = new Uint8[M->length];
-		for ( offset=0; offset<M->length; ++offset ) {
-			aBlit->mask[index][offset] = 
-				((mask[offset/8]>>(7-(offset%8)))&0x01);
+		length = size*size;
+		aBlit->mask[index] = new Uint8[length];
+		for ( offset=0; offset<length; ++offset ) {
+			aBlit->mask[index][offset] = mask[offset*4]; 
 		}
 	}
 	(*theBlit) = aBlit;
 	return(0);
-}	/* -- LoadSmallSprite */
+}	/* -- LoadSprite */
 
+
+/* ----------------------------------------------------------------- */
+/* -- Load in the sprites we use */
+
+static int LoadLargeSprite(BlitPtr *theBlit, int baseID, int numFrames)
+{
+	return LoadSprite(true, theBlit, baseID, numFrames);
+}
+
+static int LoadSmallSprite(BlitPtr *theBlit, int baseID, int numFrames)
+{
+	return LoadSprite(false, theBlit, baseID, numFrames);
+}

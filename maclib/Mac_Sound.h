@@ -30,11 +30,15 @@
 #include "SDL_mutex.h"
 #include "SDL_thread.h"
 #include "SDL_audio.h"
-#include "Mac_Wave.h"
 
 #define MAX_VOLUME	8		/* Software volume ranges from 0 - 8 */
 #define NUM_CHANNELS	4		/* 4 sound mixing channels, limit 128 */
 #define DSP_FREQUENCY	11025		/* Convert the SNDs to this frequency */
+
+struct Wave {
+	Uint8 *data;
+	Uint32 size;
+};
 
 class Sound {
 
@@ -130,7 +134,7 @@ private:
 		void (*callback)(Uint8 channel);
 	} channels[NUM_CHANNELS];
 
-	SDL_AudioSpec *spec;
+	SDL_AudioSpec spec;
 	Uint8      volume;
 
 	/* Fake audio handler, in case we can't open the real thing */
@@ -190,6 +194,8 @@ printf("Freeing Wave id %hu at hash page %d/%d\n",(upper<<8)|lower,upper,lower);
 		}
 		delete[] hashpage;
 	}
+
+	Wave *LoadSound(Uint16 sndID);
 
 	/* Useful for getting error feedback */
 	void error(const char *fmt, ...) {

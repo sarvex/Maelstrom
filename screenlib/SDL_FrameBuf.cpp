@@ -274,58 +274,24 @@ FrameBuf:: ScreenDump(const char *prefix, int x, int y, int w, int h)
 }
 
 SDL_Texture *
-FrameBuf:: LoadImage(int w, int h, Uint8 *pixels, Uint8 *mask)
+FrameBuf:: LoadImage(const char *file)
 {
+	SDL_Surface *surface;
 	SDL_Texture *texture;
-	Uint32 *artwork;
-	int i, j, pad;
-	Uint8 *pix_mem;
-	Uint32 *art_mem;
-
-	/* Assume 8-bit artwork using the current palette */
-	artwork = new Uint32[w*h];
-
-	pad  = ((w%4) ? (4-(w%4)) : 0);
-	if ( mask ) {
-		Uint8 m;
-
-		/* Copy over the pixels */
-		pix_mem = pixels;
-		art_mem = artwork;
-		for ( i=0; i<h; ++i ) {
-			for ( j=0; j<w; ++j ) {
-				if ( (j%8) == 0 ) {
-					m = *mask++;
-				}
-				if ( m & 0x80 ) {
-					*art_mem++ = image_map[*pix_mem];
-				} else {
-					*art_mem++ = 0;
-				}
-				m <<= 1;
-				pix_mem += 1;
-			}
-			pix_mem += pad;
-		}
-	} else {
-		/* Copy over the pixels */
-		pix_mem = pixels;
-		art_mem = artwork;
-		for ( i=0; i<h; ++i ) {
-			for ( j=0; j<w; ++j ) {
-				*art_mem++ = image_map[*pix_mem];
-				pix_mem += 1;
-			}
-			pix_mem += pad;
-		}
+	
+	texture = NULL;
+	surface = SDL_LoadBMP_RW(PHYSFSRWOPS_openRead(file), 1);
+	if (surface) {
+		texture = LoadImage(surface);
+		SDL_FreeSurface(surface);
 	}
+	return texture;
+}
 
-	texture = LoadImage(w, h, artwork);
-	if ( mask ) {
-		SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
-	}
-	delete[] artwork;
-	return(texture);
+SDL_Texture *
+FrameBuf:: LoadImage(SDL_Surface *surface)
+{
+	return SDL_CreateTextureFromSurface(renderer, surface);
 }
 
 SDL_Texture *
@@ -345,12 +311,6 @@ FrameBuf:: LoadImage(int w, int h, Uint32 *pixels)
 		return NULL;
 	}
 	return(texture);
-}
-
-SDL_Texture *
-FrameBuf:: LoadImage(SDL_Surface *surface)
-{
-	return SDL_CreateTextureFromSurface(renderer, surface);
 }
 
 void

@@ -37,7 +37,6 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-#include "Mac_Resource.h"
 #include "../screenlib/SDL_FrameBuf.h"
 
 /* Different styles supported by the font server */
@@ -81,7 +80,7 @@ typedef struct MFont {
 	Sint16 *owTable;	/* owTable[lastchar+3-firstChar]; */ 
 
 	/* The Raw Data */
-	Mac_ResData *nfnt;
+	Uint8 *nfnt;
 } MFont;
 
 class FontServ {
@@ -133,7 +132,6 @@ public:
 
 private:
 	FrameBuf *screen;
-	Mac_Resource *fontres;
 
 	/* Useful for getting error feedback */
 	void SetError(const char *fmt, ...) {

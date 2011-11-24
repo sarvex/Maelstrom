@@ -373,8 +373,6 @@ bool
 UIDrawEngineSprite::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 {
 	rapidxml::xml_attribute<> *attr;
-	int baseID;
-	Mac_ResData *S, *M;
 
 	if (!UIDrawEngine::Load(node, templates)) {
 		return false;
@@ -385,16 +383,10 @@ UIDrawEngineSprite::Load(rapidxml::xml_node<> *node, const UITemplates *template
 		error("Element '%s' missing attribute 'id'", node->name());
 		return false;
 	}
-	baseID = SDL_atoi(attr->value());
 
-	/* Load the image */
-	SDL_Texture *image = NULL;
-	if ((S = spriteres->Resource("icl8", baseID)) != NULL &&
-	    (M = spriteres->Resource("ICN#", baseID)) != NULL) {
-		image = m_screen->LoadImage(32, 32, S->data, M->data+128);
-	}
+	SDL_Texture *image = GetSprite(m_screen, atoi(attr->value()), true);
 	if (!image) {
-		error("Unable to load sprite %d", baseID);
+		error("Unable to load icon %d", atoi(attr->value()));
 		return false;
 	}
 	m_element->SetImage(image);
