@@ -976,13 +976,25 @@ struct FinalScore {
 	int Frags;
 };
 
-static int cmp_byscore(const void *A, const void *B)
+static int cmp_byscore(const void *_A, const void *_B)
 {
-	return(((struct FinalScore *)B)->Score-((struct FinalScore *)A)->Score);
+	const FinalScore *A = static_cast<const FinalScore*>(_A);
+	const FinalScore *B = static_cast<const FinalScore*>(_B);
+	if (A->Score == B->Score) {
+		// Sort lowest player first
+		return A->Player - B->Player;
+	}
+	return B->Score - A->Score;
 }
-static int cmp_byfrags(const void *A, const void *B)
+
+static int cmp_byfrags(const void *_A, const void *_B)
 {
-	return(((struct FinalScore *)B)->Frags-((struct FinalScore *)A)->Frags);
+	const FinalScore *A = static_cast<const FinalScore*>(_A);
+	const FinalScore *B = static_cast<const FinalScore*>(_B);
+	if (A->Frags == B->Frags) {
+		return cmp_byscore(A, B);
+	}
+	return B->Frags - A->Frags;
 }
 
 static void DoGameOver(void)
@@ -1022,15 +1034,16 @@ static void DoGameOver(void)
 
 	/* Show the player ranking */
 	if ( gGameInfo.IsMultiplayer() ) {
-		OBJ_LOOP(i, MAX_PLAYERS) {
-			if (!gPlayers[i]->IsValid()) {
+		int nextLabel = 1;
+		for (i = 0; i < MAX_PLAYERS; ++i) {
+			if (!gPlayers[final[i].Player-1]->IsValid()) {
 				continue;
 			}
 
 			char name[32];
 			char buffer[BUFSIZ], num1[12], num2[12];
 
-			sprintf(name, "rank%d", 1+i);
+			sprintf(name, "rank%d", nextLabel++);
 			label = panel->GetElement<UIElement>(name);
 			if (!label) {
 				continue;
