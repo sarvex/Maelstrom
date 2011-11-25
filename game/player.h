@@ -123,20 +123,6 @@ public:
 	virtual void HitSound(void);
 	virtual void ExplodeSound(void);
 
-	virtual void ShowDot(void) {
-		/* Draw our identity dot */
-		int X, Y;
-		if ( ! Alive() ) {
-			return;
-		}
-		X = (x>>SPRITE_PRECISION)+12;
-		Y = (y>>SPRITE_PRECISION)+12;
-		if ( (X > gClipRect.x) && (X < (gClipRect.x+gClipRect.w-4)) &&
-		     (Y > gClipRect.y) && (Y < (gClipRect.y+gClipRect.h-4)) ) {
-			screen->FillRect(X, Y, 4, 4, ship_color);
-		}
-	}
-
 	void SetControlType(Uint8 controlType);
 	Uint8 GetControlType() {
 		return controlType;

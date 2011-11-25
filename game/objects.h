@@ -253,7 +253,7 @@ public:
 			yVel -= SCALE_FACTOR;
 	
 		newsprite = gNumSprites;
-		gSprites[newsprite]=new Shrapnel(x, y, xVel, yVel, gShrapnel1);
+		gSprites[newsprite]=new Shrapnel(x, y, xVel, yVel, gShrapnel1[0]);
 
 		/* Type 2 shrapnel */
 		rx = (SCALE_FACTOR);
@@ -270,7 +270,7 @@ public:
 			yVel -= SCALE_FACTOR;
 		
 		newsprite = gNumSprites;
-		gSprites[newsprite]=new Shrapnel(x, y, xVel, yVel, gShrapnel2);
+		gSprites[newsprite]=new Shrapnel(x, y, xVel, yVel, gShrapnel2[0]);
 
 		/* Finish our explosion */
 		Exploding = 1;

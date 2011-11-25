@@ -35,7 +35,7 @@ AboutPanelDelegate::OnShow()
 	off = 39 * SCALE_FACTOR;
 
 	objects[numsprites++] = 
-		new Object(x, y, 0, 0, gPlayerShip, 1);
+		new Object(x, y, 0, 0, gPlayerShip[0], 1);
 	y += off;
 	objects[numsprites++] = 
 		new Object(x, y, 0, 0, gPrize, 2);

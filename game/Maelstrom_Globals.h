@@ -203,11 +203,13 @@ extern int	gNumSprites;
 /* -- The blit'ers we use */
 extern BlitPtr	gRock1R, gRock2R, gRock3R, gDamagedShip;
 extern BlitPtr	gRock1L, gRock2L, gRock3L, gShipExplosion;
-extern BlitPtr	gPlayerShip, gExplosion, gNova, gEnemyShip, gEnemyShip2;
+extern BlitPtr	gPlayerShip[MAX_PLAYERS];
+extern BlitPtr	gExplosion, gNova, gEnemyShip, gEnemyShip2;
 extern BlitPtr	gMult[], gSteelRoidL;
 extern BlitPtr	gSteelRoidR, gPrize, gBonusBlit, gPointBlit;
 extern BlitPtr	gVortexBlit, gMineBlitL, gMineBlitR, gShieldBlit;
-extern BlitPtr	gThrust1, gThrust2, gShrapnel1, gShrapnel2;
+extern BlitPtr	gThrust1, gThrust2;
+extern BlitPtr	gShrapnel1[MAX_PLAYERS], gShrapnel2[MAX_PLAYERS];
 
 /* -- The prize CICN's */
 

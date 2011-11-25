@@ -63,11 +63,11 @@ Uint32	gStarColors[20];
 /* -- The blit'ers we use */
 BlitPtr	gRock1R, gRock2R, gRock3R, gDamagedShip;
 BlitPtr	gRock1L, gRock2L, gRock3L, gShipExplosion;
-BlitPtr	gPlayerShip, gExplosion, gNova, gEnemyShip, gEnemyShip2;
+BlitPtr	gPlayerShip[MAX_PLAYERS], gExplosion, gNova, gEnemyShip, gEnemyShip2;
 BlitPtr	gMult[4], gSteelRoidL;
 BlitPtr	gSteelRoidR, gPrize, gBonusBlit, gPointBlit;
 BlitPtr	gVortexBlit, gMineBlitL, gMineBlitR, gShieldBlit;
-BlitPtr	gThrust1, gThrust2, gShrapnel1, gShrapnel2;
+BlitPtr	gThrust1, gThrust2, gShrapnel1[MAX_PLAYERS], gShrapnel2[MAX_PLAYERS];
 
 /* -- The prize CICN's */
 
@@ -808,6 +808,8 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 static int LoadBlits(void)
 {
 	int stage = 1;
+	int i;
+	short id;
 
 	DrawLoadBar(stage++);
 
@@ -823,8 +825,11 @@ static int LoadBlits(void)
 
 /* -- Load in the player's ship */
 
-	if ( LoadLargeSprite(&gPlayerShip, 200, SHIP_FRAMES) < 0 )
-		return(-1);
+	for (i = 0; i < MAX_PLAYERS; ++i) {
+		id = (1+i)*10000 + 200;
+		if ( LoadLargeSprite(&gPlayerShip[i], id, SHIP_FRAMES) < 0 )
+			return(-1);
+	}
 	DrawLoadBar(stage++);
 
 /* -- Load in the large rock */
@@ -936,12 +941,18 @@ static int LoadBlits(void)
 
 /* -- Load in the shrapnel */
 
-	if ( LoadLargeSprite(&gShrapnel1, 1800, 50) < 0 )
-		return(-1);
+	for (i = 0; i < MAX_PLAYERS; ++i) {
+		id = (1+i)*10000 + 1800;
+		if ( LoadLargeSprite(&gShrapnel1[i], id, 48) < 0 )
+			return(-1);
+	}
 	DrawLoadBar(stage++);
 
-	if ( LoadLargeSprite(&gShrapnel2, 1900, 42) < 0 )
-		return(-1);
+	for (i = 0; i < MAX_PLAYERS; ++i) {
+		id = (1+i)*10000 + 1900;
+		if ( LoadLargeSprite(&gShrapnel2[i], id, 40) < 0 )
+			return(-1);
+	}
 	DrawLoadBar(stage++);
 
 /* -- Load in the damaged ship */

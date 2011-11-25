@@ -46,7 +46,7 @@ static void ThrustCallback(Uint8 theChannel)
 /* ----------------------------------------------------------------- */
 /* -- The Player class */
 
-Player:: Player(int index) : Object(0, 0, 0, 0, gPlayerShip, NO_PHASE_CHANGE)
+Player:: Player(int index) : Object(0, 0, 0, 0, gPlayerShip[index], NO_PHASE_CHANGE)
 {
 	int i;
 
@@ -127,7 +127,7 @@ Player::NewShip(void)
 	controlState = 0;
 	solid = 1;
 	shootable = 1;
-	Set_Blit(gPlayerShip);
+	Set_Blit(gPlayerShip[Index]);
 	Set_Points(PLAYER_PTS);
 	Set_HitPoints(PLAYER_HITS);
 	ShieldOn = 0;
@@ -279,7 +279,7 @@ Player::Explode(void)
 		yVel -= SCALE_FACTOR;
 
 	newsprite = gNumSprites;
-	gSprites[newsprite]=new Shrapnel(x, y, xVel, yVel, gShrapnel1);
+	gSprites[newsprite]=new Shrapnel(x, y, xVel, yVel, gShrapnel1[Index]);
 
 	/* Type 2 shrapnel */
 	rx = (SCALE_FACTOR);
@@ -296,7 +296,7 @@ Player::Explode(void)
 		yVel -= SCALE_FACTOR;
 	
 	newsprite = gNumSprites;
-	gSprites[newsprite]=new Shrapnel(x, y, xVel, yVel, gShrapnel2);
+	gSprites[newsprite]=new Shrapnel(x, y, xVel, yVel, gShrapnel2[Index]);
 
 	/* We may lose our special abilities */
 	if ( (special & LUCKY_IRISH) && (FastRandom(LUCK_ODDS) == 0) )

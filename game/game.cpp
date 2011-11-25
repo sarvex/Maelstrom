@@ -427,16 +427,6 @@ GamePanelDelegate::OnDraw()
 		}
 		gPlayers[i]->BlitSprite();
 	}
-
-	/* -- Show the player dots */
-	if ( gGameInfo.IsMultiplayer() ) {
-		OBJ_LOOP(i, MAX_PLAYERS) {
-			if (!gPlayers[i]->IsValid()) {
-				continue;
-			}
-			gPlayers[i]->ShowDot();
-		}
-	}
 }
 
 /* ----------------------------------------------------------------- */
