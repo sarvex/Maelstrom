@@ -307,8 +307,6 @@ LobbyDialogDelegate::SetHostOrJoin(void*, int value)
 {
 	// This is called when the lobby switches from hosting to joining
 	HaltNetData();
-	ClearGameInfo();
-	ClearGameList();
 
 	if (value > 0) {
 		if (InitNetData(value == HOST_GAME) < 0) {
@@ -418,6 +416,11 @@ LobbyDialogDelegate::SetState(LOBBY_STATE state)
 			prefs->SetNumber(name, m_game.GetPlayer(i)->controlMask);
 		}
 		prefs->Save();
+	}
+
+	if (state == STATE_HOSTING || state == STATE_LISTING || state == STATE_NONE) {
+		ClearGameInfo();
+		ClearGameList();
 	}
 
 	if (state == STATE_NONE) {
