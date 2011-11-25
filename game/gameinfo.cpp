@@ -43,21 +43,30 @@ GameInfo::Reset()
 	lives = 0;
 	turbo = 0;
 	deathMatch = 0;
+	gameMode = 0;
+	deathMatch = 0;
 	numNodes = 0;
 	SDL_zero(nodes);
 	SDL_zero(players);
 }
 
 void
-GameInfo::SetHost(Uint8 wave, Uint8 lives, Uint8 turbo, Uint8 deathMatch)
+GameInfo::SetHost(Uint8 wave, Uint8 lives, Uint8 turbo, Uint8 deathMatch, bool kidMode)
 {
 	Reset();
 
 	this->gameID = localID;
 	this->seed = GetRandSeed();
 	this->wave = wave;
-	this->lives = lives;
+	this->lives = deathMatch ? deathMatch : lives;
 	this->turbo = turbo;
+	this->gameMode = 0;
+	if (kidMode) {
+		this->gameMode |= GAME_MODE_KIDS;
+	}
+	if (deathMatch) {
+		this->gameMode |= GAME_MODE_DEATHMATCH;
+	}
 	this->deathMatch = deathMatch;
 
 	// We are the host node
@@ -136,6 +145,7 @@ GameInfo::CopyFrom(const GameInfo &rhs)
 	wave = rhs.wave;
 	lives = rhs.lives;
 	turbo = rhs.turbo;
+	gameMode = rhs.gameMode;
 	deathMatch = rhs.deathMatch;
 
 	for (i = 0; i < MAX_NODES; ++i) {
@@ -199,6 +209,9 @@ GameInfo::ReadFromPacket(DynamicPacket &packet)
 	if (!packet.Read(turbo)) {
 		return false;
 	}
+	if (!packet.Read(gameMode)) {
+		return false;
+	}
 	if (!packet.Read(deathMatch)) {
 		return false;
 	}
@@ -251,6 +264,7 @@ GameInfo::WriteToPacket(DynamicPacket &packet)
 	packet.Write(wave);
 	packet.Write(lives);
 	packet.Write(turbo);
+	packet.Write(gameMode);
 	packet.Write(deathMatch);
 
 	packet.Write(numNodes);

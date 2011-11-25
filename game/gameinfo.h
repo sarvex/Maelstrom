@@ -47,6 +47,11 @@ enum PLAYER_CONTROL {
 #endif
 };
 
+enum GAME_MODE {
+	GAME_MODE_DEATHMATCH = 0x01,
+	GAME_MODE_KIDS       = 0x02,
+};
+
 #define IS_LOCAL_CONTROL(X)	(X != CONTROL_NONE && X != CONTROL_NETWORK && X != CONTROL_REPLAY)
 
 enum NODE_STATE_FLAG {
@@ -118,7 +123,7 @@ public:
 		localID = uniqueID;
 	}
 
-	void SetHost(Uint8 wave, Uint8 lives, Uint8 turbo, Uint8 deathMatch);
+	void SetHost(Uint8 wave, Uint8 lives, Uint8 turbo, Uint8 deathMatch, bool kidMode);
 
 	void SetPlayerSlot(int slot, const char *name, Uint8 controlMask);
 	void SetPlayerName(int slot, const char *name);
@@ -186,6 +191,13 @@ public:
 
 	bool IsFull() const;
 
+	bool IsDeathmatch() const {
+		return (gameMode & GAME_MODE_DEATHMATCH) != 0;
+	}
+	bool IsKidMode() const {
+		return (gameMode & GAME_MODE_KIDS) != 0;
+	}
+
 	void SetNodeState(int index, Uint8 state);
 	Uint8 GetNodeState(int index) const;
 
@@ -212,6 +224,7 @@ public:
 	Uint8 wave;
 	Uint8 lives;
 	Uint8 turbo;
+	Uint8 gameMode;
 	Uint8 deathMatch;
 
 	Uint32 localID;

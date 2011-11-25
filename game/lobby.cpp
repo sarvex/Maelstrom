@@ -438,7 +438,8 @@ LobbyDialogDelegate::SetState(LOBBY_STATE state)
 		m_game.SetHost(DEFAULT_START_WAVE,
 				DEFAULT_START_LIVES,
 				DEFAULT_START_TURBO,
-				prefs->GetNumber(PREFERENCES_DEATHMATCH));
+				prefs->GetNumber(PREFERENCES_DEATHMATCH),
+				prefs->GetBool(PREFERENCES_KIDMODE));
 
 		// Set up the controls for this game
 		for (i = 0; i < MAX_PLAYERS; ++i) {

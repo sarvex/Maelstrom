@@ -69,13 +69,20 @@ public:
 		/* This function is called to see if we shot something */
 		return(NULL);
 	}
-	virtual int Collide(Object *object) {
+	virtual int Collide(Object *object, bool exact = true) {
 		/* Set up the location rectangles */
 		Rect *R1=&HitRect, *R2=&object->HitRect;
+
+		if ( ! solid || ! object->solid )
+			return(0);
 
 		/* No collision if no overlap */
 		if ( ! Overlap(R1, R2) )
 			return(0);
+
+		/* See if that's enough to check collision */
+		if ( ! exact )
+			return(1);
 
 		/* Check the bitmasks to see if the sprites really intersect */
 		int  xoff1, xoff2;
@@ -129,8 +136,7 @@ public:
 			if ( BeenShot(ship, shot) > 0 )
 				return(-1);
 		}
-		if ( (solid && ship->solid) && 
-				Collide(ship) && (BeenRunOver(ship) > 0) )
+		if ( Collide(ship) && (BeenRunOver(ship) > 0) )
 			return(-1);
 		return(0);
 	}

@@ -26,8 +26,6 @@
 #include "player.h"
 #include "objects.h"
 
-// Define this to be invincible
-//#define KID_MODE
 
 /* ----------------------------------------------------------------- */
 /* -- The thrust sound callback */
@@ -74,10 +72,10 @@ Player::~Player()
 
 /* Note that the lives argument is ignored during deathmatches */
 void
-Player::NewGame(int lives, int deathMatch)
+Player::NewGame(int lives)
 {
 	Playing = 1;
-	if ( deathMatch )
+	if ( gGameInfo.IsDeathmatch() )
 		Lives = 1;
 	else
 		Lives = lives;
@@ -147,8 +145,14 @@ Player::NewShip(void)
 	Dead = 0;
 	Exploding = 0;
 	Set_TTL(-1);
-	if ( ! gGameInfo.deathMatch )
+	if ( ! gGameInfo.IsDeathmatch() )
 		--Lives;
+
+	// In Kid Mode you automatically get air brakes and full shields
+	if ( gGameInfo.IsKidMode() ) {
+		special |= AIR_BRAKES;
+		ShieldLevel = MAX_SHIELD;
+	}
 	return(Lives);
 }
 
@@ -157,7 +161,7 @@ void
 Player::IncrFrags(void)
 {
 	++Frags;
-	if ( gGameInfo.deathMatch && (Frags >= gGameInfo.deathMatch) ) {
+	if ( gGameInfo.IsDeathmatch() && (Frags >= gGameInfo.deathMatch) ) {
 		/* Game over, we got a stud. :) */
 		int i;
 		OBJ_LOOP(i, MAX_PLAYERS) {
@@ -176,7 +180,7 @@ error("Killing player %d\n", i+1);
 void
 Player::IncrLives(int lives)
 {
-	if ( gGameInfo.deathMatch && (lives > 0) )
+	if ( gGameInfo.IsDeathmatch() && (lives > 0) )
 		return;
 	Lives += lives;
 }
@@ -185,9 +189,6 @@ Player::IncrLives(int lives)
 int
 Player::BeenShot(Object *ship, Shot *shot)
 {
-#ifdef KID_MODE
-	return(0);
-#else
 	if ( Exploding || !Alive() )
 		return(0);
 	if ( AutoShield || (ShieldOn && (ShieldLevel > 0)) )
@@ -197,15 +198,12 @@ Player::BeenShot(Object *ship, Shot *shot)
 		return(0);
 	}
 	return(Object::BeenShot(ship, shot));
-#endif
 }
 
 /* We've been run over!  (returns 1 if we are dead) */
 int
-Player::BeenRunOver(Object *ship) {
-#ifdef KID_MODE
-	return(0);
-#else
+Player::BeenRunOver(Object *ship)
+{
 	if ( Exploding || !Alive() )
 		return(0);
 	if ( AutoShield || (ShieldOn && (ShieldLevel > 0)) )
@@ -217,16 +215,12 @@ Player::BeenRunOver(Object *ship) {
 		return(0);
 	}
 	return(Object::BeenRunOver(ship));
-#endif
 }
 
 /* We've been run over by a rock or something */
 int
 Player::BeenDamaged(int damage)
 {
-#ifdef KID_MODE
-	return(0);
-#else
 	if ( Exploding || !Alive() )
 		return(0);
 	if ( AutoShield || (ShieldOn && (ShieldLevel > 0)) )
@@ -236,7 +230,6 @@ Player::BeenDamaged(int damage)
 		return(0);
 	}
 	return(Object::BeenDamaged(damage));
-#endif
 }
 
 /* We expired (returns -1 if our sprite should be deleted) */
@@ -248,7 +241,7 @@ Player::BeenTimedOut(void)
 		((SCREEN_WIDTH/2-((gGameInfo.GetNumPlayers()/2-Index)*(2*SPRITES_WIDTH)))*SCALE_FACTOR),
 		((SCREEN_HEIGHT/2)*SCALE_FACTOR)
 	);
-	if ( gGameInfo.deathMatch )
+	if ( gGameInfo.IsDeathmatch() )
 		Dead = (DEAD_DELAY/2);
 	else
 		Dead = DEAD_DELAY;
@@ -475,7 +468,7 @@ printf("\n");
 					WasShielded = 1;
 				}
 				--ShieldLevel;
-			} else {
+			} else if ( ShieldOn & SHIELD_MANUAL ) {
 				sound->PlaySound(gNoShieldSound, 2);
 			}
 		} else
@@ -549,7 +542,7 @@ Player::HandleKeys(void)
 					Rotating |= 0x10;
 					break;
 				case SHIELD_KEY:
-					ShieldOn = 1;
+					ShieldOn |= SHIELD_MANUAL;
 					break;
 				case FIRE_KEY:
 					Shooting = 1;
@@ -571,7 +564,7 @@ Player::HandleKeys(void)
 					Rotating &= ~0x10;
 					break;
 				case SHIELD_KEY:
-					ShieldOn = 0;
+					ShieldOn &= ~SHIELD_MANUAL;
 					break;
 				case FIRE_KEY:
 					Shooting = 0;
@@ -629,6 +622,16 @@ void
 Player::ExplodeSound(void)
 {
 	sound->PlaySound(gShipHitSound, 3);
+}
+
+void
+Player::SetKidShield(bool enabled)
+{
+	if (enabled) {
+		ShieldOn |= SHIELD_KIDS;
+	} else {
+		ShieldOn &= ~SHIELD_KIDS;
+	}
 }
 
 void

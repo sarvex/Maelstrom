@@ -46,6 +46,7 @@
 // Preferences keys
 #define PREFERENCES_HANDLE "Handle"
 #define PREFERENCES_DEATHMATCH "Network.Deathmatch"
+#define PREFERENCES_KIDMODE "Cheat.KidMode"
 
 // The Font Server :)
 extern FontServ *fontserv;

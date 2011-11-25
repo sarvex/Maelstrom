@@ -188,7 +188,7 @@ GamePanelDelegate::OnShow()
 		if (!gPlayers[i]->IsValid()) {
 			continue;
 		}
-		gPlayers[i]->NewGame(gGameInfo.lives, gGameInfo.deathMatch);
+		gPlayers[i]->NewGame(gGameInfo.lives);
 	}
 	gLastStar = STAR_DELAY;
 	gLastDrawn = 0L;
@@ -209,7 +209,7 @@ GamePanelDelegate::OnShow()
 			m_multiplayerColor->Hide();
 		}
 	}
-	if ( gGameInfo.deathMatch ) {
+	if ( gGameInfo.IsDeathmatch() ) {
 		if (m_fragsLabel) {
 			m_fragsLabel->Show();
 		}
@@ -321,6 +321,17 @@ GamePanelDelegate::OnTick()
 		if ( ! gPlayers[j]->Alive() )
 			continue;
 
+		if (gGameInfo.IsKidMode()) {
+			bool enableShield = false;
+			OBJ_LOOP(i, gNumSprites) {
+				if (gSprites[i]->Collide(gPlayers[j], false)) {
+					enableShield = true;
+					break;
+				}
+			}
+			gPlayers[j]->SetKidShield(enableShield);
+		}
+
 		/* This loop looks funny because gNumSprites can change 
 		   dynamically during the loop as sprites are killed/created.
 		   This same logic is used whenever looping where sprites
@@ -332,7 +343,7 @@ GamePanelDelegate::OnTick()
 				gSprites[i] = gSprites[gNumSprites];
 			}
 		}
-		if ( gGameInfo.deathMatch ) {
+		if ( gGameInfo.IsDeathmatch() ) {
 			OBJ_LOOP(i, MAX_PLAYERS) {
 				if (!gPlayers[i]->IsValid()) {
 					continue;
@@ -536,7 +547,7 @@ GamePanelDelegate::DrawStatus(Bool first)
 			m_score->SetText(numbuf);
 		}
 
-		if (!gGameInfo.deathMatch) {
+		if (!gGameInfo.IsDeathmatch()) {
 			if (lastScores[i] == Score)
 				continue;
 
@@ -1011,7 +1022,7 @@ static void DoGameOver(void)
 		final[i].Score = gPlayers[i]->GetScore();
 		final[i].Frags = gPlayers[i]->GetFrags();
 	}
-	if ( gGameInfo.deathMatch )
+	if ( gGameInfo.IsDeathmatch() )
 		qsort(final,MAX_PLAYERS,sizeof(struct FinalScore),cmp_byfrags);
 	else
 		qsort(final,MAX_PLAYERS,sizeof(struct FinalScore),cmp_byscore);
@@ -1041,7 +1052,7 @@ static void DoGameOver(void)
 			if (!label) {
 				continue;
 			}
-			if (gGameInfo.deathMatch) {
+			if (gGameInfo.IsDeathmatch()) {
 				sprintf(num1, "%7d", final[i].Score);
 				sprintf(num2, "%3d", final[i].Frags);
 				sprintf(buffer, "Player %d: %s Points, %s Frags", final[i].Player, num1, num2);

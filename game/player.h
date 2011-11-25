@@ -31,6 +31,10 @@
 #define LONG_RANGE	0x08
 #define LUCKY_IRISH	0x80
 
+/* Different shield modes */
+#define SHIELD_MANUAL	0x01
+#define SHIELD_KIDS	0x02
+
 class Player : public Object {
 
 public:
@@ -49,7 +53,7 @@ public:
 	virtual int Kicking(void) {
 		return(Playing);
 	}
-	virtual void NewGame(int lives, int deathMatch);
+	virtual void NewGame(int lives);
 	virtual void NewWave(void);
 	/* NewShip() MUST be called before Move() */
 	virtual int NewShip(void);
@@ -122,6 +126,8 @@ public:
 	}
 	virtual void HitSound(void);
 	virtual void ExplodeSound(void);
+
+	void SetKidShield(bool enabled);
 
 	void SetControlType(Uint8 controlType);
 	Uint8 GetControlType() {
