@@ -264,11 +264,11 @@ static void HandleEvent(SDL_Event *event)
 			}
 			/* X-Axis - rotate right/left */
 			if ( event->jaxis.axis == 0 ) {
-				if ( event->jaxis.value < -8000 ) {
+				if ( event->jaxis.value < -16000 ) {
 					player->SetControl(LEFT_KEY, 1);
 					player->SetControl(RIGHT_KEY, 0);
 				} else
-				if ( event->jaxis.value > 8000 ) {
+				if ( event->jaxis.value > 16000 ) {
 					player->SetControl(RIGHT_KEY, 1);
 					player->SetControl(LEFT_KEY, 0);
 				} else {
@@ -278,7 +278,7 @@ static void HandleEvent(SDL_Event *event)
 			} else
 			/* Y-Axis - accelerate */
 			if ( event->jaxis.axis == 1 ) {
-				if ( event->jaxis.value < -16000 ) {
+				if ( event->jaxis.value < -20000 ) {
 					player->SetControl(THRUST_KEY, 1);
 				} else {
 					player->SetControl(THRUST_KEY, 0);
