@@ -347,7 +347,13 @@ LobbyDialogDelegate::GlobalGameChanged(void*)
 void
 LobbyDialogDelegate::SetDeathmatch(void*, int value)
 {
-	m_game.deathMatch = (Uint8)value;
+	if (value) {
+		m_game.gameMode |= GAME_MODE_DEATHMATCH;
+		m_game.deathMatch = (Uint8)value;
+	} else {
+		m_game.gameMode &= ~GAME_MODE_DEATHMATCH;
+		m_game.deathMatch = 0;
+	}
 }
 
 void

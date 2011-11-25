@@ -42,7 +42,6 @@ GameInfo::Reset()
 	wave = 0;
 	lives = 0;
 	turbo = 0;
-	deathMatch = 0;
 	gameMode = 0;
 	deathMatch = 0;
 	numNodes = 0;
