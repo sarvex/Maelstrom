@@ -554,10 +554,12 @@ GamePanelDelegate::DrawStatus(Bool first)
 			/* -- See if they got a new life */
 			lastScores[i] = Score;
 			if ((Score - lastLife[i]) >= NEW_LIFE) {
-				gPlayers[i]->IncrLives(1);
+				if (!gPlayers[i]->IsGhost()) {
+					gPlayers[i]->IncrLives(1);
+					if ( gGameInfo.IsLocalPlayer(i) )
+						sound->PlaySound(gNewLife, 5);
+				}
 				lastLife[i] = (Score / NEW_LIFE) * NEW_LIFE;
-				if ( gGameInfo.IsLocalPlayer(i) )
-					sound->PlaySound(gNewLife, 5);
 			}
 		}
 	}

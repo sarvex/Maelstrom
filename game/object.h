@@ -35,6 +35,9 @@ public:
 	virtual int IsPlayer(void) {
 		return(0);
 	}
+	virtual int IsGhost(void) {
+		return(0);
+	}
 	virtual int Alive(void) {
 		return(1);
 	}

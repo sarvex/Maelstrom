@@ -218,8 +218,10 @@ public:
 	~DamagedShip() { }
 
 	int BeenRunOver(Object *ship) {
-		ship->IncrLives(1);
-		sound->PlaySound(gSavedShipSound, 4);
+		if (!ship->IsGhost()) {
+			ship->IncrLives(1);
+			sound->PlaySound(gSavedShipSound, 4);
+		}
 		return(1);
 	}
 

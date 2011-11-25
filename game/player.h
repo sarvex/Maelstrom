@@ -47,11 +47,14 @@ public:
 	virtual int IsPlayer(void) {
 		return(1);
 	}
+	virtual int IsGhost(void) {
+		return Ghost;
+	}
 	virtual int Alive(void) {
 		return(!Dead);
 	}
 	virtual int Kicking(void) {
-		return(Playing && !Ghost);
+		return(Playing && !IsGhost());
 	}
 	virtual void NewGame(int lives);
 	virtual void NewWave(void);
