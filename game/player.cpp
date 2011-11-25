@@ -158,10 +158,9 @@ Player::NewShip(void)
 		}
 	}
 
-	// In Kid Mode you automatically get air brakes and full shields
+	// In Kid Mode you automatically get air brakes
 	if ( gGameInfo.IsKidMode() ) {
 		special |= AIR_BRAKES;
-		ShieldLevel = MAX_SHIELD;
 	}
 	return(Lives);
 }
