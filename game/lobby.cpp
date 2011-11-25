@@ -211,7 +211,7 @@ LobbyDialogDelegate::OnLoad()
 		}
 	}
 
-	UIElement *controlDropdown = m_dialog->GetElement<UIElement>("control_dropdown");
+	m_controlDropdown = m_dialog->GetElement<UIElement>("control_dropdown");
 
 	count = SDL_arraysize(m_gameInfoPlayers);
 	for (i = 0; i < count; ++i) {
@@ -221,8 +221,8 @@ LobbyDialogDelegate::OnLoad()
 		}
 
 		UIElement *controlButton = m_gameInfoPlayers[i]->GetElement<UIElement>("control");
-		if (controlButton && controlDropdown) {
-			controlButton->SetClickCallback(new ControlClickCallback(this, controlButton, controlDropdown, m_game, i));
+		if (controlButton && m_controlDropdown) {
+			controlButton->SetClickCallback(new ControlClickCallback(this, controlButton, m_controlDropdown, m_game, i));
 		}
 	}
 
@@ -407,6 +407,10 @@ LobbyDialogDelegate::SetState(LOBBY_STATE state)
 		RemoveGame();
 	}
 	if (m_state == STATE_HOSTING) {
+		if (m_controlDropdown) {
+			m_controlDropdown->Hide();
+		}
+
 		// Save the control preferences
 		for (i = 0; i < MAX_PLAYERS; ++i) {
 			char name[128];

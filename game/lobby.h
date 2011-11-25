@@ -115,6 +115,7 @@ protected:
 	UIElement *m_gameInfoArea;
 	UIElement *m_gameInfoPlayers[MAX_PLAYERS];
 	UIElement *m_playButton;
+	UIElement *m_controlDropdown;
 
 protected:
 	void SetState(LOBBY_STATE state);
