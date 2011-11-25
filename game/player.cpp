@@ -82,6 +82,7 @@ Player::NewGame(int lives)
 	Score = 0;
 	Frags = 0;
 	special = 0;
+	Ghost = 0;
 	NewShip();
 }
 void 
@@ -120,8 +121,14 @@ Player::NewWave(void)
 int 
 Player::NewShip(void)
 {
-	if ( Lives == 0 )
-		return(-1);
+	if ( Lives == 0 ) {
+		if (gGameInfo.IsMultiplayer() && !gGameInfo.IsDeathmatch()) {
+			// We can live on!
+			Ghost = 1;
+		} else {
+			return(-1);
+		}
+	}
 	controlState = 0;
 	solid = 1;
 	shootable = 1;
@@ -145,8 +152,11 @@ Player::NewShip(void)
 	Dead = 0;
 	Exploding = 0;
 	Set_TTL(-1);
-	if ( ! gGameInfo.IsDeathmatch() )
-		--Lives;
+	if ( ! gGameInfo.IsDeathmatch() ) {
+		if (Lives > 0) {
+			--Lives;
+		}
+	}
 
 	// In Kid Mode you automatically get air brakes and full shields
 	if ( gGameInfo.IsKidMode() ) {
@@ -245,6 +255,30 @@ Player::BeenTimedOut(void)
 		Dead = (DEAD_DELAY/2);
 	else
 		Dead = DEAD_DELAY;
+
+	// If we're the last life in a co-op multiplayer game, we're done
+	if (gGameInfo.IsMultiplayer() && !gGameInfo.IsDeathmatch() && !Lives) {
+		int i;
+		bool allGhosts = true;
+		OBJ_LOOP(i, MAX_PLAYERS) {
+			if (!gPlayers[i]->IsValid()) {
+				continue;
+			}
+			if ( i != Index && !gPlayers[i]->Ghost) {
+				allGhosts = false;
+				break;
+			}
+		}
+		if (allGhosts) {
+			OBJ_LOOP(i, MAX_PLAYERS) {
+				if (!gPlayers[i]->IsValid()) {
+					continue;
+				}
+				gPlayers[i]->Playing = 0;
+			}
+		}
+	}
+
 	return(0);
 }
 
@@ -611,7 +645,15 @@ Player::BlitSprite(void)
 	}
 
 	/* Draw our ship */
+	if (Ghost) {
+		SDL_SetTextureAlphaMod(myblit->sprite[phase], 0x80);
+	}
+
 	Object::BlitSprite();
+
+	if (Ghost) {
+		SDL_SetTextureAlphaMod(myblit->sprite[phase], 0xFF);
+	}
 }
 void 
 Player::HitSound(void)

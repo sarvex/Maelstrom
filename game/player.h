@@ -51,7 +51,7 @@ public:
 		return(!Dead);
 	}
 	virtual int Kicking(void) {
-		return(Playing);
+		return(Playing && !Ghost);
 	}
 	virtual void NewGame(int lives);
 	virtual void NewWave(void);
@@ -159,6 +159,7 @@ private:
 	unsigned char special;
 	int Playing;
 	int Dead;
+	int Ghost;
 
 	Shot *shots[MAX_SHOTS];
 	int nextshot;
