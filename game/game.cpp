@@ -1049,18 +1049,26 @@ static void DoGameOver(void)
 			char name[32];
 			char buffer[BUFSIZ], num1[12], num2[12];
 
-			sprintf(name, "rank%d", nextLabel++);
+			SDL_snprintf(name, sizeof(name), "rank%d", nextLabel);
+			image = panel->GetElement<UIElement>(name);
+			if (image) {
+				SDL_snprintf(name, sizeof(name), "Images/player%d.bmp", final[i].Player);
+				image->SetImage(name);
+				image->Show();
+			}
+
+			SDL_snprintf(name, sizeof(name), "rank%d_label", nextLabel++);
 			label = panel->GetElement<UIElement>(name);
 			if (!label) {
 				continue;
 			}
 			if (gGameInfo.IsDeathmatch()) {
-				sprintf(num1, "%7d", final[i].Score);
-				sprintf(num2, "%3d", final[i].Frags);
-				sprintf(buffer, "Player %d: %s Points, %s Frags", final[i].Player, num1, num2);
+				SDL_snprintf(num1, sizeof(num1), "%7d", final[i].Score);
+				SDL_snprintf(num2, sizeof(num2), "%3d", final[i].Frags);
+				SDL_snprintf(buffer, sizeof(buffer), "%s Points, %s Frags", num1, num2);
 			} else {
-				sprintf(num1, "%7d", final[i].Score);
-				sprintf(buffer, "Player %d: %s Points", final[i].Player, num1);
+				SDL_snprintf(num1, sizeof(num1), "%7d", final[i].Score);
+				SDL_snprintf(buffer, sizeof(buffer), "%s Points", num1);
 			}
 			label->SetText(buffer);
 			label->Show();
