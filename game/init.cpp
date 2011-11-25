@@ -826,7 +826,7 @@ static int LoadBlits(void)
 /* -- Load in the player's ship */
 
 	for (i = 0; i < MAX_PLAYERS; ++i) {
-		id = (1+i)*10000 + 200;
+		id = i*10000 + 200;
 		if ( LoadLargeSprite(&gPlayerShip[i], id, SHIP_FRAMES) < 0 )
 			return(-1);
 	}
@@ -942,14 +942,14 @@ static int LoadBlits(void)
 /* -- Load in the shrapnel */
 
 	for (i = 0; i < MAX_PLAYERS; ++i) {
-		id = (1+i)*10000 + 1800;
+		id = i*10000 + 1800;
 		if ( LoadLargeSprite(&gShrapnel1[i], id, 48) < 0 )
 			return(-1);
 	}
 	DrawLoadBar(stage++);
 
 	for (i = 0; i < MAX_PLAYERS; ++i) {
-		id = (1+i)*10000 + 1900;
+		id = i*10000 + 1900;
 		if ( LoadLargeSprite(&gShrapnel2[i], id, 40) < 0 )
 			return(-1);
 	}
