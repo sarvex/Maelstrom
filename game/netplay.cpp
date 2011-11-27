@@ -205,6 +205,13 @@ static SYNC_RESULT AwaitSync()
 	int timeout;
 	Uint32 frame;
 
+	// Send the packet to anyone waiting
+	for (i = 0; i < MAX_NODES; ++i) {
+		if (WaitingAcks[i]) {
+			SDLNet_UDP_Send(gNetFD, i+1, &CurrPacket);
+		}
+	}
+
 	// See if we have cached network packets
 	for (i = 0; i < MAX_NODES; ++i) {
 		if (CachedPacket[i].len > 0 && WaitingAcks[i]) {
@@ -216,17 +223,10 @@ static SYNC_RESULT AwaitSync()
 		CachedPacket[i].Reset();
 	}
 
-	// Send the packet to anyone still waiting
-	for (i = 0; i < MAX_NODES; ++i) {
-		if (WaitingAcks[i]) {
-			SDLNet_UDP_Send(gNetFD, i+1, &CurrPacket);
-		}
-	}
-
 	/* Wait for Ack's */
 	timeout = 0;
 	while (WaitingForAck()) {
-		int ready = SDLNet_CheckSockets(SocketSet, 100);
+		int ready = SDLNet_CheckSockets(SocketSet, 50);
 		if (ready < 0) {
 			error("Network error: SDLNet_CheckSockets()\r\n");
 			return SYNC_NETERROR;
@@ -265,21 +265,27 @@ error("Timed out waiting for frame %ld\r\n", NextFrame);
 			error("Received short packet\r\n");
 			continue;
 		}
-		if (cmd == LOBBY_MSG ) {
+		if (cmd == LOBBY_MSG) {
 #if DEBUG_NETWORK >= 2
-error("LOBBY_MSG packet!\r\n");
+error("LOBBY_MSG packet\r\n");
 #endif
 			continue;
 		}
-		if (cmd == NEW_GAME ) {
-#if DEBUG_NETWORK >= 1
-error("NEW_GAME packet!\r\n");
+		if (cmd == NEW_GAME) {
+#if DEBUG_NETWORK >= 2
+error("NEW_GAME packet\r\n");
 #endif
 			Packet.Reset();
 			Packet.Write((Uint8)NEW_GAME_ACK);
 			Packet.Write(gGameInfo.gameID);
 			Packet.Write(gGameInfo.localID);
 			SDLNet_UDP_Send(gNetFD, -1, &Packet);
+			continue;
+		}
+		if (cmd == NEW_GAME_ACK) {
+#if DEBUG_NETWORK >= 2
+error("NEW_GAME_ACK packet\r\n");
+#endif
 			continue;
 		}
 		if (cmd != SYNC_MSG) {
@@ -337,10 +343,6 @@ error("Transmitting packet for old frame (%lu)\r\n", frame);
 error("Received packet for next frame! (%lu, current = %lu)\r\n",
 					frame, NextFrame);
 #endif
-			/* Send this player our current frame */
-			CurrPacket.address = Packet.address;
-			SDLNet_UDP_Send(gNetFD, -1, &CurrPacket);
-
 			/* Cache this frame for next round */
 			CachedPacket[index].Reset();
 			CachedPacket[index].Write(Packet);
