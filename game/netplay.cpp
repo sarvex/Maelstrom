@@ -395,7 +395,6 @@ error("Received packet for really old frame! (%lu, current = %lu)\r\n",
 static void AdvanceFrame()
 {
 	CurrOut = !CurrOut;
-	QueuedInput.Reset();
 	++NextFrame;
 	AdvancedFrame = true;
 }
@@ -451,6 +450,7 @@ SYNC_RESULT SyncNetwork(void)
 		// Wait for sync packets from them
 		result = AwaitSync();
 	}
+	QueuedInput.Reset();
 
 	if (result == SYNC_COMPLETE) {
 		AdvanceFrame();
