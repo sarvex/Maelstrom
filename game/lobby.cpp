@@ -305,6 +305,11 @@ LobbyDialogDelegate::OnPoll()
 void
 LobbyDialogDelegate::SetHostOrJoin(void*, int value)
 {
+	// Remove the game before shutting down the network
+	if (m_state == STATE_HOSTING && m_globalGame->IsChecked()) {
+		RemoveGame();
+	}
+
 	// This is called when the lobby switches from hosting to joining
 	HaltNetData();
 
