@@ -38,7 +38,7 @@ noinst_PROGRAMS = MaelstromLobby$(EXEEXT)
 subdir = .
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Maelstrom.spec.in \
 	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
-	$(top_srcdir)/configure COPYING INSTALL \
+	$(top_srcdir)/configure COPYING INSTALL TODO \
 	build-scripts/config.guess build-scripts/config.sub \
 	build-scripts/depcomp build-scripts/install-sh \
 	build-scripts/missing build-scripts/mkinstalldirs

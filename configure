@@ -4172,7 +4172,7 @@ esac
 
 
 
-SDL_VERSION=1.2.0
+SDL_VERSION=1.3.0
 
 
 if test "x$ac_cv_env_PKG_CONFIG_set" != "xset"; then
