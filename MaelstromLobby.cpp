@@ -20,6 +20,9 @@
     slouken@libsdl.org
 */
 
+#include <stdio.h>
+#include <stdarg.h>
+
 #include "SDL_net.h"
 
 #include "game/packet.h"
@@ -30,6 +33,14 @@
 // We'll let games stick around for 10 seconds before aging them out
 #define GAME_LIFETIME	10000
 
+static void log(const char *fmt, ...)
+{
+	va_list ap;
+
+	va_start(ap, fmt);
+	vfprintf(stdout, fmt, ap);
+	fflush(stdout);
+}
 
 class AddressList : public array<IPaddress>
 {
@@ -194,7 +205,7 @@ public:
 		while (game) {
 			next = game->Next();
 			if (game->TimedOut(now)) {
-				printf("Expiring game from %s:%d\n",
+				log("Expiring game from %s:%d\n",
 					SDLNet_ResolveIP(game->Address()),
 					SDL_SwapBE16(game->Address()->port));
 				game->Link(m_free);
@@ -238,7 +249,7 @@ public:
 			newGame = new Game;
 		}
 		if (!newGame->ReadFromPacket(packet)) {
-			printf("Invalid game from %s:%d\n",
+			log("Invalid game from %s:%d\n",
 				SDLNet_ResolveIP(&packet.address),
 				SDL_SwapBE16(packet.address.port));
 
@@ -248,7 +259,7 @@ public:
 
 		for (Game *game = m_list; game; game = game->Next()) {
 			if (*game == *newGame) {
-				//printf("Refreshing game from %s:%d\n",
+				//log("Refreshing game from %s:%d\n",
 				//	SDLNet_ResolveIP(&packet.address),
 				//	SDL_SwapBE16(packet.address.port));
 
@@ -258,7 +269,7 @@ public:
 			}
 		}
 
-		printf("Adding game from %s:%d\n",
+		log("Adding game from %s:%d\n",
 			SDLNet_ResolveIP(&packet.address),
 			SDL_SwapBE16(packet.address.port));
 
@@ -281,7 +292,7 @@ public:
 
 		for (Game *game = m_list; game; game = game->Next()) {
 			if (*game == *newGame) {
-				printf("Removing game from %s:%d\n",
+				log("Removing game from %s:%d\n",
 					SDLNet_ResolveIP(&packet.address),
 					SDL_SwapBE16(packet.address.port));
 				game->Link(m_free);
