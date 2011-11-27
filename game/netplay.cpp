@@ -382,6 +382,10 @@ error("Received packet for next frame! (%lu, current = %lu)\r\n",
 			CachedPacket[index].packet.Reset();
 			CachedPacket[index].packet.Write(Packet);
 			CachedPacket[index].packet.Seek(0);
+
+			/* Let the node know we're still waiting */
+			CurrPacket.address = Packet.address;
+			SDLNet_UDP_Send(gNetFD, -1, &CurrPacket);
 		}
 #if DEBUG_NETWORK >= 1
 else
