@@ -35,7 +35,7 @@
 //#define DEBUG_NETWORK 1
 
 // Define this to simulate packet loss
-//#define DEBUG_PACKETLOSS 10
+//#define DEBUG_PACKETLOSS 5
 
 
 UDPsocket gNetFD;
@@ -226,7 +226,7 @@ static SYNC_RESULT AwaitSync()
 	/* Wait for Ack's */
 	timeout = 0;
 	while (WaitingForAck()) {
-		int ready = SDLNet_CheckSockets(SocketSet, 50);
+		int ready = SDLNet_CheckSockets(SocketSet, 2*FRAME_DELAY_MS);
 		if (ready < 0) {
 			error("Network error: SDLNet_CheckSockets()\r\n");
 			return SYNC_NETERROR;
