@@ -28,7 +28,7 @@
 // it on the screen.
 
 class FrameBuf;
-class SDL_Texture;
+struct SDL_Texture;
 class UIManager;
 class UIElement;
 class UITemplates;

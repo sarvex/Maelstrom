@@ -4,7 +4,7 @@ ACLOCAL_AMFLAGS = -I acinclude
 bin_PROGRAMS = Maelstrom
 noinst_PROGRAMS = MaelstromLobby
 
-Maelstrom_SOURCES = main.cpp
+Maelstrom_SOURCES = mainstub.cpp
 
 Maelstrom_LDADD = 			\
 	game/libgame.a		\

@@ -37,6 +37,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+#include "../utils/ErrorBase.h"
 #include "../screenlib/SDL_FrameBuf.h"
 
 /* Different styles supported by the font server */
@@ -83,14 +84,14 @@ typedef struct MFont {
 	Uint8 *nfnt;
 } MFont;
 
-class FontServ {
+class FontServ : public ErrorBase {
 
 public:
 	/* The "fontfile" parameter should be a Macintosh Resource fork file
 	   that contains FOND and NFNT information for the desired fonts.
 	*/
 	FontServ(FrameBuf *screen, const char *fontfile);
-	~FontServ();
+	virtual ~FontServ();
 	
 	/* The font returned by NewFont() should be freed with FreeFont() */
 	MFont  *NewFont(const char *fontname, int ptsize);
@@ -132,18 +133,6 @@ public:
 
 private:
 	FrameBuf *screen;
-
-	/* Useful for getting error feedback */
-	void SetError(const char *fmt, ...) {
-		va_list ap;
-
-		va_start(ap, fmt);
-		vsprintf(errbuf, fmt, ap);
-		va_end(ap);
-		errstr = errbuf;
-	}
-	char *errstr;
-	char  errbuf[BUFSIZ];
 };
 
 #endif /* _fontserv_h */

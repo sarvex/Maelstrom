@@ -56,7 +56,7 @@ protected:
 		if (!errstr) {
 			errstr = new char[ERRORBASE_ERRSIZ];
 		}
-		vsnprintf(errstr, ERRORBASE_ERRSIZ, fmt, ap);
+		SDL_vsnprintf(errstr, ERRORBASE_ERRSIZ, fmt, ap);
 		va_end(ap);
         }
 	char *errstr;

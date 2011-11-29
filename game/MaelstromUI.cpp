@@ -79,7 +79,7 @@ MaelstromUI::GetFont(const char *fontName, int fontSize)
 
 	keysize = strlen(fontName)+1+2+1;
 	key = SDL_stack_alloc(char, keysize);
-	sprintf(key, "%s:%d", fontName, fontSize);
+	SDL_snprintf(key, keysize, "%s:%d", fontName, fontSize);
 	if (hash_find(m_fonts, key, (const void**)&font)) {
 		SDL_stack_free(key);
 		return font;
@@ -107,7 +107,7 @@ MaelstromUI::CreateText(const char *text, const char *fontName, int fontSize, UI
 	/* First see if we can find it in our cache */
 	keysize = strlen(fontName)+1+2+1+1+1+8+1+strlen(text)+1;
 	key = SDL_stack_alloc(char, keysize);
-	sprintf(key, "%s:%d:%c:%8.8x:%s", fontName, fontSize, '0'+fontStyle, color, text);
+	SDL_snprintf(key, keysize, "%s:%d:%c:%8.8x:%s", fontName, fontSize, '0'+fontStyle, color, text);
 	if (hash_find(m_strings, key, (const void**)&texture)) {
 		SDL_stack_free(key);
 		return texture;
@@ -160,9 +160,9 @@ MaelstromUI::PlaySound(int soundID)
 UIPanel *
 MaelstromUI::CreatePanel(const char *type, const char *name)
 {
-	if (strcasecmp(type, "Panel") == 0) {
+	if (SDL_strcasecmp(type, "Panel") == 0) {
 		return new UIPanel(this, name);
-	} else if (strcasecmp(type, "Dialog") == 0) {
+	} else if (SDL_strcasecmp(type, "Dialog") == 0) {
 		return new MacDialog(ui, name);
 	}
 	return UIManager::CreatePanel(type, name);
@@ -171,15 +171,15 @@ MaelstromUI::CreatePanel(const char *type, const char *name)
 UIPanelDelegate *
 MaelstromUI::CreatePanelDelegate(UIPanel *panel, const char *delegate)
 {
-	if (strcasecmp(delegate, "MainPanel") == 0) {
+	if (SDL_strcasecmp(delegate, "MainPanel") == 0) {
 		return new MainPanelDelegate(panel);
-	} else if (strcasecmp(delegate, "AboutPanel") == 0) {
+	} else if (SDL_strcasecmp(delegate, "AboutPanel") == 0) {
 		return new AboutPanelDelegate(panel);
-	} else if (strcasecmp(delegate, "LobbyDialog") == 0) {
+	} else if (SDL_strcasecmp(delegate, "LobbyDialog") == 0) {
 		return new LobbyDialogDelegate(panel);
-	} else if (strcasecmp(delegate, "GamePanel") == 0) {
+	} else if (SDL_strcasecmp(delegate, "GamePanel") == 0) {
 		return new GamePanelDelegate(panel);
-	} else if (strcasecmp(delegate, "ControlsDialog") == 0) {
+	} else if (SDL_strcasecmp(delegate, "ControlsDialog") == 0) {
 		return new ControlsDialogDelegate(panel);
 	}
 	return UIManager::CreatePanelDelegate(panel, delegate);
@@ -190,41 +190,41 @@ MaelstromUI::CreateElement(UIBaseElement *parent, const char *type, const char *
 {
 	UIElement *element;
 
-	if (strcasecmp(type, "Area") == 0) {
+	if (SDL_strcasecmp(type, "Area") == 0) {
 		element = new UIElement(parent, name, new UIDrawEngine());
-	} else if (strcasecmp(type, "Line") == 0) {
+	} else if (SDL_strcasecmp(type, "Line") == 0) {
 		element = new UIElement(parent, name, new UIDrawEngineLine());
-	} else if (strcasecmp(type, "Rectangle") == 0) {
+	} else if (SDL_strcasecmp(type, "Rectangle") == 0) {
 		element = new UIElement(parent, name, new UIDrawEngineRect());
-	} else if (strcasecmp(type, "Label") == 0) {
+	} else if (SDL_strcasecmp(type, "Label") == 0) {
 		element = new UIElement(parent, name, new UIDrawEngine());
-	} else if (strcasecmp(type, "Image") == 0) {
+	} else if (SDL_strcasecmp(type, "Image") == 0) {
 		element = new UIElement(parent, name, new UIDrawEngine());
-	} else if (strcasecmp(type, "Container") == 0) {
+	} else if (SDL_strcasecmp(type, "Container") == 0) {
 		element = new UIContainer(parent, name, new UIDrawEngine());
-	} else if (strcasecmp(type, "Button") == 0) {
+	} else if (SDL_strcasecmp(type, "Button") == 0) {
 		element = new UIElementButton(parent, name, new UIDrawEngine());
-	} else if (strcasecmp(type, "Icon") == 0) {
+	} else if (SDL_strcasecmp(type, "Icon") == 0) {
 		element = new UIElement(parent, name, new UIDrawEngineIcon());
-	} else if (strcasecmp(type, "Sprite") == 0) {
+	} else if (SDL_strcasecmp(type, "Sprite") == 0) {
 		element = new UIElement(parent, name, new UIDrawEngineSprite());
-	} else if (strcasecmp(type, "Title") == 0) {
+	} else if (SDL_strcasecmp(type, "Title") == 0) {
 		element = new UIElement(parent, name, new UIDrawEngineTitle());
-	} else if (strcasecmp(type, "ControlButton") == 0) {
+	} else if (SDL_strcasecmp(type, "ControlButton") == 0) {
 		element = new UIElementControlButton(parent, name, new UIDrawEngine());
-	} else if (strcasecmp(type, "DialogLabel") == 0) {
+	} else if (SDL_strcasecmp(type, "DialogLabel") == 0) {
 		element = new UIElement(parent, name, new MacDialogDrawEngine());
-	} else if (strcasecmp(type, "DialogContainer") == 0) {
+	} else if (SDL_strcasecmp(type, "DialogContainer") == 0) {
 		element = new UIContainer(parent, name, new MacDialogDrawEngine());
-	} else if (strcasecmp(type, "DialogButton") == 0) {
+	} else if (SDL_strcasecmp(type, "DialogButton") == 0) {
 		element = new UIDialogButton(parent, name, new MacDialogButton());
-	} else if (strcasecmp(type, "DialogCheckbox") == 0) {
+	} else if (SDL_strcasecmp(type, "DialogCheckbox") == 0) {
 		element = new UIElementCheckbox(parent, name, new MacDialogCheckbox());
-	} else if (strcasecmp(type, "DialogRadioGroup") == 0) {
+	} else if (SDL_strcasecmp(type, "DialogRadioGroup") == 0) {
 		element = new UIElementRadioGroup(parent, name, new UIDrawEngine());
-	} else if (strcasecmp(type, "DialogRadioButton") == 0) {
+	} else if (SDL_strcasecmp(type, "DialogRadioButton") == 0) {
 		element = new UIElementRadioButton(parent, name, new MacDialogRadioButton());
-	} else if (strcasecmp(type, "DialogEditbox") == 0) {
+	} else if (SDL_strcasecmp(type, "DialogEditbox") == 0) {
 		element = new UIElementEditbox(parent, name, new MacDialogEditbox());
 	} else {
 		element = UIManager::CreateElement(parent, name, type);

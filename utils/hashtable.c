@@ -40,7 +40,7 @@ struct HashTable
     HashTable_NukeFn nuke;
 };
 
-static inline unsigned calc_hash(const HashTable *table, const void *key)
+static unsigned calc_hash(const HashTable *table, const void *key)
 {
     return table->hash(key, table->data) & (table->table_len-1);
 } // calc_hash
@@ -207,7 +207,7 @@ void hash_destroy(HashTable *table)
 
 
 // this is djb's xor hashing function.
-static inline unsigned hash_string_djbxor(const char *str, size_t len)
+static unsigned hash_string_djbxor(const char *str, size_t len)
 {
     register unsigned hash = 5381;
     while (len--)

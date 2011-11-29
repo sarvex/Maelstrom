@@ -19,6 +19,7 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
+#include <stdio.h>
 #include <signal.h>
 
 #include "../utils/physfsrwops.h"
@@ -87,7 +88,7 @@ static void FillAudio(void *udata, Uint8 *stream, int len)
 /* extern "C" */
 };
 
-Sound:: Sound(const char *soundfile, Uint8 vol)
+Sound:: Sound(const char *soundfile, Uint8 vol) : ErrorBase()
 {
 	int           i, p;
 
@@ -96,7 +97,6 @@ Sound:: Sound(const char *soundfile, Uint8 vol)
 	playing = 0;
 	bogus_audio = NULL;
 	InitHash();
-	errstr = NULL;
 
 	/* Allow ~ 1/30 second time-lag in audio buffer -- samples is x^2  */
 	spec.freq = DSP_FREQUENCY;

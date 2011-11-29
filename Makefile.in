@@ -55,7 +55,7 @@ CONFIG_CLEAN_FILES = Maelstrom.spec
 am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS) $(noinst_PROGRAMS)
-am_Maelstrom_OBJECTS = main.$(OBJEXT)
+am_Maelstrom_OBJECTS = mainstub.$(OBJEXT)
 Maelstrom_OBJECTS = $(am_Maelstrom_OBJECTS)
 Maelstrom_DEPENDENCIES = game/libgame.a screenlib/libSDLscreen.a \
 	maclib/libSDLmac.a utils/libutils.a
@@ -204,7 +204,7 @@ target_vendor = @target_vendor@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 ACLOCAL_AMFLAGS = -I acinclude
-Maelstrom_SOURCES = main.cpp
+Maelstrom_SOURCES = mainstub.cpp
 Maelstrom_LDADD = \
 	game/libgame.a		\
 	screenlib/libSDLscreen.a	\
@@ -314,7 +314,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MaelstromLobby.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mainstub.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

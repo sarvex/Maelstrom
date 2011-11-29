@@ -33,7 +33,7 @@ SDL_Texture *Load_Title(FrameBuf *screen, int title_id)
 {
 	char file[256];
 	
-	sprintf(file, "Images/Maelstrom_Titles#%d.bmp", title_id);
+	SDL_snprintf(file, sizeof(file), "Images/Maelstrom_Titles#%d.bmp", title_id);
 	return screen->LoadImage(file);
 }
 

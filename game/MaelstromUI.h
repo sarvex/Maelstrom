@@ -25,7 +25,7 @@
 #include "../screenlib/UIManager.h"
 #include "../screenlib/UIDrawEngine.h"
 
-class HashTable;
+struct HashTable;
 
 class MaelstromUI : public UIManager
 {

@@ -97,10 +97,9 @@ static Uint8 *GetFontData(const char *type, int ID)
 	return data;
 }
 
-FontServ:: FontServ(FrameBuf *_screen, const char *fontfile)
+FontServ:: FontServ(FrameBuf *_screen, const char *fontfile) : ErrorBase()
 {
 	screen = _screen;
-	errstr = NULL;
 }
 
 FontServ:: ~FontServ()
@@ -176,8 +175,8 @@ FontServ:: NewFont(const char *fontname, int ptsize)
 
 	/* Now, Fent.ID is the ID of the correct NFNT resource */
 	font = new MFont;
-	font->name = new char[strlen(fontname)+1];
-	strcpy(font->name, fontname);
+	font->name = new char[SDL_strlen(fontname)+1];
+	SDL_strlcpy(font->name, fontname, SDL_strlen(fontname)+1);
 	font->ptsize = ptsize;
 	font->nfnt = GetFontData("NFNT", Fent.ID);
 	if ( font->nfnt == NULL ) {
@@ -268,7 +267,7 @@ FontServ:: TextWidth(const char *text, MFont *font, Uint8 style)
 					break;
 		default:		return(0);
 	}
-	nchars = strlen(text);
+	nchars = SDL_strlen(text);
 
 	Width = 0;
 	for ( i = 0; i < nchars; ++i ) {
@@ -362,7 +361,6 @@ FontServ:: TextImage(const char *text, MFont *font, Uint8 style, SDL_Color fg)
 	width = TextWidth(text, font, style);
 	if ( width == 0 ) {
 		SetError("No text to convert");
-		SDL_stack_free(key);
 		return(NULL);
 	}
 	height = (font->header)->fRectHeight;
@@ -374,7 +372,7 @@ FontServ:: TextImage(const char *text, MFont *font, Uint8 style, SDL_Color fg)
 
 	/* Print the individual characters */
 	/* Note: this could probably be optimized.. eh, who cares. :) */
-	nchars = strlen(text);
+	nchars = SDL_strlen(text);
 	for ( boldness=0; boldness <= bold_offset; ++boldness ) {
 		bit_offset=0;
 		for ( i = 0; i < nchars; ++i ) {

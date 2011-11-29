@@ -19,7 +19,7 @@
 #ifndef _prefs_h
 #define _prefs_h
 
-class HashTable;
+struct HashTable;
 
 class Prefs
 {

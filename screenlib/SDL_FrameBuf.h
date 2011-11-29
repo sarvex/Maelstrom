@@ -53,7 +53,7 @@
 #include <stdio.h>
 
 #include "SDL.h"
-#include "ErrorBase.h"
+#include "../utils/ErrorBase.h"
 
 typedef enum {
 	DOCLIP,

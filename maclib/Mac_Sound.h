@@ -23,13 +23,12 @@
    and mixes various sounds on command.
 */
 
-#include <stdio.h>
-#include <stdarg.h>
-#include <string.h>
 #include "SDL_types.h"
 #include "SDL_mutex.h"
 #include "SDL_thread.h"
 #include "SDL_audio.h"
+
+#include "../utils/ErrorBase.h"
 
 #define MAX_VOLUME	8		/* Software volume ranges from 0 - 8 */
 #define NUM_CHANNELS	4		/* 4 sound mixing channels, limit 128 */
@@ -40,11 +39,11 @@ struct Wave {
 	Uint32 size;
 };
 
-class Sound {
+class Sound : public ErrorBase {
 
 public:
 	Sound(const char *soundfile, Uint8 vol = 4);
-	~Sound();
+	virtual ~Sound();
 
 	/* Set volume in the range 0-8 */
 	Uint8 Volume(Uint8 vol);
@@ -114,10 +113,6 @@ public:
 				return(1);
 		}
 		return(0);
-	}
-
-	char *Error(void) {
-		return(errstr);
 	}
 
 	/* These functions really do all the work */
@@ -196,16 +191,4 @@ printf("Freeing Wave id %hu at hash page %d/%d\n",(upper<<8)|lower,upper,lower);
 	}
 
 	Wave *LoadSound(Uint16 sndID);
-
-	/* Useful for getting error feedback */
-	void error(const char *fmt, ...) {
-		va_list ap;
-
-		va_start(ap, fmt);
-		vsprintf(errbuf, fmt, ap);
-		va_end(ap);
-		errstr = errbuf;
-	}
-	char *errstr;
-	char  errbuf[BUFSIZ];
 };

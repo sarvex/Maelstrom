@@ -498,12 +498,12 @@ int Send_NewGame()
 	/* Wait for Ack's */
 	while (WaitingForAck()) {
 		/* Show a status */
-		strcpy(message, "Waiting for players:");
+		SDL_strlcpy(message, "Waiting for players:", sizeof(message));
 		for (i = 0; i < MAX_PLAYERS; ++i) {
 			const GameInfoPlayer *player = gGameInfo.GetPlayer(i);
 			for (j = 0; j < gGameInfo.GetNumNodes(); ++j) {
 				if (player->nodeID == gGameInfo.GetNode(j)->nodeID) {
-					sprintf(&message[strlen(message)], " %d", i+1);
+					SDL_snprintf(&message[SDL_strlen(message)], sizeof(message)-SDL_strlen(message), " %d", i+1);
 					break;
 				}
 			}

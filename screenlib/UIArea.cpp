@@ -236,23 +236,23 @@ UIArea::LoadAnchorLocation(rapidxml::xml_node<> *node, const char *name, AnchorL
 	if (attr) {
 		const char *text = attr->value();
 
-		if (strcasecmp(text, "TOPLEFT") == 0) {
+		if (SDL_strcasecmp(text, "TOPLEFT") == 0) {
 			value = TOPLEFT;
-		} else if (strcasecmp(text, "TOP") == 0) {
+		} else if (SDL_strcasecmp(text, "TOP") == 0) {
 			value = TOP;
-		} else if (strcasecmp(text, "TOPRIGHT") == 0) {
+		} else if (SDL_strcasecmp(text, "TOPRIGHT") == 0) {
 			value = TOPRIGHT;
-		} else if (strcasecmp(text, "LEFT") == 0) {
+		} else if (SDL_strcasecmp(text, "LEFT") == 0) {
 			value = LEFT;
-		} else if (strcasecmp(text, "CENTER") == 0) {
+		} else if (SDL_strcasecmp(text, "CENTER") == 0) {
 			value = CENTER;
-		} else if (strcasecmp(text, "RIGHT") == 0) {
+		} else if (SDL_strcasecmp(text, "RIGHT") == 0) {
 			value = RIGHT;
-		} else if (strcasecmp(text, "BOTTOMLEFT") == 0) {
+		} else if (SDL_strcasecmp(text, "BOTTOMLEFT") == 0) {
 			value = BOTTOMLEFT;
-		} else if (strcasecmp(text, "BOTTOM") == 0) {
+		} else if (SDL_strcasecmp(text, "BOTTOM") == 0) {
 			value = BOTTOM;
-		} else if (strcasecmp(text, "BOTTOMRIGHT") == 0) {
+		} else if (SDL_strcasecmp(text, "BOTTOMRIGHT") == 0) {
 			value = BOTTOMRIGHT;
 		} else {
 			/* Failed to parse */

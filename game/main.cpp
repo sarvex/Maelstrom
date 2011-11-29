@@ -242,16 +242,18 @@ InitFilesystem(const char *argv0)
 	const char *home = PHYSFS_getUserDir();
 #if defined(__MACOSX__) || defined(__IPHONEOS__)
 	SDL_snprintf(path, SDL_arraysize(path), "%sLibrary/Application Support/%s/", home, MAELSTROM_PREFS);
+#elif defined(__WIN32__)
+	SDL_snprintf(path, SDL_arraysize(path), "%sAppData/Local/Maelstrom", home);
 #else
 	SDL_snprintf(path, SDL_arraysize(path), "%s.%s/", home, MAELSTROM_PREFS);
 #endif
+	if (SDL_strncmp(path, home, SDL_strlen(home)) == 0) {
+		PHYSFS_setWriteDir(home);
+		PHYSFS_mkdir(path+SDL_strlen(home));
+	}
 	if (!PHYSFS_setWriteDir(path)) {
-		if (!PHYSFS_setWriteDir(home) ||
-		    !PHYSFS_mkdir(path+SDL_strlen(home)) ||
-		    !PHYSFS_setWriteDir(path)) {
 			error("Couldn't set write directory to %s: %s\n", path, PHYSFS_getLastError());
 			return false;
-		}
 	}
 
 	/* Put the write directory first in the search path */
@@ -482,26 +484,26 @@ MainPanelDelegate::OnTick()
 			B = 30000>>8;
 		}
 
-		sprintf(name, "name_%d", index);
+		SDL_snprintf(name, sizeof(name), "name_%d", index);
 		label = m_panel->GetElement<UIElement>(name);
 		if (label) {
 			label->SetColor(R, G, B);
 			label->SetText(hScores[index].name);
 		}
 
-		sprintf(name, "score_%d", index);
+		SDL_snprintf(name, sizeof(name), "score_%d", index);
 		label = m_panel->GetElement<UIElement>(name);
 		if (label) {
 			label->SetColor(R, G, B);
-			sprintf(text, "%d", hScores[index].score);
+			SDL_snprintf(text, sizeof(text), "%d", hScores[index].score);
 			label->SetText(text);
 		}
 
-		sprintf(name, "wave_%d", index);
+		SDL_snprintf(name, sizeof(name), "wave_%d", index);
 		label = m_panel->GetElement<UIElement>(name);
 		if (label) {
 			label->SetColor(R, G, B);
-			sprintf(text, "%d", hScores[index].wave);
+			SDL_snprintf(text, sizeof(text), "%d", hScores[index].wave);
 			label->SetText(text);
 		}
 	}
@@ -509,7 +511,7 @@ MainPanelDelegate::OnTick()
 	label = m_panel->GetElement<UIElement>("last_score");
 	if (label) {
 		if (gReplay.Load(LAST_REPLAY, true)) {
-			sprintf(text, "%d", gReplay.GetFinalScore());
+			SDL_snprintf(text, sizeof(text), "%d", gReplay.GetFinalScore());
 			label->SetText(text);
 		} else {
 			label->SetText("0");
@@ -518,7 +520,7 @@ MainPanelDelegate::OnTick()
 
 	label = m_panel->GetElement<UIElement>("volume");
 	if (label) {
-		sprintf(text, "%d", gSoundLevel.Value());
+		SDL_snprintf(text, sizeof(text), "%d", gSoundLevel.Value());
 		label->SetText(text);
 	}
 }

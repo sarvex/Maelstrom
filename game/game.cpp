@@ -157,7 +157,7 @@ GamePanelDelegate::OnLoad()
 	m_bonus = m_panel->GetElement<UIElement>("bonus");
 
 	for (i = 0; (unsigned)i < SDL_arraysize(m_multiplier); ++i) {
-		sprintf(name, "multiplier%d", 2+i);
+		SDL_snprintf(name, sizeof(name), "multiplier%d", 2+i);
 		m_multiplier[i] = m_panel->GetElement<UIElement>(name);
 	}
 
@@ -465,7 +465,7 @@ GamePanelDelegate::DrawStatus(Bool first)
 		if (gReplay.IsPlaying()) {
 			char caption[BUFSIZ];
 
-			sprintf(caption, "Displaying player %d - press F1 to change", gDisplayed+1);
+			SDL_snprintf(caption, sizeof(caption), "Displaying player %d - press F1 to change", gDisplayed+1);
 			if (m_multiplayerCaption) {
 				m_multiplayerCaption->SetText(caption);
 			}
@@ -477,7 +477,7 @@ GamePanelDelegate::DrawStatus(Bool first)
 			m_multiplayerColor->SetColor(TheShip->Color());
 		}
 
-		sprintf(numbuf, "%-3.1d", TheShip->GetFrags());
+		SDL_snprintf(numbuf, sizeof(numbuf), "%-3.1d", TheShip->GetFrags());
 		if (m_frags) {
 			m_frags->SetText(numbuf);
 		}
@@ -543,7 +543,7 @@ GamePanelDelegate::DrawStatus(Bool first)
 		Score = gPlayers[i]->GetScore();
 
 		if ( i == gDisplayed && m_score ) {
-			sprintf(numbuf, "%d", Score);
+			SDL_snprintf(numbuf, sizeof(numbuf), "%d", Score);
 			m_score->SetText(numbuf);
 		}
 
@@ -565,17 +565,17 @@ GamePanelDelegate::DrawStatus(Bool first)
 	}
 
 	if (m_wave) {
-		sprintf(numbuf, "%d", gWave);
+		SDL_snprintf(numbuf, sizeof(numbuf), "%d", gWave);
 		m_wave->SetText(numbuf);
 	}
 
 	if (m_lives) {
-		sprintf(numbuf, "%-3.1d", TheShip->GetLives());
+		SDL_snprintf(numbuf, sizeof(numbuf), "%-3.1d", TheShip->GetLives());
 		m_lives->SetText(numbuf);
 	}
 
 	if (m_bonus) {
-		sprintf(numbuf, "%-7.1d", TheShip->GetBonus());
+		SDL_snprintf(numbuf, sizeof(numbuf), "%-7.1d", TheShip->GetBonus());
 		m_bonus->SetText(numbuf);
 	}
 
@@ -708,7 +708,7 @@ GamePanelDelegate::DoBonus()
 	/* -- Set the wave completed message */
 	label = panel->GetElement<UIElement>("wave");
 	if (label) {
-		sprintf(numbuf, "Wave %d completed.", gWave);
+		SDL_snprintf(numbuf, sizeof(numbuf), "Wave %d completed.", gWave);
 		label->SetText(numbuf);
 		label->Show();
 	}
@@ -749,7 +749,7 @@ GamePanelDelegate::DoBonus()
 
 		if (TheShip->GetBonusMult() != 1) {
 			if (bonus) {
-				sprintf(numbuf, "%-5.1d", TheShip->GetBonus());
+				SDL_snprintf(numbuf, sizeof(numbuf), "%-5.1d", TheShip->GetBonus());
 				bonus->SetText(numbuf);
 				bonus->Show();
 			}
@@ -759,7 +759,7 @@ GamePanelDelegate::DoBonus()
 			Delay(SOUND_DELAY);
 			sound->PlaySound(gMultiplier, 5);
 
-			sprintf(numbuf, "multiplier%d", TheShip->GetBonusMult());
+			SDL_snprintf(numbuf, sizeof(numbuf), "multiplier%d", TheShip->GetBonusMult());
 			image = panel->GetElement<UIElement>(numbuf);
 			if (image) {
 				image->Show();
@@ -773,12 +773,12 @@ GamePanelDelegate::DoBonus()
 	sound->PlaySound(gFunk, 5);
 
 	if (bonus) {
-		sprintf(numbuf, "%-5.1d", TheShip->GetBonus());
+		SDL_snprintf(numbuf, sizeof(numbuf), "%-5.1d", TheShip->GetBonus());
 		bonus->SetText(numbuf);
 		bonus->Show();
 	}
 	if (score) {
-		sprintf(numbuf, "%-5.1d", TheShip->GetScore());
+		SDL_snprintf(numbuf, sizeof(numbuf), "%-5.1d", TheShip->GetScore());
 		score->SetText(numbuf);
 		score->Show();
 	}
@@ -824,11 +824,11 @@ GamePanelDelegate::DoBonus()
 			}
 	
 			if (bonus) {
-				sprintf(numbuf, "%-5.1d", TheShip->GetBonus());
+				SDL_snprintf(numbuf, sizeof(numbuf), "%-5.1d", TheShip->GetBonus());
 				bonus->SetText(numbuf);
 			}
 			if (score) {
-				sprintf(numbuf, "%-5.1d", TheShip->GetScore());
+				SDL_snprintf(numbuf, sizeof(numbuf), "%-5.1d", TheShip->GetScore());
 				score->SetText(numbuf);
 			}
 
@@ -842,7 +842,7 @@ GamePanelDelegate::DoBonus()
 	/* -- Draw the "next wave" message */
 	label = panel->GetElement<UIElement>("next");
 	if (label) {
-		sprintf(numbuf, "Prepare for Wave %d...", gWave+1);
+		SDL_snprintf(numbuf, sizeof(numbuf), "Prepare for Wave %d...", gWave+1);
 		label->SetText(numbuf);
 		label->Show();
 	}

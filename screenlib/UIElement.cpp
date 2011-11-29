@@ -253,13 +253,13 @@ UIElement::ParseFont(char *text)
 		}
 	}
 	if (fontStyleText) {
-		if (strcasecmp(fontStyleText, "BOLD") == 0) {
+		if (SDL_strcasecmp(fontStyleText, "BOLD") == 0) {
 			fontStyle = UIFONT_STYLE_BOLD;
-		} else if (strcasecmp(fontStyleText, "UNDERLINE") == 0) {
+		} else if (SDL_strcasecmp(fontStyleText, "UNDERLINE") == 0) {
 			fontStyle = UIFONT_STYLE_UNDERLINE;
-		} else if (strcasecmp(fontStyleText, "ITALIC") == 0) {
+		} else if (SDL_strcasecmp(fontStyleText, "ITALIC") == 0) {
 			fontStyle = UIFONT_STYLE_UNDERLINE;
-		} else if (strcasecmp(fontStyleText, "NORMAL") == 0) {
+		} else if (SDL_strcasecmp(fontStyleText, "NORMAL") == 0) {
 			fontStyle = UIFONT_STYLE_NORMAL;
 		} else {
 			SDL_free(text);

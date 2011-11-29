@@ -82,7 +82,7 @@ ControlsDialogDelegate::OnLoad()
 	char name[32];
 
 	for (int i = 0; (unsigned)i < SDL_arraysize(m_controlKeys); ++i) {
-		sprintf(name, "control%d", 1+i);
+		SDL_snprintf(name, sizeof(name), "control%d", 1+i);
 		m_controlKeys[i] = m_panel->GetElement<UIElement>(name);
 		if (!m_controlKeys[i]) {
 			fprintf(stderr, "Warning: Couldn't find control key label '%s'\n", name);

@@ -403,8 +403,8 @@ namespace rapidxml
     public:
 
         //! \cond internal
-        typedef void *(alloc_func)(std::size_t);       // Type of user-defined function used to allocate memory
-        typedef void (free_func)(void *);              // Type of user-defined function used to free memory
+        typedef void *(*alloc_func)(std::size_t);       // Type of user-defined function used to allocate memory
+        typedef void (*free_func)(void *);              // Type of user-defined function used to free memory
         //! \endcond
         
         //! Constructs empty pool with default allocator functions.
@@ -549,7 +549,7 @@ namespace rapidxml
             {
                 char *previous_begin = reinterpret_cast<header *>(align(m_begin))->previous_begin;
                 if (m_free_func)
-                    m_free_func(m_begin);
+                    (*m_free_func)(m_begin);
                 else
                     delete[] m_begin;
                 m_begin = previous_begin;
@@ -603,7 +603,7 @@ namespace rapidxml
             void *memory;   
             if (m_alloc_func)   // Allocate memory using either user-specified allocation function or global operator new[]
             {
-                memory = m_alloc_func(size);
+                memory = (*m_alloc_func)(size);
                 assert(memory); // Allocator is not allowed to return 0, on failure it must either throw, stop the program or use longjmp
             }
             else

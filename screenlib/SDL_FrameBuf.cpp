@@ -259,7 +259,7 @@ FrameBuf:: ScreenDump(const char *prefix, int x, int y, int w, int h)
 	/* Get a suitable new filename */
 	found = 0;
 	for ( which=0; !found; ++which ) {
-		sprintf(file, "%s%d.bmp", prefix, which);
+		SDL_snprintf(file, sizeof(file), "%s%d.bmp", prefix, which);
 		if (!PHYSFS_exists(file)) {
 			found = 1;
 		}

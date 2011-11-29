@@ -19,6 +19,8 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
+#include <stdio.h>
+
 #include "UIContainer.h"
 
 UIElementType UIContainer::s_elementType;

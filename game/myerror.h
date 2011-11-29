@@ -27,7 +27,6 @@
 
 extern void error(const char *fmt, ...);
 extern void mesg(const char *fmt, ...);
-extern void myperror(const char *msg);
 
 #endif /* _myerror_h */
 

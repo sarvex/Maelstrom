@@ -23,9 +23,9 @@
 #define _UIArea_h
 
 #include "SDL_rect.h"
+#include "../utils/ErrorBase.h"
 #include "../utils/array.h"
 #include "../utils/rapidxml.h"
-#include "ErrorBase.h"
 
 enum {
 	X_LEFT = 0x01,

@@ -63,7 +63,7 @@ public:
 
 	void SetNumber(int value) {
 		char buffer[32];
-		sprintf(buffer, "%d", value);
+		SDL_snprintf(buffer, sizeof(buffer), "%d", value);
 		SetText(buffer);
 	}
 	int GetNumber() const {

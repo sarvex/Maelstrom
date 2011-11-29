@@ -32,7 +32,7 @@ UIManager::UIManager(FrameBuf *screen, Prefs *prefs) :
 	m_screen = screen;
 	m_prefs = prefs;
 	m_loadPath = new char[2];
-	strcpy(m_loadPath, ".");
+	SDL_strlcpy(m_loadPath, ".", 2);
 }
 
 UIManager::~UIManager()
@@ -48,8 +48,8 @@ void
 UIManager::SetLoadPath(const char *path)
 {
 	delete[] m_loadPath;
-	m_loadPath = new char[strlen(path)+1];
-	strcpy(m_loadPath, path);
+	m_loadPath = new char[SDL_strlen(path)+1];
+	SDL_strlcpy(m_loadPath, path, SDL_strlen(path)+1);
 }
 
 bool
@@ -57,7 +57,7 @@ UIManager::LoadTemplates(const char *file)
 {
 	char path[1024];
 
-	sprintf(path, "%s/%s", m_loadPath, file);
+	SDL_snprintf(path, sizeof(path), "%s/%s", m_loadPath, file);
 	return m_templates.Load(path);
 }
 
@@ -73,7 +73,7 @@ UIManager::LoadPanel(const char *name)
 		PHYSFS_sint64 size;
 		char *buffer;
 
-		sprintf(file, "%s/%s.xml", m_loadPath, name);
+		SDL_snprintf(file, sizeof(file), "%s/%s.xml", m_loadPath, name);
 		fp = PHYSFS_openRead(file);
 		if (!fp) {
 			fprintf(stderr, "Warning: Couldn't open %s: %s\n",
