@@ -3,16 +3,10 @@ syntax:glob
 *.o
 *.Po
 *.Tpo
-*.swp
 Maelstrom
 MaelstromLobby
-Maelstrom.dmg
 Makefile
 autom4te.cache
 config.log
 config.status
-maclib/macres
-maclib/playwave
-maclib/snd2wav
-x64
-x86
+.DS_Store
