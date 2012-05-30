@@ -862,4 +862,4 @@ AC_SUBST([am__untar])
 
 m4_include([acinclude/check_zlib.m4])
 m4_include([acinclude/pkg.m4])
-m4_include([acinclude/sdl.m4])
+m4_include([acinclude/sdl2.m4])
