@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		AA0776CD145EB33700DB8DB3 /* libSDL_net.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA0776CA145EB33700DB8DB3 /* libSDL_net.a */; };
-		AA0776CE145EB33700DB8DB3 /* libSDL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA0776CB145EB33700DB8DB3 /* libSDL.a */; };
+		AA0776CD145EB33700DB8DB3 /* libSDL2_net.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA0776CA145EB33700DB8DB3 /* libSDL2_net.a */; };
+		AA0776CE145EB33700DB8DB3 /* libSDL2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA0776CB145EB33700DB8DB3 /* libSDL2.a */; };
 		AA0777CE145EB56C00DB8DB3 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA0777CD145EB56C00DB8DB3 /* OpenGLES.framework */; };
 		AA0777D2145EB60A00DB8DB3 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA0777D1145EB60A00DB8DB3 /* AudioToolbox.framework */; };
 		AA0777D4145EB68300DB8DB3 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA0777D3145EB68300DB8DB3 /* QuartzCore.framework */; };
@@ -66,8 +66,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		AA0776CA145EB33700DB8DB3 /* libSDL_net.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSDL_net.a; path = "../SDL_net/build/Release-iphoneos/libSDL_net.a"; sourceTree = "<group>"; };
-		AA0776CB145EB33700DB8DB3 /* libSDL.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSDL.a; path = "../SDL/build/Release-iphoneos/libSDL.a"; sourceTree = "<group>"; };
+		AA0776CA145EB33700DB8DB3 /* libSDL2_net.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSDL2_net.a; path = "../SDL_net/build/Release-iphoneos/libSDL2_net.a"; sourceTree = "<group>"; };
+		AA0776CB145EB33700DB8DB3 /* libSDL2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSDL2.a; path = "../SDL/build/Release-iphoneos/libSDL2.a"; sourceTree = "<group>"; };
 		AA07778A145EB40800DB8DB3 /* begin_code.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = begin_code.h; sourceTree = "<group>"; };
 		AA07778B145EB40800DB8DB3 /* close_code.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = close_code.h; sourceTree = "<group>"; };
 		AA07778C145EB40800DB8DB3 /* SDL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL.h; sourceTree = "<group>"; };
@@ -247,8 +247,8 @@
 			files = (
 				AA0777DB145EC12900DB8DB3 /* libz.dylib in Frameworks */,
 				AA0777D9145EC0FF00DB8DB3 /* libphysfs.a in Frameworks */,
-				AA0776CD145EB33700DB8DB3 /* libSDL_net.a in Frameworks */,
-				AA0776CE145EB33700DB8DB3 /* libSDL.a in Frameworks */,
+				AA0776CD145EB33700DB8DB3 /* libSDL2_net.a in Frameworks */,
+				AA0776CE145EB33700DB8DB3 /* libSDL2.a in Frameworks */,
 				AAD13B82145E8A8F0040B19C /* UIKit.framework in Frameworks */,
 				AAD13B84145E8A8F0040B19C /* Foundation.framework in Frameworks */,
 				AAD13B86145E8A8F0040B19C /* CoreGraphics.framework in Frameworks */,
@@ -265,7 +265,7 @@
 			isa = PBXGroup;
 			children = (
 				AA077789145EB40800DB8DB3 /* include */,
-				AA0776CB145EB33700DB8DB3 /* libSDL.a */,
+				AA0776CB145EB33700DB8DB3 /* libSDL2.a */,
 			);
 			name = SDL;
 			path = ../../SDL;
@@ -339,7 +339,7 @@
 			isa = PBXGroup;
 			children = (
 				AA0777C5145EB43200DB8DB3 /* include */,
-				AA0776CA145EB33700DB8DB3 /* libSDL_net.a */,
+				AA0776CA145EB33700DB8DB3 /* libSDL2_net.a */,
 			);
 			name = SDL_net;
 			path = ../../SDL_net;
