@@ -23,6 +23,8 @@
 #ifndef _main_h
 #define _main_h
 
+#include "../screenlib/UIPanel.h"
+
 class MainPanelDelegate : public UIPanelDelegate
 {
 public:
@@ -32,5 +34,8 @@ public:
 	virtual void OnShow();
 	virtual void OnTick();
 };
+
+// The real main function in main.cpp
+extern int MaelstromMain(int argc, char *argv[]);
 
 #endif // _main_h

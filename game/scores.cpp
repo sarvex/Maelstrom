@@ -35,7 +35,7 @@
 
 Scores hScores[NUM_SCORES];
 
-int SortScores(const void *_a, const void *_b)
+static int SortScores(const void *_a, const void *_b)
 {
 	const Scores *a = (const Scores *)_a;
 	const Scores *b = (const Scores *)_b;

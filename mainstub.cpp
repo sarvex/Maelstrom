@@ -1,8 +1,7 @@
 
 #include "SDL_main.h"
 
-// The real main function in game/main.cpp
-extern int MaelstromMain(int argc, char *argv[]);
+#include "game/main.h"
 
 // Stub to make sure we have a main entry point
 int main(int argc, char *argv[])

@@ -33,6 +33,7 @@ EXTRA_DIST =			\
 	README.simple		\
 	VisualC			\
 	Xcode			\
+	Xcode-iOS		\
 	autogen.sh		\
 	ico_o			\
 	icon.xpm

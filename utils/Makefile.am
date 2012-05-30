@@ -2,6 +2,7 @@
 noinst_LIBRARIES = libutils.a
 
 libutils_a_SOURCES =	\
+	ErrorBase.h	\
 	array.h		\
 	hashtable.c	\
 	hashtable.h	\

@@ -38,7 +38,7 @@ noinst_PROGRAMS = MaelstromLobby$(EXEEXT)
 subdir = .
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Maelstrom.spec.in \
 	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
-	$(top_srcdir)/configure COPYING INSTALL TODO \
+	$(top_srcdir)/configure COPYING INSTALL \
 	build-scripts/config.guess build-scripts/config.sub \
 	build-scripts/depcomp build-scripts/install-sh \
 	build-scripts/missing build-scripts/mkinstalldirs
@@ -221,15 +221,15 @@ EXTRA_DIST = \
 	COPYING.GPL		\
 	CREDITS			\
 	Changelog		\
-	MPWmake.sea.bin		\
 	Maelstrom.spec		\
 	Maelstrom_Data.zip	\
-	PBProjects.tar.gz	\
 	README.joystick		\
 	README.network		\
 	README.options		\
 	README.simple		\
-	VisualC.zip		\
+	VisualC			\
+	Xcode			\
+	Xcode-iOS		\
 	autogen.sh		\
 	ico_o			\
 	icon.xpm
@@ -731,26 +731,6 @@ $(PACKAGE)-$(VERSION).tar.gz: dist
 # Rule to build RPM distribution package
 rpm: $(PACKAGE)-$(VERSION).tar.gz
 	rpm -ta $(PACKAGE)-$(VERSION).tar.gz
-
-# Rule to build a Mac OS X application
-Maelstrom.app: Maelstrom$(EXEEXT)
-	unzip $@.zip
-	cp $< $@/Contents/MacOS/$<
-	strip $@/Contents/MacOS/$<
-	install_name_tool -change `otool -L $< | fgrep libSDL-1.3.0.dylib | awk '{print $$1}'` @executable_path/../Frameworks/libSDL-1.3.0.dylib $@/Contents/MacOS/$<
-	install_name_tool -change `otool -L $< | fgrep libSDL_net-1.2.0.dylib | awk '{print $$1}'` @executable_path/../Frameworks/libSDL_net-1.2.0.dylib $@/Contents/MacOS/$<
-	install_name_tool -change `otool -L $< | fgrep libphysfs.1.dylib | awk '{print $$1}'` @executable_path/../Frameworks/libphysfs.1.dylib $@/Contents/MacOS/$<
-	make append-data BINARY="$@/Contents/MacOS/$<"
-
-Maelstrom.dmg: Maelstrom.app
-	-mkdir tmp
-	mv $< tmp/
-	cp README.simple tmp/README.txt
-	cp COPYING tmp/COPYING.txt
-	cp COPYING.GPL tmp/
-	cp -r Docs tmp/
-	hdiutil create -fs HFS+ -srcfolder tmp -volname "Maelstrom" $@
-	$(RM) -r tmp
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
