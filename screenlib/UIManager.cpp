@@ -48,8 +48,9 @@ void
 UIManager::SetLoadPath(const char *path)
 {
 	delete[] m_loadPath;
-	m_loadPath = new char[SDL_strlen(path)+1];
-	SDL_strlcpy(m_loadPath, path, SDL_strlen(path)+1);
+    size_t size = SDL_strlen(path)+1;
+	m_loadPath = new char[size];
+	SDL_strlcpy(m_loadPath, path, size);
 }
 
 bool

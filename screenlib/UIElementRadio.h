@@ -28,6 +28,8 @@
 class UIRadioCallback
 {
 public:
+    virtual ~UIRadioCallback() { }
+
 	virtual void operator ()(int value) = 0;
 };
 

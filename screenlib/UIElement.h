@@ -29,6 +29,8 @@
 class UIClickCallback
 {
 public:
+    virtual ~UIClickCallback() { }
+
 	virtual void operator()() = 0;
 };
 
