@@ -175,8 +175,9 @@ FontServ:: NewFont(const char *fontname, int ptsize)
 
 	/* Now, Fent.ID is the ID of the correct NFNT resource */
 	font = new MFont;
-	font->name = new char[SDL_strlen(fontname)+1];
-	SDL_strlcpy(font->name, fontname, SDL_strlen(fontname)+1);
+    size_t size = SDL_strlen(fontname)+1;
+	font->name = new char[size];
+	SDL_strlcpy(font->name, fontname, size);
 	font->ptsize = ptsize;
 	font->nfnt = GetFontData("NFNT", Fent.ID);
 	if ( font->nfnt == NULL ) {
