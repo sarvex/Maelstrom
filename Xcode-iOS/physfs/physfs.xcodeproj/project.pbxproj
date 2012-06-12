@@ -1,0 +1,372 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		AAD1407F145EA8C90040B19C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAD1407E145EA8C90040B19C /* Foundation.framework */; };
+		AAD14296145EA8EF0040B19C /* archiver_dir.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD1408C145EA8EE0040B19C /* archiver_dir.c */; };
+		AAD14297145EA8EF0040B19C /* archiver_grp.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD1408D145EA8EE0040B19C /* archiver_grp.c */; };
+		AAD14298145EA8EF0040B19C /* archiver_hog.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD1408E145EA8EE0040B19C /* archiver_hog.c */; };
+		AAD14299145EA8EF0040B19C /* archiver_iso9660.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD1408F145EA8EE0040B19C /* archiver_iso9660.c */; };
+		AAD1429A145EA8EF0040B19C /* archiver_lzma.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD14090145EA8EE0040B19C /* archiver_lzma.c */; };
+		AAD1429B145EA8EF0040B19C /* archiver_mvl.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD14091145EA8EE0040B19C /* archiver_mvl.c */; };
+		AAD1429C145EA8EF0040B19C /* archiver_qpak.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD14092145EA8EE0040B19C /* archiver_qpak.c */; };
+		AAD1429D145EA8EF0040B19C /* archiver_unpacked.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD14093145EA8EE0040B19C /* archiver_unpacked.c */; };
+		AAD1429E145EA8EF0040B19C /* archiver_wad.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD14094145EA8EE0040B19C /* archiver_wad.c */; };
+		AAD1429F145EA8EF0040B19C /* archiver_zip.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD14095145EA8EE0040B19C /* archiver_zip.c */; };
+		AAD1441C145EA8EF0040B19C /* physfs.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD14270145EA8EE0040B19C /* physfs.c */; };
+		AAD1441D145EA8EF0040B19C /* physfs.h in Headers */ = {isa = PBXBuildFile; fileRef = AAD14271145EA8EE0040B19C /* physfs.h */; };
+		AAD1441E145EA8EF0040B19C /* physfs_byteorder.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD14272145EA8EE0040B19C /* physfs_byteorder.c */; };
+		AAD1441F145EA8EF0040B19C /* physfs_casefolding.h in Headers */ = {isa = PBXBuildFile; fileRef = AAD14273145EA8EE0040B19C /* physfs_casefolding.h */; };
+		AAD14420145EA8EF0040B19C /* physfs_internal.h in Headers */ = {isa = PBXBuildFile; fileRef = AAD14274145EA8EE0040B19C /* physfs_internal.h */; };
+		AAD14421145EA8EF0040B19C /* physfs_platforms.h in Headers */ = {isa = PBXBuildFile; fileRef = AAD14275145EA8EE0040B19C /* physfs_platforms.h */; };
+		AAD14422145EA8EF0040B19C /* physfs_unicode.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD14276145EA8EE0040B19C /* physfs_unicode.c */; };
+		AAD14423145EA8EF0040B19C /* platform_beos.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAD14277145EA8EE0040B19C /* platform_beos.cpp */; };
+		AAD14424145EA8EF0040B19C /* platform_macosx.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD14278145EA8EE0040B19C /* platform_macosx.c */; };
+		AAD14425145EA8EF0040B19C /* platform_os2.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD14279145EA8EE0040B19C /* platform_os2.c */; };
+		AAD14426145EA8EF0040B19C /* platform_pocketpc.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD1427A145EA8EE0040B19C /* platform_pocketpc.c */; };
+		AAD14427145EA8EF0040B19C /* platform_posix.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD1427B145EA8EE0040B19C /* platform_posix.c */; };
+		AAD14428145EA8EF0040B19C /* platform_unix.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD1427C145EA8EE0040B19C /* platform_unix.c */; };
+		AAD14429145EA8EF0040B19C /* platform_windows.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD1427D145EA8EE0040B19C /* platform_windows.c */; };
+		AAD14441145EA9F10040B19C /* 7zCrc.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD14440145EA9F00040B19C /* 7zCrc.c */; };
+		AAD14449145EAA140040B19C /* 7zBuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD14442145EAA120040B19C /* 7zBuffer.c */; };
+		AAD1444A145EAA140040B19C /* 7zDecode.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD14443145EAA120040B19C /* 7zDecode.c */; };
+		AAD1444B145EAA140040B19C /* 7zExtract.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD14444145EAA120040B19C /* 7zExtract.c */; };
+		AAD1444C145EAA140040B19C /* 7zHeader.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD14445145EAA120040B19C /* 7zHeader.c */; };
+		AAD1444D145EAA140040B19C /* 7zIn.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD14446145EAA130040B19C /* 7zIn.c */; };
+		AAD1444E145EAA140040B19C /* 7zItem.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD14447145EAA130040B19C /* 7zItem.c */; };
+		AAD1444F145EAA140040B19C /* 7zMethodID.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD14448145EAA130040B19C /* 7zMethodID.c */; };
+		AAD14454145EAA2F0040B19C /* BranchARM.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD14450145EAA2F0040B19C /* BranchARM.c */; };
+		AAD14455145EAA2F0040B19C /* BranchARMThumb.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD14451145EAA2F0040B19C /* BranchARMThumb.c */; };
+		AAD14456145EAA2F0040B19C /* BranchX86_2.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD14452145EAA2F0040B19C /* BranchX86_2.c */; };
+		AAD14457145EAA2F0040B19C /* BranchX86.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD14453145EAA2F0040B19C /* BranchX86.c */; };
+		AAD14459145EAA3B0040B19C /* LzmaDecode.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD14458145EAA3B0040B19C /* LzmaDecode.c */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		AAD1407B145EA8C90040B19C /* libphysfs.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libphysfs.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		AAD1407E145EA8C90040B19C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		AAD1408C145EA8EE0040B19C /* archiver_dir.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = archiver_dir.c; sourceTree = "<group>"; };
+		AAD1408D145EA8EE0040B19C /* archiver_grp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = archiver_grp.c; sourceTree = "<group>"; };
+		AAD1408E145EA8EE0040B19C /* archiver_hog.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = archiver_hog.c; sourceTree = "<group>"; };
+		AAD1408F145EA8EE0040B19C /* archiver_iso9660.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = archiver_iso9660.c; sourceTree = "<group>"; };
+		AAD14090145EA8EE0040B19C /* archiver_lzma.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = archiver_lzma.c; sourceTree = "<group>"; };
+		AAD14091145EA8EE0040B19C /* archiver_mvl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = archiver_mvl.c; sourceTree = "<group>"; };
+		AAD14092145EA8EE0040B19C /* archiver_qpak.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = archiver_qpak.c; sourceTree = "<group>"; };
+		AAD14093145EA8EE0040B19C /* archiver_unpacked.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = archiver_unpacked.c; sourceTree = "<group>"; };
+		AAD14094145EA8EE0040B19C /* archiver_wad.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = archiver_wad.c; sourceTree = "<group>"; };
+		AAD14095145EA8EE0040B19C /* archiver_zip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = archiver_zip.c; sourceTree = "<group>"; };
+		AAD14270145EA8EE0040B19C /* physfs.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = physfs.c; sourceTree = "<group>"; };
+		AAD14271145EA8EE0040B19C /* physfs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = physfs.h; path = ../../../projects/physfs/src/physfs.h; sourceTree = "<group>"; };
+		AAD14272145EA8EE0040B19C /* physfs_byteorder.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = physfs_byteorder.c; sourceTree = "<group>"; };
+		AAD14273145EA8EE0040B19C /* physfs_casefolding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = physfs_casefolding.h; sourceTree = "<group>"; };
+		AAD14274145EA8EE0040B19C /* physfs_internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = physfs_internal.h; sourceTree = "<group>"; };
+		AAD14275145EA8EE0040B19C /* physfs_platforms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = physfs_platforms.h; sourceTree = "<group>"; };
+		AAD14276145EA8EE0040B19C /* physfs_unicode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = physfs_unicode.c; sourceTree = "<group>"; };
+		AAD14277145EA8EE0040B19C /* platform_beos.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = platform_beos.cpp; sourceTree = "<group>"; };
+		AAD14278145EA8EE0040B19C /* platform_macosx.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = platform_macosx.c; sourceTree = "<group>"; };
+		AAD14279145EA8EE0040B19C /* platform_os2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = platform_os2.c; sourceTree = "<group>"; };
+		AAD1427A145EA8EE0040B19C /* platform_pocketpc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = platform_pocketpc.c; sourceTree = "<group>"; };
+		AAD1427B145EA8EE0040B19C /* platform_posix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = platform_posix.c; sourceTree = "<group>"; };
+		AAD1427C145EA8EE0040B19C /* platform_unix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = platform_unix.c; sourceTree = "<group>"; };
+		AAD1427D145EA8EE0040B19C /* platform_windows.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = platform_windows.c; sourceTree = "<group>"; };
+		AAD14440145EA9F00040B19C /* 7zCrc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = 7zCrc.c; path = lzma/C/7zCrc.c; sourceTree = "<group>"; };
+		AAD14442145EAA120040B19C /* 7zBuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = 7zBuffer.c; path = lzma/C/Archive/7z/7zBuffer.c; sourceTree = "<group>"; };
+		AAD14443145EAA120040B19C /* 7zDecode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = 7zDecode.c; path = lzma/C/Archive/7z/7zDecode.c; sourceTree = "<group>"; };
+		AAD14444145EAA120040B19C /* 7zExtract.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = 7zExtract.c; path = lzma/C/Archive/7z/7zExtract.c; sourceTree = "<group>"; };
+		AAD14445145EAA120040B19C /* 7zHeader.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = 7zHeader.c; path = lzma/C/Archive/7z/7zHeader.c; sourceTree = "<group>"; };
+		AAD14446145EAA130040B19C /* 7zIn.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = 7zIn.c; path = lzma/C/Archive/7z/7zIn.c; sourceTree = "<group>"; };
+		AAD14447145EAA130040B19C /* 7zItem.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = 7zItem.c; path = lzma/C/Archive/7z/7zItem.c; sourceTree = "<group>"; };
+		AAD14448145EAA130040B19C /* 7zMethodID.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = 7zMethodID.c; path = lzma/C/Archive/7z/7zMethodID.c; sourceTree = "<group>"; };
+		AAD14450145EAA2F0040B19C /* BranchARM.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = BranchARM.c; path = lzma/C/Compress/Branch/BranchARM.c; sourceTree = "<group>"; };
+		AAD14451145EAA2F0040B19C /* BranchARMThumb.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = BranchARMThumb.c; path = lzma/C/Compress/Branch/BranchARMThumb.c; sourceTree = "<group>"; };
+		AAD14452145EAA2F0040B19C /* BranchX86_2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = BranchX86_2.c; path = lzma/C/Compress/Branch/BranchX86_2.c; sourceTree = "<group>"; };
+		AAD14453145EAA2F0040B19C /* BranchX86.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = BranchX86.c; path = lzma/C/Compress/Branch/BranchX86.c; sourceTree = "<group>"; };
+		AAD14458145EAA3B0040B19C /* LzmaDecode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = LzmaDecode.c; path = lzma/C/Compress/Lzma/LzmaDecode.c; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		AAD14078145EA8C90040B19C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AAD1407F145EA8C90040B19C /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		AAD14070145EA8C90040B19C = {
+			isa = PBXGroup;
+			children = (
+				AAD14080145EA8C90040B19C /* physfs */,
+				AAD1407D145EA8C90040B19C /* Frameworks */,
+				AAD1407C145EA8C90040B19C /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		AAD1407C145EA8C90040B19C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AAD1407B145EA8C90040B19C /* libphysfs.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		AAD1407D145EA8C90040B19C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				AAD1407E145EA8C90040B19C /* Foundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		AAD14080145EA8C90040B19C /* physfs */ = {
+			isa = PBXGroup;
+			children = (
+				AAD1445F145EAC100040B19C /* include */,
+				AAD1408B145EA8EE0040B19C /* src */,
+				AAD14081145EA8C90040B19C /* Supporting Files */,
+			);
+			path = physfs;
+			sourceTree = SOURCE_ROOT;
+		};
+		AAD14081145EA8C90040B19C /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		AAD1408B145EA8EE0040B19C /* src */ = {
+			isa = PBXGroup;
+			children = (
+				AAD14458145EAA3B0040B19C /* LzmaDecode.c */,
+				AAD14450145EAA2F0040B19C /* BranchARM.c */,
+				AAD14451145EAA2F0040B19C /* BranchARMThumb.c */,
+				AAD14452145EAA2F0040B19C /* BranchX86_2.c */,
+				AAD14453145EAA2F0040B19C /* BranchX86.c */,
+				AAD14442145EAA120040B19C /* 7zBuffer.c */,
+				AAD14443145EAA120040B19C /* 7zDecode.c */,
+				AAD14444145EAA120040B19C /* 7zExtract.c */,
+				AAD14445145EAA120040B19C /* 7zHeader.c */,
+				AAD14446145EAA130040B19C /* 7zIn.c */,
+				AAD14447145EAA130040B19C /* 7zItem.c */,
+				AAD14448145EAA130040B19C /* 7zMethodID.c */,
+				AAD14440145EA9F00040B19C /* 7zCrc.c */,
+				AAD1408C145EA8EE0040B19C /* archiver_dir.c */,
+				AAD1408D145EA8EE0040B19C /* archiver_grp.c */,
+				AAD1408E145EA8EE0040B19C /* archiver_hog.c */,
+				AAD1408F145EA8EE0040B19C /* archiver_iso9660.c */,
+				AAD14090145EA8EE0040B19C /* archiver_lzma.c */,
+				AAD14091145EA8EE0040B19C /* archiver_mvl.c */,
+				AAD14092145EA8EE0040B19C /* archiver_qpak.c */,
+				AAD14093145EA8EE0040B19C /* archiver_unpacked.c */,
+				AAD14094145EA8EE0040B19C /* archiver_wad.c */,
+				AAD14095145EA8EE0040B19C /* archiver_zip.c */,
+				AAD14270145EA8EE0040B19C /* physfs.c */,
+				AAD14272145EA8EE0040B19C /* physfs_byteorder.c */,
+				AAD14273145EA8EE0040B19C /* physfs_casefolding.h */,
+				AAD14274145EA8EE0040B19C /* physfs_internal.h */,
+				AAD14275145EA8EE0040B19C /* physfs_platforms.h */,
+				AAD14276145EA8EE0040B19C /* physfs_unicode.c */,
+				AAD14277145EA8EE0040B19C /* platform_beos.cpp */,
+				AAD14278145EA8EE0040B19C /* platform_macosx.c */,
+				AAD14279145EA8EE0040B19C /* platform_os2.c */,
+				AAD1427A145EA8EE0040B19C /* platform_pocketpc.c */,
+				AAD1427B145EA8EE0040B19C /* platform_posix.c */,
+				AAD1427C145EA8EE0040B19C /* platform_unix.c */,
+				AAD1427D145EA8EE0040B19C /* platform_windows.c */,
+			);
+			name = src;
+			path = ../../../physfs/src;
+			sourceTree = SOURCE_ROOT;
+		};
+		AAD1445F145EAC100040B19C /* include */ = {
+			isa = PBXGroup;
+			children = (
+				AAD14271145EA8EE0040B19C /* physfs.h */,
+			);
+			name = include;
+			path = ../../../physfs/src;
+			sourceTree = SOURCE_ROOT;
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		AAD14079145EA8C90040B19C /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AAD1441D145EA8EF0040B19C /* physfs.h in Headers */,
+				AAD1441F145EA8EF0040B19C /* physfs_casefolding.h in Headers */,
+				AAD14420145EA8EF0040B19C /* physfs_internal.h in Headers */,
+				AAD14421145EA8EF0040B19C /* physfs_platforms.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		AAD1407A145EA8C90040B19C /* physfs */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AAD14088145EA8C90040B19C /* Build configuration list for PBXNativeTarget "physfs" */;
+			buildPhases = (
+				AAD14077145EA8C90040B19C /* Sources */,
+				AAD14078145EA8C90040B19C /* Frameworks */,
+				AAD14079145EA8C90040B19C /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = physfs;
+			productName = physfs;
+			productReference = AAD1407B145EA8C90040B19C /* libphysfs.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		AAD14072145EA8C90040B19C /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
+			buildConfigurationList = AAD14075145EA8C90040B19C /* Build configuration list for PBXProject "physfs" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = AAD14070145EA8C90040B19C;
+			productRefGroup = AAD1407C145EA8C90040B19C /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				AAD1407A145EA8C90040B19C /* physfs */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		AAD14077145EA8C90040B19C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AAD14296145EA8EF0040B19C /* archiver_dir.c in Sources */,
+				AAD14297145EA8EF0040B19C /* archiver_grp.c in Sources */,
+				AAD14298145EA8EF0040B19C /* archiver_hog.c in Sources */,
+				AAD14299145EA8EF0040B19C /* archiver_iso9660.c in Sources */,
+				AAD1429A145EA8EF0040B19C /* archiver_lzma.c in Sources */,
+				AAD1429B145EA8EF0040B19C /* archiver_mvl.c in Sources */,
+				AAD1429C145EA8EF0040B19C /* archiver_qpak.c in Sources */,
+				AAD1429D145EA8EF0040B19C /* archiver_unpacked.c in Sources */,
+				AAD1429E145EA8EF0040B19C /* archiver_wad.c in Sources */,
+				AAD1429F145EA8EF0040B19C /* archiver_zip.c in Sources */,
+				AAD1441C145EA8EF0040B19C /* physfs.c in Sources */,
+				AAD1441E145EA8EF0040B19C /* physfs_byteorder.c in Sources */,
+				AAD14422145EA8EF0040B19C /* physfs_unicode.c in Sources */,
+				AAD14423145EA8EF0040B19C /* platform_beos.cpp in Sources */,
+				AAD14424145EA8EF0040B19C /* platform_macosx.c in Sources */,
+				AAD14425145EA8EF0040B19C /* platform_os2.c in Sources */,
+				AAD14426145EA8EF0040B19C /* platform_pocketpc.c in Sources */,
+				AAD14427145EA8EF0040B19C /* platform_posix.c in Sources */,
+				AAD14428145EA8EF0040B19C /* platform_unix.c in Sources */,
+				AAD14429145EA8EF0040B19C /* platform_windows.c in Sources */,
+				AAD14441145EA9F10040B19C /* 7zCrc.c in Sources */,
+				AAD14449145EAA140040B19C /* 7zBuffer.c in Sources */,
+				AAD1444A145EAA140040B19C /* 7zDecode.c in Sources */,
+				AAD1444B145EAA140040B19C /* 7zExtract.c in Sources */,
+				AAD1444C145EAA140040B19C /* 7zHeader.c in Sources */,
+				AAD1444D145EAA140040B19C /* 7zIn.c in Sources */,
+				AAD1444E145EAA140040B19C /* 7zItem.c in Sources */,
+				AAD1444F145EAA140040B19C /* 7zMethodID.c in Sources */,
+				AAD14454145EAA2F0040B19C /* BranchARM.c in Sources */,
+				AAD14455145EAA2F0040B19C /* BranchARMThumb.c in Sources */,
+				AAD14456145EAA2F0040B19C /* BranchX86_2.c in Sources */,
+				AAD14457145EAA2F0040B19C /* BranchX86.c in Sources */,
+				AAD14459145EAA3B0040B19C /* LzmaDecode.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		AAD14086145EA8C90040B19C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					armv6,
+					armv7,
+				);
+				GCC_OPTIMIZATION_LEVEL = 0;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		AAD14087145EA8C90040B19C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					armv6,
+					armv7,
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		AAD14089145EA8C90040B19C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = "PHYSFS_SUPPORTS_ZIP=1";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		AAD1408A145EA8C90040B19C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = "PHYSFS_SUPPORTS_ZIP=1";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		AAD14075145EA8C90040B19C /* Build configuration list for PBXProject "physfs" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AAD14086145EA8C90040B19C /* Debug */,
+				AAD14087145EA8C90040B19C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AAD14088145EA8C90040B19C /* Build configuration list for PBXNativeTarget "physfs" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AAD14089145EA8C90040B19C /* Debug */,
+				AAD1408A145EA8C90040B19C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = AAD14072145EA8C90040B19C /* Project object */;
+}
