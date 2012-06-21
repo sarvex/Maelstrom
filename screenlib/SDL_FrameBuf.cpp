@@ -37,6 +37,7 @@ FrameBuf:: FrameBuf() : ErrorBase()
 	/* Initialize various variables to null state */
 	window = NULL;
 	renderer = NULL;
+	texture = NULL;
 	faded = 0;
 }
 
@@ -45,11 +46,6 @@ FrameBuf:: Init(int width, int height, Uint32 window_flags, Uint32 render_flags,
 		SDL_Color *colors, SDL_Surface *icon)
 {
 	int w, h;
-
-#ifdef HACK_RESOLUTION
-	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");
-#endif
-	AdjustCoordinates(width, height);
 
 #ifdef FAST_ITERATION
 	window_flags &= ~SDL_WINDOW_FULLSCREEN;
@@ -67,24 +63,35 @@ FrameBuf:: Init(int width, int height, Uint32 window_flags, Uint32 render_flags,
 		return(-1);
 	}
 
+	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, width, height);
+	if (!texture) {
+		SetError("Couldn't create target texture: %s", SDL_GetError());
+		return(-1);
+	}
+
+	if (SDL_SetRenderTarget(renderer, texture) < 0) {
+		SetError("Couldn't set render target: %s", SDL_GetError());
+		return(-1);
+	}
+
+	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");
+
 	/* Set the icon, if any */
 	if ( icon ) {
 		SDL_SetWindowIcon(window, icon);
 	}
 
-	/* Set the UI area */
+	/* Set the output area */
 	SDL_GetWindowSize(window, &w, &h);
-	rect.x = (w - width) / 2;
-	rect.y = (h - height) / 2;
-	rect.w = width;
-	rect.h = height;
-	SDL_RenderSetViewport(renderer, &rect);
+	output.w = w;
+	output.h = (height * w)/width;
+	output.x = (w - output.w) / 2;
+	output.y = (h - output.h) / 2;
 
-	/* Set the blit clipping rectangle */
-	clip.x = 0;
-	clip.y = 0;
-	clip.w = AdjustCoordinateX(width, true);
-	clip.h = AdjustCoordinateY(height, true);
+	clip.x = rect.x = 0;
+	clip.y = rect.y = 0;
+	clip.w = rect.w = width;
+	clip.h = rect.h = height;
 
 	/* Copy the image colormap */
 	if ( colors ) {
@@ -96,6 +103,9 @@ FrameBuf:: Init(int width, int height, Uint32 window_flags, Uint32 render_flags,
 
 FrameBuf:: ~FrameBuf()
 {
+	if (texture) {
+		SDL_DestroyTexture(texture);
+	}
 	if (renderer) {
 		SDL_DestroyRenderer(renderer);
 	}
@@ -118,16 +128,15 @@ FrameBuf:: SetPalette(SDL_Color *colors)
 bool
 FrameBuf::ConvertTouchCoordinates(const SDL_TouchFingerEvent &finger, int *x, int *y)
 {
-	int w, h;
 	SDL_Touch* inTouch = SDL_GetTouch(finger.touchId);
 	if (inTouch == NULL) {
 		return false;
 	}
 
-	SDL_GetWindowSize(window, &w, &h);
-	*x = (int)((((float)finger.x)/inTouch->xres)*w) - rect.x;
-	*y = (int)((((float)finger.y)/inTouch->yres)*h) - rect.y;
-	AdjustCoordinates(*x, *y, true);
+	*x = (int)((((float)finger.x)/inTouch->xres)*output.w) - output.x;
+	*y = (int)((((float)finger.y)/inTouch->yres)*output.h) - output.y;
+	*x = (*x * rect.w) / output.w;
+	*y = (*y * rect.h) / output.h;
 	return true;
 }
 
@@ -184,9 +193,20 @@ FrameBuf:: QueueBlit(int dstx, int dsty, SDL_Texture *src,
 		srcrect.w = dstrect.w;
 		srcrect.h = dstrect.h;
 	}
-	AdjustCoordinates(dstrect.x, dstrect.y);
-	AdjustCoordinates(dstrect.w, dstrect.h);
 	SDL_RenderCopy(renderer, src, &srcrect, &dstrect);
+}
+
+void
+FrameBuf:: Update(void)
+{
+	/* Copy from our render texture to the screen and show it! */
+	SDL_SetRenderTarget(renderer, NULL);
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+	SDL_RenderClear(renderer);
+	SDL_RenderCopy(renderer, texture, NULL, &output);
+	SDL_RenderPresent(renderer);
+
+	SDL_SetRenderTarget(renderer, texture);
 }
 
 void
@@ -208,7 +228,7 @@ FrameBuf:: Fade(void)
 	}
 	faded = !faded;
 
-        if ( faded ) {
+	if ( faded ) {
 		for ( int i = 0; i < 256; i++ ) {
 			ramp[i] = 0;
 		}
@@ -245,8 +265,6 @@ FrameBuf:: ScreenDump(const char *prefix, int x, int y, int w, int h)
 	if (!h) {
 		h = Height();
 	}
-	AdjustCoordinates(x, y);
-	AdjustCoordinates(w, h);
 	rect.x = x;
 	rect.y = y;
 	rect.w = w;

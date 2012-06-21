@@ -31,25 +31,6 @@
 // Define this if you're rapidly iterating on UI screens
 //#define FAST_ITERATION
 
-// Define these if you want to try out the quick resolution hacks
-//#define HACK_1024x768
-//#define HACK_400x300
-
-#ifdef HACK_1024x768
-#define HACK_RESOLUTION
-#define HACK_RESOLUTION_X 1024
-#define HACK_RESOLUTION_Y 768
-#endif
-#ifdef HACK_400x300
-#define HACK_RESOLUTION
-#define HACK_RESOLUTION_X 400
-#define HACK_RESOLUTION_Y 300
-#endif
-#ifdef HACK_RESOLUTION
-#define ORIG_RESOLUTION_X 640
-#define ORIG_RESOLUTION_Y 480
-#endif
-
 #include <stdio.h>
 
 #include "SDL.h"
@@ -67,31 +48,6 @@ public:
 	int Init(int width, int height, Uint32 window_flags, Uint32 render_flags,
 			SDL_Color *colors = NULL, SDL_Surface *icon = NULL);
 	virtual ~FrameBuf();
-
-	int AdjustCoordinateX(int &x, bool invert = false) const {
-#ifdef HACK_RESOLUTION
-		if (invert) {
-			x = (x*ORIG_RESOLUTION_X)/HACK_RESOLUTION_X;
-		} else {
-			x = (x*HACK_RESOLUTION_X)/ORIG_RESOLUTION_X;
-		}
-#endif
-		return x;
-	}
-	int AdjustCoordinateY(int &y, bool invert = false) const {
-#ifdef HACK_RESOLUTION
-		if (invert) {
-			y = (y*ORIG_RESOLUTION_Y)/HACK_RESOLUTION_Y;
-		} else {
-			y = (y*HACK_RESOLUTION_Y)/ORIG_RESOLUTION_Y;
-		}
-#endif
-		return y;
-	}
-	void AdjustCoordinates(int &x, int &y, bool invert = false) const {
-		AdjustCoordinateX(x, invert);
-		AdjustCoordinateY(y, invert);
-	}
 
 	/* Setup routines */
 	/* Set the image palette -- 256 entries */
@@ -128,17 +84,17 @@ public:
 	void ProcessEvent(SDL_Event *event) {
 		switch (event->type) {
 			case SDL_MOUSEMOTION:
-				event->motion.x -= rect.x;
-				event->motion.y -= rect.y;
-				AdjustCoordinates(event->motion.x,
-						  event->motion.y, true);
+				event->motion.x -= output.x;
+				event->motion.y -= output.y;
+				event->motion.x = (event->motion.x * rect.w) / output.w;
+				event->motion.y = (event->motion.y * rect.h) / output.h;
 				break;
 			case SDL_MOUSEBUTTONDOWN:
 			case SDL_MOUSEBUTTONUP:
-				event->button.x -= rect.x;
-				event->button.y -= rect.y;
-				AdjustCoordinates(event->button.x,
-						  event->button.y, true);
+				event->button.x -= output.x;
+				event->button.y -= output.y;
+				event->motion.x = (event->motion.x * rect.w) / output.w;
+				event->motion.y = (event->motion.y * rect.h) / output.h;
 				break;
 		}
 	}
@@ -157,12 +113,10 @@ public:
 
 	/* Information routines */
 	int Width() const {
-		int w = rect.w;
-		return AdjustCoordinateX(w, true);
+		return rect.w;
 	}
 	int Height() const {
-		int h = rect.h;
-		return AdjustCoordinateY(h, true);
+		return rect.h;
 	}
 
 	/* Blit and update routines */
@@ -173,9 +127,7 @@ public:
 		SDL_QueryTexture(src, NULL, NULL, &w, &h);
 		QueueBlit(x, y, src, 0, 0, w, h, do_clip);
 	}
-	void Update() {
-		SDL_RenderPresent(renderer);
-	}
+	void Update(void);
 	void FadeOut(void) {
 		if (!faded) {
 			Fade();
@@ -190,9 +142,6 @@ public:
 
 	/* Drawing routines */
 	void Clear(int x, int y, int w, int h) {
-		AdjustCoordinates(x, y);
-		AdjustCoordinates(w, h);
-
 		FillRect(x, y, w, h, 0);
 	}
 	void Clear(void) {
@@ -200,23 +149,15 @@ public:
 		SDL_RenderClear(renderer);
 	}
 	void DrawPoint(int x, int y, Uint32 color) {
-		AdjustCoordinates(x, y);
-
 		UpdateDrawColor(color);
 		SDL_RenderDrawPoint(renderer, x, y);
 	}
 	void DrawLine(int x1, int y1, int x2, int y2, Uint32 color) {
-		AdjustCoordinates(x1, y1);
-		AdjustCoordinates(x2, y2);
-
 		UpdateDrawColor(color);
 		SDL_RenderDrawLine(renderer, x1, y1, x2, y2);
 	}
 	void DrawRect(int x1, int y1, int w, int h, Uint32 color) {
 		UpdateDrawColor(color);
-
-		AdjustCoordinates(x1, y1);
-		AdjustCoordinates(w, h);
 
 		SDL_Rect rect;
 		rect.x = x1;
@@ -227,9 +168,6 @@ public:
 	}
 	void FillRect(int x1, int y1, int w, int h, Uint32 color) {
 		UpdateDrawColor(color);
-
-		AdjustCoordinates(x1, y1);
-		AdjustCoordinates(w, h);
 
 		SDL_Rect rect;
 		rect.x = x1;
@@ -273,10 +211,12 @@ private:
 	/* The current display */
 	SDL_Window *window;
 	SDL_Renderer *renderer;
+	SDL_Texture *texture;
 	Uint32 image_map[256];
 	int faded;
 	SDL_Rect rect;
 	SDL_Rect clip;
+	SDL_Rect output;
 
 	void UpdateDrawColor(Uint32 color) {
 		Uint8 r, g, b;
