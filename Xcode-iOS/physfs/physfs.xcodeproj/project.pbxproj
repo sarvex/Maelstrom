@@ -27,8 +27,6 @@
 		AAD14422145EA8EF0040B19C /* physfs_unicode.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD14276145EA8EE0040B19C /* physfs_unicode.c */; };
 		AAD14423145EA8EF0040B19C /* platform_beos.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAD14277145EA8EE0040B19C /* platform_beos.cpp */; };
 		AAD14424145EA8EF0040B19C /* platform_macosx.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD14278145EA8EE0040B19C /* platform_macosx.c */; };
-		AAD14425145EA8EF0040B19C /* platform_os2.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD14279145EA8EE0040B19C /* platform_os2.c */; };
-		AAD14426145EA8EF0040B19C /* platform_pocketpc.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD1427A145EA8EE0040B19C /* platform_pocketpc.c */; };
 		AAD14427145EA8EF0040B19C /* platform_posix.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD1427B145EA8EE0040B19C /* platform_posix.c */; };
 		AAD14428145EA8EF0040B19C /* platform_unix.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD1427C145EA8EE0040B19C /* platform_unix.c */; };
 		AAD14429145EA8EF0040B19C /* platform_windows.c in Sources */ = {isa = PBXBuildFile; fileRef = AAD1427D145EA8EE0040B19C /* platform_windows.c */; };
@@ -61,7 +59,7 @@
 		AAD14094145EA8EE0040B19C /* archiver_wad.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = archiver_wad.c; sourceTree = "<group>"; };
 		AAD14095145EA8EE0040B19C /* archiver_zip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = archiver_zip.c; sourceTree = "<group>"; };
 		AAD14270145EA8EE0040B19C /* physfs.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = physfs.c; sourceTree = "<group>"; };
-		AAD14271145EA8EE0040B19C /* physfs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = physfs.h; path = ../../../projects/physfs/src/physfs.h; sourceTree = "<group>"; };
+		AAD14271145EA8EE0040B19C /* physfs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = physfs.h; path = ../../../../../../3rdparty/iphone/physfs/src/physfs.h; sourceTree = "<group>"; };
 		AAD14272145EA8EE0040B19C /* physfs_byteorder.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = physfs_byteorder.c; sourceTree = "<group>"; };
 		AAD14273145EA8EE0040B19C /* physfs_casefolding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = physfs_casefolding.h; sourceTree = "<group>"; };
 		AAD14274145EA8EE0040B19C /* physfs_internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = physfs_internal.h; sourceTree = "<group>"; };
@@ -69,8 +67,6 @@
 		AAD14276145EA8EE0040B19C /* physfs_unicode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = physfs_unicode.c; sourceTree = "<group>"; };
 		AAD14277145EA8EE0040B19C /* platform_beos.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = platform_beos.cpp; sourceTree = "<group>"; };
 		AAD14278145EA8EE0040B19C /* platform_macosx.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = platform_macosx.c; sourceTree = "<group>"; };
-		AAD14279145EA8EE0040B19C /* platform_os2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = platform_os2.c; sourceTree = "<group>"; };
-		AAD1427A145EA8EE0040B19C /* platform_pocketpc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = platform_pocketpc.c; sourceTree = "<group>"; };
 		AAD1427B145EA8EE0040B19C /* platform_posix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = platform_posix.c; sourceTree = "<group>"; };
 		AAD1427C145EA8EE0040B19C /* platform_unix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = platform_unix.c; sourceTree = "<group>"; };
 		AAD1427D145EA8EE0040B19C /* platform_windows.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = platform_windows.c; sourceTree = "<group>"; };
@@ -177,14 +173,12 @@
 				AAD14276145EA8EE0040B19C /* physfs_unicode.c */,
 				AAD14277145EA8EE0040B19C /* platform_beos.cpp */,
 				AAD14278145EA8EE0040B19C /* platform_macosx.c */,
-				AAD14279145EA8EE0040B19C /* platform_os2.c */,
-				AAD1427A145EA8EE0040B19C /* platform_pocketpc.c */,
 				AAD1427B145EA8EE0040B19C /* platform_posix.c */,
 				AAD1427C145EA8EE0040B19C /* platform_unix.c */,
 				AAD1427D145EA8EE0040B19C /* platform_windows.c */,
 			);
 			name = src;
-			path = ../../../physfs/src;
+			path = ../../../../../../3rdparty/iphone/physfs/src;
 			sourceTree = SOURCE_ROOT;
 		};
 		AAD1445F145EAC100040B19C /* include */ = {
@@ -275,8 +269,6 @@
 				AAD14422145EA8EF0040B19C /* physfs_unicode.c in Sources */,
 				AAD14423145EA8EF0040B19C /* platform_beos.cpp in Sources */,
 				AAD14424145EA8EF0040B19C /* platform_macosx.c in Sources */,
-				AAD14425145EA8EF0040B19C /* platform_os2.c in Sources */,
-				AAD14426145EA8EF0040B19C /* platform_pocketpc.c in Sources */,
 				AAD14427145EA8EF0040B19C /* platform_posix.c in Sources */,
 				AAD14428145EA8EF0040B19C /* platform_unix.c in Sources */,
 				AAD14429145EA8EF0040B19C /* platform_windows.c in Sources */,
