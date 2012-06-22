@@ -46,6 +46,10 @@
 #include "../screenlib/UIElementCheckbox.h"
 #include "../screenlib/UIElementEditbox.h"
 
+#if __IPHONEOS__
+#include "../Xcode-iOS/Maelstrom_GameKit.h"
+#endif
+
 #define MAELSTROM_ORGANIZATION	"AmbrosiaSW"
 #define MAELSTROM_NAME		"Maelstrom"
 #define MAELSTROM_DATA	"Maelstrom_Data.zip"
@@ -282,6 +286,10 @@ int MaelstromMain(int argc, char *argv[])
 	if ( !InitFilesystem(argv[0]) ) {
 		exit(1);
 	}
+
+#if __IPHONEOS__
+	InitGameCenter();
+#endif
 
 	/* Seed the random number generator */
 	SeedRandom(0L);

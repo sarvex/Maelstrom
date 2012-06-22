@@ -18,6 +18,7 @@
 		AA319E1E145EDA1D00384943 /* Maelstrom.png in Resources */ = {isa = PBXBuildFile; fileRef = AA319E1D145EDA1D00384943 /* Maelstrom.png */; };
 		AA319E20145EDA6400384943 /* Maelstrom_small.png in Resources */ = {isa = PBXBuildFile; fileRef = AA319E1F145EDA6400384943 /* Maelstrom_small.png */; };
 		AA7557A61594EE8F00BBD41B /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA7557A51594EE8F00BBD41B /* GameKit.framework */; };
+		AA7557AB1595062C00BBD41B /* Maelstrom_GameKit.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA7557AA1595062C00BBD41B /* Maelstrom_GameKit.mm */; };
 		AA769FE0146A679C001C5008 /* Maelstrom_ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = AA769FDF146A679C001C5008 /* Maelstrom_ipad.png */; };
 		AA97808315769F3400472542 /* mainstub.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA97808215769F3400472542 /* mainstub.cpp */; };
 		AA9781571576A00100472542 /* Mac_FontServ.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA97811D1576A00100472542 /* Mac_FontServ.cpp */; };
@@ -188,6 +189,8 @@
 		AA319E1D145EDA1D00384943 /* Maelstrom.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Maelstrom.png; sourceTree = "<group>"; };
 		AA319E1F145EDA6400384943 /* Maelstrom_small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Maelstrom_small.png; sourceTree = "<group>"; };
 		AA7557A51594EE8F00BBD41B /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
+		AA7557A71595019400BBD41B /* Maelstrom_GameKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Maelstrom_GameKit.h; path = "Xcode-iOS/Maelstrom_GameKit.h"; sourceTree = "<group>"; };
+		AA7557AA1595062C00BBD41B /* Maelstrom_GameKit.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = Maelstrom_GameKit.mm; path = "Xcode-iOS/Maelstrom_GameKit.mm"; sourceTree = "<group>"; };
 		AA769FDF146A679C001C5008 /* Maelstrom_ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Maelstrom_ipad.png; sourceTree = "<group>"; };
 		AA97808215769F3400472542 /* mainstub.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mainstub.cpp; sourceTree = "<group>"; };
 		AA97811A1576A00100472542 /* bitesex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bitesex.h; sourceTree = "<group>"; };
@@ -617,6 +620,8 @@
 		AAD13B87145E8A8F0040B19C /* Maelstrom */ = {
 			isa = PBXGroup;
 			children = (
+				AA7557A71595019400BBD41B /* Maelstrom_GameKit.h */,
+				AA7557AA1595062C00BBD41B /* Maelstrom_GameKit.mm */,
 				AA97808215769F3400472542 /* mainstub.cpp */,
 				AA9781741576A03700472542 /* game */,
 				AA9781191576A00100472542 /* maclib */,
@@ -793,6 +798,7 @@
 				AA9781B81576A03700472542 /* rect.cpp in Sources */,
 				AA9781B91576A03700472542 /* replay.cpp in Sources */,
 				AA9781BA1576A03700472542 /* scores.cpp in Sources */,
+				AA7557AB1595062C00BBD41B /* Maelstrom_GameKit.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
