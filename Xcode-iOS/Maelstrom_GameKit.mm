@@ -27,6 +27,8 @@ void InitGameCenter(void)
             } else {
                 // Disable Game Center features
 		s_hasGameCenter = NO;
+		
+		NSLog(@"Unable to log into Game Center: %@", [err localizedDescription]);
             }
         }];
     }

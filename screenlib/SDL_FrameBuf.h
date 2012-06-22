@@ -112,6 +112,9 @@ public:
 	}
 
 	/* Information routines */
+	SDL_Window *GetWindow() const {
+		return window;
+	}
 	int Width() const {
 		return rect.w;
 	}

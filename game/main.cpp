@@ -273,6 +273,42 @@ InitFilesystem(const char *argv0)
 }
 
 /* ----------------------------------------------------------------- */
+extern "C" void ShowFrame(void*);
+extern "C"
+void ShowFrame(void*)
+{
+	SDL_Event event;
+
+	// If we got a reply event, start it up!
+	if (gReplayFile) {
+		RunReplayGame(gReplayFile);
+		SDL_free(gReplayFile);
+		gReplayFile = NULL;
+	}
+
+	ui->Draw();
+
+	/* -- In case we were faded out */
+	screen->FadeIn();
+
+	/* -- Get events */
+	while ( screen->PollEvent(&event) ) {
+		if ( ui->HandleEvent(event) )
+			continue;
+
+		/* -- Handle file drop requests */
+		if ( event.type == SDL_DROPFILE ) {
+			gReplayFile = event.drop.file;
+		}
+
+		/* -- Handle window close requests */
+		if ( event.type == SDL_QUIT ) {
+			RunQuitGame(0);
+		}
+	}
+}
+
+/* ----------------------------------------------------------------- */
 /* -- Blitter main program */
 int MaelstromMain(int argc, char *argv[])
 {
@@ -280,16 +316,9 @@ int MaelstromMain(int argc, char *argv[])
 	Uint32 window_flags = 0;
 	Uint32 render_flags = SDL_RENDERER_PRESENTVSYNC;
 
-	/* Normal variables */
-	SDL_Event event;
-
 	if ( !InitFilesystem(argv[0]) ) {
 		exit(1);
 	}
-
-#if __IPHONEOS__
-	InitGameCenter();
-#endif
 
 	/* Seed the random number generator */
 	SeedRandom(0L);
@@ -323,42 +352,25 @@ int MaelstromMain(int argc, char *argv[])
 	while ( sound->Playing() )
 		Delay(SOUND_DELAY);
 #endif
+
 	ui->ShowPanel(PANEL_MAIN);
 
+#if __IPHONEOS__
+	// Initialize the Game Center for scoring and matchmaking
+	InitGameCenter();
+
+	// Set up the game to run in the window animation callback on iOS
+	// so that Game Center and so forth works correctly.
+	SDL_iPhoneSetAnimationCallback(screen->GetWindow(), 1, ShowFrame, 0);
+#else
 	while ( gRunning ) {
-		// If we got a reply event, start it up!
-		if (gReplayFile) {
-			RunReplayGame(gReplayFile);
-			SDL_free(gReplayFile);
-			gReplayFile = NULL;
-		}
-
-		ui->Draw();
-
-		/* -- In case we were faded out */
-		screen->FadeIn();
-
-		/* -- Get events */
-		while ( screen->PollEvent(&event) ) {
-			if ( ui->HandleEvent(event) )
-				continue;
-
-			/* -- Handle file drop requests */
-			if ( event.type == SDL_DROPFILE ) {
-				gReplayFile = event.drop.file;
-			}
-
-			/* -- Handle window close requests */
-			if ( event.type == SDL_QUIT ) {
-				RunQuitGame(0);
-			}
-		}
+		ShowFrame(0);
 		DelayFrame();
 	}
-
-	ui->HidePanel(PANEL_MAIN);
 	CleanUp();
-	exit(0);
+#endif
+	return 0;
+
 }	/* -- main */
 
 
