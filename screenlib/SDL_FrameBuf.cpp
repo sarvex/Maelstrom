@@ -63,7 +63,7 @@ FrameBuf:: Init(int width, int height, Uint32 window_flags, Uint32 render_flags,
 		return(-1);
 	}
 
-	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, width, height);
+	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB888, SDL_TEXTUREACCESS_TARGET, width, height);
 	if (!texture) {
 		SetError("Couldn't create target texture: %s", SDL_GetError());
 		return(-1);
