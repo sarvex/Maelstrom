@@ -46,7 +46,8 @@
 #include "../screenlib/UIElementCheckbox.h"
 #include "../screenlib/UIElementEditbox.h"
 
-#define MAELSTROM_PREFS	"com.galaxygameworks.Maelstrom"
+#define MAELSTROM_ORGANIZATION	"AmbrosiaSW"
+#define MAELSTROM_NAME		"Maelstrom"
 #define MAELSTROM_DATA	"Maelstrom_Data.zip"
 
 static const char *Version =
@@ -231,7 +232,7 @@ void PrintUsage(void)
 static bool
 InitFilesystem(const char *argv0)
 {
-	char path[4096];
+	const char *prefspath;
 
 	if (!PHYSFS_init(argv0)) {
 		error("Couldn't initialize PHYSFS: %s\n", PHYSFS_getLastError());
@@ -239,25 +240,14 @@ InitFilesystem(const char *argv0)
 	}
 
 	// Set up the write directory for this platform
-	const char *home = PHYSFS_getUserDir();
-#if defined(__MACOSX__) || defined(__IPHONEOS__)
-	SDL_snprintf(path, SDL_arraysize(path), "%sLibrary/Application Support/%s/", home, MAELSTROM_PREFS);
-#elif defined(__WIN32__)
-	SDL_snprintf(path, SDL_arraysize(path), "%sAppData/Local/Maelstrom", home);
-#else
-	SDL_snprintf(path, SDL_arraysize(path), "%s.%s/", home, MAELSTROM_PREFS);
-#endif
-	if (SDL_strncmp(path, home, SDL_strlen(home)) == 0) {
-		PHYSFS_setWriteDir(home);
-		PHYSFS_mkdir(path+SDL_strlen(home));
-	}
-	if (!PHYSFS_setWriteDir(path)) {
-			error("Couldn't set write directory to %s: %s\n", path, PHYSFS_getLastError());
+	prefspath = PHYSFS_getPrefDir(MAELSTROM_ORGANIZATION, MAELSTROM_NAME);
+	if (!PHYSFS_setWriteDir(prefspath)) {
+			error("Couldn't set write directory to %s: %s\n", prefspath, PHYSFS_getLastError());
 			return false;
 	}
 
 	/* Put the write directory first in the search path */
-	PHYSFS_mount(path, NULL, 0);
+	PHYSFS_mount(prefspath, NULL, 0);
 
 	/* Then add the base directory to the search path */
 	PHYSFS_mount(PHYSFS_getBaseDir(), NULL, 0);
@@ -268,6 +258,7 @@ InitFilesystem(const char *argv0)
 	}
 
 	/* ... or not */
+	char path[4096];
 	SDL_snprintf(path, SDL_arraysize(path), "%s%s", PHYSFS_getBaseDir(), MAELSTROM_DATA);
 	if (PHYSFS_mount(path, "/", 1)) {
 		return true;
