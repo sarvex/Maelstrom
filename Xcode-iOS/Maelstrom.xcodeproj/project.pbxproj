@@ -17,6 +17,7 @@
 		AA0777DB145EC12900DB8DB3 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AA0777DA145EC12900DB8DB3 /* libz.dylib */; };
 		AA319E1E145EDA1D00384943 /* Maelstrom.png in Resources */ = {isa = PBXBuildFile; fileRef = AA319E1D145EDA1D00384943 /* Maelstrom.png */; };
 		AA319E20145EDA6400384943 /* Maelstrom_small.png in Resources */ = {isa = PBXBuildFile; fileRef = AA319E1F145EDA6400384943 /* Maelstrom_small.png */; };
+		AA7557A61594EE8F00BBD41B /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA7557A51594EE8F00BBD41B /* GameKit.framework */; };
 		AA769FE0146A679C001C5008 /* Maelstrom_ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = AA769FDF146A679C001C5008 /* Maelstrom_ipad.png */; };
 		AA97808315769F3400472542 /* mainstub.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA97808215769F3400472542 /* mainstub.cpp */; };
 		AA9781571576A00100472542 /* Mac_FontServ.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA97811D1576A00100472542 /* Mac_FontServ.cpp */; };
@@ -186,6 +187,7 @@
 		AA0777DA145EC12900DB8DB3 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		AA319E1D145EDA1D00384943 /* Maelstrom.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Maelstrom.png; sourceTree = "<group>"; };
 		AA319E1F145EDA6400384943 /* Maelstrom_small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Maelstrom_small.png; sourceTree = "<group>"; };
+		AA7557A51594EE8F00BBD41B /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		AA769FDF146A679C001C5008 /* Maelstrom_ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Maelstrom_ipad.png; sourceTree = "<group>"; };
 		AA97808215769F3400472542 /* mainstub.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mainstub.cpp; sourceTree = "<group>"; };
 		AA97811A1576A00100472542 /* bitesex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bitesex.h; sourceTree = "<group>"; };
@@ -290,7 +292,6 @@
 		AAD13B83145E8A8F0040B19C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		AAD13B85145E8A8F0040B19C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		AAD13B8B145E8A8F0040B19C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		AAD13B8F145E8A8F0040B19C /* Maelstrom-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Maelstrom-Prefix.pch"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -308,6 +309,7 @@
 				AA0777CE145EB56C00DB8DB3 /* OpenGLES.framework in Frameworks */,
 				AA0777D4145EB68300DB8DB3 /* QuartzCore.framework in Frameworks */,
 				AA0777D2145EB60A00DB8DB3 /* AudioToolbox.framework in Frameworks */,
+				AA7557A61594EE8F00BBD41B /* GameKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -575,6 +577,7 @@
 		AAD13B72145E8A8F0040B19C = {
 			isa = PBXGroup;
 			children = (
+				AA7557A51594EE8F00BBD41B /* GameKit.framework */,
 				AA769FDF146A679C001C5008 /* Maelstrom_ipad.png */,
 				AA319E1F145EDA6400384943 /* Maelstrom_small.png */,
 				AA319E1D145EDA1D00384943 /* Maelstrom.png */,
@@ -631,7 +634,6 @@
 				AA9781BB1576A14D00472542 /* Maelstrom_Data.zip */,
 				93D8E4A315911CDC00BD8D0E /* Maelstrom-Info.plist */,
 				AAD13B8A145E8A8F0040B19C /* InfoPlist.strings */,
-				AAD13B8F145E8A8F0040B19C /* Maelstrom-Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
