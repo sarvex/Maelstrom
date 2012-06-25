@@ -245,9 +245,13 @@ InitFilesystem(const char *argv0)
 
 	// Set up the write directory for this platform
 	prefspath = PHYSFS_getPrefDir(MAELSTROM_ORGANIZATION, MAELSTROM_NAME);
+	if (!prefspath) {
+		error("Couldn't get preferences path for this platform\n");
+		return false;
+	}
 	if (!PHYSFS_setWriteDir(prefspath)) {
-			error("Couldn't set write directory to %s: %s\n", prefspath, PHYSFS_getLastError());
-			return false;
+		error("Couldn't set write directory to %s: %s\n", prefspath, PHYSFS_getLastError());
+		return false;
 	}
 
 	/* Put the write directory first in the search path */
