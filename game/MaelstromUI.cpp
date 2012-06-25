@@ -27,6 +27,7 @@
 #include "controls.h"
 #include "about.h"
 #include "game.h"
+#include "gameover.h"
 #include "player.h"
 #include "lobby.h"
 #include "MacDialog.h"
@@ -179,6 +180,8 @@ MaelstromUI::CreatePanelDelegate(UIPanel *panel, const char *delegate)
 		return new LobbyDialogDelegate(panel);
 	} else if (SDL_strcasecmp(delegate, "GamePanel") == 0) {
 		return new GamePanelDelegate(panel);
+	} else if (SDL_strcasecmp(delegate, "GameOverPanel") == 0) {
+		return new GameOverPanelDelegate(panel);
 	} else if (SDL_strcasecmp(delegate, "ControlsDialog") == 0) {
 		return new ControlsDialogDelegate(panel);
 	}

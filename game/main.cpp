@@ -277,33 +277,31 @@ extern "C" void ShowFrame(void*);
 extern "C"
 void ShowFrame(void*)
 {
-	SDL_Event event;
-
-	// If we got a reply event, start it up!
-	if (gReplayFile) {
-		RunReplayGame(gReplayFile);
-		SDL_free(gReplayFile);
-		gReplayFile = NULL;
-	}
-
 	ui->Draw();
 
-	/* -- In case we were faded out */
-	screen->FadeIn();
-
-	/* -- Get events */
-	while ( screen->PollEvent(&event) ) {
-		if ( ui->HandleEvent(event) )
-			continue;
-
-		/* -- Handle file drop requests */
-		if ( event.type == SDL_DROPFILE ) {
-			gReplayFile = event.drop.file;
+	if (!gGameOn) {
+		// If we got a reply event, start it up!
+		if (gReplayFile) {
+			RunReplayGame(gReplayFile);
+			SDL_free(gReplayFile);
+			gReplayFile = NULL;
 		}
 
-		/* -- Handle window close requests */
-		if ( event.type == SDL_QUIT ) {
-			RunQuitGame(0);
+		/* -- Get events */
+		SDL_Event event;
+		while ( screen->PollEvent(&event) ) {
+			if ( ui->HandleEvent(event) )
+				continue;
+
+			/* -- Handle file drop requests */
+			if ( event.type == SDL_DROPFILE ) {
+				gReplayFile = event.drop.file;
+			}
+
+			/* -- Handle window close requests */
+			if ( event.type == SDL_QUIT ) {
+				RunQuitGame(0);
+			}
 		}
 	}
 }
@@ -361,11 +359,14 @@ int MaelstromMain(int argc, char *argv[])
 
 	// Set up the game to run in the window animation callback on iOS
 	// so that Game Center and so forth works correctly.
-	SDL_iPhoneSetAnimationCallback(screen->GetWindow(), 1, ShowFrame, 0);
+	SDL_iPhoneSetAnimationCallback(screen->GetWindow(), 2, ShowFrame, 0);
 #else
 	while ( gRunning ) {
 		ShowFrame(0);
-		DelayFrame();
+
+		if (!gGameOn || !gGameInfo.turbo) {
+			DelayFrame();
+		}
 	}
 	CleanUp();
 #endif

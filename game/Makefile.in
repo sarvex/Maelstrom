@@ -50,11 +50,11 @@ libgame_a_AR = $(AR) $(ARFLAGS)
 libgame_a_LIBADD =
 am_libgame_a_OBJECTS = MacDialog.$(OBJEXT) MaelstromUI.$(OBJEXT) \
 	about.$(OBJEXT) controls.$(OBJEXT) fastrand.$(OBJEXT) \
-	game.$(OBJEXT) gameinfo.$(OBJEXT) init.$(OBJEXT) \
-	load.$(OBJEXT) lobby.$(OBJEXT) main.$(OBJEXT) make.$(OBJEXT) \
-	myerror.$(OBJEXT) netplay.$(OBJEXT) object.$(OBJEXT) \
-	objects.$(OBJEXT) player.$(OBJEXT) rect.$(OBJEXT) \
-	replay.$(OBJEXT) scores.$(OBJEXT)
+	game.$(OBJEXT) gameinfo.$(OBJEXT) gameover.$(OBJEXT) \
+	init.$(OBJEXT) load.$(OBJEXT) lobby.$(OBJEXT) main.$(OBJEXT) \
+	make.$(OBJEXT) myerror.$(OBJEXT) netplay.$(OBJEXT) \
+	object.$(OBJEXT) objects.$(OBJEXT) player.$(OBJEXT) \
+	rect.$(OBJEXT) replay.$(OBJEXT) scores.$(OBJEXT)
 libgame_a_OBJECTS = $(am_libgame_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/build-scripts/depcomp
@@ -201,6 +201,8 @@ libgame_a_SOURCES = \
 	game.h			\
 	gameinfo.cpp		\
 	gameinfo.h		\
+	gameover.cpp		\
+	gameover.h		\
 	init.cpp		\
 	init.h			\
 	load.cpp		\
@@ -285,6 +287,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fastrand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/game.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gameinfo.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gameover.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/init.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/load.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lobby.Po@am__quote@

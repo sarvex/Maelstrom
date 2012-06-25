@@ -20,56 +20,30 @@
     slouken@libsdl.org
 */
 
-#ifndef _game_h
-#define _game_h
+#ifndef _gameover_h
+#define _gameover_h
 
-/* ----------------------------------------------------------------- */
-/* -- UI */
+#include "protocol.h"
 
-class UIElement;
-
-class GamePanelDelegate : public UIPanelDelegate
+class GameOverPanelDelegate : public UIPanelDelegate
 {
 public:
-	GamePanelDelegate(UIPanel *panel) : UIPanelDelegate(panel) { }
+	GameOverPanelDelegate(UIPanel *panel) : UIPanelDelegate(panel) { }
 
-	virtual bool OnLoad();
 	virtual void OnShow();
 	virtual void OnHide();
 	virtual void OnTick();
-	virtual void OnDraw();
+	virtual bool HandleEvent(const SDL_Event &event);
 
 protected:
-	void DrawStatus(Bool first);
-	bool UpdateGameState();
-	void DoHousekeeping();
-	void DoBonus();
-	void NextWave();
-	void GameOver();
+	void BeginEnterName();
+	void FinishEnterName();
 
 protected:
-	UIElement *m_score;
-	UIElement *m_shield;
-	UIElement *m_wave;
-	UIElement *m_lives;
-	UIElement *m_bonus;
-
-	UIElement *m_multiplier[4];
-	UIElement *m_autofire;
-	UIElement *m_airbrakes;
-	UIElement *m_lucky;
-	UIElement *m_triplefire;
-	UIElement *m_longfire;
-
-	UIElement *m_multiplayerCaption;
-	UIElement *m_multiplayerColor;
-	UIElement *m_fragsLabel;
-	UIElement *m_frags;
+	UIElement *m_handleLabel;
+	int m_handleSize;
+	char m_handle[MAX_NAMELEN+1];
+	Uint32 m_showTime;
 };
 
-/* ----------------------------------------------------------------- */
-/* -- Game functions */
-
-extern void NewGame(void);
-
-#endif // _game_h
+#endif // _gameover_h

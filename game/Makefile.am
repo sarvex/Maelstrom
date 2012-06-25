@@ -19,6 +19,8 @@ libgame_a_SOURCES =		\
 	game.h			\
 	gameinfo.cpp		\
 	gameinfo.h		\
+	gameover.cpp		\
+	gameover.h		\
 	init.cpp		\
 	init.h			\
 	load.cpp		\

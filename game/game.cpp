@@ -55,9 +55,6 @@ int	gFreezeTime;
 Object *gEnemySprite;
 int	gWhenEnemy;
 
-// Local functions used in the game module of Maelstrom
-static void DoGameOver(void);
-
 /* ----------------------------------------------------------------- */
 /* -- Setup the players for a new game */
 
@@ -115,32 +112,6 @@ void NewGame(void)
 #ifdef USE_TOUCHCONTROL
 	ui->ShowPanel("touchcontrol");
 #endif
-
-	/* Play the game, dammit! */
-	while (gGameOn) {
-		ui->Draw();
-
-		/* -- In case we were faded out in DoBonus() */
-		screen->FadeIn();
-
-		/* Timing handling -- Delay the FRAME_DELAY */
-		if ( ! gGameInfo.turbo ) {
-			DelayFrame();
-		}
-	}
-	
-#ifdef USE_TOUCHCONTROL
-	ui->HidePanel("touchcontrol");
-#endif
-	ui->HidePanel(PANEL_GAME);
-
-/* -- Do the game over stuff */
-
-	DoGameOver();
-
-	QuitPlayerControls();
-
-	ui->ShowPanel(PANEL_MAIN);
 }	/* -- NewGame */
 
 bool
@@ -231,6 +202,8 @@ GamePanelDelegate::OnShow()
 void
 GamePanelDelegate::OnHide()
 {
+	gGameOn = 0;
+
 	/* -- Kill any existing sprites */
 	while (gNumSprites > 0)
 		delete gSprites[gNumSprites-1];
@@ -259,7 +232,7 @@ GamePanelDelegate::OnTick()
 
 	/* -- Send Sync! signal to all players, and handle keyboard. */
 	if (!gReplay.HandlePlayback()) {
-		gGameOn = 0;
+		GameOver();
 		return;
 	}
 
@@ -267,7 +240,7 @@ GamePanelDelegate::OnTick()
 
 	// Update state and see if the local player aborted
 	if ( !UpdateGameState() ) {
-		gGameOn = 0;
+		GameOver();
 		return;
 	}
 	switch (syncResult) {
@@ -278,12 +251,12 @@ GamePanelDelegate::OnTick()
 		case SYNC_CORRUPT:
 			// Uh oh...
 			error("Network sync error, game aborted!\r\n");
-			gGameOn = 0;
+			GameOver();
 			return;
 		case SYNC_NETERROR:
 			// Uh oh...
 			error("Network socket error, game aborted!\r\n");
-			gGameOn = 0;
+			GameOver();
 			return;
 		case SYNC_COMPLETE:
 			break;
@@ -677,7 +650,7 @@ GamePanelDelegate::DoHousekeeping()
 		}
 	}
 	if ( !PlayersLeft ) {
-		gGameOn = 0;
+		GameOver();
 	}
 
 }	/* -- DoHousekeeping */
@@ -974,220 +947,15 @@ GamePanelDelegate::NextWave()
 }	/* -- NextWave */
 
 /* ----------------------------------------------------------------- */
-/* -- Do the game over display */
+/* -- End the game */
 
-struct FinalScore {
-	int Player;
-	int Score;
-	int Frags;
-};
-
-static int cmp_byscore(const void *_A, const void *_B)
+void
+GamePanelDelegate::GameOver()
 {
-	const FinalScore *A = static_cast<const FinalScore*>(_A);
-	const FinalScore *B = static_cast<const FinalScore*>(_B);
-	if (A->Score == B->Score) {
-		// Sort lowest player first
-		return A->Player - B->Player;
-	}
-	return B->Score - A->Score;
-}
-
-static int cmp_byfrags(const void *_A, const void *_B)
-{
-	const FinalScore *A = static_cast<const FinalScore*>(_A);
-	const FinalScore *B = static_cast<const FinalScore*>(_B);
-	if (A->Frags == B->Frags) {
-		return cmp_byscore(A, B);
-	}
-	return B->Frags - A->Frags;
-}
-
-static void DoGameOver(void)
-{
-	UIPanel *panel;
-	UIElement *image;
-	UIElement *label;
-	SDL_Event event;
-	int which = -1, i;
-	char handle[MAX_NAMELEN+1];
-	char key;
-	int chars_in_handle = 0;
-	Bool done = false;
-
-	gReplay.HandleGameOver();
-
-	/* Get the final scoring */
-	struct FinalScore *final = new struct FinalScore[MAX_PLAYERS];
-	for ( i=0; i<MAX_PLAYERS; ++i ) {
-		final[i].Player = i+1;
-		final[i].Score = gPlayers[i]->GetScore();
-		final[i].Frags = gPlayers[i]->GetFrags();
-	}
-	if ( gGameInfo.IsDeathmatch() )
-		qsort(final,MAX_PLAYERS,sizeof(struct FinalScore),cmp_byfrags);
-	else
-		qsort(final,MAX_PLAYERS,sizeof(struct FinalScore),cmp_byscore);
-
-	panel = ui->GetPanel(PANEL_GAMEOVER);
-	assert(panel);	// There's cleanup further down we need to do...
-	panel->HideAll();
-
-	image = panel->GetElement<UIElement>("image");
-	if (image) {
-		image->Show();
-	}
-
-	/* Show the player ranking */
-	if ( gGameInfo.IsMultiplayer() ) {
-		int nextLabel = 1;
-		for (i = 0; i < MAX_PLAYERS; ++i) {
-			if (!gPlayers[final[i].Player-1]->IsValid()) {
-				continue;
-			}
-
-			char name[32];
-			char buffer[BUFSIZ], num1[12], num2[12];
-
-			SDL_snprintf(name, sizeof(name), "rank%d", nextLabel);
-			image = panel->GetElement<UIElement>(name);
-			if (image) {
-				SDL_snprintf(name, sizeof(name), "Images/player%d.bmp", final[i].Player);
-				image->SetImage(name);
-				image->Show();
-			}
-
-			SDL_snprintf(name, sizeof(name), "rank%d_label", nextLabel++);
-			label = panel->GetElement<UIElement>(name);
-			if (!label) {
-				continue;
-			}
-			if (gGameInfo.IsDeathmatch()) {
-				SDL_snprintf(num1, sizeof(num1), "%7d", final[i].Score);
-				SDL_snprintf(num2, sizeof(num2), "%3d", final[i].Frags);
-				SDL_snprintf(buffer, sizeof(buffer), "%s Points, %s Frags", num1, num2);
-			} else {
-				SDL_snprintf(num1, sizeof(num1), "%7d", final[i].Score);
-				SDL_snprintf(buffer, sizeof(buffer), "%s Points", num1);
-			}
-			label->SetText(buffer);
-			label->Show();
-		}
-	}
-
+#ifdef USE_TOUCHCONTROL
+	ui->HidePanel("touchcontrol");
+#endif
 	ui->ShowPanel(PANEL_GAMEOVER);
 
-	/* -- Wait for the game over sound */
-	while( sound->Playing() )
-		Delay(SOUND_DELAY);
-
-	/* -- See if they got a high score */
-	if (gReplay.IsRecording() && !gGameInfo.IsMultiplayer() &&
-	    (gGameInfo.wave == 1) && (gGameInfo.lives == 3) &&
-	    TheShip->GetScore() > 0) {
-		for ( i = 0; i<NUM_SCORES; ++i ) {
-			if ( TheShip->GetScore() >= (int)hScores[i].score ) {
-				which = i;
-				break;
-			}
-		}
-	}
-
-	gLastHigh = which;
-
-	if (which != -1) {
-		sound->PlaySound(gBonusShot, 5);
-
-		/* -- Let them enter their name */
-		const char *text = NULL;
-		label = panel->GetElement<UIElement>("name_label");
-		if (label) {
-			label->Show();
-		}
-		label = panel->GetElement<UIElement>("name");
-		if (label) {
-			text = label->GetText();
-			label->Show();
-		}
-		ui->Draw();
-
-		/* Get the previously used handle, if possible */
-		if (text) {
-			SDL_strlcpy(handle, text, sizeof(handle));
-		} else {
-			*handle = '\0';
-		}
-		chars_in_handle = SDL_strlen(handle);
-
-		while ( screen->PollEvent(&event) ) /* Loop, flushing events */;
-		screen->EnableTextInput();
-		while ( label && !done ) {
-			screen->WaitEvent(&event);
-
-			if ( event.type == SDL_KEYUP ) {
-				switch (event.key.keysym.sym) {
-					case SDLK_RETURN:
-						done = true;
-						break;
-					case SDLK_DELETE:
-					case SDLK_BACKSPACE:
-						if ( chars_in_handle ) {
-							sound->PlaySound(gExplosionSound, 5);
-							--chars_in_handle;
-							handle[chars_in_handle] = '\0';
-						}
-						break;
-					default:
-						break;
-				}
-			} else if ( event.type == SDL_TEXTINPUT ) {
-				/* FIXME: No true UNICODE support in font */
-				key = event.text.text[0];
-				if (key >= ' ' && key <= '~') {
-					if ( chars_in_handle < MAX_NAMELEN ) {
-						sound->PlaySound(gShotSound, 5);
-						handle[chars_in_handle++] = key;
-						handle[chars_in_handle] = '\0';
-					} else
-						sound->PlaySound(gBonk, 5);
-				}
-			}
-			if (label ) {
-				label->SetText(handle);
-			}
-			ui->Draw();
-		}
-		screen->DisableTextInput();
-
-		if (*handle) {
-			GameInfo &info = gReplay.GetGameInfo();
-			info.SetPlayerName(gDisplayed, handle);
-			gReplay.Save();
-			LoadScores();
-		}
-
-		sound->HaltSound();
-		sound->PlaySound(gGotPrize, 6);
-
-	} else if ( gGameInfo.IsMultiplayer() )	/* Let them watch their ranking */
-		SDL_Delay(3000);
-
-	if (gReplay.IsRecording()) {
-		// Save this as the last game
-		gReplay.Save(LAST_REPLAY);
-	}
-	gReplay.SetMode(REPLAY_IDLE);
-
-	/* Make sure we clear the game info so we don't crash trying to
-	   update UI in a future replay
-	*/
-	gGameInfo.Reset();
-
-	while ( sound->Playing() )
-		Delay(SOUND_DELAY);
-	HandleEvents(0);
-
-	ui->HidePanel(PANEL_GAMEOVER);
-
-}	/* -- DoGameOver */
-
+	QuitPlayerControls();
+}

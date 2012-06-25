@@ -183,7 +183,6 @@ UIManager::ShowPanel(UIPanel *panel)
 		panel->Show();
 		if (panel->IsFullscreen()) {
 			Draw();
-			m_screen->FadeIn();
 		}
 		if (!panel->IsCursorVisible()) {
 			m_screen->HideCursor();
@@ -258,6 +257,7 @@ UIManager::Draw(bool fullUpdate)
 	}
 	if (fullUpdate) {
 		m_screen->Update();
+		m_screen->FadeIn();
 	}
 
 	// Clean up any deleted panels when we're done...
