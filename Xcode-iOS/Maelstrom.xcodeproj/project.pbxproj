@@ -10,7 +10,6 @@
 		93D8E49B15911A6700BD8D0E /* libSDL2_net.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 938A44A2157D55870081A436 /* libSDL2_net.a */; };
 		93D8E49C15911A6C00BD8D0E /* libSDL2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 938A44AE157D55AE0081A436 /* libSDL2.a */; };
 		93D8E49D15911A7400BD8D0E /* libphysfs.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 93D8E493159116B400BD8D0E /* libphysfs.a */; };
-		93D8E4A415911CDC00BD8D0E /* Maelstrom-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 93D8E4A315911CDC00BD8D0E /* Maelstrom-Info.plist */; };
 		AA0777CE145EB56C00DB8DB3 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA0777CD145EB56C00DB8DB3 /* OpenGLES.framework */; };
 		AA0777D2145EB60A00DB8DB3 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA0777D1145EB60A00DB8DB3 /* AudioToolbox.framework */; };
 		AA0777D4145EB68300DB8DB3 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA0777D3145EB68300DB8DB3 /* QuartzCore.framework */; };
@@ -677,7 +676,7 @@
 		AAD13B74145E8A8F0040B19C /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0430;
 			};
 			buildConfigurationList = AAD13B77145E8A8F0040B19C /* Build configuration list for PBXProject "Maelstrom" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -751,7 +750,6 @@
 				AA319E20145EDA6400384943 /* Maelstrom_small.png in Resources */,
 				AA769FE0146A679C001C5008 /* Maelstrom_ipad.png in Resources */,
 				AA9781BC1576A14D00472542 /* Maelstrom_Data.zip in Resources */,
-				93D8E4A415911CDC00BD8D0E /* Maelstrom-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
