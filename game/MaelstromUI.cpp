@@ -207,6 +207,8 @@ MaelstromUI::CreateElement(UIBaseElement *parent, const char *type, const char *
 		element = new UIContainer(parent, name, new UIDrawEngine());
 	} else if (SDL_strcasecmp(type, "Button") == 0) {
 		element = new UIElementButton(parent, name, new UIDrawEngine());
+	} else if (SDL_strcasecmp(type, "Checkbox") == 0) {
+		element = new UIElementCheckbox(parent, name, new UIDrawEngine());
 	} else if (SDL_strcasecmp(type, "Icon") == 0) {
 		element = new UIElement(parent, name, new UIDrawEngineIcon());
 	} else if (SDL_strcasecmp(type, "Sprite") == 0) {

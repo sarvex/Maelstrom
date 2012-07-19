@@ -39,6 +39,7 @@
 #include "about.h"
 #include "game.h"
 #include "netplay.h"
+#include "features.h"
 #include "main.h"
 
 #include "../screenlib/UIDialog.h"
@@ -80,6 +81,20 @@ static void RunPlayGame(void*)
 	gGameInfo.SetHost(DEFAULT_START_WAVE, DEFAULT_START_LIVES, DEFAULT_START_TURBO, 0, prefs->GetBool(PREFERENCES_KIDMODE));
 	gGameInfo.SetPlayerSlot(0, prefs->GetString(PREFERENCES_HANDLE), CONTROL_LOCAL);
 	RunSinglePlayerGame();
+}
+static void RunMultiplayerGame(void*)
+{
+	UIDialog *dialog;
+
+	if (!HasFeature(FEATURE_NETWORK)) {
+		ShowFeature(FEATURE_NETWORK);
+		return;
+	}
+
+	dialog = ui->GetPanel<UIDialog>(DIALOG_LOBBY);
+	if (dialog) {
+		ui->ShowPanel(dialog);
+	}
 }
 static void RunReplayGame(const char *file)
 {
@@ -186,6 +201,19 @@ static void CheatDialogDone(UIDialog *dialog, int status)
 static void RunScreenshot(void*)
 {
 	screen->ScreenDump("ScoreDump", 64, 48, 298, 384);
+}
+static void UpdateKidMode(void *param)
+{
+	UIElementCheckbox *checkbox = (UIElementCheckbox*)param;
+
+	if (checkbox->IsChecked()) {
+		if (!HasFeature(FEATURE_KIDMODE)) {
+			ShowFeature(FEATURE_KIDMODE);
+			checkbox->SetChecked(false);
+		}
+	}
+
+	checkbox->SaveData(prefs);
 }
 
 class RunReplayCallback : public UIClickCallback
@@ -389,6 +417,7 @@ MainPanelDelegate::OnLoad()
 	int i;
 	UIElement *label;
 	UIElementButton *button;
+	UIElementCheckbox *checkbox;
 
 	/* Set the version */
 	label = m_panel->GetElement<UIElement>("version");
@@ -403,7 +432,7 @@ MainPanelDelegate::OnLoad()
 	}
 	button = m_panel->GetElement<UIElementButton>("MultiplayerButton");
 	if (button) {
-		button->SetClickCallback(new UIDialogLauncher(ui, DIALOG_LOBBY));
+		button->SetClickCallback(RunMultiplayerGame);
 	}
 	button = m_panel->GetElement<UIElementButton>("ControlsButton");
 	if (button) {
@@ -444,6 +473,10 @@ MainPanelDelegate::OnLoad()
 	button = m_panel->GetElement<UIElementButton>("Screenshot");
 	if (button) {
 		button->SetClickCallback(RunScreenshot);
+	}
+	checkbox = m_panel->GetElement<UIElementCheckbox>("KidMode");
+	if (checkbox) {
+		checkbox->SetClickCallback(UpdateKidMode, checkbox);
 	}
 
 	for (i = 0; i < 9; ++i) {

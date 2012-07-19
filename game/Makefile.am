@@ -15,6 +15,8 @@ libgame_a_SOURCES =		\
 	controls.h		\
 	fastrand.cpp		\
 	fastrand.h		\
+	features.cpp		\
+	features.h		\
 	game.cpp		\
 	game.h			\
 	gameinfo.cpp		\

@@ -32,6 +32,7 @@
 #include "player.h"
 #include "colortable.h"
 #include "fastrand.h"
+#include "features.h"
 #include "MaelstromUI.h"
 #include "../screenlib/UIElement.h"
 
@@ -684,6 +685,9 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 
 	// -- Load our controls
 	LoadControls();
+
+	// -- Load our features
+	InitFeatures();
 
 	Uint32 init_flags = (SDL_INIT_VIDEO|SDL_INIT_AUDIO);
 #ifdef SDL_INIT_JOYSTICK

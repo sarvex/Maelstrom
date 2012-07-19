@@ -42,6 +42,9 @@ public:
 	void SetChecked(bool checked) {
 		if (checked != m_checked) {
 			m_checked = checked;
+			if (m_images[m_checked]) {
+				SetImage(m_images[m_checked]);
+			}
 			OnChecked(checked);
 		}
 	}
@@ -58,6 +61,7 @@ protected:
 protected:
 	bool m_checked;
 	char *m_valueBinding;
+	char *m_images[2];
 };
 
 #endif // _UIElementCheckbox_h

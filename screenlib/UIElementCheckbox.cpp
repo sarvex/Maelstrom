@@ -29,6 +29,9 @@ UIElementCheckbox::UIElementCheckbox(UIBaseElement *parent, const char *name, UI
 {
 	m_checked = false;
 	m_valueBinding = NULL;
+	for (int i = 0; i < SDL_arraysize(m_images); ++i) {
+		m_images[i] = NULL;
+	}
 }
 
 UIElementCheckbox::~UIElementCheckbox()
@@ -36,13 +39,29 @@ UIElementCheckbox::~UIElementCheckbox()
 	if (m_valueBinding) {
 		SDL_free(m_valueBinding);
 	}
+	for (int i = 0; i < SDL_arraysize(m_images); ++i) {
+		if (m_images[i]) {
+			SDL_free(m_images[i]);
+		}
+	}
 }
 
 bool
 UIElementCheckbox::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 {
+	rapidxml::xml_attribute<> *attr;
+
 	if (!UIElementButton::Load(node, templates)) {
 		return false;
+	}
+
+	attr = node->first_attribute("checkedImage", 0, false);
+	if (attr) {
+		m_images[1] = SDL_strdup(attr->value());
+		attr = node->first_attribute("image", 0, false);
+		if (attr) {
+			m_images[0] = SDL_strdup(attr->value());
+		}
 	}
 
 	/* Call SetChecked() to trigger derived classes' behaviors */
