@@ -121,7 +121,8 @@ void GameOverPanelDelegate::OnShow()
 
 	/* -- See if they got a high score */
 	m_handleLabel = NULL;
-	if (gReplay.IsRecording() && !gGameInfo.IsMultiplayer() &&
+	if (gReplay.IsRecording() &&
+	    !gGameInfo.IsMultiplayer() && !gGameInfo.IsKidMode() &&
 	    (gGameInfo.wave == 1) && (gGameInfo.lives == 3) &&
 	    TheShip->GetScore() > 0) {
 		for ( i = 0; i<NUM_SCORES; ++i ) {
