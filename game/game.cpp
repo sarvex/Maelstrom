@@ -55,6 +55,8 @@ int	gFreezeTime;
 Object *gEnemySprite;
 int	gWhenEnemy;
 
+int	gShownContinue;
+
 /* ----------------------------------------------------------------- */
 /* -- Setup the players for a new game */
 
@@ -107,12 +109,31 @@ void NewGame(void)
 			return;
 		}
 	}
+	gShownContinue = 0;
 
 	ui->ShowPanel(PANEL_GAME);
 #ifdef USE_TOUCHCONTROL
 	ui->ShowPanel("touchcontrol");
 #endif
 }	/* -- NewGame */
+
+void ContinueGame(void)
+{
+	int i;
+
+	if (gReplay.IsPlaying()) {
+		gReplay.ConsumeContinue();
+	} else {
+		gReplay.RecordContinue();
+	}
+	OBJ_LOOP(i, MAX_PLAYERS) {
+		if (!gPlayers[i]->IsValid()) {
+			continue;
+		}
+		gPlayers[i]->Continue(gGameInfo.lives);
+	}
+	gShownContinue = 0;
+}
 
 bool
 GamePanelDelegate::OnLoad()
@@ -650,7 +671,18 @@ GamePanelDelegate::DoHousekeeping()
 		}
 	}
 	if ( !PlayersLeft ) {
-		GameOver();
+		if (gReplay.IsPlaying()) {
+			if (gReplay.HasContinues()) {
+				ContinueGame();
+			} else {
+				GameOver();
+			}
+		} else if (!gGameInfo.IsMultiplayer() && !gShownContinue) {
+			gShownContinue = 1;
+			ui->ShowPanel(PANEL_CONTINUE);
+		} else {
+			GameOver();
+		}
 	}
 
 }	/* -- DoHousekeeping */

@@ -57,6 +57,7 @@ public:
 		return(Playing && !IsGhost());
 	}
 	virtual void NewGame(int lives);
+	        void Continue(int lives);
 	virtual void NewWave(void);
 	/* NewShip() MUST be called before Move() */
 	virtual int NewShip(void);

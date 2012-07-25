@@ -47,6 +47,7 @@
 #define PREFERENCES_HANDLE "Handle"
 #define PREFERENCES_DEATHMATCH "Network.Deathmatch"
 #define PREFERENCES_KIDMODE "Cheat.KidMode"
+#define PREFERENCES_CONTINUES "Cheat.Continues"
 
 // The Font Server :)
 extern FontServ *fontserv;
@@ -156,6 +157,7 @@ extern int	gNumSprites;
 #define PANEL_MAIN	"main"
 #define PANEL_GAME	"game"
 #define PANEL_BONUS	"bonus"
+#define PANEL_CONTINUE	"continue"
 #define PANEL_GAMEOVER	"gameover"
 #define PANEL_ABOUT	"about_story"
 #define DIALOG_LOBBY	"lobby"

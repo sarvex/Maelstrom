@@ -161,6 +161,9 @@ Replay::Load(const char *file, bool headerOnly)
 	if (!PHYSFS_readBytes(fp, &m_finalWave, 1)) {
 		goto physfs_read_error;
 	}
+	if (!PHYSFS_readBytes(fp, &m_finalContinues, 1)) {
+		goto physfs_read_error;
+	}
 	for (int i = 0; i < MAX_PLAYERS; ++i) {
 		if (!PHYSFS_readULE32(fp, &m_finalScore[i].Score)) {
 			goto physfs_read_error;
@@ -180,7 +183,7 @@ Replay::Load(const char *file, bool headerOnly)
 	}
 	data.len = size;
 	if (!m_game.ReadFromPacket(data)) {
-		fprintf(stderr, "Couldn't read game information from %s", file);
+		fprintf(stderr, "Couldn't read game information from %s\n", file);
 		goto error_return;
 	}
 
@@ -257,6 +260,9 @@ Replay::Save(const char *file)
 	if (!PHYSFS_writeBytes(fp, &m_finalWave, 1)) {
 		goto physfs_write_error;
 	}
+	if (!PHYSFS_writeBytes(fp, &m_finalContinues, 1)) {
+		goto physfs_write_error;
+	}
 	for (int i = 0; i < MAX_PLAYERS; ++i) {
 		if (!PHYSFS_writeULE32(fp, m_finalScore[i].Score)) {
 			goto physfs_write_error;
@@ -324,6 +330,7 @@ Replay::HandleNewGame()
 		m_frameCount = 0;
 		m_finalPlayer = 0;
 		m_finalWave = 0;
+		m_finalContinues = 0;
 		SDL_zero(m_finalScore);
 
 	} else if (m_mode == REPLAY_PLAYBACK) {

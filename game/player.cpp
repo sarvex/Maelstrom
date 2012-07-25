@@ -85,6 +85,14 @@ Player::NewGame(int lives)
 	Ghost = 0;
 	NewShip();
 }
+void
+Player::Continue(int lives)
+{
+	Playing = 1;
+	Lives = lives;
+	Ghost = 0;
+	NewShip();
+}
 void 
 Player::NewWave(void)
 {

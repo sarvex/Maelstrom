@@ -121,7 +121,7 @@ void GameOverPanelDelegate::OnShow()
 
 	/* -- See if they got a high score */
 	m_handleLabel = NULL;
-	if (gReplay.IsRecording() &&
+	if (gReplay.IsRecording() && !gReplay.HasContinues() &&
 	    !gGameInfo.IsMultiplayer() && !gGameInfo.IsKidMode() &&
 	    (gGameInfo.wave == 1) && (gGameInfo.lives == 3) &&
 	    TheShip->GetScore() > 0) {
@@ -132,6 +132,8 @@ void GameOverPanelDelegate::OnShow()
 				break;
 			}
 		}
+	} else {
+		gLastHigh = -1;
 	}
 
 	m_showTime = SDL_GetTicks();

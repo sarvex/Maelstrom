@@ -67,6 +67,15 @@ public:
 	int GetFinalWave() const {
 		return m_finalWave;
 	}
+	bool HasContinues() const {
+		return m_finalContinues > 0;
+	}
+	void RecordContinue() {
+		++m_finalContinues;
+	}
+	void ConsumeContinue() {
+		--m_finalContinues;
+	}
 	int GetFinalScore() const {
 		return m_finalScore[GetDisplayPlayer()].Score;
 	}
@@ -99,6 +108,7 @@ protected:
 
 	Uint8 m_finalPlayer;
 	Uint8 m_finalWave;
+	Uint8 m_finalContinues;
 	struct FinalScore {
 		Uint32 Score;
 		Uint8 Frags;

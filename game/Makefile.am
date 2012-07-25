@@ -11,6 +11,8 @@ libgame_a_SOURCES =		\
 	about.cpp		\
 	about.h			\
 	colortable.h		\
+	continue.cpp		\
+	continue.h		\
 	controls.cpp		\
 	controls.h		\
 	fastrand.cpp		\
