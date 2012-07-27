@@ -6,6 +6,8 @@ libutils_a_SOURCES =	\
 	array.h		\
 	hashtable.c	\
 	hashtable.h	\
+	loadxml.cpp	\
+	loadxml.h	\
 	physfsrwops.c	\
 	physfsrwops.h	\
 	prefs.cpp	\

@@ -19,7 +19,7 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-#include "physfs.h"
+#include "../utils/loadxml.h"
 
 #include "SDL_FrameBuf.h"
 #include "UIManager.h"
@@ -48,7 +48,7 @@ void
 UIManager::SetLoadPath(const char *path)
 {
 	delete[] m_loadPath;
-    size_t size = SDL_strlen(path)+1;
+	size_t size = SDL_strlen(path)+1;
 	m_loadPath = new char[size];
 	SDL_strlcpy(m_loadPath, path, size);
 }
@@ -70,37 +70,11 @@ UIManager::LoadPanel(const char *name)
 	panel = GetPanel(name, false);
 	if (!panel) {
 		char file[1024];
-		PHYSFS_File *fp;
-		PHYSFS_sint64 size;
 		char *buffer;
+		rapidxml::xml_document<> doc;
 
 		SDL_snprintf(file, sizeof(file), "%s/%s.xml", m_loadPath, name);
-		fp = PHYSFS_openRead(file);
-		if (!fp) {
-			fprintf(stderr, "Warning: Couldn't open %s: %s\n",
-						file, PHYSFS_getLastError());
-			return NULL;
-		}
-
-		size = PHYSFS_fileLength(fp);
-		buffer = new char[size+1];
-		if (PHYSFS_readBytes(fp, buffer, size) != size) {
-			fprintf(stderr, "Warning: Couldn't read from %s: %s\n",
-						file, PHYSFS_getLastError());
-			PHYSFS_close(fp);
-			delete[] buffer;
-			return NULL;
-		}
-		buffer[size] = '\0';
-		PHYSFS_close(fp);
-
-		rapidxml::xml_document<> doc;
-		try {
-			doc.parse<0>(buffer);
-		} catch (rapidxml::parse_error e) {
-			fprintf(stderr, "Warning: Couldn't parse %s: error: %s\n",
-						file, e.what());
-			delete[] buffer;
+		if (!LoadXML(file, buffer, doc)) {
 			return NULL;
 		}
 

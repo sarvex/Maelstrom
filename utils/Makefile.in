@@ -41,15 +41,15 @@ am__aclocal_m4_deps = $(top_srcdir)/acinclude/check_zlib.m4 \
 	$(top_srcdir)/configure.in
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
-mkinstalldirs = $(SHELL) $(top_srcdir)/build-scripts/mkinstalldirs
+mkinstalldirs = $(install_sh) -d
 CONFIG_CLEAN_FILES =
 LIBRARIES = $(noinst_LIBRARIES)
 AR = ar
 ARFLAGS = cru
 libutils_a_AR = $(AR) $(ARFLAGS)
 libutils_a_LIBADD =
-am_libutils_a_OBJECTS = hashtable.$(OBJEXT) physfsrwops.$(OBJEXT) \
-	prefs.$(OBJEXT)
+am_libutils_a_OBJECTS = hashtable.$(OBJEXT) loadxml.$(OBJEXT) \
+	physfsrwops.$(OBJEXT) prefs.$(OBJEXT)
 libutils_a_OBJECTS = $(am_libutils_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/build-scripts/depcomp
@@ -183,6 +183,8 @@ libutils_a_SOURCES = \
 	array.h		\
 	hashtable.c	\
 	hashtable.h	\
+	loadxml.cpp	\
+	loadxml.h	\
 	physfsrwops.c	\
 	physfsrwops.h	\
 	prefs.cpp	\
@@ -238,6 +240,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hashtable.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/loadxml.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/physfsrwops.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prefs.Po@am__quote@
 
