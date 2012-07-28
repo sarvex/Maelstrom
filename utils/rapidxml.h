@@ -19,6 +19,7 @@
 #ifndef _rapidxml_h
 #define _rapidxml_h
 
+#ifndef USE_STL
 #define RAPIDXML_NO_STDLIB
 
 #include <assert.h>
@@ -29,6 +30,8 @@ namespace std
 }
 
 extern inline void * operator new (size_t, void * p) throw() { return p ; }
+
+#endif // !USE_STL
 
 #include "rapidxml.hpp"
 
