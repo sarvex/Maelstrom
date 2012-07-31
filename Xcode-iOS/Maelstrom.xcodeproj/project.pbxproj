@@ -61,6 +61,9 @@
 		AA9781B91576A03700472542 /* replay.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA9781A01576A03700472542 /* replay.cpp */; };
 		AA9781BA1576A03700472542 /* scores.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA9781A21576A03700472542 /* scores.cpp */; };
 		AA9781BC1576A14D00472542 /* Maelstrom_Data.zip in Resources */ = {isa = PBXBuildFile; fileRef = AA9781BB1576A14D00472542 /* Maelstrom_Data.zip */; };
+		AABDBE1F15C8A6B200C3E936 /* continue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AABDBE1B15C8A6B200C3E936 /* continue.cpp */; };
+		AABDBE2015C8A6B200C3E936 /* features.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AABDBE1D15C8A6B200C3E936 /* features.cpp */; };
+		AABDBE2615C8A6F300C3E936 /* loadxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AABDBE2415C8A6F300C3E936 /* loadxml.cpp */; };
 		AACF51001598BC2C00585701 /* gameover.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AACF50FE1598BC2C00585701 /* gameover.cpp */; };
 		AAD13B82145E8A8F0040B19C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAD13B81145E8A8F0040B19C /* UIKit.framework */; };
 		AAD13B84145E8A8F0040B19C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAD13B83145E8A8F0040B19C /* Foundation.framework */; };
@@ -290,6 +293,12 @@
 		AA9781BB1576A14D00472542 /* Maelstrom_Data.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = Maelstrom_Data.zip; sourceTree = "<group>"; };
 		AA9781BE1576A39F00472542 /* SDL_net.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_net.h; sourceTree = "<group>"; };
 		AA9781BF1576A3BD00472542 /* physfs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = physfs.h; sourceTree = "<group>"; };
+		AABDBE1B15C8A6B200C3E936 /* continue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = continue.cpp; sourceTree = "<group>"; };
+		AABDBE1C15C8A6B200C3E936 /* continue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = continue.h; sourceTree = "<group>"; };
+		AABDBE1D15C8A6B200C3E936 /* features.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = features.cpp; sourceTree = "<group>"; };
+		AABDBE1E15C8A6B200C3E936 /* features.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = features.h; sourceTree = "<group>"; };
+		AABDBE2415C8A6F300C3E936 /* loadxml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = loadxml.cpp; sourceTree = "<group>"; };
+		AABDBE2515C8A6F300C3E936 /* loadxml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = loadxml.h; sourceTree = "<group>"; };
 		AACF50FE1598BC2C00585701 /* gameover.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gameover.cpp; sourceTree = "<group>"; };
 		AACF50FF1598BC2C00585701 /* gameover.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gameover.h; sourceTree = "<group>"; };
 		AAD13B7D145E8A8F0040B19C /* Maelstrom.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Maelstrom.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -516,6 +525,8 @@
 				AA97814B1576A00100472542 /* ErrorBase.h */,
 				AA97814C1576A00100472542 /* hashtable.c */,
 				AA97814D1576A00100472542 /* hashtable.h */,
+				AABDBE2415C8A6F300C3E936 /* loadxml.cpp */,
+				AABDBE2515C8A6F300C3E936 /* loadxml.h */,
 				AA9781501576A00100472542 /* physfsrwops.c */,
 				AA9781511576A00100472542 /* physfsrwops.h */,
 				AA9781521576A00100472542 /* prefs.cpp */,
@@ -532,10 +543,14 @@
 				AA9781751576A03700472542 /* about.cpp */,
 				AA9781761576A03700472542 /* about.h */,
 				AA9781771576A03700472542 /* colortable.h */,
+				AABDBE1B15C8A6B200C3E936 /* continue.cpp */,
+				AABDBE1C15C8A6B200C3E936 /* continue.h */,
 				AA9781781576A03700472542 /* controls.cpp */,
 				AA9781791576A03700472542 /* controls.h */,
 				AA97817A1576A03700472542 /* fastrand.cpp */,
 				AA97817B1576A03700472542 /* fastrand.h */,
+				AABDBE1D15C8A6B200C3E936 /* features.cpp */,
+				AABDBE1E15C8A6B200C3E936 /* features.h */,
 				AA97817C1576A03700472542 /* game.cpp */,
 				AA97817D1576A03700472542 /* game.h */,
 				AA97817E1576A03700472542 /* gameinfo.cpp */,
@@ -803,6 +818,9 @@
 				AA9781BA1576A03700472542 /* scores.cpp in Sources */,
 				AA7557AB1595062C00BBD41B /* Maelstrom_GameKit.mm in Sources */,
 				AACF51001598BC2C00585701 /* gameover.cpp in Sources */,
+				AABDBE1F15C8A6B200C3E936 /* continue.cpp in Sources */,
+				AABDBE2015C8A6B200C3E936 /* features.cpp in Sources */,
+				AABDBE2615C8A6F300C3E936 /* loadxml.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
