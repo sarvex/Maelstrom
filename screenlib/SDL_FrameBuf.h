@@ -206,6 +206,9 @@ public:
 	void HideCursor(void) {
 		SDL_ShowCursor(0);
 	}
+	void GetCursorPosition(int *x, int *y) {
+		SDL_GetMouseState(x, y);
+	}
 	void SetCaption(const char *caption, const char *icon = NULL) {
 		SDL_SetWindowTitle(window, caption);
 	}
