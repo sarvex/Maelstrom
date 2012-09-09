@@ -28,6 +28,9 @@
 
 #include "MacDialog.h"
 
+#define DIALOG_FONT	"Chicago"
+#define DIALOG_FONT_SIZE 12
+
 #define EXPAND_STEPS	30
 
 #define BUTTON_WIDTH	75
@@ -138,7 +141,7 @@ MacDialogDrawEngine::Init(UIElement *element)
 	// Set the default colors and font for dialog elements
 	m_element->SetFillColor(0xFF, 0xFF, 0xFF);
 	m_element->SetColor(0x00, 0x00, 0x00);
-	m_element->SetFont("Chicago", 12, UIFONT_STYLE_NORMAL);
+	m_element->SetFont(DIALOG_FONT, DIALOG_FONT_SIZE, UIFONT_STYLE_NORMAL);
 }
 
 //////////////////////////////////////////////////////////////////////////////
