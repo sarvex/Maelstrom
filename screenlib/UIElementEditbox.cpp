@@ -19,6 +19,7 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
+#include "SDL_FrameBuf.h"
 #include "UIElementEditbox.h"
 
 UIElementType UIElementEditbox::s_elementType;
@@ -124,6 +125,10 @@ UIElementEditbox::HandleEvent(const SDL_Event &event)
 void
 UIElementEditbox::SetFocus(bool focus)
 {
+	if (focus == m_focus) {
+		return;
+	}
+
 	m_focus = focus;
 
 	if (m_focus) {
@@ -140,6 +145,12 @@ UIElementEditbox::SetFocus(bool focus)
 		}
 	} else {
 		SetHighlight(false);
+	}
+
+	if (m_focus) {
+		m_screen->EnableTextInput();
+	} else {
+		m_screen->DisableTextInput();
 	}
 }
 
