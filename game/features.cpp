@@ -43,7 +43,7 @@ bool HasFeature(const char *feature)
 
 static const char *current_feature;
 
-static void FeatureDialogDone(UIDialog *dialog, int status)
+static void FeatureDialogDone(void*, UIDialog *dialog, int status)
 {
 	if (status == 1) {
 		// Buy the feature for this platform
@@ -69,7 +69,7 @@ void ShowFeature(const char *feature)
 	dialog = ui->GetPanel<UIDialog>(DIALOG_FEATURE);
 	if (dialog) {
 		current_feature = feature;
-		dialog->SetDialogHandlers(NULL, FeatureDialogDone);
+		dialog->SetDialogDoneHandler(FeatureDialogDone);
 		ui->ShowPanel(dialog);
 	}
 }

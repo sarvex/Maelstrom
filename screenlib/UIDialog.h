@@ -38,12 +38,12 @@ protected:
 
 /* This function gets called when the dialog is shown.
 */
-typedef void (*UIDialogInitHandler)(UIDialog *dialog);
+typedef void (*UIDialogInitHandler)(void *data, UIDialog *dialog);
 
 /* This function gets called when the dialog is hidden.
    The status defaults to 0, but can be changed by dialog buttons.
  */
-typedef void (*UIDialogDoneHandler)(UIDialog *dialog, int status);
+typedef void (*UIDialogDoneHandler)(void *data, UIDialog *dialog, int status);
 
 class UIDialog : public UIPanel
 {
@@ -51,11 +51,13 @@ DECLARE_TYPESAFE_CLASS(UIPanel)
 public:
 	UIDialog(UIManager *ui, const char *name);
 
-	/* Set a function that's called when the dialog is hidden */
-	void SetDialogHandlers(UIDialogInitHandler handleInit,
-				UIDialogDoneHandler handleDone) {
+	void SetDialogInitHandler(UIDialogInitHandler handleInit, void *data = 0) {
 		m_handleInit = handleInit;
+		m_handleInitData = data;
+	}
+	void SetDialogDoneHandler(UIDialogDoneHandler handleDone, void *data = 0) {
 		m_handleDone = handleDone;
+		m_handleDoneData = data;
 	}
 	void SetDialogStatus(int status) {
 		m_status = status;
@@ -71,7 +73,9 @@ public:
 protected:
 	int m_status;
 	UIDialogInitHandler m_handleInit;
+	void *m_handleInitData;
 	UIDialogDoneHandler m_handleDone;
+	void *m_handleDoneData;
 };
 
 //

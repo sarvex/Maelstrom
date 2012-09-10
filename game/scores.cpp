@@ -108,7 +108,7 @@ void FreeScores(void)
 
 }
 
-void ZapHighScores(UIDialog *dialog, int status)
+void ZapHighScores(void*, UIDialog *dialog, int status)
 {
 	char path[1024];
 

@@ -28,7 +28,7 @@ class UIDialog;
 // Functions from scores.cpp
 extern void LoadScores(void);
 extern void FreeScores(void);
-extern void ZapHighScores(UIDialog *dialog, int status);
+extern void ZapHighScores(void*, UIDialog *dialog, int status);
 
 /* The high scores structure */
 typedef	struct {

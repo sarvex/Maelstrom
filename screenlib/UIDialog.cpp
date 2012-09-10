@@ -32,7 +32,9 @@ UIDialog::UIDialog(UIManager *ui, const char *name) :
 	m_fullscreen = false;
 	m_status = 0;
 	m_handleInit = NULL;
+	m_handleInitData = NULL;
 	m_handleDone = NULL;
+	m_handleDoneData = NULL;
 }
 
 void
@@ -41,7 +43,7 @@ UIDialog::Show()
 	m_status = 0;
 
 	if (m_handleInit) {
-		m_handleInit(this);
+		m_handleInit(m_handleInitData, this);
 	}
 
 	UIPanel::Show();
@@ -53,7 +55,7 @@ UIDialog::Hide()
 	UIPanel::Hide();
 
 	if (m_handleDone) {
-		m_handleDone(this, m_status);
+		m_handleDone(m_handleDoneData, this, m_status);
 	}
 }
 
@@ -101,7 +103,8 @@ UIDialogLauncher::operator()()
 
 	dialog = m_ui->GetPanel<UIDialog>(m_name);
 	if (dialog) {
-		dialog->SetDialogHandlers(m_handleInit, m_handleDone);
+		dialog->SetDialogInitHandler(m_handleInit);
+		dialog->SetDialogDoneHandler(m_handleDone);
 
 		m_ui->ShowPanel(dialog);
 	}

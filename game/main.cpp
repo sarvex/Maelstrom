@@ -151,7 +151,7 @@ static void RunToggleFullscreen(void*)
 {
 	screen->ToggleFullScreen();
 }
-static void CheatDialogInit(UIDialog *dialog)
+static void CheatDialogInit(void*, UIDialog *dialog)
 {
 	UIElementEditbox *editbox;
 
@@ -160,7 +160,7 @@ static void CheatDialogInit(UIDialog *dialog)
 		editbox->SetFocus(true);
 	}
 }
-static void CheatDialogDone(UIDialog *dialog, int status)
+static void CheatDialogDone(void*, UIDialog *dialog, int status)
 {
 	UIElementEditbox *editbox;
 	UIElementCheckbox *checkbox;
