@@ -42,6 +42,10 @@ UIElementEditbox::UIElementEditbox(UIBaseElement *parent, const char *name, UIDr
 UIElementEditbox::~UIElementEditbox()
 {
 	delete[] m_text;
+
+	if (m_focus) {
+		m_screen->DisableTextInput();
+	}
 }
 
 bool
