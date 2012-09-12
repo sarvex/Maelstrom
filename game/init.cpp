@@ -659,6 +659,7 @@ void CleanUp(void)
 		sound = NULL;
 	}
 	if ( prefs ) {
+		prefs->Save();
 		delete prefs;
 		prefs = NULL;
 	}
