@@ -93,6 +93,15 @@ public:
 	void Draw(bool fullUpdate = true);
 	bool HandleEvent(const SDL_Event &event);
 
+	virtual void OnRectChanged() {
+		UIArea::OnRectChanged();
+
+		for (int i = 0; i < m_panels.length(); ++i) {
+			UIPanel *panel = m_panels[i];
+			panel->AutoSize(Width(), Height());
+		}
+	}
+
 public:
 	/* These should be implemented to load UI from XMl */
 	virtual UIPanel *CreatePanel(const char *type, const char *name) {
