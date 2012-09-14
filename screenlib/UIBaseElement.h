@@ -171,6 +171,10 @@ public:
 	virtual void OnRectChanged() {
 		UIArea::OnRectChanged();
 
+		for (int i = 0; i < m_elements.length(); ++i) {
+			UIBaseElement *element = m_elements[i];
+			element->AutoSize(Width(), Height(), true);
+		}
 		if (m_parent) {
 			m_parent->OnChildRectChanged(this);
 		}

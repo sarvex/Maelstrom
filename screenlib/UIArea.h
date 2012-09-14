@@ -62,10 +62,10 @@ public:
 	virtual UIArea *GetAnchorElement(const char *name);
 
 	void SetPosition(int x, int y);
-	void SetSize(int w, int h, bool autosize = false);
-	void SetWidth(int w, bool autosize = false);
-	void SetHeight(int h, bool autosize = false);
-	void AutoSize(int w, int h);
+	void SetSize(int w, int h, bool autosize = false, bool parent = false);
+	void SetWidth(int w, bool autosize = false, bool parent = false);
+	void SetHeight(int h, bool autosize = false, bool parent = false);
+	void AutoSize(int w, int h, bool parent = false);
 	void SetAnchor(AnchorLocation from, AnchorLocation to, UIArea *anchor,
 					int offsetX = 0, int offsetY = 0);
 
@@ -113,6 +113,7 @@ protected:
 
 private:
 	/* This is private so updates can trigger OnRectChanged() */
+	bool m_autosizeParent;
 	bool m_autosizeWidth;
 	bool m_autosizeHeight;
 	SDL_Rect m_rect;

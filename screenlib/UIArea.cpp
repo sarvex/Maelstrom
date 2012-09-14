@@ -25,6 +25,7 @@
 
 UIArea::UIArea(UIArea *anchor, int w, int h) : ErrorBase()
 {
+	m_autosizeParent = true;
 	m_autosizeWidth = true;
 	m_autosizeHeight = true;
 	m_rect.x = 0;
@@ -122,7 +123,7 @@ UIArea::SetPosition(int x, int y) {
 }
 
 void
-UIArea::SetSize(int w, int h, bool autosize)
+UIArea::SetSize(int w, int h, bool autosize, bool parent)
 {
 	if (w != m_rect.w || h != m_rect.h) {
 		m_rect.w = w;
@@ -134,10 +135,13 @@ UIArea::SetSize(int w, int h, bool autosize)
 		m_autosizeWidth = false;
 		m_autosizeHeight = false;
 	}
+	if (!parent) {
+		m_autosizeParent = false;
+	}
 }
 
 void
-UIArea::SetWidth(int w, bool autosize)
+UIArea::SetWidth(int w, bool autosize, bool parent)
 {
 	if (w != m_rect.w) {
 		m_rect.w = w;
@@ -147,10 +151,13 @@ UIArea::SetWidth(int w, bool autosize)
 	if (!autosize) {
 		m_autosizeWidth = false;
 	}
+	if (!parent) {
+		m_autosizeParent = false;
+	}
 }
 
 void
-UIArea::SetHeight(int h, bool autosize)
+UIArea::SetHeight(int h, bool autosize, bool parent)
 {
 	if (h != m_rect.h) {
 		m_rect.h = h;
@@ -160,17 +167,23 @@ UIArea::SetHeight(int h, bool autosize)
 	if (!autosize) {
 		m_autosizeHeight = false;
 	}
+	if (!parent) {
+		m_autosizeParent = false;
+	}
 }
 
 void
-UIArea::AutoSize(int w, int h)
+UIArea::AutoSize(int w, int h, bool parent)
 {
+	if (parent && !m_autosizeParent) {
+		return;
+	}
 	if (m_autosizeWidth && m_autosizeHeight) {
-		SetSize(w, h, true);
+		SetSize(w, h, true, parent);
 	} else if (m_autosizeWidth) {
-		SetWidth(w, true);
+		SetWidth(w, true, parent);
 	} else if (m_autosizeHeight)  {
-		SetHeight(h, true);
+		SetHeight(h, true, parent);
 	}
 }
 

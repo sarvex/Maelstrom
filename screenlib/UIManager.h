@@ -98,7 +98,7 @@ public:
 
 		for (int i = 0; i < m_panels.length(); ++i) {
 			UIPanel *panel = m_panels[i];
-			panel->AutoSize(Width(), Height());
+			panel->AutoSize(Width(), Height(), true);
 		}
 	}
 
