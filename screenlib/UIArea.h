@@ -54,6 +54,7 @@ class UIArea : public ErrorBase
 {
 public:
 	UIArea(UIArea *anchor = NULL, int w = 0, int h = 0);
+	virtual ~UIArea();
 
 	bool Load(rapidxml::xml_node<> *node);
 

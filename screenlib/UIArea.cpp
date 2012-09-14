@@ -41,6 +41,13 @@ UIArea::UIArea(UIArea *anchor, int w, int h) : ErrorBase()
 	}
 }
 
+UIArea::~UIArea()
+{
+	if (m_anchor.element) {
+		m_anchor.element->DelAnchoredArea(this);
+	}
+}
+
 bool
 UIArea::Load(rapidxml::xml_node<> *node)
 {
