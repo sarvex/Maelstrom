@@ -45,14 +45,14 @@ int
 FrameBuf:: Init(int width, int height, Uint32 window_flags, Uint32 render_flags,
 		SDL_Color *colors, SDL_Surface *icon)
 {
-	int w, h;
-
 #ifdef FAST_ITERATION
 	window_flags &= ~SDL_WINDOW_FULLSCREEN;
 #endif
-#ifdef __IPHONEOS__
-	window_flags |= SDL_WINDOW_FULLSCREEN;
-#endif
+//#ifdef __IPHONEOS__
+//	window_flags |= SDL_WINDOW_FULLSCREEN;
+//#endif
+	window_flags |= SDL_WINDOW_RESIZABLE;
+
 	window = SDL_CreateWindow(NULL, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, window_flags);
 	if (!window) {
 		SetError("Couldn't create %dx%d window: %s", 
@@ -66,6 +66,9 @@ FrameBuf:: Init(int width, int height, Uint32 window_flags, Uint32 render_flags,
 		return(-1);
 	}
 
+	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");
+
+/*
 	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB888, SDL_TEXTUREACCESS_TARGET, width, height);
 	if (!texture) {
 		SetError("Couldn't create target texture: %s", SDL_GetError());
@@ -76,8 +79,7 @@ FrameBuf:: Init(int width, int height, Uint32 window_flags, Uint32 render_flags,
 		SetError("Couldn't set render target: %s", SDL_GetError());
 		return(-1);
 	}
-
-	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");
+*/
 
 	/* Set the icon, if any */
 	if ( icon ) {
@@ -85,16 +87,7 @@ FrameBuf:: Init(int width, int height, Uint32 window_flags, Uint32 render_flags,
 	}
 
 	/* Set the output area */
-	SDL_GetWindowSize(window, &w, &h);
-	output.w = w;
-	output.h = (height * w)/width;
-	output.x = (w - output.w) / 2;
-	output.y = (h - output.h) / 2;
-
-	clip.x = rect.x = 0;
-	clip.y = rect.y = 0;
-	clip.w = rect.w = width;
-	clip.h = rect.h = height;
+	UpdateWindowSize(width, height);
 
 	/* Copy the image colormap */
 	if ( colors ) {
@@ -124,6 +117,35 @@ FrameBuf:: SetPalette(SDL_Color *colors)
 
 	for ( i=0; i<256; ++i ) {
 		image_map[i] = MapRGB(colors[i].r, colors[i].g, colors[i].b);
+	}
+}
+
+void
+FrameBuf::ProcessEvent(SDL_Event *event)
+{
+	switch (event->type) {
+	case SDL_WINDOWEVENT:
+		if (event->window.event == SDL_WINDOWEVENT_RESIZED) {
+			SDL_Window *window = SDL_GetWindowFromID(event->window.windowID);
+			int w, h;
+
+			SDL_GetWindowSize(window, &w, &h);
+			UpdateWindowSize(w, h);
+		}
+		break;
+	case SDL_MOUSEMOTION:
+		event->motion.x -= output.x;
+		event->motion.y -= output.y;
+		event->motion.x = (event->motion.x * rect.w) / output.w;
+		event->motion.y = (event->motion.y * rect.h) / output.h;
+		break;
+	case SDL_MOUSEBUTTONDOWN:
+	case SDL_MOUSEBUTTONUP:
+		event->button.x -= output.x;
+		event->button.y -= output.y;
+		event->motion.x = (event->motion.x * rect.w) / output.w;
+		event->motion.y = (event->motion.y * rect.h) / output.h;
+		break;
 	}
 }
 
@@ -200,16 +222,26 @@ FrameBuf:: QueueBlit(int dstx, int dsty, SDL_Texture *src,
 }
 
 void
+FrameBuf:: StretchBlit(const SDL_Rect *dstrect, SDL_Texture *src, const SDL_Rect *srcrect)
+{
+	SDL_RenderCopy(renderer, src, srcrect, dstrect);
+}
+
+void
 FrameBuf:: Update(void)
 {
 	/* Copy from our render texture to the screen and show it! */
-	SDL_SetRenderTarget(renderer, NULL);
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-	SDL_RenderClear(renderer);
-	SDL_RenderCopy(renderer, texture, NULL, &output);
+	if (texture) {
+		SDL_SetRenderTarget(renderer, NULL);
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+		SDL_RenderClear(renderer);
+		SDL_RenderCopy(renderer, texture, NULL, &output);
+	}
 	SDL_RenderPresent(renderer);
 
-	SDL_SetRenderTarget(renderer, texture);
+	if (texture) {
+		SDL_SetRenderTarget(renderer, texture);
+	}
 }
 
 void
@@ -338,4 +370,33 @@ void
 FrameBuf:: FreeImage(SDL_Texture *image)
 {
 	SDL_DestroyTexture(image);
+}
+
+SDL_Texture *
+FrameBuf:: CreateRenderTarget(int w, int h)
+{
+	SDL_Texture *texture;
+
+	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB888, SDL_TEXTUREACCESS_TARGET, w, h);
+	if (!texture) {
+		SetError("Couldn't create target texture: %s", SDL_GetError());
+		return NULL;
+	}
+	return texture;
+}
+
+int
+FrameBuf:: SetRenderTarget(SDL_Texture *texture)
+{
+	if (SDL_SetRenderTarget(renderer, texture) < 0) {
+		SetError("Couldn't set render target: %s", SDL_GetError());
+		return(-1);
+	}
+	return 0;
+}
+
+void
+FrameBuf:: FreeRenderTarget(SDL_Texture *texture)
+{
+	SDL_DestroyTexture(texture);
 }

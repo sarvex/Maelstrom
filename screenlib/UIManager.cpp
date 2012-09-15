@@ -246,6 +246,25 @@ UIManager::Draw(bool fullUpdate)
 bool
 UIManager::HandleEvent(const SDL_Event &event)
 {
+	if (event.type == SDL_WINDOWEVENT &&
+	    event.window.event == SDL_WINDOWEVENT_RESIZED) {
+		SDL_Window *window = SDL_GetWindowFromID(event.window.windowID);
+		int w, h;
+		SDL_Rect clip;
+
+		SDL_GetWindowSize(window, &w, &h);
+
+		// Reset the clip rectangle
+		clip.x = 0;
+		clip.y = 0;
+		clip.w = w;
+		clip.h = h;
+		m_screen->ClipBlit(&clip);
+		
+		// Resize to match window size
+		SetSize(w, h);
+	}
+
 	for (unsigned i = m_visible.length(); i--; ) {
 		UIPanel *panel = m_visible[i];
 

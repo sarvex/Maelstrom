@@ -37,6 +37,7 @@ class UIPanelDelegate
 {
 public:
 	UIPanelDelegate(UIPanel *panel) { m_panel = panel; }
+	virtual ~UIPanelDelegate() { }
 
 	// This is called after the panel is loaded
 	virtual bool OnLoad() { return true; }

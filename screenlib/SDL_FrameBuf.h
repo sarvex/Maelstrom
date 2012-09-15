@@ -81,23 +81,8 @@ public:
 		}
 		return result;
 	}
-	void ProcessEvent(SDL_Event *event) {
-		switch (event->type) {
-			case SDL_MOUSEMOTION:
-				event->motion.x -= output.x;
-				event->motion.y -= output.y;
-				event->motion.x = (event->motion.x * rect.w) / output.w;
-				event->motion.y = (event->motion.y * rect.h) / output.h;
-				break;
-			case SDL_MOUSEBUTTONDOWN:
-			case SDL_MOUSEBUTTONUP:
-				event->button.x -= output.x;
-				event->button.y -= output.y;
-				event->motion.x = (event->motion.x * rect.w) / output.w;
-				event->motion.y = (event->motion.y * rect.h) / output.h;
-				break;
-		}
-	}
+	void ProcessEvent(SDL_Event *event);
+
 	bool ConvertTouchCoordinates(const SDL_TouchFingerEvent &finger, int *x, int *y);
 
 	void EnableTextInput();
@@ -130,6 +115,8 @@ public:
 		SDL_QueryTexture(src, NULL, NULL, &w, &h);
 		QueueBlit(x, y, src, 0, 0, w, h, do_clip);
 	}
+	void StretchBlit(const SDL_Rect *dstrect, SDL_Texture *src, const SDL_Rect *srcrect);
+
 	void Update(void);
 	void FadeOut(void) {
 		if (!faded) {
@@ -196,6 +183,12 @@ public:
 	}
 	void FreeImage(SDL_Texture *image);
 
+	/* Create a render target */
+	SDL_Texture *CreateRenderTarget(int w, int h);
+	int SetRenderTarget(SDL_Texture *texture);
+	void FreeRenderTarget(SDL_Texture *texture);
+	
+
 	/* Screen dump routines */
 	int ScreenDump(const char *prefix, int x, int y, int w, int h);
 
@@ -224,6 +217,27 @@ private:
 	SDL_Rect clip;
 	SDL_Rect output;
 
+	void UpdateWindowSize(int width, int height) {
+		int w, h;
+		SDL_Rect viewport;
+
+		SDL_GetWindowSize(window, &w, &h);
+		output.w = w;
+		output.h = (height * w)/width;
+		output.x = (w - output.w) / 2;
+		output.y = (h - output.h) / 2;
+
+		clip.x = rect.x = 0;
+		clip.y = rect.y = 0;
+		clip.w = rect.w = width;
+		clip.h = rect.h = height;
+
+		viewport.x = 0;
+		viewport.y = 0;
+		viewport.w = w;
+		viewport.h = h;
+		SDL_RenderSetViewport(renderer, &viewport);
+	}
 	void UpdateDrawColor(Uint32 color) {
 		Uint8 r, g, b;
 		r = (color >> 16) & 0xFF;
