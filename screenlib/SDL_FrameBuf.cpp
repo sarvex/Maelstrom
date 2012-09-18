@@ -48,9 +48,9 @@ FrameBuf:: Init(int width, int height, Uint32 window_flags, Uint32 render_flags,
 #ifdef FAST_ITERATION
 	window_flags &= ~SDL_WINDOW_FULLSCREEN;
 #endif
-//#ifdef __IPHONEOS__
-//	window_flags |= SDL_WINDOW_FULLSCREEN;
-//#endif
+#ifdef __IPHONEOS__
+	window_flags |= SDL_WINDOW_FULLSCREEN;
+#endif
 	window_flags |= SDL_WINDOW_RESIZABLE;
 
 	window = SDL_CreateWindow(NULL, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, window_flags);
