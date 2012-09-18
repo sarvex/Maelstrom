@@ -150,8 +150,8 @@ FrameBuf::ProcessEvent(SDL_Event *event)
 	case SDL_MOUSEBUTTONUP:
 		event->button.x -= output.x;
 		event->button.y -= output.y;
-		event->motion.x = (event->motion.x * rect.w) / output.w;
-		event->motion.y = (event->motion.y * rect.h) / output.h;
+		event->button.x = (event->button.x * rect.w) / output.w;
+		event->button.y = (event->button.y * rect.h) / output.h;
 		break;
 	}
 }
