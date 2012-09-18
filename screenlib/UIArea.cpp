@@ -47,6 +47,9 @@ UIArea::~UIArea()
 	if (m_anchor.element) {
 		m_anchor.element->DelAnchoredArea(this);
 	}
+	for (int i = 0; i < m_anchoredAreas.length(); ++i) {
+		m_anchoredAreas[i]->SetAnchor(CENTER, CENTER, NULL);
+	}
 }
 
 bool
