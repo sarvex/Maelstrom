@@ -87,7 +87,14 @@ FrameBuf:: Init(int width, int height, Uint32 window_flags, Uint32 render_flags,
 	}
 
 	/* Set the output area */
-	UpdateWindowSize(width, height);
+	if ( window_flags & SDL_WINDOW_RESIZABLE ) {
+		int w, h;
+
+		SDL_GetWindowSize(window, &w, &h);
+		UpdateWindowSize(w, h);
+	} else {
+		UpdateWindowSize(width, height);
+	}
 
 	/* Copy the image colormap */
 	if ( colors ) {
