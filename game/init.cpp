@@ -714,8 +714,14 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 
 	/* Initialize the screen */
 	screen = new FrameBuf;
-	if (screen->Init(SCREEN_WIDTH, SCREEN_HEIGHT, window_flags, render_flags,
-					colors[gGammaCorrect], icon) < 0){
+	int w = SCREEN_WIDTH;
+	int h = SCREEN_HEIGHT;
+	const char *resolution = prefs->GetString(PREFERENCES_RESOLUTION);
+	if (resolution) {
+		SDL_sscanf(resolution, "%dx%d", &w, &h);
+	}
+	if (screen->Init(w, h, window_flags, render_flags,
+	                       colors[gGammaCorrect], icon) < 0){
 		error("Fatal: %s\n", screen->Error());
 		return(-1);
 	}

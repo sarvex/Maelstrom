@@ -44,6 +44,7 @@
 #include "gameinfo.h"
 
 // Preferences keys
+#define PREFERENCES_RESOLUTION "Resolution"
 #define PREFERENCES_HANDLE "Handle"
 #define PREFERENCES_DEATHMATCH "Network.Deathmatch"
 #define PREFERENCES_KIDMODE "Cheat.KidMode"
