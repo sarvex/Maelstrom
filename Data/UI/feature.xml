@@ -1,0 +1,18 @@
+<Dialog>
+	<Size w="273" h="103"/>
+	<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" x="183" y="93"/>
+	<Elements>
+		<Icon name="icon" id="103">
+			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" x="19" y="19"/>
+		</Icon>
+		<DialogLabel name="line1" text="You don't have that feature">
+			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPRIGHT" anchor="icon" x="25"/>
+		</DialogLabel>
+		<DialogButton name="cancelButton" text="Cancel">
+			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" x="99" y="74"/>
+		</DialogButton>
+		<DialogButton text="Buy it!" id="1" default="true">
+			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPRIGHT" anchor="cancelButton" x="13"/>
+		</DialogButton>
+	</Elements>
+</Dialog>

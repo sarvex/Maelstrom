@@ -1,0 +1,27 @@
+<Panel fullscreen="false">
+	<Elements>
+		<ControlButton name="abort" action="ABORT" image="Images/abort.bmp">
+			<Anchor anchorFrom="TOPRIGHT" anchorTo="TOPRIGHT" x="-6" y="4"/>
+		</ControlButton>
+		<ControlButton name="pause" action="PAUSE" image="Images/pause.bmp">
+			<Anchor anchorFrom="RIGHT" anchorTo="LEFT" anchor="abort" x="-12"/>
+		</ControlButton>
+
+		<ControlButton name="fire" action="FIRE" image="Images/fire.bmp">
+			<Anchor anchorFrom="BOTTOMRIGHT" anchorTo="BOTTOMRIGHT" x="-8" y="-16"/>
+		</ControlButton>
+		<ControlButton name="thrust" action="THRUST" image="Images/thrust.bmp">
+			<Anchor anchorFrom="RIGHT" anchorTo="LEFT" anchor="fire" x="-8"/>
+		</ControlButton>
+
+		<ControlButton name="rotate_left" action="LEFT" image="Images/rotate_left.bmp">
+			<Anchor anchorFrom="BOTTOMLEFT" anchorTo="BOTTOMLEFT" x="0" x="8" y="-16"/>
+		</ControlButton>
+		<ControlButton name="rotate_right" action="RIGHT" image="Images/rotate_right.bmp">
+			<Anchor anchorFrom="LEFT" anchorTo="RIGHT" anchor="rotate_left" x="8"/>
+		</ControlButton>
+		<ControlButton name="shield" action="SHIELD" image="Images/shield.bmp">
+			<Anchor anchorFrom="BOTTOM" anchorTo="TOP" anchor="rotate_left" x="32" y="-4"/>
+		</ControlButton>
+	</Elements>
+</Dialog>

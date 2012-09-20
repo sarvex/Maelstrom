@@ -506,7 +506,7 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
-	-find $(distdir) -type d ! -perm -777 -exec chmod a+rwx {} \; -o \
+	-find $(distdir) -type d ! -perm -755 -exec chmod u+rwx,go+rx {} \; -o \
 	  ! -type d ! -perm -444 -links 1 -exec chmod a+r {} \; -o \
 	  ! -type d ! -perm -400 -exec chmod a+r {} \; -o \
 	  ! -type d ! -perm -444 -exec $(install_sh) -c -m a+r {} {} \; \
@@ -719,11 +719,18 @@ uninstall-am: uninstall-binPROGRAMS
 	uninstall uninstall-am uninstall-binPROGRAMS
 
 
-install-exec-hook:
-	make append-data BINARY="$(DESTDIR)$(bindir)/Maelstrom$(EXEEXT)"
+$(PROGRAMS): data
+
+data: Maelstrom_Data.zip
 
 append-data:
 	cat Maelstrom_Data.zip >>$(if $(BINARY),$(BINARY),Maelstrom$(EXEEXT))
+
+Maelstrom_Data.zip: $(shell find Data -type f -print | fgrep -v .svn)
+	(cd Data && find . -type f | fgrep -v .svn | zip -r ../$@.new -@ && mv ../$@.new ../$@)
+
+install-exec-hook:
+	make append-data BINARY="$(DESTDIR)$(bindir)/Maelstrom$(EXEEXT)"
 
 # Rule to build tar-gzipped distribution package
 $(PACKAGE)-$(VERSION).tar.gz: dist
@@ -731,6 +738,8 @@ $(PACKAGE)-$(VERSION).tar.gz: dist
 # Rule to build RPM distribution package
 rpm: $(PACKAGE)-$(VERSION).tar.gz
 	rpm -ta $(PACKAGE)-$(VERSION).tar.gz
+
+.PHONY: append-data rpm
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

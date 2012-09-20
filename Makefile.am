@@ -40,11 +40,18 @@ EXTRA_DIST =			\
 
 DIST_SUBDIRS = $(SUBDIRS)
 
-install-exec-hook:
-	make append-data BINARY="$(DESTDIR)$(bindir)/Maelstrom$(EXEEXT)"
+$(PROGRAMS): data
+
+data: Maelstrom_Data.zip
 
 append-data:
 	cat Maelstrom_Data.zip >>$(if $(BINARY),$(BINARY),Maelstrom$(EXEEXT))
+
+Maelstrom_Data.zip: $(shell find Data -type f -print | fgrep -v .svn)
+	(cd Data && find . -type f | fgrep -v .svn | zip -r ../$@.new -@ && mv ../$@.new ../$@)
+
+install-exec-hook:
+	make append-data BINARY="$(DESTDIR)$(bindir)/Maelstrom$(EXEEXT)"
 
 # Rule to build tar-gzipped distribution package
 $(PACKAGE)-$(VERSION).tar.gz: dist
@@ -52,3 +59,5 @@ $(PACKAGE)-$(VERSION).tar.gz: dist
 # Rule to build RPM distribution package
 rpm: $(PACKAGE)-$(VERSION).tar.gz
 	rpm -ta $(PACKAGE)-$(VERSION).tar.gz
+
+.PHONY: append-data rpm

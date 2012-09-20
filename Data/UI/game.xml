@@ -1,0 +1,96 @@
+<Panel cursor="false" delegate="GamePanel">
+	<Elements>
+		<!-- Status display -->
+		<Line name="status_line">
+			<Color r="0x9C" g="0x9C" b="0xFF"/>
+			<Size w="640" h="1"/>
+			<Anchor anchorFrom="BOTTOM" anchorTo="BOTTOM" y="-13"/>
+		</Line>
+
+		<Label name="score_label" template="SmallBlue" text="Score:">
+			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="status_line" x="3" y="1"/>
+		</Label>
+		<Label name="score" template="SmallWhite">
+			<Anchor anchorFrom="LEFT" anchorTo="RIGHT" anchor="score_label" x="4"/>
+		</Label>
+
+		<Label name="shield_label" template="SmallBlue" text="Shield:">
+			<Anchor anchorFrom="LEFT" anchorTo="RIGHT" anchor="score_label" x="70"/>
+		</Label>
+		<Rectangle>
+			<Color r="0xFF" g="0xFF" b="0xFF"/>
+			<Size w="55" h="8"/>
+			<Anchor anchorFrom="LEFT" anchorTo="RIGHT" anchor="shield_label" x="4" y="1"/>
+		</Rectangle>
+		<Rectangle name="shield" fill="true">
+			<Color r="0x75" g="0x75" b="0xFF"/>
+			<Size w="" h="6"/>
+			<Anchor anchorFrom="LEFT" anchorTo="RIGHT" anchor="shield_label" x="5" y="1"/>
+		</Rectangle>
+
+		<Label name="wave_label" template="SmallBlue" text="Wave:">
+			<Anchor anchorFrom="LEFT" anchorTo="RIGHT" anchor="shield_label" x="70"/>
+		</Label>
+		<Label name="wave" template="SmallWhite">
+			<Anchor anchorFrom="LEFT" anchorTo="RIGHT" anchor="wave_label" x="4"/>
+		</Label>
+
+		<Label name="lives_label" template="SmallBlue" text="Lives:">
+			<Anchor anchorFrom="LEFT" anchorTo="RIGHT" anchor="wave_label" x="30"/>
+		</Label>
+		<Label name="lives" template="SmallWhite">
+			<Anchor anchorFrom="LEFT" anchorTo="RIGHT" anchor="lives_label" x="4"/>
+		</Label>
+
+		<Label name="bonus_label" template="SmallBlue" text="Bonus:">
+			<Anchor anchorFrom="LEFT" anchorTo="RIGHT" anchor="lives_label" x="30"/>
+		</Label>
+		<Label name="bonus" template="SmallWhite">
+			<Anchor anchorFrom="LEFT" anchorTo="RIGHT" anchor="bonus_label" x="4"/>
+		</Label>
+
+		<Icon name="multiplier2" id="130">
+			<Anchor anchorFrom="TOPLEFT" anchorTo="BOTTOMLEFT" anchor="status_line" x="424" y="3"/>
+		</Icon>
+		<Icon name="multiplier3" id="131">
+			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="multiplier2"/>
+		</Icon>
+		<Icon name="multiplier4" id="132">
+			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="multiplier2"/>
+		</Icon>
+		<Icon name="multiplier5" id="134">
+			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="multiplier2"/>
+		</Icon>
+
+		<Icon name="autofire" id="128">
+			<Anchor anchorFrom="TOPLEFT" anchorTo="BOTTOMLEFT" anchor="status_line" x="438" y="3"/>
+		</Icon>
+		<Icon name="airbrakes" id="129">
+			<Anchor anchorFrom="TOPLEFT" anchorTo="BOTTOMLEFT" anchor="status_line" x="454" y="3"/>
+		</Icon>
+		<Icon name="lucky" id="133">
+			<Anchor anchorFrom="TOPLEFT" anchorTo="BOTTOMLEFT" anchor="status_line" x="470" y="3"/>
+		</Icon>
+		<Icon name="triplefire" id="135">
+			<Anchor anchorFrom="TOPLEFT" anchorTo="BOTTOMLEFT" anchor="status_line" x="486" y="3"/>
+		</Icon>
+		<Icon name="longfire" id="136">
+			<Anchor anchorFrom="TOPLEFT" anchorTo="BOTTOMLEFT" anchor="status_line" x="502" y="3"/>
+		</Icon>
+
+		<!-- Multiplayer elements -->
+		<Label name="multiplayer_caption" template="SmallBlue">
+			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" x="32" y="1"/>
+		</Label>
+		<Rectangle name="multiplayer_color" fill="true">
+			<Size w="4" h="8"/>
+			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="status_line" x="518" y="4"/>
+		</Label>
+		<Label name="frags_label" template="SmallBlue" text="Frags:">
+			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" anchor="status_line" x="530" y="1"/>
+		</Label>
+		<Label name="frags" template="SmallWhite">
+			<Anchor anchorFrom="LEFT" anchorTo="RIGHT" anchor="frags_label" x="4"/>
+		</Label>
+	</Elements>
+</Panel>
