@@ -61,7 +61,7 @@ UIDialogButton::OnClick()
 
 	if (m_statusID) {
 		UIPanel *panel = GetUI()->GetCurrentPanel();
-		if (panel->IsA(UIDialog::GetType())) {
+		if (panel && panel->IsA(UIDialog::GetType())) {
 			static_cast<UIDialog*>(panel)->SetDialogStatus(m_statusID);
 		}
 	}
