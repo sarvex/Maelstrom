@@ -629,11 +629,12 @@ Player::BlitSprite(void)
 	OBJ_LOOP(i, numshots) {
 		int X = (shots[i]->x>>SPRITE_PRECISION);
 		int Y = (shots[i]->y>>SPRITE_PRECISION);
-		screen->QueueBlit(X, Y, gPlayerShot);
+		screen->QueueBlit(gScrnRect.left + X, gScrnRect.top + Y, gPlayerShot);
 	}
 	/* Draw the shield, if necessary */
 	if ( ! gPaused && (AutoShield || (ShieldOn && (ShieldLevel > 0))) ) {
-		screen->QueueBlit(x>>SPRITE_PRECISION, y>>SPRITE_PRECISION,
+		screen->QueueBlit(gScrnRect.left + (x>>SPRITE_PRECISION),
+		                  gScrnRect.top + (y>>SPRITE_PRECISION),
 						gShieldBlit->sprite[Sphase]);
 		Sphase = !Sphase;
 	}
@@ -642,8 +643,8 @@ Player::BlitSprite(void)
 		int thrust_x, thrust_y;
 		thrust_x = x + gThrustOrigins[phase].h;
 		thrust_y = y + gThrustOrigins[phase].v;
-		screen->QueueBlit(thrust_x>>SPRITE_PRECISION,
-					thrust_y>>SPRITE_PRECISION,
+		screen->QueueBlit(gScrnRect.left + (thrust_x>>SPRITE_PRECISION),
+		                  gScrnRect.top + (thrust_y>>SPRITE_PRECISION),
 						ThrustBlit->sprite[phase]);
 		if ( ThrustBlit == gThrust1 )
 			ThrustBlit = gThrust2;

@@ -37,10 +37,10 @@ Object::Object(int X, int Y, int Xvec, int Yvec, Blit *blit, int PhaseTime)
 		phase = 0;
 	nextphase = 0;
 
-	playground.left = (gScrnRect.left<<SPRITE_PRECISION);
-	playground.right = (gScrnRect.right<<SPRITE_PRECISION);
-	playground.top = (gScrnRect.top<<SPRITE_PRECISION);
-	playground.bottom = (gScrnRect.bottom<<SPRITE_PRECISION);
+	playground.left = (0<<SPRITE_PRECISION);
+	playground.right = ((gScrnRect.right-gScrnRect.left)<<SPRITE_PRECISION);
+	playground.top = (0<<SPRITE_PRECISION);
+	playground.bottom = ((gScrnRect.bottom-gScrnRect.top)<<SPRITE_PRECISION);
 
 	SetPos(X, Y);
 	xvec = Xvec;
@@ -100,7 +100,8 @@ Object::Move(int Frozen)		// This is called every timestep.
 void
 Object::BlitSprite(void)
 {
-	screen->QueueBlit(x>>SPRITE_PRECISION, y>>SPRITE_PRECISION,
+	screen->QueueBlit(gScrnRect.left + (x>>SPRITE_PRECISION),
+	                  gScrnRect.top + (y>>SPRITE_PRECISION),
 							myblit->sprite[phase]);
 }
 

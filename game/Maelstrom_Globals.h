@@ -103,7 +103,6 @@ extern Sint32	gLastHigh;
 extern Rect	gScrnRect;
 extern SDL_Rect	gClipRect;
 extern int	gStatusLine;
-extern int	gTop, gLeft, gBottom, gRight;
 extern MPoint	gShotOrigins[SHIP_FRAMES];
 extern MPoint	gThrustOrigins[SHIP_FRAMES];
 extern MPoint	gVelocityTable[SHIP_FRAMES];

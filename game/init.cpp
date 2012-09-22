@@ -54,7 +54,6 @@ int     gNumSprites;
 Rect	gScrnRect;
 SDL_Rect gClipRect;
 int	gStatusLine;
-int	gTop, gLeft, gBottom, gRight;
 MPoint	gShotOrigins[SHIP_FRAMES];
 MPoint	gThrustOrigins[SHIP_FRAMES];
 MPoint	gVelocityTable[SHIP_FRAMES];
@@ -767,18 +766,16 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 	ui = new MaelstromUI(screen, prefs);
 
 	/* -- We want to access the FULL screen! */
-	SetRect(&gScrnRect, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+	int startX = (screen->Width() - SCREEN_WIDTH) / 2;
+	int startY = (screen->Height() - SCREEN_HEIGHT) / 2;
+	SetRect(&gScrnRect, startX, startY, startX+SCREEN_WIDTH, startY+SCREEN_HEIGHT);
 	gStatusLine = (gScrnRect.bottom - gScrnRect.top - STATUS_HEIGHT);
 	gScrnRect.bottom -= STATUS_HEIGHT;
-	gTop = 0;
-	gLeft = 0;
-	gBottom = gScrnRect.bottom - gScrnRect.top;
-	gRight = gScrnRect.right - gScrnRect.left;
 
-	gClipRect.x = gLeft+SPRITES_WIDTH;
-	gClipRect.y = gTop+SPRITES_WIDTH;
-	gClipRect.w = gRight-gLeft-2*SPRITES_WIDTH;
-	gClipRect.h = gBottom-gTop-2*SPRITES_WIDTH+STATUS_HEIGHT;
+	gClipRect.x = gScrnRect.left+SPRITES_WIDTH;
+	gClipRect.y = gScrnRect.top+SPRITES_WIDTH;
+	gClipRect.w = gScrnRect.right-gScrnRect.left-2*SPRITES_WIDTH;
+	gClipRect.h = gScrnRect.bottom-gScrnRect.top-2*SPRITES_WIDTH+STATUS_HEIGHT;
 	screen->ClipBlit(&gClipRect);
 
 	/* -- Throw up our intro screen */

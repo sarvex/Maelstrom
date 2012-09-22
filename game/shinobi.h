@@ -204,7 +204,7 @@ public:
 		OBJ_LOOP(i, numshots) {
 			int X = (shots[i]->x>>SPRITE_PRECISION);
 			int Y = (shots[i]->y>>SPRITE_PRECISION);
-			screen->QueueBlit(X, Y, gEnemyShot);
+			screen->QueueBlit(gScrnRect.left + X, gScrnRect.top + Y, gEnemyShot);
 		}
 		Object::BlitSprite();
 	}
