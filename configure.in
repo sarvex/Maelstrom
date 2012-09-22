@@ -55,6 +55,17 @@ AM_PATH_SDL2($SDL_VERSION,
 CFLAGS="$CFLAGS $SDL_CFLAGS"
 LIBS="$LIBS $SDL_LIBS"
 
+dnl Check for SDL_image
+AC_CHECK_LIB(SDL2_image, IMG_Init, have_SDL_image=yes)
+if test x$have_SDL_image = xyes; then
+    LIBS="$LIBS -lSDL2_image"
+else
+    AC_MSG_ERROR([*** Can't find the SDL_image library
+The SDL_image library can be found at:
+http://www.libsdl.org/projects/SDL_image/
+])
+fi
+
 dnl Check for SDL_net
 AC_CHECK_LIB(SDL2_net, SDLNet_Init, have_SDL_net=yes)
 if test x$have_SDL_net = xyes; then

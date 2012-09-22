@@ -47,7 +47,7 @@ static void FeatureDialogDone(void*, UIDialog *dialog, int status)
 {
 	if (status == 1) {
 		// Buy the feature for this platform
-#ifdef __IPHONEOS__
+#if 0//def __IPHONEOS__
 #error Implement Store Kit
 #else
 		CompleteFeatureDialog(current_feature, true);

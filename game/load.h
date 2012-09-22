@@ -29,6 +29,8 @@
 #include "../screenlib/SDL_FrameBuf.h"
 
 /* Functions exported from load.cpp */
+extern SDL_Texture *Load_Texture(FrameBuf *screen, const char *folder, const char *name);
+extern SDL_Texture *Load_Image(FrameBuf *screen, const char *name);
 extern SDL_Texture *Load_Title(FrameBuf *screen, int title_id);
 extern SDL_Texture *GetCIcon(FrameBuf *screen, short id);
 extern SDL_Texture *GetSprite(FrameBuf *screen, short id, bool large);

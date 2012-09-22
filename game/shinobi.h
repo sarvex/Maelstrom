@@ -202,8 +202,6 @@ public:
 		/* Draw the new shots */
 		int i;
 		OBJ_LOOP(i, numshots) {
-			int X = (shots[i]->x>>SPRITE_PRECISION);
-			int Y = (shots[i]->y>>SPRITE_PRECISION);
 			RenderSprite(shots[i]->x, shots[i]->y, gEnemyShot);
 		}
 		Object::BlitSprite();

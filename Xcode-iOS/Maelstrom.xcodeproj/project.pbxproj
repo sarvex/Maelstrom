@@ -64,6 +64,9 @@
 		AABDBE1F15C8A6B200C3E936 /* continue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AABDBE1B15C8A6B200C3E936 /* continue.cpp */; };
 		AABDBE2015C8A6B200C3E936 /* features.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AABDBE1D15C8A6B200C3E936 /* features.cpp */; };
 		AABDBE2615C8A6F300C3E936 /* loadxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AABDBE2415C8A6F300C3E936 /* loadxml.cpp */; };
+		AAC0415B160E811F00E22BC5 /* libSDL2_image.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AAC0415A160E809F00E22BC5 /* libSDL2_image.a */; };
+		AAC04173160E837E00E22BC5 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAC04172160E837E00E22BC5 /* ImageIO.framework */; };
+		AAC04179160E84D000E22BC5 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAC04178160E84D000E22BC5 /* MobileCoreServices.framework */; };
 		AACF51001598BC2C00585701 /* gameover.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AACF50FE1598BC2C00585701 /* gameover.cpp */; };
 		AAD13B82145E8A8F0040B19C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAD13B81145E8A8F0040B19C /* UIKit.framework */; };
 		AAD13B84145E8A8F0040B19C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAD13B83145E8A8F0040B19C /* Foundation.framework */; };
@@ -120,6 +123,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = AAD1407A145EA8C90040B19C;
 			remoteInfo = physfs;
+		};
+		AAC04159160E809F00E22BC5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AAC04155160E809E00E22BC5 /* SDL_image.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BE1FA74107AF4C45004B6283;
+			remoteInfo = libSDL_image;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -299,6 +309,10 @@
 		AABDBE1E15C8A6B200C3E936 /* features.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = features.h; sourceTree = "<group>"; };
 		AABDBE2415C8A6F300C3E936 /* loadxml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = loadxml.cpp; sourceTree = "<group>"; };
 		AABDBE2515C8A6F300C3E936 /* loadxml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = loadxml.h; sourceTree = "<group>"; };
+		AAC04154160E808500E22BC5 /* SDL_image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_image.h; sourceTree = "<group>"; };
+		AAC04155160E809E00E22BC5 /* SDL_image.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL_image.xcodeproj; path = "Xcode-iOS/SDL_image.xcodeproj"; sourceTree = "<group>"; };
+		AAC04172160E837E00E22BC5 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
+		AAC04178160E84D000E22BC5 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		AACF50FE1598BC2C00585701 /* gameover.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gameover.cpp; sourceTree = "<group>"; };
 		AACF50FF1598BC2C00585701 /* gameover.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gameover.h; sourceTree = "<group>"; };
 		AAD13B7D145E8A8F0040B19C /* Maelstrom.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Maelstrom.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -314,14 +328,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA0777DB145EC12900DB8DB3 /* libz.dylib in Frameworks */,
-				93D8E49B15911A6700BD8D0E /* libSDL2_net.a in Frameworks */,
-				93D8E49D15911A7400BD8D0E /* libphysfs.a in Frameworks */,
 				93D8E49C15911A6C00BD8D0E /* libSDL2.a in Frameworks */,
+				93D8E49B15911A6700BD8D0E /* libSDL2_net.a in Frameworks */,
+				AAC0415B160E811F00E22BC5 /* libSDL2_image.a in Frameworks */,
+				93D8E49D15911A7400BD8D0E /* libphysfs.a in Frameworks */,
 				AAD13B82145E8A8F0040B19C /* UIKit.framework in Frameworks */,
 				AAD13B84145E8A8F0040B19C /* Foundation.framework in Frameworks */,
+				AAC04179160E84D000E22BC5 /* MobileCoreServices.framework in Frameworks */,
 				AAD13B86145E8A8F0040B19C /* CoreGraphics.framework in Frameworks */,
 				AA0777CE145EB56C00DB8DB3 /* OpenGLES.framework in Frameworks */,
 				AA0777D4145EB68300DB8DB3 /* QuartzCore.framework in Frameworks */,
+				AAC04173160E837E00E22BC5 /* ImageIO.framework in Frameworks */,
 				AA0777D2145EB60A00DB8DB3 /* AudioToolbox.framework in Frameworks */,
 				AA7557A61594EE8F00BBD41B /* GameKit.framework in Frameworks */,
 			);
@@ -596,17 +613,43 @@
 			path = game;
 			sourceTree = "<group>";
 		};
+		AAC0414C160E800800E22BC5 /* SDL_image */ = {
+			isa = PBXGroup;
+			children = (
+				AAC04155160E809E00E22BC5 /* SDL_image.xcodeproj */,
+				AAC04153160E807000E22BC5 /* include */,
+			);
+			name = SDL_image;
+			path = ../../../../../3rdparty/iphone/SDL_image;
+			sourceTree = "<group>";
+		};
+		AAC04153160E807000E22BC5 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				AAC04154160E808500E22BC5 /* SDL_image.h */,
+			);
+			name = include;
+			sourceTree = "<group>";
+		};
+		AAC04156160E809E00E22BC5 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AAC0415A160E809F00E22BC5 /* libSDL2_image.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		AAD13B72145E8A8F0040B19C = {
 			isa = PBXGroup;
 			children = (
-				AA7557A51594EE8F00BBD41B /* GameKit.framework */,
 				AA769FDF146A679C001C5008 /* Maelstrom_ipad.png */,
 				AA319E1F145EDA6400384943 /* Maelstrom_small.png */,
 				AA319E1D145EDA1D00384943 /* Maelstrom.png */,
 				AA0777DA145EC12900DB8DB3 /* libz.dylib */,
 				AA0777C8145EB43900DB8DB3 /* physfs */,
-				AA0777C4145EB42200DB8DB3 /* SDL_net */,
 				AA077788145EB3F500DB8DB3 /* SDL */,
+				AAC0414C160E800800E22BC5 /* SDL_image */,
+				AA0777C4145EB42200DB8DB3 /* SDL_net */,
 				AAD13B87145E8A8F0040B19C /* Maelstrom */,
 				AAD13B80145E8A8F0040B19C /* Frameworks */,
 				AAD13B7E145E8A8F0040B19C /* Products */,
@@ -627,11 +670,14 @@
 			isa = PBXGroup;
 			children = (
 				AA0777D1145EB60A00DB8DB3 /* AudioToolbox.framework */,
+				AAD13B85145E8A8F0040B19C /* CoreGraphics.framework */,
+				AAD13B83145E8A8F0040B19C /* Foundation.framework */,
+				AA7557A51594EE8F00BBD41B /* GameKit.framework */,
+				AAC04172160E837E00E22BC5 /* ImageIO.framework */,
+				AAC04178160E84D000E22BC5 /* MobileCoreServices.framework */,
 				AA0777CD145EB56C00DB8DB3 /* OpenGLES.framework */,
 				AA0777D3145EB68300DB8DB3 /* QuartzCore.framework */,
 				AAD13B81145E8A8F0040B19C /* UIKit.framework */,
-				AAD13B83145E8A8F0040B19C /* Foundation.framework */,
-				AAD13B85145E8A8F0040B19C /* CoreGraphics.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -671,6 +717,7 @@
 			buildPhases = (
 				AAD13B79145E8A8F0040B19C /* Sources */,
 				AAD13B7A145E8A8F0040B19C /* Frameworks */,
+				AAC04120160E7D8000E22BC5 /* Build Data Archive */,
 				AAD13B7B145E8A8F0040B19C /* Resources */,
 			);
 			buildRules = (
@@ -713,6 +760,10 @@
 					ProjectRef = 938A44A3157D55AE0081A436 /* SDL.xcodeproj */;
 				},
 				{
+					ProductGroup = AAC04156160E809E00E22BC5 /* Products */;
+					ProjectRef = AAC04155160E809E00E22BC5 /* SDL_image.xcodeproj */;
+				},
+				{
 					ProductGroup = 938A449E157D55870081A436 /* Products */;
 					ProjectRef = 938A4498157D555C0081A436 /* SDL_net.xcodeproj */;
 				},
@@ -753,6 +804,13 @@
 			remoteRef = 93D8E492159116B400BD8D0E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		AAC0415A160E809F00E22BC5 /* libSDL2_image.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libSDL2_image.a;
+			remoteRef = AAC04159160E809F00E22BC5 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
@@ -769,6 +827,25 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		AAC04120160E7D8000E22BC5 /* Build Data Archive */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/../Data",
+			);
+			name = "Build Data Archive";
+			outputPaths = (
+				"$(SRCROOT)/../Maelstrom_Data.zip",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "DATA=Maelstrom_Data.zip\ncd $SRCROOT/../Data && (find . -type f | fgrep -v .svn | zip -r ../$DATA.new -@ && mv ../$DATA.new ../$DATA)";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		AAD13B79145E8A8F0040B19C /* Sources */ = {

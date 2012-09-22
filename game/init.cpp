@@ -206,8 +206,8 @@ static void InitShots(void)
 	int xx = 30;
 
 	/* Load the shot images */
-	gPlayerShot = screen->LoadImage("Images/shot_player.bmp");
-	gEnemyShot = screen->LoadImage("Images/shot_enemy.bmp");
+	gPlayerShot = Load_Image(screen, "shot_player");
+	gEnemyShot = Load_Image(screen, "shot_enemy");
 
 	/* Now setup the shot origin table */
 
@@ -1130,8 +1130,10 @@ static int LoadSprite(bool large, BlitPtr *theBlit, int baseID, int numFrames)
 		}
 		SetRect(&aBlit->hitRect, left, top, right, bottom);
 
+		SDL_FreeSurface(surface);
+
 		/* Load the image */
-		aBlit->sprite[index] = screen->LoadImage(surface);
+		aBlit->sprite[index] = GetSprite(screen, baseID+index, large);
 		if ( aBlit->sprite[index] == NULL ) {
 			error("LoadSprite(): Couldn't convert sprite image to texture for %s\n", file);
 			return(-1);

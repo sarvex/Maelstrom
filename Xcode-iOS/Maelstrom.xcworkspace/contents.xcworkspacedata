@@ -8,6 +8,9 @@
       location = "group:../../../../../3rdparty/iphone/SDL/Xcode-iOS/SDL/SDL.xcodeproj">
    </FileRef>
    <FileRef
+      location = "group:../../../../../3rdparty/iphone/SDL_image/Xcode-iOS/SDL_image.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:../../../../../3rdparty/iphone/SDL_net/Xcode-iOS/SDL_net.xcodeproj">
    </FileRef>
    <FileRef
