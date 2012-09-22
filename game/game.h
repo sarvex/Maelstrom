@@ -72,5 +72,7 @@ protected:
 
 extern void NewGame(void);
 extern void ContinueGame(void);
+extern void GetRenderCoordinates(int &x, int &y);
+extern void RenderSprite(int x, int y, SDL_Texture *sprite);
 
 #endif // _game_h

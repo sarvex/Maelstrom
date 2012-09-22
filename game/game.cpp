@@ -419,8 +419,10 @@ GamePanelDelegate::OnDraw()
 
 	/* -- Draw the star field */
 	for ( i=0; i<MAX_STARS; ++i ) {
-		screen->DrawPoint(gTheStars[i]->xCoord, 
-			gTheStars[i]->yCoord, gTheStars[i]->color);
+		int x = (gTheStars[i]->xCoord << SPRITE_PRECISION);
+		int y = (gTheStars[i]->yCoord << SPRITE_PRECISION);
+		GetRenderCoordinates(x, y);
+		screen->DrawPoint(x, y, gTheStars[i]->color);
 	}
 
 	/* -- Blit all the sprites */
@@ -964,7 +966,7 @@ GamePanelDelegate::NextWave()
 	for (i = 0; i < NewRoids; i++) {
 		int	randval;
 	
-		x = FastRandom(SCREEN_WIDTH) * SCALE_FACTOR;
+		x = FastRandom(GAME_WIDTH) * SCALE_FACTOR;
 		y = 0;
 	
 		randval = FastRandom(10);
@@ -990,4 +992,22 @@ GamePanelDelegate::GameOver()
 	ui->ShowPanel(PANEL_GAMEOVER);
 
 	QuitPlayerControls();
+}
+
+/* ----------------------------------------------------------------- */
+/* -- Convert from sprite coordinates to render coordinates */
+
+void GetRenderCoordinates(int &x, int &y)
+{
+	x = gScrnRect.x + (int)(((float)x * gScrnRect.w) / (GAME_WIDTH << SPRITE_PRECISION));
+	y = gScrnRect.y + (int)(((float)y * gScrnRect.h) / (GAME_HEIGHT << SPRITE_PRECISION));
+}
+
+/* ----------------------------------------------------------------- */
+/* -- Render a sprite on the screen */
+
+void RenderSprite(int x, int y, SDL_Texture *sprite)
+{
+	GetRenderCoordinates(x, y);
+	screen->QueueBlit(x, y, sprite);
 }

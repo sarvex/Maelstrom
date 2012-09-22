@@ -28,10 +28,14 @@
 void
 AboutPanelDelegate::OnShow()
 {
+	int centerX, centerY;
 	int x, y, off;
 
-	x = (80) * SCALE_FACTOR;
-	y = (136) * SCALE_FACTOR;
+	centerX = screen->Width() / 2;
+	centerY = screen->Height() / 2;
+
+	x = (centerX - 240) * SCALE_FACTOR;
+	y = (centerY - 104) * SCALE_FACTOR;
 	off = 39 * SCALE_FACTOR;
 
 	objects[numsprites++] = 
@@ -51,8 +55,8 @@ AboutPanelDelegate::OnShow()
 	y += off;
 
 	/* -- Now for the second column */
-	x = (340) * SCALE_FACTOR;
-	y = (136) * SCALE_FACTOR;
+	x = (centerX + 20) * SCALE_FACTOR;
+	y = (centerY - 104) * SCALE_FACTOR;
 	off = 39 * SCALE_FACTOR;
 
 	objects[numsprites++] = 
@@ -93,6 +97,11 @@ AboutPanelDelegate::OnDraw()
 
 	for ( i=0; i<numsprites; ++i ) {
 		objects[i]->Move(0);
-		objects[i]->BlitSprite();
+
+		int x, y;
+		objects[i]->GetPos(&x, &y);
+		x >>= SPRITE_PRECISION;
+		y >>= SPRITE_PRECISION;
+		screen->QueueBlit(x, y, objects[i]->GetSprite());
 	}
 }

@@ -577,21 +577,7 @@ MainPanelDelegate::OnTick()
 
 void Message(const char *message)
 {
-// FIXME: This totally doesn't work anymore, but that may not matter if we're cutting network support.
-	int x, y;
-	SDL_Texture *textimage;
-	if (!message) {
-		return;
-	}
-
-	/* This was taken from the DrawMainScreen function */
-	x = (SCREEN_WIDTH - 512) / 2;
-	y = 25;
-	textimage = fontserv->TextImage(message, fonts[NEWYORK_14], STYLE_BOLD, 0xCC, 0xCC, 0xCC);
-	if ( textimage ) {
-		screen->QueueBlit(x, y-screen->GetImageHeight(textimage)+2, textimage, NOCLIP);
-		fontserv->FreeText(textimage);
-	}
+	// FIXME: This totally doesn't work anymore
 }
 
 void DelayFrame(void)

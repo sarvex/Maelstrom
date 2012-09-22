@@ -100,9 +100,7 @@ extern Bool	gRunning;
 // in init.cpp : 
 extern char    *gReplayFile;
 extern Sint32	gLastHigh;
-extern Rect	gScrnRect;
-extern SDL_Rect	gClipRect;
-extern int	gStatusLine;
+extern SDL_Rect gScrnRect;
 extern MPoint	gShotOrigins[SHIP_FRAMES];
 extern MPoint	gThrustOrigins[SHIP_FRAMES];
 extern MPoint	gVelocityTable[SHIP_FRAMES];

@@ -29,6 +29,7 @@
 #include "Maelstrom_Globals.h"
 #include "load.h"
 #include "init.h"
+#include "game.h"
 #include "player.h"
 #include "colortable.h"
 #include "fastrand.h"
@@ -51,8 +52,7 @@ char   *gReplayFile;
 Sint32	gLastHigh;
 Uint32	gLastDrawn;
 int     gNumSprites;
-Rect	gScrnRect;
-SDL_Rect gClipRect;
+SDL_Rect gScrnRect;
 int	gStatusLine;
 MPoint	gShotOrigins[SHIP_FRAMES];
 MPoint	gThrustOrigins[SHIP_FRAMES];
@@ -113,8 +113,11 @@ static void DrawLoadBar(int stage)
 
 void SetStar(int which)
 {
-	gTheStars[which]->xCoord = gClipRect.x+FastRandom(gClipRect.w);
-	gTheStars[which]->yCoord = gClipRect.y+FastRandom(gClipRect.h);
+	int x = FastRandom(GAME_WIDTH - 2*SPRITES_WIDTH) + SPRITES_WIDTH;
+	int y = FastRandom(GAME_HEIGHT - 2*SPRITES_WIDTH) + SPRITES_WIDTH;
+
+	gTheStars[which]->xCoord = x;
+	gTheStars[which]->yCoord = y;
 	gTheStars[which]->color = gStarColors[FastRandom(20)];
 }	/* -- SetStar */
 
@@ -766,17 +769,18 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 	ui = new MaelstromUI(screen, prefs);
 
 	/* -- We want to access the FULL screen! */
-	int startX = (screen->Width() - SCREEN_WIDTH) / 2;
-	int startY = (screen->Height() - SCREEN_HEIGHT) / 2;
-	SetRect(&gScrnRect, startX, startY, startX+SCREEN_WIDTH, startY+SCREEN_HEIGHT);
-	gStatusLine = (gScrnRect.bottom - gScrnRect.top - STATUS_HEIGHT);
-	gScrnRect.bottom -= STATUS_HEIGHT;
+	gScrnRect.x = 0;
+	gScrnRect.y = 0;
+	gScrnRect.w = screen->Width();
+	gScrnRect.h = screen->Height();
 
-	gClipRect.x = gScrnRect.left+SPRITES_WIDTH;
-	gClipRect.y = gScrnRect.top+SPRITES_WIDTH;
-	gClipRect.w = gScrnRect.right-gScrnRect.left-2*SPRITES_WIDTH;
-	gClipRect.h = gScrnRect.bottom-gScrnRect.top-2*SPRITES_WIDTH+STATUS_HEIGHT;
-	screen->ClipBlit(&gClipRect);
+	SDL_Rect clipRect;
+	clipRect.x = (SPRITES_WIDTH << SPRITE_PRECISION);
+	clipRect.y = (SPRITES_WIDTH << SPRITE_PRECISION);
+	GetRenderCoordinates(clipRect.x, clipRect.y);
+	clipRect.w = gScrnRect.w - clipRect.x*2;
+	clipRect.h = gScrnRect.h - clipRect.y*2;
+	screen->ClipBlit(&clipRect);
 
 	/* -- Throw up our intro screen */
 	screen->FadeOut();

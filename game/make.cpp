@@ -22,6 +22,7 @@
 
 #include "Maelstrom_Globals.h"
 #include "make.h"
+#include "game.h"
 #include "netplay.h"
 #include "object.h"
 #include "player.h"
@@ -36,8 +37,7 @@ void MakeEnemy(void)
 {
 	int  newsprite, x, y;
 
-	y = FastRandom(gScrnRect.bottom-gScrnRect.top-SPRITES_WIDTH)
-							 + SPRITES_WIDTH;
+	y = FastRandom(GAME_HEIGHT - SPRITES_WIDTH) + SPRITES_WIDTH;
 	y *= SCALE_FACTOR;
 	x = 0;
 
@@ -63,8 +63,7 @@ void MakePrize(void)
 		cap = 1;
 	
 	for (index = 0; index < cap; index++) {
-		x = FastRandom(gScrnRect.right - gScrnRect.left -
-						SPRITES_WIDTH) + SPRITES_WIDTH;
+		x = FastRandom(GAME_WIDTH - SPRITES_WIDTH) + SPRITES_WIDTH;
 		y = 0;
 	
 		x *= SCALE_FACTOR;
@@ -101,9 +100,8 @@ void MakeMultiplier(void)
 {
 	int	newsprite, x, y;
 
-	x = FastRandom(gClipRect.w - SPRITES_WIDTH) + SPRITES_WIDTH;
-	y = FastRandom(gClipRect.h - SPRITES_WIDTH - STATUS_HEIGHT) 
-							+ SPRITES_WIDTH;
+	x = FastRandom(GAME_WIDTH - 3*SPRITES_WIDTH) + SPRITES_WIDTH;
+	y = FastRandom(GAME_HEIGHT - 3*SPRITES_WIDTH) + SPRITES_WIDTH;
 
 	x *= SCALE_FACTOR;
 	y *= SCALE_FACTOR;
@@ -126,9 +124,8 @@ tryAgain:
 	if ( min_bad_distance )
 		--min_bad_distance;
 
-	x = FastRandom(gClipRect.w - SPRITES_WIDTH) + SPRITES_WIDTH;
-	y = FastRandom(gClipRect.h - SPRITES_WIDTH - STATUS_HEIGHT) 
-							+ SPRITES_WIDTH;
+	x = FastRandom(GAME_WIDTH - 3*SPRITES_WIDTH) + SPRITES_WIDTH;
+	y = FastRandom(GAME_HEIGHT - 3*SPRITES_WIDTH) + SPRITES_WIDTH;
 
 	x *= SCALE_FACTOR;
 	y *= SCALE_FACTOR;
@@ -176,8 +173,7 @@ void MakeBonus(void)
 		cap = 1;
 
 	for (index = 0; index < cap; index++) {
-		x = FastRandom(gScrnRect.right - gScrnRect.left - 
-						SPRITES_WIDTH) + SPRITES_WIDTH;
+		x = FastRandom(GAME_WIDTH - SPRITES_WIDTH) + SPRITES_WIDTH;
 		y = 0;
 	
 		x *= SCALE_FACTOR;
@@ -211,8 +207,7 @@ void MakeDamagedShip(void)
 {
 	int	newsprite, x, y, xVel, yVel, rx;
 
-	x = FastRandom(gScrnRect.right - gScrnRect.left - 
-						SPRITES_WIDTH) + SPRITES_WIDTH;
+	x = FastRandom(GAME_WIDTH - SPRITES_WIDTH) + SPRITES_WIDTH;
 	y = 0;
 
 	x *= SCALE_FACTOR;
@@ -262,9 +257,9 @@ void MakeGravity(void)
 		if ( min_bad_distance )
 			--min_bad_distance;
 	
-		x = FastRandom(gClipRect.w - SPRITES_WIDTH) + SPRITES_WIDTH;
-		y = FastRandom(gClipRect.h - SPRITES_WIDTH - STATUS_HEIGHT) 
-							+ SPRITES_WIDTH;
+		x = FastRandom(GAME_WIDTH - 3*SPRITES_WIDTH) + SPRITES_WIDTH;
+		y = FastRandom(GAME_HEIGHT - 3*SPRITES_WIDTH) + SPRITES_WIDTH;
+
 		x *= SCALE_FACTOR;
 		y *= SCALE_FACTOR;
 	
@@ -327,8 +322,7 @@ void MakeHoming(void)
 		else
 			yVel -= (0 * SCALE_FACTOR);
 	
-		x = FastRandom(gScrnRect.right - gScrnRect.left -
-						SPRITES_WIDTH) + SPRITES_WIDTH;
+		x = FastRandom(GAME_WIDTH - SPRITES_WIDTH) + SPRITES_WIDTH;
 		y = 0;
 	
 		x *= SCALE_FACTOR;

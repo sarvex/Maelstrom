@@ -22,6 +22,7 @@
 
 #include "Maelstrom_Globals.h"
 #include "object.h"
+#include "game.h"
 
 
 /* The screen object class */
@@ -37,10 +38,10 @@ Object::Object(int X, int Y, int Xvec, int Yvec, Blit *blit, int PhaseTime)
 		phase = 0;
 	nextphase = 0;
 
-	playground.left = (0<<SPRITE_PRECISION);
-	playground.right = ((gScrnRect.right-gScrnRect.left)<<SPRITE_PRECISION);
-	playground.top = (0<<SPRITE_PRECISION);
-	playground.bottom = ((gScrnRect.bottom-gScrnRect.top)<<SPRITE_PRECISION);
+	playground.left = (0 << SPRITE_PRECISION);
+	playground.right = (GAME_WIDTH << SPRITE_PRECISION);
+	playground.top = (0 << SPRITE_PRECISION);
+	playground.bottom = (GAME_HEIGHT << SPRITE_PRECISION);
 
 	SetPos(X, Y);
 	xvec = Xvec;
@@ -100,9 +101,7 @@ Object::Move(int Frozen)		// This is called every timestep.
 void
 Object::BlitSprite(void)
 {
-	screen->QueueBlit(gScrnRect.left + (x>>SPRITE_PRECISION),
-	                  gScrnRect.top + (y>>SPRITE_PRECISION),
-							myblit->sprite[phase]);
+	RenderSprite(x, y, myblit->sprite[phase]);
 }
 
 /* Sound functions */

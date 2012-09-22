@@ -194,7 +194,7 @@ public:
 
 		alive = Object::Move(Frozen);
 
-		if ( ((x+26)>>SPRITE_PRECISION) >= SCREEN_WIDTH )
+		if ( ((x+26)>>SPRITE_PRECISION) >= GAME_WIDTH )
 			alive = -1;
 		return(alive);
 	}
@@ -204,7 +204,7 @@ public:
 		OBJ_LOOP(i, numshots) {
 			int X = (shots[i]->x>>SPRITE_PRECISION);
 			int Y = (shots[i]->y>>SPRITE_PRECISION);
-			screen->QueueBlit(gScrnRect.left + X, gScrnRect.top + Y, gEnemyShot);
+			RenderSprite(shots[i]->x, shots[i]->y, gEnemyShot);
 		}
 		Object::BlitSprite();
 	}

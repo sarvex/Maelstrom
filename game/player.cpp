@@ -25,6 +25,7 @@
 #include "object.h"
 #include "player.h"
 #include "objects.h"
+#include "game.h"
 
 
 /* ----------------------------------------------------------------- */
@@ -111,8 +112,8 @@ Player::NewWave(void)
 	WasShielded = 0;
 	Sphase = 0;
 	SetPos(
-		((SCREEN_WIDTH/2-((gGameInfo.GetNumPlayers()/2-Index)*(2*SPRITES_WIDTH)))*SCALE_FACTOR),
-		((SCREEN_HEIGHT/2)*SCALE_FACTOR)
+		((GAME_WIDTH/2-((gGameInfo.GetNumPlayers()/2-Index)*(2*SPRITES_WIDTH)))*SCALE_FACTOR),
+		((GAME_HEIGHT/2)*SCALE_FACTOR)
 	);
 	xvec = yvec = 0;
 	Thrusting = 0;
@@ -255,8 +256,8 @@ Player::BeenTimedOut(void)
 {
 	Exploding = 0;
 	SetPos(
-		((SCREEN_WIDTH/2-((gGameInfo.GetNumPlayers()/2-Index)*(2*SPRITES_WIDTH)))*SCALE_FACTOR),
-		((SCREEN_HEIGHT/2)*SCALE_FACTOR)
+		((GAME_WIDTH/2-((gGameInfo.GetNumPlayers()/2-Index)*(2*SPRITES_WIDTH)))*SCALE_FACTOR),
+		((GAME_HEIGHT/2)*SCALE_FACTOR)
 	);
 	if ( gGameInfo.IsDeathmatch() )
 		Dead = (DEAD_DELAY/2);
@@ -627,15 +628,11 @@ Player::BlitSprite(void)
 
 	/* Draw the new shots */
 	OBJ_LOOP(i, numshots) {
-		int X = (shots[i]->x>>SPRITE_PRECISION);
-		int Y = (shots[i]->y>>SPRITE_PRECISION);
-		screen->QueueBlit(gScrnRect.left + X, gScrnRect.top + Y, gPlayerShot);
+		RenderSprite(shots[i]->x, shots[i]->y, gPlayerShot);
 	}
 	/* Draw the shield, if necessary */
 	if ( ! gPaused && (AutoShield || (ShieldOn && (ShieldLevel > 0))) ) {
-		screen->QueueBlit(gScrnRect.left + (x>>SPRITE_PRECISION),
-		                  gScrnRect.top + (y>>SPRITE_PRECISION),
-						gShieldBlit->sprite[Sphase]);
+		RenderSprite(x, y, gShieldBlit->sprite[Sphase]);
 		Sphase = !Sphase;
 	}
 	/* Draw the thrust, if necessary */
@@ -643,9 +640,7 @@ Player::BlitSprite(void)
 		int thrust_x, thrust_y;
 		thrust_x = x + gThrustOrigins[phase].h;
 		thrust_y = y + gThrustOrigins[phase].v;
-		screen->QueueBlit(gScrnRect.left + (thrust_x>>SPRITE_PRECISION),
-		                  gScrnRect.top + (thrust_y>>SPRITE_PRECISION),
-						ThrustBlit->sprite[phase]);
+		RenderSprite(thrust_x, thrust_y, ThrustBlit->sprite[phase]);
 		if ( ThrustBlit == gThrust1 )
 			ThrustBlit = gThrust2;
 		else

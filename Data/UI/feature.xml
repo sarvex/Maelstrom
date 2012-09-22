@@ -1,6 +1,6 @@
 <Dialog>
 	<Size w="273" h="103"/>
-	<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" x="183" y="93"/>
+	<Anchor anchorFrom="TOPLEFT" anchorTo="CENTER" x="-137" y="-147"/>
 	<Elements>
 		<Icon name="icon" id="103">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" x="19" y="19"/>

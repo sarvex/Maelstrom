@@ -243,6 +243,9 @@ public:
 	/* This function returns 0, or -1 if the sprite died */
 	virtual int Move(int Frozen);
 
+	SDL_Texture *GetSprite() {
+		return myblit->sprite[phase];
+	}
 	virtual void BlitSprite(void);
 
 	/* Sound functions */

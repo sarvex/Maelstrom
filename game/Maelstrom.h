@@ -27,6 +27,8 @@
 #endif
 #define	VERSION_STRING		VERSION ".N"
 
+#define GAME_WIDTH		640
+#define GAME_HEIGHT		480
 #define SCREEN_WIDTH		640
 #define SCREEN_HEIGHT		480
 
@@ -46,7 +48,7 @@
 #define	MAX_STARS		30
 #define	SHIP_FRAMES		48
 #define	SPRITES_WIDTH		32
-#define SPRITE_PRECISION	4	/* internal <--> screen precision */
+#define	SPRITE_PRECISION	4	/* sprite <--> game precision */
 #define	VEL_FACTOR		4
 #define	VEL_MAX			(8<<SPRITE_PRECISION)
 #define	SCALE_FACTOR		16
