@@ -10,4 +10,5 @@ Makefile
 autom4te.cache
 config.log
 config.status
+xcuserdata
 .DS_Store
