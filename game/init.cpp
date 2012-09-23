@@ -822,8 +822,7 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 	if (!InitResolutions(w, h)) {
 		return(-1);
 	}
-	if (screen->Init(w, h, window_flags, render_flags,
-	                       colors[gGammaCorrect], icon) < 0){
+	if (screen->Init(w, h, window_flags, render_flags, icon) < 0){
 		error("Fatal: %s\n", screen->Error());
 		return(-1);
 	}

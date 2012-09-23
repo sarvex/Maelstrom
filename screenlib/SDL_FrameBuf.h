@@ -46,12 +46,10 @@ class FrameBuf : public ErrorBase {
 public:
 	FrameBuf();
 	int Init(int width, int height, Uint32 window_flags, Uint32 render_flags,
-			SDL_Color *colors = NULL, SDL_Surface *icon = NULL);
+			SDL_Surface *icon = NULL);
 	virtual ~FrameBuf();
 
 	/* Setup routines */
-	/* Set the image palette -- 256 entries */
-	void SetPalette(SDL_Color *colors);
 	/* Map an RGB value to a color pixel */
 	Uint32 MapRGB(Uint8 R, Uint8 G, Uint8 B) {
 		return (0xFF000000 | ((Uint32)R << 16) | ((Uint32)G << 8) | B);
@@ -211,7 +209,6 @@ private:
 	SDL_Window *window;
 	SDL_Renderer *renderer;
 	SDL_Texture *texture;
-	Uint32 image_map[256];
 	int faded;
 	SDL_Rect rect;
 	SDL_Rect clip;

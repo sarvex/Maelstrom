@@ -43,7 +43,7 @@ FrameBuf:: FrameBuf() : ErrorBase()
 
 int
 FrameBuf:: Init(int width, int height, Uint32 window_flags, Uint32 render_flags,
-		SDL_Color *colors, SDL_Surface *icon)
+		SDL_Surface *icon)
 {
 	window = SDL_CreateWindow(NULL, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, window_flags);
 	if (!window) {
@@ -90,11 +90,6 @@ FrameBuf:: Init(int width, int height, Uint32 window_flags, Uint32 render_flags,
 		UpdateWindowSize(width, height);
 	}
 
-	/* Copy the image colormap */
-	if ( colors ) {
-		SetPalette(colors);
-	}
-
 	return(0);
 }
 
@@ -108,16 +103,6 @@ FrameBuf:: ~FrameBuf()
 	}
 	if (window) {
 		SDL_DestroyWindow(window);
-	}
-}
-
-void
-FrameBuf:: SetPalette(SDL_Color *colors)
-{
-	int i;
-
-	for ( i=0; i<256; ++i ) {
-		image_map[i] = MapRGB(colors[i].r, colors[i].g, colors[i].b);
 	}
 }
 
