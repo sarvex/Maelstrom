@@ -63,31 +63,33 @@ FrameBuf:: Init(int width, int height, Uint32 window_flags, Uint32 render_flags,
 
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");
 
-/*
-	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB888, SDL_TEXTUREACCESS_TARGET, width, height);
-	if (!texture) {
-		SetError("Couldn't create target texture: %s", SDL_GetError());
-		return(-1);
-	}
-
-	if (SDL_SetRenderTarget(renderer, texture) < 0) {
-		SetError("Couldn't set render target: %s", SDL_GetError());
-		return(-1);
-	}
-*/
-
 	/* Set the icon, if any */
 	if ( icon ) {
 		SDL_SetWindowIcon(window, icon);
 	}
 
 	/* Set the output area */
-	if ( window_flags & SDL_WINDOW_RESIZABLE ) {
-		int w, h;
+	int w, h;
+	SDL_GetWindowSize(window, &w, &h);
 
-		SDL_GetWindowSize(window, &w, &h);
+	if ( (window_flags & SDL_WINDOW_RESIZABLE) || (w == width && h == height) ) {
 		UpdateWindowSize(w, h);
 	} else {
+		// The application isn't resizable but the window isn't what we
+		// expected, so we'll render to a texture of the expected size
+		// and scale input coordinates accordingly
+
+		texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB888, SDL_TEXTUREACCESS_TARGET, width, height);
+		if (!texture) {
+			SetError("Couldn't create target texture: %s", SDL_GetError());
+			return(-1);
+		}
+
+		if (SDL_SetRenderTarget(renderer, texture) < 0) {
+			SetError("Couldn't set render target: %s", SDL_GetError());
+			return(-1);
+		}
+
 		UpdateWindowSize(width, height);
 	}
 
