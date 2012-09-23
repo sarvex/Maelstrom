@@ -896,7 +896,7 @@ uninstall-am: uninstall-binPROGRAMS
 	uninstall-binPROGRAMS
 
 
-$(PROGRAMS): data
+all: data
 
 data: Maelstrom_Data.zip
 

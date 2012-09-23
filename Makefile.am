@@ -40,7 +40,7 @@ EXTRA_DIST =			\
 
 DIST_SUBDIRS = $(SUBDIRS)
 
-$(PROGRAMS): data
+all: data
 
 data: Maelstrom_Data.zip
 
