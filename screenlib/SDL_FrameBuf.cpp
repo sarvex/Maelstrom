@@ -45,9 +45,6 @@ int
 FrameBuf:: Init(int width, int height, Uint32 window_flags, Uint32 render_flags,
 		SDL_Color *colors, SDL_Surface *icon)
 {
-#ifdef FAST_ITERATION
-	window_flags &= ~SDL_WINDOW_FULLSCREEN;
-#endif
 	window = SDL_CreateWindow(NULL, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, window_flags);
 	if (!window) {
 		SetError("Couldn't create %dx%d window: %s", 

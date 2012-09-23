@@ -354,7 +354,9 @@ int MaelstromMain(int argc, char *argv[])
 	SeedRandom(0L);
 
 	/* Parse command line arguments */
+#if !defined(FAST_ITERATION) || defined(__IPHONEOS__)
 	window_flags |= SDL_WINDOW_FULLSCREEN;
+#endif
 	for ( progname=argv[0]; --argc; ++argv ) {
 		if ( strcmp(argv[1], "-fullscreen") == 0 ) {
 			window_flags |= SDL_WINDOW_FULLSCREEN;
