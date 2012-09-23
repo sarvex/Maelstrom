@@ -984,6 +984,10 @@
 		AAD13B96145E8A8F0040B19C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					armv6,
+					armv7,
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				HEADER_SEARCH_PATHS = ../../../../../3rdparty/iphone/physfs;
 				INFOPLIST_FILE = "Maelstrom-Info.plist";
@@ -995,6 +999,10 @@
 		AAD13B97145E8A8F0040B19C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					armv6,
+					armv7,
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				HEADER_SEARCH_PATHS = ../../../../../3rdparty/iphone/physfs;
 				INFOPLIST_FILE = "Maelstrom-Info.plist";
