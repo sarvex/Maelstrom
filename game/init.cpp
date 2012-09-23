@@ -91,54 +91,15 @@ static int LoadSmallSprite(BlitPtr *theBlit, int baseID, int numFrames);
 /* ----------------------------------------------------------------- */
 /* -- Load the list of supported resolutions and pick the best one */
 
-enum {
-	FIND_RESOLUTION_EXACT,
-	FIND_RESOLUTION_ASPECT,
-	FIND_RESOLUTION_ANY,
-	NUM_FIND_RESOLUTION_TYPES
-};
-
-static int FindResolution(int w, int h, int findMode)
+static int FindResolution(int w, int h)
 {
-	int i;
-
-	switch (findMode) {
-
-	case FIND_RESOLUTION_EXACT:
-		for (i = 0; i < gResolutions.length(); ++i) {
-			if (!gResolutions[i].w || !gResolutions[i].h) {
-				continue;
-			}
-			if (gResolutions[i].w == w && gResolutions[i].h == h) {
-				return i;
-			}
+	for (int i = 0; i < gResolutions.length(); ++i) {
+		if (!gResolutions[i].w || !gResolutions[i].h) {
+			continue;
 		}
-		break;
-
-	case FIND_RESOLUTION_ASPECT:
-		for (i = 0; i < gResolutions.length(); ++i) {
-			if (!gResolutions[i].w || !gResolutions[i].h) {
-				continue;
-			}
-			if ((gResolutions[i].w > gResolutions[i].h) != (w > h)) {
-				continue;
-			}
-			if (gResolutions[i].w <= w && gResolutions[i].h <= h) {
-				return i;
-			}
+		if (gResolutions[i].w <= w && gResolutions[i].h <= h) {
+			return i;
 		}
-		break;
-
-	case FIND_RESOLUTION_ANY:
-		for (i = 0; i < gResolutions.length(); ++i) {
-			if (!gResolutions[i].w || !gResolutions[i].h) {
-				continue;
-			}
-			if (gResolutions[i].w <= w && gResolutions[i].h <= h) {
-				return i;
-			}
-		}
-		break;
 	}
 
 	// The given resolution is smaller than any supported resolution
@@ -191,33 +152,31 @@ static bool InitResolutions(int &w, int &h)
 	const char *desired = prefs->GetString(PREFERENCES_RESOLUTION);
 	if (desired) {
 		SDL_sscanf(desired, "%dx%d", &w, &h);
-		gResolutionIndex = FindResolution(w, h, FIND_RESOLUTION_ANY);
+		gResolutionIndex = FindResolution(w, h);
 		if (gResolutionIndex >= 0) {
 			return true;
 		}
 	}
 
-	// First, check the current mode, then check all modes
-	gResolutionIndex = -1;
+	// Look for the best mode in two passes, first check to see if any of
+	// our supported modes are available, and if not just grab the first mode
+	// that's bigger than any of our supported modes and stretch to that.
 	SDL_DisplayMode mode;
 	int displayIndex = 0;
-	if (SDL_GetCurrentDisplayMode(displayIndex, &mode) == 0) {
-		gResolutionIndex = FindResolution(mode.w, mode.h, FIND_RESOLUTION_EXACT);
-		if (gResolutionIndex >= 0) {
-			w = mode.w;
-			h = mode.h;
-			return true;
-		}
-	}
-	for (int pass = 0; pass < NUM_FIND_RESOLUTION_TYPES; ++pass) {
+	for (int pass = 0; pass < 2; ++pass) {
+		bool exact = (pass == 0);
 		for (int i = 0; i < SDL_GetNumDisplayModes(displayIndex); ++i) {
 			if (SDL_GetDisplayMode(displayIndex, i, &mode) < 0) {
 				continue;
 			}
-			gResolutionIndex = FindResolution(mode.w, mode.h, pass);
+			gResolutionIndex = FindResolution(mode.w, mode.h);
 			if (gResolutionIndex >= 0) {
-				w = mode.w;
-				h = mode.h;
+				// Note that we're going to request our best supported resolution here.
+				w = gResolutions[gResolutionIndex].w;
+				h = gResolutions[gResolutionIndex].h;
+				if (exact && (mode.w != w || mode.h != h)) {
+					continue;
+				}
 				return true;
 			}
 		}
@@ -909,10 +868,12 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 	/* Create the UI manager */
 	ui = new MaelstromUI(screen, prefs);
 
-	/* -- We want to access the FULL screen! */
-	Resolution &resolution = gResolutions[gResolutionIndex];
-	gScrnRect.x = (w - resolution.w) / 2;
-	gScrnRect.y = (h - resolution.h) / 2;
+	/* Set up for the resolution we actually got */
+	gResolutionIndex = FindResolution(screen->Width(), screen->Height());
+
+	const Resolution &resolution = gResolutions[gResolutionIndex];
+	gScrnRect.x = (screen->Width() - resolution.w) / 2;
+	gScrnRect.y = (screen->Height() - resolution.h) / 2;
 	gScrnRect.w = resolution.w;
 	gScrnRect.h = resolution.h;
 
@@ -920,8 +881,8 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 	clipRect.x = (SPRITES_WIDTH << SPRITE_PRECISION);
 	clipRect.y = (SPRITES_WIDTH << SPRITE_PRECISION);
 	GetRenderCoordinates(clipRect.x, clipRect.y);
-	clipRect.w = gScrnRect.w - clipRect.x*2;
-	clipRect.h = gScrnRect.h - clipRect.y*2;
+	clipRect.w = gScrnRect.w - (clipRect.x - gScrnRect.x)*2;
+	clipRect.h = gScrnRect.h - (clipRect.y - gScrnRect.y)*2;
 	screen->ClipBlit(&clipRect);
 
 	/* -- Throw up our intro screen */

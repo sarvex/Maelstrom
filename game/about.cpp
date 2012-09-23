@@ -23,6 +23,7 @@
 #include "Maelstrom_Globals.h"
 #include "object.h"
 #include "about.h"
+#include "game.h"
 
 
 void
@@ -31,8 +32,8 @@ AboutPanelDelegate::OnShow()
 	int centerX, centerY;
 	int x, y, off;
 
-	centerX = screen->Width() / 2;
-	centerY = screen->Height() / 2;
+	centerX = GAME_WIDTH / 2;
+	centerY = GAME_HEIGHT / 2;
 
 	x = (centerX - 240) * SCALE_FACTOR;
 	y = (centerY - 104) * SCALE_FACTOR;
@@ -97,11 +98,6 @@ AboutPanelDelegate::OnDraw()
 
 	for ( i=0; i<numsprites; ++i ) {
 		objects[i]->Move(0);
-
-		int x, y;
-		objects[i]->GetPos(&x, &y);
-		x >>= SPRITE_PRECISION;
-		y >>= SPRITE_PRECISION;
-		screen->QueueBlit(x, y, objects[i]->GetSprite());
+		objects[i]->BlitSprite();
 	}
 }
