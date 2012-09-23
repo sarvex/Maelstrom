@@ -37,6 +37,8 @@
 #include "MaelstromUI.h"
 #include "../screenlib/UIElement.h"
 
+#include "../utils/loadxml.h"
+
 
 #define GAME_PREFS_FILE	"Maelstrom_Prefs.txt"
 
@@ -48,6 +50,8 @@ MFont    *fonts[NUM_FONTS];
 FrameBuf *screen = NULL;
 UIManager *ui = NULL;
 
+array<Resolution> gResolutions;
+int	gResolutionIndex;
 char   *gReplayFile;
 Sint32	gLastHigh;
 Uint32	gLastDrawn;
@@ -83,6 +87,145 @@ static int LoadCICNS(void);
 static void BackwardsSprite(BlitPtr *theBlit, BlitPtr oldBlit);
 static int LoadLargeSprite(BlitPtr *theBlit, int baseID, int numFrames);
 static int LoadSmallSprite(BlitPtr *theBlit, int baseID, int numFrames);
+
+/* ----------------------------------------------------------------- */
+/* -- Load the list of supported resolutions and pick the best one */
+
+enum {
+	FIND_RESOLUTION_EXACT,
+	FIND_RESOLUTION_ASPECT,
+	FIND_RESOLUTION_ANY,
+	NUM_FIND_RESOLUTION_TYPES
+};
+
+static int FindResolution(int w, int h, int findMode)
+{
+	int i;
+
+	switch (findMode) {
+
+	case FIND_RESOLUTION_EXACT:
+		for (i = 0; i < gResolutions.length(); ++i) {
+			if (!gResolutions[i].w || !gResolutions[i].h) {
+				continue;
+			}
+			if (gResolutions[i].w == w && gResolutions[i].h == h) {
+				return i;
+			}
+		}
+		break;
+
+	case FIND_RESOLUTION_ASPECT:
+		for (i = 0; i < gResolutions.length(); ++i) {
+			if (!gResolutions[i].w || !gResolutions[i].h) {
+				continue;
+			}
+			if ((gResolutions[i].w > gResolutions[i].h) != (w > h)) {
+				continue;
+			}
+			if (gResolutions[i].w <= w && gResolutions[i].h <= h) {
+				return i;
+			}
+		}
+		break;
+
+	case FIND_RESOLUTION_ANY:
+		for (i = 0; i < gResolutions.length(); ++i) {
+			if (!gResolutions[i].w || !gResolutions[i].h) {
+				continue;
+			}
+			if (gResolutions[i].w <= w && gResolutions[i].h <= h) {
+				return i;
+			}
+		}
+		break;
+	}
+
+	// The given resolution is smaller than any supported resolution
+	return -1;
+}
+
+static bool InitResolutions(int &w, int &h)
+{
+	char *buffer;
+	rapidxml::xml_document<> doc;
+
+	if (!LoadXML("resolutions.xml", buffer, doc)) {
+		return false;
+	}
+
+	rapidxml::xml_node<> *node = doc.first_node();
+	rapidxml::xml_attribute<> *attr;
+	Resolution resolution;
+
+	for (node = node->first_node(); node; node = node->next_sibling()) {
+		attr = node->first_attribute("w", 0, false);
+		if (!attr) {
+			error("Resolution missing 'w' attribute in resolutions.xml\n");
+			delete[] buffer;
+			return false;;
+		}
+		resolution.w = SDL_atoi(attr->value());
+
+		attr = node->first_attribute("h", 0, false);
+		if (!attr) {
+			error("Resolution missing 'h' attribute in resolutions.xml\n");
+			delete[] buffer;
+			return false;;
+		}
+		resolution.h = SDL_atoi(attr->value());
+
+		attr = node->first_attribute("path_suffix", 0, false);
+		if (!attr) {
+			error("Resolution missing 'path_suffix' attribute in resolutions.xml\n");
+			delete[] buffer;
+			return false;;
+		}
+		SDL_strlcpy(resolution.path_suffix, attr->value(), sizeof(resolution.path_suffix));
+
+		gResolutions.add(resolution);
+	}
+	delete[] buffer;
+
+	// See if the user wants something specific
+	const char *desired = prefs->GetString(PREFERENCES_RESOLUTION);
+	if (desired) {
+		SDL_sscanf(desired, "%dx%d", &w, &h);
+		gResolutionIndex = FindResolution(w, h, FIND_RESOLUTION_ANY);
+		if (gResolutionIndex >= 0) {
+			return true;
+		}
+	}
+
+	// First, check the current mode, then check all modes
+	gResolutionIndex = -1;
+	SDL_DisplayMode mode;
+	int displayIndex = 0;
+	if (SDL_GetCurrentDisplayMode(displayIndex, &mode) == 0) {
+		gResolutionIndex = FindResolution(mode.w, mode.h, FIND_RESOLUTION_EXACT);
+		if (gResolutionIndex >= 0) {
+			w = mode.w;
+			h = mode.h;
+			return true;
+		}
+	}
+	for (int pass = 0; pass < NUM_FIND_RESOLUTION_TYPES; ++pass) {
+		for (int i = 0; i < SDL_GetNumDisplayModes(displayIndex); ++i) {
+			if (SDL_GetDisplayMode(displayIndex, i, &mode) < 0) {
+				continue;
+			}
+			gResolutionIndex = FindResolution(mode.w, mode.h, pass);
+			if (gResolutionIndex >= 0) {
+				w = mode.w;
+				h = mode.h;
+				return true;
+			}
+		}
+	}
+
+	error("Couldn't find any supported resolutions\n");
+	return false;
+}
 
 /* ----------------------------------------------------------------- */
 /* -- Draw a loading status bar */
@@ -674,6 +817,7 @@ void CleanUp(void)
 int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 {
 	int i;
+	int w, h;
 	SDL_Surface *icon;
 
 	// -- Initialize some variables
@@ -716,11 +860,8 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 
 	/* Initialize the screen */
 	screen = new FrameBuf;
-	int w = SCREEN_WIDTH;
-	int h = SCREEN_HEIGHT;
-	const char *resolution = prefs->GetString(PREFERENCES_RESOLUTION);
-	if (resolution) {
-		SDL_sscanf(resolution, "%dx%d", &w, &h);
+	if (!InitResolutions(w, h)) {
+		return(-1);
 	}
 	if (screen->Init(w, h, window_flags, render_flags,
 	                       colors[gGammaCorrect], icon) < 0){
@@ -769,10 +910,11 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 	ui = new MaelstromUI(screen, prefs);
 
 	/* -- We want to access the FULL screen! */
-	gScrnRect.x = 0;
-	gScrnRect.y = 0;
-	gScrnRect.w = screen->Width();
-	gScrnRect.h = screen->Height();
+	Resolution &resolution = gResolutions[gResolutionIndex];
+	gScrnRect.x = (w - resolution.w) / 2;
+	gScrnRect.y = (h - resolution.h) / 2;
+	gScrnRect.w = resolution.w;
+	gScrnRect.h = resolution.h;
 
 	SDL_Rect clipRect;
 	clipRect.x = (SPRITES_WIDTH << SPRITE_PRECISION);

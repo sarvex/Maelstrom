@@ -98,6 +98,12 @@ extern Bool	gUpdateBuffer;
 extern Bool	gRunning;
 
 // in init.cpp : 
+struct Resolution {
+	int w, h;
+	char path_suffix[32];
+};
+extern array<Resolution> gResolutions;
+extern int	gResolutionIndex;
 extern char    *gReplayFile;
 extern Sint32	gLastHigh;
 extern SDL_Rect gScrnRect;

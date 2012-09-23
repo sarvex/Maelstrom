@@ -29,8 +29,6 @@
 
 #define GAME_WIDTH		640
 #define GAME_HEIGHT		480
-#define SCREEN_WIDTH		640
-#define SCREEN_HEIGHT		480
 
 #define	SOUND_DELAY		6
 #define	FADE_STEPS		40

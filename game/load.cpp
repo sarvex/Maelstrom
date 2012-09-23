@@ -34,30 +34,13 @@ SDL_Texture *Load_Texture(FrameBuf *screen, const char *folder, const char *name
 		"png",
 		"bmp",
 	};
-	static struct {
-		int w, h;
-		const char *suffix;
-	} entries[] = {
-		{ 2048, 1536, "_2048x1536" },
-		{ 1024, 768, "_1024x768" },
-		{ 960, 640, "_960x640" },
-		{ 640, 480, "" },
-		{ 480, 320, "_480x320" },
-		{ 0, 0, "" }
-	};
-	int w, h;
 	char file[256];
 
 	// Use the game display area for determining which art set to use
-	w = gScrnRect.w;
-	h = gScrnRect.h;
-	for (int i = 0; i < SDL_arraysize(entries); ++i) {
-		if ( w < entries[i].w || h < entries[i].h ) {
-			continue;
-		}
+	for (int i = gResolutionIndex; i < gResolutions.length(); ++i) {
 		for (int j = 0; j < SDL_arraysize(extensions); ++j) {
 			SDL_snprintf(file, sizeof(file), "%s%s/%s.%s",
-					folder, entries[i].suffix, name, extensions[j]);
+					folder, gResolutions[i].path_suffix, name, extensions[j]);
 			SDL_Surface *surface = IMG_Load_RW(PHYSFSRWOPS_openRead(file), 1);
 			if (surface) {
 				SDL_Texture *texture = screen->LoadImage(surface);
