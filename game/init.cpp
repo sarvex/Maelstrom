@@ -50,6 +50,7 @@ MFont    *fonts[NUM_FONTS];
 FrameBuf *screen = NULL;
 UIManager *ui = NULL;
 
+Bool	gClassic;
 array<Resolution> gResolutions;
 int	gResolutionIndex;
 char   *gReplayFile;
@@ -156,6 +157,18 @@ static bool InitResolutions(int &w, int &h)
 	}
 	delete[] buffer;
 
+	if (prefs->GetBool(PREFERENCES_CLASSIC)) {
+		gClassic = true;
+	}
+	if (gClassic) {
+		w = GAME_WIDTH;
+		h = GAME_HEIGHT;
+		gResolutionIndex = FindResolution(w, h);
+		if (gResolutionIndex >= 0) {
+			return true;
+		}
+	}
+		
 	// See if the user wants something specific
 	const char *desired = prefs->GetString(PREFERENCES_RESOLUTION);
 	if (desired) {

@@ -44,6 +44,7 @@
 #include "gameinfo.h"
 
 // Preferences keys
+#define PREFERENCES_CLASSIC "Classic"
 #define PREFERENCES_RESOLUTION "Resolution"
 #define PREFERENCES_HANDLE "Handle"
 #define PREFERENCES_DEATHMATCH "Network.Deathmatch"
@@ -75,12 +76,6 @@ extern UIManager *ui;
 
 /* Boolean type */
 typedef Uint8 Bool;
-#ifndef true
-#define true	1
-#endif
-#ifndef false
-#define false	0
-#endif
 
 // Functions from main.cpp
 extern void   PrintUsage(void);
@@ -98,6 +93,7 @@ extern Bool	gUpdateBuffer;
 extern Bool	gRunning;
 
 // in init.cpp : 
+extern Bool	gClassic;
 struct Resolution {
 	int w, h;
 	char path_suffix[32];
