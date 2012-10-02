@@ -144,6 +144,14 @@ static bool InitResolutions(int &w, int &h)
 		}
 		SDL_strlcpy(resolution.path_suffix, attr->value(), sizeof(resolution.path_suffix));
 
+		attr = node->first_attribute("file_suffix", 0, false);
+		if (!attr) {
+			error("Resolution missing 'file_suffix' attribute in resolutions.xml\n");
+			delete[] buffer;
+			return false;;
+		}
+		SDL_strlcpy(resolution.file_suffix, attr->value(), sizeof(resolution.file_suffix));
+
 		gResolutions.add(resolution);
 	}
 	delete[] buffer;

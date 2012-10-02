@@ -1,8 +1,8 @@
 <resolutions>
-	<resolution w="2048" h="1536" path_suffix="_2048x1536"/>
-	<resolution w="1024" h="768" path_suffix="_1024x768"/>
-	<resolution w="960" h="640" path_suffix="_960x640"/>
-	<resolution w="640" h="480" path_suffix=""/>
-	<resolution w="480" h="320" path_suffix="_480x320"/>
-	<resolution w="0" h="0" path_suffix=""/>
+	<resolution w="2048" h="1536" path_suffix="_1024x768" file_suffix="@2x"/>
+	<resolution w="1024" h="768" path_suffix="_1024x768" file_suffix=""/>
+	<resolution w="960" h="640" path_suffix="_480x320" file_suffix="@2x"/>
+	<resolution w="640" h="480" path_suffix="" file_suffix=""/>
+	<resolution w="480" h="320" path_suffix="_480x320" file_suffix=""/>
+	<resolution w="0" h="0" path_suffix="" file_suffix=""/>
 </resolutions>

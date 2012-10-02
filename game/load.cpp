@@ -39,8 +39,8 @@ SDL_Texture *Load_Texture(FrameBuf *screen, const char *folder, const char *name
 	// Use the game display area for determining which art set to use
 	for (int i = gResolutionIndex; i < gResolutions.length(); ++i) {
 		for (int j = 0; j < SDL_arraysize(extensions); ++j) {
-			SDL_snprintf(file, sizeof(file), "%s%s/%s.%s",
-					folder, gResolutions[i].path_suffix, name, extensions[j]);
+			SDL_snprintf(file, sizeof(file), "%s%s/%s%s.%s",
+					folder, gResolutions[i].path_suffix, name, gResolutions[i].file_suffix, extensions[j]);
 			SDL_Surface *surface = IMG_Load_RW(PHYSFSRWOPS_openRead(file), 1);
 			if (surface) {
 				SDL_Texture *texture = screen->LoadImage(surface);

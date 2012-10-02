@@ -101,6 +101,7 @@ extern Bool	gRunning;
 struct Resolution {
 	int w, h;
 	char path_suffix[32];
+	char file_suffix[32];
 };
 extern array<Resolution> gResolutions;
 extern int	gResolutionIndex;
