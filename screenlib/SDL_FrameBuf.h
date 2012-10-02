@@ -107,7 +107,10 @@ public:
 	bool Resizable() const {
 		return resizable;
 	}
+	void GetDesktopSize(int &w, int &h);
 	void GetDisplaySize(int &w, int &h);
+	void GetLogicalSize(int &w, int &h);
+	void SetLogicalSize(int w, int h);
 
 	/* Blit and update routines */
 	void QueueBlit(SDL_Texture *src,

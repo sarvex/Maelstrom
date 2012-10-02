@@ -166,38 +166,21 @@ static bool InitResolutions(int &w, int &h)
 		}
 	}
 
-#if 0 // We don't need this now that we're guaranteed our logical resolution
-	// Look for the best mode in two passes, first check to see if any of
-	// our supported modes are available, and if not just grab the first mode
-	// that's bigger than any of our supported modes and stretch to that.
-	SDL_DisplayMode mode;
-	int displayIndex = 0;
-	for (int pass = 0; pass < 2; ++pass) {
-		bool exact = (pass == 0);
-		for (int i = 0; i < SDL_GetNumDisplayModes(displayIndex); ++i) {
-			if (SDL_GetDisplayMode(displayIndex, i, &mode) < 0) {
-				continue;
-			}
-			gResolutionIndex = FindResolution(mode.w, mode.h);
-			if (gResolutionIndex >= 0) {
-				// Note that we're going to request our best supported resolution here.
-				w = gResolutions[gResolutionIndex].w;
-				h = gResolutions[gResolutionIndex].h;
-				if (exact && (mode.w != w || mode.h != h)) {
-					continue;
-				}
-				return true;
-			}
-		}
+	// Try to get our desktop size and use the closest supported resolution
+	screen->GetDesktopSize(w, h);
+	if (!w || !h) {
+		w = GAME_WIDTH;
+		h = GAME_HEIGHT;
+	}
+	gResolutionIndex = FindResolution(w, h);
+	if (gResolutionIndex >= 0) {
+		w = gResolutions[gResolutionIndex].w;
+		h = gResolutions[gResolutionIndex].h;
+		return true;
 	}
 
 	error("Couldn't find any supported resolutions\n");
 	return false;
-#else
-	w = GAME_WIDTH;
-	h = GAME_HEIGHT;
-	return true;
-#endif
 }
 
 /* ----------------------------------------------------------------- */
@@ -840,6 +823,7 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 		error("Fatal: %s\n", screen->Error());
 		return(-1);
 	}
+	screen->SetLogicalSize(GAME_WIDTH, GAME_HEIGHT);
 	screen->SetCaption("Maelstrom");
 	screen->Clear();
 	screen->Update();

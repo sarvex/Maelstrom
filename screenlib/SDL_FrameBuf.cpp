@@ -72,14 +72,13 @@ FrameBuf:: Init(int width, int height, Uint32 window_flags, Uint32 render_flags,
 	}
 
 	/* Set the output area */
-	int w = width;
-	int h = height;
 	if (Resizable()) {
+		int w, h;
 		SDL_GetWindowSize(window, &w, &h);
+		UpdateWindowSize(w, h);
 	} else {
-		SDL_RenderSetLogicalSize(renderer, width, height);
+		SetLogicalSize(width, height);
 	}
-	UpdateWindowSize(w, h);
 
 	return(0);
 }
@@ -160,9 +159,40 @@ FrameBuf::DisableTextInput()
 }
 
 void
+FrameBuf:: GetDesktopSize(int &w, int &h)
+{
+	SDL_DisplayMode mode;
+
+	if (SDL_GetDesktopDisplayMode(0, &mode) < 0) {
+		w = 0;
+		h = 0;
+	} else {
+		w = mode.w;
+		h = mode.h;
+	}
+}
+
+void
 FrameBuf:: GetDisplaySize(int &w, int &h)
 {
 	SDL_GetWindowSize(window, &w, &h);
+}
+
+void
+FrameBuf:: GetLogicalSize(int &w, int &h)
+{
+	SDL_RenderGetLogicalSize(renderer, &w, &h);
+	if (!w || !h) {
+		w = Width();
+		h = Height();
+	}
+}
+
+void
+FrameBuf:: SetLogicalSize(int w, int h)
+{
+	SDL_RenderSetLogicalSize(renderer, w, h);
+	UpdateWindowSize(w, h);
 }
 
 void
