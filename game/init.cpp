@@ -158,6 +158,7 @@ static bool InitResolutions(int &w, int &h)
 		}
 	}
 
+#if 0 // We don't need this now that we're guaranteed our logical resolution
 	// Look for the best mode in two passes, first check to see if any of
 	// our supported modes are available, and if not just grab the first mode
 	// that's bigger than any of our supported modes and stretch to that.
@@ -184,6 +185,11 @@ static bool InitResolutions(int &w, int &h)
 
 	error("Couldn't find any supported resolutions\n");
 	return false;
+#else
+	w = GAME_WIDTH;
+	h = GAME_HEIGHT;
+	return true;
+#endif
 }
 
 /* ----------------------------------------------------------------- */
@@ -868,6 +874,7 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 	ui = new MaelstromUI(screen, prefs);
 
 	/* Set up for the resolution we actually got */
+#if 0 // We don't need this now that we're guaranteed our logical resolution
 	gResolutionIndex = FindResolution(screen->Width(), screen->Height());
 
 	const Resolution &resolution = gResolutions[gResolutionIndex];
@@ -875,6 +882,16 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 	gScrnRect.y = (screen->Height() - resolution.h) / 2;
 	gScrnRect.w = resolution.w;
 	gScrnRect.h = resolution.h;
+#else
+	int display_w, display_h;
+	screen->GetDisplaySize(display_w, display_h);
+	gResolutionIndex = FindResolution(display_w, display_h);
+
+	gScrnRect.x = 0;
+	gScrnRect.y = 0;
+	gScrnRect.w = screen->Width();
+	gScrnRect.h = screen->Height();
+#endif
 
 	SDL_Rect clipRect;
 	clipRect.x = (SPRITES_WIDTH << SPRITE_PRECISION);

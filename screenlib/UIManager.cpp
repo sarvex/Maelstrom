@@ -247,22 +247,19 @@ bool
 UIManager::HandleEvent(const SDL_Event &event)
 {
 	if (event.type == SDL_WINDOWEVENT &&
-	    event.window.event == SDL_WINDOWEVENT_RESIZED) {
-		SDL_Window *window = SDL_GetWindowFromID(event.window.windowID);
-		int w, h;
+	    event.window.event == SDL_WINDOWEVENT_RESIZED &&
+	    m_screen->Resizable()) {
 		SDL_Rect clip;
-
-		SDL_GetWindowSize(window, &w, &h);
 
 		// Reset the clip rectangle
 		clip.x = 0;
 		clip.y = 0;
-		clip.w = w;
-		clip.h = h;
+		clip.w = m_screen->Width();
+		clip.h = m_screen->Height();
 		m_screen->ClipBlit(&clip);
-		
+
 		// Resize to match window size
-		SetSize(w, h);
+		SetSize(m_screen->Width(), m_screen->Height());
 	}
 
 	for (unsigned i = m_visible.length(); i--; ) {

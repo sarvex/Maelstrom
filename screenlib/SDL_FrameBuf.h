@@ -104,6 +104,10 @@ public:
 	int Height() const {
 		return rect.h;
 	}
+	bool Resizable() const {
+		return resizable;
+	}
+	void GetDisplaySize(int &w, int &h);
 
 	/* Blit and update routines */
 	void QueueBlit(int dstx, int dsty, SDL_Texture *src,
@@ -208,32 +212,19 @@ private:
 	/* The current display */
 	SDL_Window *window;
 	SDL_Renderer *renderer;
-	SDL_Texture *texture;
 	int faded;
 	SDL_Rect rect;
 	SDL_Rect clip;
 	SDL_Rect output;
+	bool resizable;
 
 	void UpdateWindowSize(int width, int height) {
-		int w, h;
-		SDL_Rect viewport;
-
-		SDL_GetWindowSize(window, &w, &h);
-		output.w = w;
-		output.h = (height * w)/width;
-		output.x = (w - output.w) / 2;
-		output.y = (h - output.h) / 2;
-
 		clip.x = rect.x = 0;
 		clip.y = rect.y = 0;
 		clip.w = rect.w = width;
 		clip.h = rect.h = height;
 
-		viewport.x = 0;
-		viewport.y = 0;
-		viewport.w = w;
-		viewport.h = h;
-		SDL_RenderSetViewport(renderer, &viewport);
+		SDL_RenderGetViewport(renderer, &output);
 	}
 	void UpdateDrawColor(Uint32 color) {
 		Uint8 r, g, b;

@@ -37,14 +37,20 @@ FrameBuf:: FrameBuf() : ErrorBase()
 	/* Initialize various variables to null state */
 	window = NULL;
 	renderer = NULL;
-	texture = NULL;
 	faded = 0;
+	resizable = false;
 }
 
 int
 FrameBuf:: Init(int width, int height, Uint32 window_flags, Uint32 render_flags,
 		SDL_Surface *icon)
 {
+	if (window_flags & SDL_WINDOW_RESIZABLE) {
+		resizable = true;
+	} else {
+		resizable = false;
+	}
+
 	window = SDL_CreateWindow(NULL, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, window_flags);
 	if (!window) {
 		SetError("Couldn't create %dx%d window: %s", 
@@ -66,38 +72,20 @@ FrameBuf:: Init(int width, int height, Uint32 window_flags, Uint32 render_flags,
 	}
 
 	/* Set the output area */
-	int w, h;
-	SDL_GetWindowSize(window, &w, &h);
-
-	if ( (window_flags & SDL_WINDOW_RESIZABLE) || (w == width && h == height) ) {
-		UpdateWindowSize(w, h);
+	int w = width;
+	int h = height;
+	if (Resizable()) {
+		SDL_GetWindowSize(window, &w, &h);
 	} else {
-		// The application isn't resizable but the window isn't what we
-		// expected, so we'll render to a texture of the expected size
-		// and scale input coordinates accordingly
-
-		texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB888, SDL_TEXTUREACCESS_TARGET, width, height);
-		if (!texture) {
-			SetError("Couldn't create target texture: %s", SDL_GetError());
-			return(-1);
-		}
-
-		if (SDL_SetRenderTarget(renderer, texture) < 0) {
-			SetError("Couldn't set render target: %s", SDL_GetError());
-			return(-1);
-		}
-
-		UpdateWindowSize(width, height);
+		SDL_RenderSetLogicalSize(renderer, width, height);
 	}
+	UpdateWindowSize(w, h);
 
 	return(0);
 }
 
 FrameBuf:: ~FrameBuf()
 {
-	if (texture) {
-		SDL_DestroyTexture(texture);
-	}
 	if (renderer) {
 		SDL_DestroyRenderer(renderer);
 	}
@@ -112,25 +100,18 @@ FrameBuf::ProcessEvent(SDL_Event *event)
 	switch (event->type) {
 	case SDL_WINDOWEVENT:
 		if (event->window.event == SDL_WINDOWEVENT_RESIZED) {
-			SDL_Window *window = SDL_GetWindowFromID(event->window.windowID);
 			int w, h;
+			SDL_Window *window = SDL_GetWindowFromID(event->window.windowID);
 
-			SDL_GetWindowSize(window, &w, &h);
+			w = Width();
+			h = Height();
+			if (Resizable()) {
+				// We'll accept this window size change
+				SDL_GetWindowSize(window, &w, &h);
+				SDL_RenderSetViewport(renderer, NULL);
+			}
 			UpdateWindowSize(w, h);
 		}
-		break;
-	case SDL_MOUSEMOTION:
-		event->motion.x -= output.x;
-		event->motion.y -= output.y;
-		event->motion.x = (event->motion.x * rect.w) / output.w;
-		event->motion.y = (event->motion.y * rect.h) / output.h;
-		break;
-	case SDL_MOUSEBUTTONDOWN:
-	case SDL_MOUSEBUTTONUP:
-		event->button.x -= output.x;
-		event->button.y -= output.y;
-		event->button.x = (event->button.x * rect.w) / output.w;
-		event->button.y = (event->button.y * rect.h) / output.h;
 		break;
 	}
 }
@@ -179,6 +160,12 @@ FrameBuf::DisableTextInput()
 }
 
 void
+FrameBuf:: GetDisplaySize(int &w, int &h)
+{
+	SDL_GetWindowSize(window, &w, &h);
+}
+
+void
 FrameBuf:: QueueBlit(int dstx, int dsty, SDL_Texture *src,
 			int srcx, int srcy, int w, int h, clipval do_clip)
 {
@@ -216,18 +203,7 @@ FrameBuf:: StretchBlit(const SDL_Rect *dstrect, SDL_Texture *src, const SDL_Rect
 void
 FrameBuf:: Update(void)
 {
-	/* Copy from our render texture to the screen and show it! */
-	if (texture) {
-		SDL_SetRenderTarget(renderer, NULL);
-		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-		SDL_RenderClear(renderer);
-		SDL_RenderCopy(renderer, texture, NULL, &output);
-	}
 	SDL_RenderPresent(renderer);
-
-	if (texture) {
-		SDL_SetRenderTarget(renderer, texture);
-	}
 }
 
 void
