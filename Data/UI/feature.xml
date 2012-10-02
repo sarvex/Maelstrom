@@ -3,6 +3,7 @@
 	<Anchor anchorFrom="TOPLEFT" anchorTo="CENTER" x="-137" y="-147"/>
 	<Elements>
 		<Icon name="icon" id="103">
+			<ImageArea><Size w="32" h="32"/></ImageArea>
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" x="19" y="19"/>
 		</Icon>
 		<DialogLabel name="line1" text="You don't have that feature">

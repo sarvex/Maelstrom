@@ -66,6 +66,9 @@ public:
 	void SetWidth(int w, bool autosize = false, bool parent = false);
 	void SetHeight(int h, bool autosize = false, bool parent = false);
 	void AutoSize(int w, int h, bool parent = false);
+	bool IsAutoSizing() const {
+		return m_autosizeWidth && m_autosizeHeight;
+	}
 	void SetAnchor(AnchorLocation from, AnchorLocation to, UIArea *anchor,
 					int offsetX = 0, int offsetY = 0);
 

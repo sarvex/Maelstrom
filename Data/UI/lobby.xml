@@ -2,6 +2,7 @@
 	<Size w="466" h="254"/>
 	<Elements>
 		<Icon name="image" id="103">
+			<ImageArea><Size w="32" h="32"/></ImageArea>
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" x="14" y="14"/>
 		</Icon>
 		<DialogLabel name="line1" text="Multiplayer Setup">

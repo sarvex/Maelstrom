@@ -371,6 +371,11 @@ UIDrawEngineIcon::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 		error("Unable to load icon %d", atoi(attr->value()));
 		return false;
 	}
+
+	UIArea *imageArea = m_element->GetImageArea();
+	if (imageArea->IsAutoSizing()) {
+		imageArea->SetSize(ICON_SIZE, ICON_SIZE);
+	}
 	m_element->SetImage(image);
 
 	return true;

@@ -59,6 +59,7 @@
 #define	SHOT_SIZE		4
 #define	SHOT_SCALE_FACTOR	4
 
+#define ICON_SIZE		8
 #define SHIELD_SIZE		32
 #define THRUST_SIZE		16
 

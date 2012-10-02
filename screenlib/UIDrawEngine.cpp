@@ -127,7 +127,7 @@ UIDrawEngine::OnDraw()
 	SDL_Texture *image = m_element->GetImage();
 	if (image) {
 		UIArea *area = m_element->GetImageArea();
-		m_screen->QueueBlit(image, area->X(), area->Y(), NOCLIP);
+		m_screen->QueueBlit(image, area->X(), area->Y(), area->Width(), area->Height(), NOCLIP);
 	}
 
 	if (m_textImage) {
@@ -187,10 +187,10 @@ UIDrawEngine::OnTextChanged()
 
 		w = m_screen->GetImageWidth(m_textImage);
 		h = m_screen->GetImageHeight(m_textImage);
-		m_element->GetTextArea()->SetSize(w, h);
+		m_element->GetTextArea()->AutoSize(w, h);
 		m_element->AutoSize(w, h);
 	} else {
-		m_element->GetTextArea()->SetWidth(0);
+		m_element->GetTextArea()->AutoSize(0, m_element->Height());
 		m_element->AutoSize(0, m_element->Height());
 	}
 }
@@ -204,7 +204,7 @@ UIDrawEngine::OnImageChanged()
 		int w, h;
 		w = m_screen->GetImageWidth(image);
 		h = m_screen->GetImageHeight(image);
-		m_element->GetImageArea()->SetSize(w, h);
+		m_element->GetImageArea()->AutoSize(w, h);
 		m_element->AutoSize(w, h);
 	}
 }
