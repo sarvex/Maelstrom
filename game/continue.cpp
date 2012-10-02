@@ -72,4 +72,5 @@ void ContinuePanelDelegate::OnTick()
 
 bool ContinuePanelDelegate::HandleEvent(const SDL_Event &event)
 {
+    return false;
 }
