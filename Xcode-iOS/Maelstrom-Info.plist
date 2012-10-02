@@ -27,6 +27,10 @@
 		<string>Maelstrom.png</string>
 		<string>Maelstrom_small.png</string>
 		<string>Maelstrom_ipad.png</string>
+		<string>icon-114x114.png</string>
+		<string>icon-57x57.png</string>
+		<string>icon-144x144.png</string>
+		<string>icon-72x72.png</string>
 	</array>
 	<key>CFBundleIcons</key>
 	<dict>
@@ -38,6 +42,10 @@
 				<string>Maelstrom.png</string>
 				<string>Maelstrom_small.png</string>
 				<string>Maelstrom_ipad.png</string>
+				<string>icon-114x114.png</string>
+				<string>icon-57x57.png</string>
+				<string>icon-144x144.png</string>
+				<string>icon-72x72.png</string>
 			</array>
 		</dict>
 	</dict>

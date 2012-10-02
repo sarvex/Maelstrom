@@ -14,11 +14,12 @@
 		AA0777D2145EB60A00DB8DB3 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA0777D1145EB60A00DB8DB3 /* AudioToolbox.framework */; };
 		AA0777D4145EB68300DB8DB3 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA0777D3145EB68300DB8DB3 /* QuartzCore.framework */; };
 		AA0777DB145EC12900DB8DB3 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AA0777DA145EC12900DB8DB3 /* libz.dylib */; };
-		AA319E1E145EDA1D00384943 /* Maelstrom.png in Resources */ = {isa = PBXBuildFile; fileRef = AA319E1D145EDA1D00384943 /* Maelstrom.png */; };
-		AA319E20145EDA6400384943 /* Maelstrom_small.png in Resources */ = {isa = PBXBuildFile; fileRef = AA319E1F145EDA6400384943 /* Maelstrom_small.png */; };
+		AA579D98161ADB33005F809B /* icon-114x114.png in Resources */ = {isa = PBXBuildFile; fileRef = AA579D97161ADB33005F809B /* icon-114x114.png */; };
+		AA579D9A161ADB5B005F809B /* icon-57x57.png in Resources */ = {isa = PBXBuildFile; fileRef = AA579D99161ADB5B005F809B /* icon-57x57.png */; };
+		AA579D9C161ADB6B005F809B /* icon-144x144.png in Resources */ = {isa = PBXBuildFile; fileRef = AA579D9B161ADB6B005F809B /* icon-144x144.png */; };
+		AA579D9E161ADB73005F809B /* icon-72x72.png in Resources */ = {isa = PBXBuildFile; fileRef = AA579D9D161ADB73005F809B /* icon-72x72.png */; };
 		AA7557A61594EE8F00BBD41B /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA7557A51594EE8F00BBD41B /* GameKit.framework */; };
 		AA7557AB1595062C00BBD41B /* Maelstrom_GameKit.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA7557AA1595062C00BBD41B /* Maelstrom_GameKit.mm */; };
-		AA769FE0146A679C001C5008 /* Maelstrom_ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = AA769FDF146A679C001C5008 /* Maelstrom_ipad.png */; };
 		AA97808315769F3400472542 /* mainstub.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA97808215769F3400472542 /* mainstub.cpp */; };
 		AA9781571576A00100472542 /* Mac_FontServ.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA97811D1576A00100472542 /* Mac_FontServ.cpp */; };
 		AA9781581576A00100472542 /* Mac_Sound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA97811F1576A00100472542 /* Mac_Sound.cpp */; };
@@ -199,12 +200,13 @@
 		AA0777D1145EB60A00DB8DB3 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		AA0777D3145EB68300DB8DB3 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		AA0777DA145EC12900DB8DB3 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
-		AA319E1D145EDA1D00384943 /* Maelstrom.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Maelstrom.png; sourceTree = "<group>"; };
-		AA319E1F145EDA6400384943 /* Maelstrom_small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Maelstrom_small.png; sourceTree = "<group>"; };
+		AA579D97161ADB33005F809B /* icon-114x114.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-114x114.png"; path = "Xcode-iOS/icon-114x114.png"; sourceTree = "<group>"; };
+		AA579D99161ADB5B005F809B /* icon-57x57.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-57x57.png"; path = "Xcode-iOS/icon-57x57.png"; sourceTree = "<group>"; };
+		AA579D9B161ADB6B005F809B /* icon-144x144.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-144x144.png"; path = "Xcode-iOS/icon-144x144.png"; sourceTree = "<group>"; };
+		AA579D9D161ADB73005F809B /* icon-72x72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-72x72.png"; path = "Xcode-iOS/icon-72x72.png"; sourceTree = "<group>"; };
 		AA7557A51594EE8F00BBD41B /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		AA7557A71595019400BBD41B /* Maelstrom_GameKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Maelstrom_GameKit.h; path = "Xcode-iOS/Maelstrom_GameKit.h"; sourceTree = "<group>"; };
 		AA7557AA1595062C00BBD41B /* Maelstrom_GameKit.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = Maelstrom_GameKit.mm; path = "Xcode-iOS/Maelstrom_GameKit.mm"; sourceTree = "<group>"; };
-		AA769FDF146A679C001C5008 /* Maelstrom_ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Maelstrom_ipad.png; sourceTree = "<group>"; };
 		AA97808215769F3400472542 /* mainstub.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mainstub.cpp; sourceTree = "<group>"; };
 		AA97811A1576A00100472542 /* bitesex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bitesex.h; sourceTree = "<group>"; };
 		AA97811C1576A00100472542 /* Mac_Compat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mac_Compat.h; sourceTree = "<group>"; };
@@ -642,10 +644,6 @@
 		AAD13B72145E8A8F0040B19C = {
 			isa = PBXGroup;
 			children = (
-				AA769FDF146A679C001C5008 /* Maelstrom_ipad.png */,
-				AA319E1F145EDA6400384943 /* Maelstrom_small.png */,
-				AA319E1D145EDA1D00384943 /* Maelstrom.png */,
-				AA0777DA145EC12900DB8DB3 /* libz.dylib */,
 				AA0777C8145EB43900DB8DB3 /* physfs */,
 				AA077788145EB3F500DB8DB3 /* SDL */,
 				AAC0414C160E800800E22BC5 /* SDL_image */,
@@ -669,6 +667,7 @@
 		AAD13B80145E8A8F0040B19C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AA0777DA145EC12900DB8DB3 /* libz.dylib */,
 				AA0777D1145EB60A00DB8DB3 /* AudioToolbox.framework */,
 				AAD13B85145E8A8F0040B19C /* CoreGraphics.framework */,
 				AAD13B83145E8A8F0040B19C /* Foundation.framework */,
@@ -701,9 +700,13 @@
 		AAD13B88145E8A8F0040B19C /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				AA9781BB1576A14D00472542 /* Maelstrom_Data.zip */,
-				93D8E4A315911CDC00BD8D0E /* Maelstrom-Info.plist */,
+				AA579D99161ADB5B005F809B /* icon-57x57.png */,
+				AA579D9D161ADB73005F809B /* icon-72x72.png */,
+				AA579D97161ADB33005F809B /* icon-114x114.png */,
+				AA579D9B161ADB6B005F809B /* icon-144x144.png */,
 				AAD13B8A145E8A8F0040B19C /* InfoPlist.strings */,
+				93D8E4A315911CDC00BD8D0E /* Maelstrom-Info.plist */,
+				AA9781BB1576A14D00472542 /* Maelstrom_Data.zip */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -819,10 +822,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				AAD13B8C145E8A8F0040B19C /* InfoPlist.strings in Resources */,
-				AA319E1E145EDA1D00384943 /* Maelstrom.png in Resources */,
-				AA319E20145EDA6400384943 /* Maelstrom_small.png in Resources */,
-				AA769FE0146A679C001C5008 /* Maelstrom_ipad.png in Resources */,
 				AA9781BC1576A14D00472542 /* Maelstrom_Data.zip in Resources */,
+				AA579D98161ADB33005F809B /* icon-114x114.png in Resources */,
+				AA579D9A161ADB5B005F809B /* icon-57x57.png in Resources */,
+				AA579D9C161ADB6B005F809B /* icon-144x144.png in Resources */,
+				AA579D9E161ADB73005F809B /* icon-72x72.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
