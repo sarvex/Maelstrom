@@ -1006,8 +1006,10 @@ void GetRenderCoordinates(int &x, int &y)
 /* ----------------------------------------------------------------- */
 /* -- Render a sprite on the screen */
 
-void RenderSprite(int x, int y, SDL_Texture *sprite)
+void RenderSprite(SDL_Texture *sprite, int x, int y, int w, int h)
 {
 	GetRenderCoordinates(x, y);
-	screen->QueueBlit(x, y, sprite);
+	w = (int)(((float)w * gScrnRect.w) / GAME_WIDTH);
+	h = (int)(((float)h * gScrnRect.h) / GAME_HEIGHT);
+	screen->QueueBlit(sprite, x, y, w, h, DOCLIP);
 }

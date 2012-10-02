@@ -59,6 +59,9 @@
 #define	SHOT_SIZE		4
 #define	SHOT_SCALE_FACTOR	4
 
+#define SHIELD_SIZE		32
+#define THRUST_SIZE		16
+
 #define	STATUS_HEIGHT		14
 #define	SHIELD_WIDTH		55
 #define	INITIAL_BONUS		2000

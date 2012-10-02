@@ -110,12 +110,18 @@ public:
 	void GetDisplaySize(int &w, int &h);
 
 	/* Blit and update routines */
-	void QueueBlit(int dstx, int dsty, SDL_Texture *src,
-			int srcx, int srcy, int w, int h, clipval do_clip);
-	void QueueBlit(int x, int y, SDL_Texture *src, clipval do_clip = DOCLIP) {
+	void QueueBlit(SDL_Texture *src,
+			int srcx, int srcy, int srcw, int srch,
+			int dstx, int dsty, int dstw, int dsth, clipval do_clip);
+	void QueueBlit(SDL_Texture *src, int x, int y, int w, int h, clipval do_clip) {
+		int srcw, srch;
+		SDL_QueryTexture(src, NULL, NULL, &srcw, &srch);
+		QueueBlit(src, 0, 0, srcw, srch, x, y, w, h, do_clip);
+	}
+	void QueueBlit(SDL_Texture *src, int x, int y, clipval do_clip) {
 		int w, h;
 		SDL_QueryTexture(src, NULL, NULL, &w, &h);
-		QueueBlit(x, y, src, 0, 0, w, h, do_clip);
+		QueueBlit(src, 0, 0, w, h, x, y, w, h, do_clip);
 	}
 	void StretchBlit(const SDL_Rect *dstrect, SDL_Texture *src, const SDL_Rect *srcrect);
 

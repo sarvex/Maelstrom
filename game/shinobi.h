@@ -202,7 +202,7 @@ public:
 		/* Draw the new shots */
 		int i;
 		OBJ_LOOP(i, numshots) {
-			RenderSprite(shots[i]->x, shots[i]->y, gEnemyShot);
+			RenderSprite(gEnemyShot, shots[i]->x, shots[i]->y, SHOT_SIZE, SHOT_SIZE);
 		}
 		Object::BlitSprite();
 	}

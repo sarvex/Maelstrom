@@ -628,11 +628,11 @@ Player::BlitSprite(void)
 
 	/* Draw the new shots */
 	OBJ_LOOP(i, numshots) {
-		RenderSprite(shots[i]->x, shots[i]->y, gPlayerShot);
+		RenderSprite(gPlayerShot, shots[i]->x, shots[i]->y, SHOT_SIZE, SHOT_SIZE);
 	}
 	/* Draw the shield, if necessary */
 	if ( ! gPaused && (AutoShield || (ShieldOn && (ShieldLevel > 0))) ) {
-		RenderSprite(x, y, gShieldBlit->sprite[Sphase]);
+		RenderSprite(gShieldBlit->sprite[Sphase], x, y, SHIELD_SIZE, SHIELD_SIZE);
 		Sphase = !Sphase;
 	}
 	/* Draw the thrust, if necessary */
@@ -640,7 +640,7 @@ Player::BlitSprite(void)
 		int thrust_x, thrust_y;
 		thrust_x = x + gThrustOrigins[phase].h;
 		thrust_y = y + gThrustOrigins[phase].v;
-		RenderSprite(thrust_x, thrust_y, ThrustBlit->sprite[phase]);
+		RenderSprite(ThrustBlit->sprite[phase], thrust_x, thrust_y, THRUST_SIZE, THRUST_SIZE);
 		if ( ThrustBlit == gThrust1 )
 			ThrustBlit = gThrust2;
 		else

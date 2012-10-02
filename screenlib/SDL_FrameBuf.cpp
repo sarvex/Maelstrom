@@ -166,30 +166,34 @@ FrameBuf:: GetDisplaySize(int &w, int &h)
 }
 
 void
-FrameBuf:: QueueBlit(int dstx, int dsty, SDL_Texture *src,
-			int srcx, int srcy, int w, int h, clipval do_clip)
+FrameBuf:: QueueBlit(SDL_Texture *src,
+			int srcx, int srcy, int srcw, int srch,
+			int dstx, int dsty, int dstw, int dsth, clipval do_clip)
 {
 	SDL_Rect srcrect;
 	SDL_Rect dstrect;
 
 	srcrect.x = srcx;
 	srcrect.y = srcy;
-	srcrect.w = w;
-	srcrect.h = h;
+	srcrect.w = srcw;
+	srcrect.h = srch;
 	dstrect.x = dstx;
 	dstrect.y = dsty;
-	dstrect.w = w;
-	dstrect.h = h;
+	dstrect.w = dstw;
+	dstrect.h = dsth;
 	if (do_clip == DOCLIP) {
+		float scaleX = (float)srcrect.w / dstrect.w;
+		float scaleY = (float)srcrect.h / dstrect.h;
+
 		if (!SDL_IntersectRect(&clip, &dstrect, &dstrect)) {
 			return;
 		}
 
 		/* Adjust the source rectangle to match */
-		srcrect.x += (dstrect.x - dstx);
-		srcrect.y += (dstrect.y - dsty);
-		srcrect.w = dstrect.w;
-		srcrect.h = dstrect.h;
+		srcrect.x += (int)((dstrect.x - dstx) * scaleX);
+		srcrect.y += (int)((dstrect.y - dsty) * scaleY);
+		srcrect.w = (int)(dstrect.w * scaleX);
+		srcrect.h = (int)(dstrect.h * scaleY);
 	}
 	SDL_RenderCopy(renderer, src, &srcrect, &dstrect);
 }

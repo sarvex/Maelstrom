@@ -101,7 +101,7 @@ Object::Move(int Frozen)		// This is called every timestep.
 void
 Object::BlitSprite(void)
 {
-	RenderSprite(x, y, myblit->sprite[phase]);
+	RenderSprite(myblit->sprite[phase], x, y, xsize, ysize);
 }
 
 /* Sound functions */
