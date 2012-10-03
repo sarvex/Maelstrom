@@ -119,13 +119,18 @@ FrameBuf::ProcessEvent(SDL_Event *event)
 bool
 FrameBuf::ConvertTouchCoordinates(const SDL_TouchFingerEvent &finger, int *x, int *y)
 {
+	int window_w, window_h;
+	float scale_x, scale_y;
+
 	SDL_Touch* inTouch = SDL_GetTouch(finger.touchId);
 	if (inTouch == NULL) {
 		return false;
 	}
-
-	*x = (int)((((float)finger.x)/inTouch->xres)*output.w) - output.x;
-	*y = (int)((((float)finger.y)/inTouch->yres)*output.h) - output.y;
+    
+	SDL_GetWindowSize(window, &window_w, &window_h);
+	SDL_RenderGetScale(renderer, &scale_x, &scale_y);
+	*x = (int)((((float)finger.x)/inTouch->xres)*window_w/scale_x) - output.x;
+	*y = (int)((((float)finger.y)/inTouch->yres)*window_h/scale_y) - output.y;
 	*x = (*x * rect.w) / output.w;
 	*y = (*y * rect.h) / output.h;
 	return true;
