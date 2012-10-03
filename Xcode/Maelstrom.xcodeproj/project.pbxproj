@@ -64,6 +64,16 @@
 		AA8B1905161C1188005318A4 /* loadxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA8B1903161C1188005318A4 /* loadxml.cpp */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		AA8B1924161C3451005318A4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AA4086E114D490F000EB2196 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AA4086E914D490F000EB2196;
+			remoteInfo = Maelstrom;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		AA4088E414D497FC00EB2196 /* Copy Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -196,6 +206,7 @@
 		AA8B18FF161C1134005318A4 /* gameover.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gameover.h; sourceTree = "<group>"; };
 		AA8B1903161C1188005318A4 /* loadxml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = loadxml.cpp; sourceTree = "<group>"; };
 		AA8B1904161C1188005318A4 /* loadxml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = loadxml.h; sourceTree = "<group>"; };
+		AA8B191A161C343E005318A4 /* Package */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Package; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -227,6 +238,7 @@
 			isa = PBXGroup;
 			children = (
 				AA4086EA14D490F000EB2196 /* Maelstrom.app */,
+				AA8B191A161C343E005318A4 /* Package */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -441,6 +453,22 @@
 			productReference = AA4086EA14D490F000EB2196 /* Maelstrom.app */;
 			productType = "com.apple.product-type.application";
 		};
+		AA8B1919161C343E005318A4 /* Package */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AA8B1921161C343E005318A4 /* Build configuration list for PBXNativeTarget "Package" */;
+			buildPhases = (
+				AA8B1926161C347B005318A4 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AA8B1925161C3451005318A4 /* PBXTargetDependency */,
+			);
+			name = Package;
+			productName = Package;
+			productReference = AA8B191A161C343E005318A4 /* Package */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -462,6 +490,7 @@
 			projectRoot = "";
 			targets = (
 				AA4086E914D490F000EB2196 /* Maelstrom */,
+				AA8B1919161C343E005318A4 /* Package */,
 			);
 		};
 /* End PBXProject section */
@@ -492,6 +521,19 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "cat ../Maelstrom_Data.zip >>$TARGET_BUILD_DIR/$EXECUTABLE_PATH";
+		};
+		AA8B1926161C347B005318A4 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TMP=build/dmg-tmp\nrm -rf $TMP\nmkdir -p $TMP\n\n# Copy the files and set up the disk image directory\n`xcode-select -print-path`/Tools/CpMac -r $TARGET_BUILD_DIR/Maelstrom.app $TMP/\nln -s /Applications $TMP/Applications\nmkdir $TMP/background\n`xcode-select -print-path`/Tools/SetFile -a V $TMP/background\ncp pkg-support/dmg.png $TMP/background\ncp pkg-support/Maelstrom_DS_Store $TMP/.DS_Store\n\n# create the dmg\nhdiutil create -volname Maelstrom -fs HFS+ -srcfolder $TMP -format UDRW build/Maelstrom.RW.dmg\n\n# Make it auto-open\n#if [ -e /Volumes/Maelstrom ]; then\n#    hdiutil detach /Volumes/Maelstrom\n#fi\n#if [ ! -e /Volumes/Maelstrom ]; then\n#    hdiutil attach build/Maelstrom.RW.dmg\n#    bless -folder /Volumes/Maelstrom -openfolder /Volumes/Maelstrom\n#    hdiutil detach /Volumes/Maelstrom\n#fi\n\n# Convert to compressed read-only image\nrm -f build/Maelstrom.dmg\nhdiutil convert build/Maelstrom.RW.dmg -format UDZO -imagekey zlib-level=9 -o build/Maelstrom.dmg\nrm build/Maelstrom.RW.dmg\n\n# clean up\nrm -rf $TMP";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -549,6 +591,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		AA8B1925161C3451005318A4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AA4086E914D490F000EB2196 /* Maelstrom */;
+			targetProxy = AA8B1924161C3451005318A4 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		AA4086F714D490F000EB2196 /* InfoPlist.strings */ = {
@@ -624,6 +674,53 @@
 			};
 			name = Release;
 		};
+		AA8B1922161C343E005318A4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		AA8B1923161C343E005318A4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -644,6 +741,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		AA8B1921161C343E005318A4 /* Build configuration list for PBXNativeTarget "Package" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA8B1922161C343E005318A4 /* Debug */,
+				AA8B1923161C343E005318A4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};
