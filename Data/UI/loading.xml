@@ -1,6 +1,8 @@
 <Panel template="FramedPanel" enterSound="111" leaveSound="123">
 	<Elements>
-		<Title name="image" id="130"/>
+		<Title name="image" id="130">
+			<ImageArea><Size w="512" h="384"/></ImageArea>
+		</Title>
 
 		<Label template="SmallYellow" text="Loading...">
 			<Anchor anchorFrom="CENTER" anchorTo="BOTTOM" anchor="image" y="20"/>
