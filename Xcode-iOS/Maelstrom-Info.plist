@@ -31,6 +31,11 @@
 		<string>icon-57x57.png</string>
 		<string>icon-144x144.png</string>
 		<string>icon-72x72.png</string>
+		<string>app-icon57px.png</string>
+		<string>app-icon72px.png</string>
+		<string>app-icon@2x.png</string>
+		<string>app-icon144px.png</string>
+		<string>app-icon114px.png</string>
 	</array>
 	<key>CFBundleIcons</key>
 	<dict>
@@ -46,6 +51,11 @@
 				<string>icon-57x57.png</string>
 				<string>icon-144x144.png</string>
 				<string>icon-72x72.png</string>
+				<string>app-icon57px.png</string>
+				<string>app-icon72px.png</string>
+				<string>app-icon@2x.png</string>
+				<string>app-icon144px.png</string>
+				<string>app-icon114px.png</string>
 			</array>
 		</dict>
 	</dict>
