@@ -57,6 +57,11 @@
 		AA4088F414D498CE00EB2196 /* SDL2.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = AA4088EC14D4987200EB2196 /* SDL2.framework */; };
 		AA4088F514D498CE00EB2196 /* SDL2_net.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = AA4088EB14D4987200EB2196 /* SDL2_net.framework */; };
 		AA40890614D49FFE00EB2196 /* Maelstrom.icns in Resources */ = {isa = PBXBuildFile; fileRef = AA40890514D49FFE00EB2196 /* Maelstrom.icns */; };
+		AA8B18F2161C0B59005318A4 /* SDL2_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA8B18F1161C0B59005318A4 /* SDL2_image.framework */; };
+		AA8B1900161C1134005318A4 /* continue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA8B18FA161C1134005318A4 /* continue.cpp */; };
+		AA8B1901161C1134005318A4 /* features.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA8B18FC161C1134005318A4 /* features.cpp */; };
+		AA8B1902161C1134005318A4 /* gameover.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA8B18FE161C1134005318A4 /* gameover.cpp */; };
+		AA8B1905161C1188005318A4 /* loadxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA8B1903161C1188005318A4 /* loadxml.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -182,6 +187,15 @@
 		AA4088EC14D4987200EB2196 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = /Library/Frameworks/SDL2.framework; sourceTree = "<absolute>"; };
 		AA4088EF14D4989E00EB2196 /* physfs.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = physfs.framework; path = Frameworks/physfs.framework; sourceTree = SOURCE_ROOT; };
 		AA40890514D49FFE00EB2196 /* Maelstrom.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Maelstrom.icns; sourceTree = SOURCE_ROOT; };
+		AA8B18F1161C0B59005318A4 /* SDL2_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_image.framework; path = /Library/Frameworks/SDL2_image.framework; sourceTree = "<absolute>"; };
+		AA8B18FA161C1134005318A4 /* continue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = continue.cpp; sourceTree = "<group>"; };
+		AA8B18FB161C1134005318A4 /* continue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = continue.h; sourceTree = "<group>"; };
+		AA8B18FC161C1134005318A4 /* features.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = features.cpp; sourceTree = "<group>"; };
+		AA8B18FD161C1134005318A4 /* features.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = features.h; sourceTree = "<group>"; };
+		AA8B18FE161C1134005318A4 /* gameover.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gameover.cpp; sourceTree = "<group>"; };
+		AA8B18FF161C1134005318A4 /* gameover.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gameover.h; sourceTree = "<group>"; };
+		AA8B1903161C1188005318A4 /* loadxml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = loadxml.cpp; sourceTree = "<group>"; };
+		AA8B1904161C1188005318A4 /* loadxml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = loadxml.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -190,8 +204,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA4086EF14D490F000EB2196 /* Cocoa.framework in Frameworks */,
-				AA4088ED14D4987200EB2196 /* SDL2_net.framework in Frameworks */,
 				AA4088EE14D4987200EB2196 /* SDL2.framework in Frameworks */,
+				AA8B18F2161C0B59005318A4 /* SDL2_image.framework in Frameworks */,
+				AA4088ED14D4987200EB2196 /* SDL2_net.framework in Frameworks */,
 				AA4088F014D4989E00EB2196 /* physfs.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -223,6 +238,7 @@
 				AA4086F014D490F000EB2196 /* Other Frameworks */,
 				AA4088EF14D4989E00EB2196 /* physfs.framework */,
 				AA4088EC14D4987200EB2196 /* SDL2.framework */,
+				AA8B18F1161C0B59005318A4 /* SDL2_image.framework */,
 				AA4088EB14D4987200EB2196 /* SDL2_net.framework */,
 			);
 			name = Frameworks;
@@ -275,14 +291,20 @@
 				AA4087BC14D493A800EB2196 /* about.cpp */,
 				AA4087BD14D493A800EB2196 /* about.h */,
 				AA4087BE14D493A800EB2196 /* colortable.h */,
+				AA8B18FA161C1134005318A4 /* continue.cpp */,
+				AA8B18FB161C1134005318A4 /* continue.h */,
 				AA4087BF14D493A800EB2196 /* controls.cpp */,
 				AA4087C014D493A800EB2196 /* controls.h */,
 				AA4087C114D493A800EB2196 /* fastrand.cpp */,
 				AA4087C214D493A800EB2196 /* fastrand.h */,
+				AA8B18FC161C1134005318A4 /* features.cpp */,
+				AA8B18FD161C1134005318A4 /* features.h */,
 				AA4087C314D493A800EB2196 /* game.cpp */,
 				AA4087C414D493A800EB2196 /* game.h */,
 				AA4087C514D493A800EB2196 /* gameinfo.cpp */,
 				AA4087C614D493A800EB2196 /* gameinfo.h */,
+				AA8B18FE161C1134005318A4 /* gameover.cpp */,
+				AA8B18FF161C1134005318A4 /* gameover.h */,
 				AA4087C714D493A800EB2196 /* init.cpp */,
 				AA4087C814D493A800EB2196 /* init.h */,
 				AA4087C914D493A800EB2196 /* load.cpp */,
@@ -384,6 +406,8 @@
 				AA40882014D493A800EB2196 /* ErrorBase.h */,
 				AA40882114D493A800EB2196 /* hashtable.c */,
 				AA40882214D493A800EB2196 /* hashtable.h */,
+				AA8B1903161C1188005318A4 /* loadxml.cpp */,
+				AA8B1904161C1188005318A4 /* loadxml.h */,
 				AA40882514D493A800EB2196 /* physfsrwops.c */,
 				AA40882614D493A800EB2196 /* physfsrwops.h */,
 				AA40882714D493A800EB2196 /* prefs.cpp */,
@@ -517,6 +541,10 @@
 				AA40885C14D493A800EB2196 /* hashtable.c in Sources */,
 				AA40885F14D493A800EB2196 /* physfsrwops.c in Sources */,
 				AA40886014D493A800EB2196 /* prefs.cpp in Sources */,
+				AA8B1900161C1134005318A4 /* continue.cpp in Sources */,
+				AA8B1901161C1134005318A4 /* features.cpp in Sources */,
+				AA8B1902161C1134005318A4 /* gameover.cpp in Sources */,
+				AA8B1905161C1188005318A4 /* loadxml.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -540,10 +568,11 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = $FRAMEWORK_SEARCH_PATHS_QUOTED;
-				FRAMEWORK_SEARCH_PATHS_QUOTED = "\"$(SRCROOT)/Frameworks\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED = "\"$(SRCROOT)/Frameworks\" \"/Library/Frameworks\"";
 				HEADER_SEARCH_PATHS = (
 					$HEADER_SEARCH_PATHS_QUOTED,
 					/Library/Frameworks/SDL2.framework/Headers,
+					/Library/Frameworks/SDL2_image.framework/Headers,
 					/Library/Frameworks/SDL2_net.framework/Headers,
 				);
 				HEADER_SEARCH_PATHS_QUOTED = "\"$(SRCROOT)/Frameworks/physfs.framework/Headers\"";
@@ -559,10 +588,11 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = $FRAMEWORK_SEARCH_PATHS_QUOTED;
-				FRAMEWORK_SEARCH_PATHS_QUOTED = "\"$(SRCROOT)/Frameworks\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED = "\"$(SRCROOT)/Frameworks\" \"/Library/Frameworks\"";
 				HEADER_SEARCH_PATHS = (
 					$HEADER_SEARCH_PATHS_QUOTED,
 					/Library/Frameworks/SDL2.framework/Headers,
+					/Library/Frameworks/SDL2_image.framework/Headers,
 					/Library/Frameworks/SDL2_net.framework/Headers,
 				);
 				HEADER_SEARCH_PATHS_QUOTED = "\"$(SRCROOT)/Frameworks/physfs.framework/Headers\"";
@@ -576,10 +606,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/Frameworks\"",
-				);
 				INFOPLIST_FILE = "Maelstrom-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -591,10 +617,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/Frameworks\"",
-				);
 				INFOPLIST_FILE = "Maelstrom-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -111,7 +111,7 @@
  *  use the base dir for both searching and writing. There is a helper
  *  function (PHYSFS_setSaneConfig()) that puts together a basic configuration
  *  for you, based on a few parameters. Also see the comments on
- *  PHYSFS_getBaseDir(), and PHYSFS_getUserDir() for info on what those
+ *  PHYSFS_getBaseDir(), and PHYSFS_getPrefDir() for info on what those
  *  are and how they can help you determine an optimal search path.
  *
  * PhysicsFS 2.0 adds the concept of "mounting" archives to arbitrary points
@@ -127,7 +127,7 @@
  *  utmost importance to some applications.
  *
  * PhysicsFS is mostly thread safe. The error messages returned by
- *  PHYSFS_getLastError are unique by thread, and library-state-setting
+ *  PHYSFS_getLastError() are unique by thread, and library-state-setting
  *  functions are mutex'd. For efficiency, individual file accesses are 
  *  not locked, so you can not safely read/write/seek/close/etc the same 
  *  file from two threads at the same time. Other race conditions are bugs 
@@ -170,9 +170,9 @@
  *  "UCS-2 encoding"). Any modern Windows uses UTF-16, which is two bytes
  *  per character for most characters, but some characters are four. You
  *  should convert them to UTF-8 before handing them to PhysicsFS with
- *  PHYSFS_utf8FromUcs2() or PHYSFS_utf8FromUtf16(). If you're using Unix or
- *  Mac OS X, your wchar_t strings are four bytes per character ("UCS-4
- *  encoding"). Use PHYSFS_utf8FromUcs4(). Mac OS X can give you UTF-8
+ *  PHYSFS_utf8FromUtf16(), which handles both UTF-16 and UCS-2. If you're
+ *  using Unix or Mac OS X, your wchar_t strings are four bytes per character
+ *  ("UCS-4 encoding"). Use PHYSFS_utf8FromUcs4(). Mac OS X can give you UTF-8
  *  directly from a CFString or NSString, and many Unixes generally give you C
  *  strings in UTF-8 format everywhere. If you have a single-byte high ASCII
  *  charset, like so-many European "codepages" you may be out of luck. We'll
@@ -190,13 +190,13 @@
  * PhysicsFS offers basic encoding conversion support, but not a whole string
  *  library. Get your stuff into whatever format you can work with.
  *
- * Some platforms and archivers don't offer full Unicode support behind the
- *  scenes. For example, OS/2 only offers "codepages" and the filesystem
- *  itself doesn't support multibyte encodings. We make an earnest effort to
- *  convert to/from the current locale here, but all bets are off if
- *  you want to hand an arbitrary Japanese character through to these systems.
- *  Modern OSes (Mac OS X, Linux, Windows, PocketPC, etc) should all be fine.
- *  Many game-specific archivers are seriously unprepared for Unicode (the
+ * All platforms supported by PhysicsFS 2.1 and later fully support Unicode.
+ *  We have dropped platforms that don't (OS/2, Mac OS 9, Windows 95, etc), as
+ *  even an OS that's over a decade old should be expected to handle this well.
+ *  If you absolutely must support one of these platforms, you should use an
+ *  older release of PhysicsFS.
+ *
+ * Many game-specific archivers are seriously unprepared for Unicode (the
  *  Descent HOG/MVL and Build Engine GRP archivers, for example, only offer a
  *  DOS 8.3 filename, for example). Nothing can be done for these, but they
  *  tend to be legacy formats for existing content that was all ASCII (and
@@ -209,11 +209,11 @@
  *
  * Other stuff:
  *
- * Please see the file LICENSE.txt in the source's root directory for licensing
- *  and redistribution rights.
+ * Please see the file LICENSE.txt in the source's root directory for
+ *  licensing and redistribution rights.
  *
- * Please see the file CREDITS.txt in the source's root directory for a more or
- *  less complete list of who's responsible for this.
+ * Please see the file CREDITS.txt in the source's "docs" directory for
+ *  a more or less complete list of who's responsible for this.
  *
  *  \author Ryan C. Gordon.
  */
@@ -254,8 +254,6 @@ extern "C" {
 /* do nothing. */
 #elif defined(__WIN32__) && !defined(__GNUC__)
 #define PHYSFS_CALL __cdecl
-#elif defined(__OS2__)  /* use _System, so it works across all compilers. */
-#define PHYSFS_CALL _System
 #else
 #define PHYSFS_CALL
 #endif
@@ -577,8 +575,9 @@ PHYSFS_DECL int PHYSFS_deinit(void);
  * }
  * \endcode
  *
- * The return values are pointers to static internal memory, and should
- *  be considered READ ONLY, and never freed.
+ * The return values are pointers to internal memory, and should
+ *  be considered READ ONLY, and never freed. The returned values are
+ *  valid until the next call to PHYSFS_deinit().
  *
  *   \return READ ONLY Null-terminated array of READ ONLY structures.
  */
@@ -609,19 +608,49 @@ PHYSFS_DECL void PHYSFS_freeList(void *listVar);
  * \fn const char *PHYSFS_getLastError(void)
  * \brief Get human-readable error information.
  *
+ * \warning As of PhysicsFS 2.1, this function has been nerfed.
+ *          Before PhysicsFS 2.1, this function was the only way to get
+ *          error details beyond a given function's basic return value.
+ *          This was meant to be a human-readable string in one of several
+ *          languages, and was not useful for application parsing. This was
+ *          a problem, because the developer and not the user chose the
+ *          language at compile time, and the PhysicsFS maintainers had
+ *          to (poorly) maintain a significant amount of localization work.
+ *          The app couldn't parse the strings, even if they counted on a
+ *          specific language, since some were dynamically generated.
+ *          In 2.1 and later, this always returns a static string in
+ *          English; you may use it as a key string for your own
+ *          localizations if you like, as we'll promise not to change
+ *          existing error strings. Also, if your application wants to
+ *          look at specific errors, we now offer a better option:
+ *          use PHYSFS_getLastErrorCode() instead.
+ *
  * Get the last PhysicsFS error message as a human-readable, null-terminated
- *  string. This will be NULL if there's been no error since the last call to
- *  this function. The pointer returned by this call points to an internal
+ *  string. This will return NULL if there's been no error since the last call
+ *  to this function. The pointer returned by this call points to an internal
  *  buffer. Each thread has a unique error state associated with it, but each
  *  time a new error message is set, it will overwrite the previous one
  *  associated with that thread. It is safe to call this function at anytime,
  *  even before PHYSFS_init().
  *
- * It is not wise to expect a specific string of characters here, since the
- *  error message may be localized into an unfamiliar language. These strings
- *  are meant to be passed on directly to the user.
+ * PHYSFS_getLastError() and PHYSFS_getLastErrorCode() both reset the same
+ *  thread-specific error state. Calling one will wipe out the other's
+ *  data. If you need both, call PHYSFS_getLastErrorCode(), then pass that
+ *  value to PHYSFS_getErrorByCode().
+ *
+ * As of PhysicsFS 2.1, this function only presents text in the English
+ *  language, but the strings are static, so you can use them as keys into
+ *  your own localization dictionary. These strings are meant to be passed on
+ *  directly to the user.
+ *
+ * Generally, applications should only concern themselves with whether a
+ *  given function failed; however, if your code require more specifics, you
+ *  should use PHYSFS_getLastErrorCode() instead of this function.
  *
  *   \return READ ONLY string of last error message.
+ *
+ * \sa PHYSFS_getLastErrorCode
+ * \sa PHYSFS_getErrorByCode
  */
 PHYSFS_DECL const char *PHYSFS_getLastError(void);
 
@@ -737,7 +766,7 @@ PHYSFS_DECL char **PHYSFS_getCdRomDirs(void);
  *
  *  \return READ ONLY string of base dir in platform-dependent notation.
  *
- * \sa PHYSFS_getUserDir
+ * \sa PHYSFS_getPrefDir
  */
 PHYSFS_DECL const char *PHYSFS_getBaseDir(void);
 
@@ -745,6 +774,8 @@ PHYSFS_DECL const char *PHYSFS_getBaseDir(void);
 /**
  * \fn const char *PHYSFS_getUserDir(void)
  * \brief Get the path where user's home directory resides.
+ *
+ * \deprecated As of PhysicsFS 2.1, you probably want PHYSFS_getPrefDir().
  *
  * Helper function.
  *
@@ -755,14 +786,12 @@ PHYSFS_DECL const char *PHYSFS_getBaseDir(void);
  *  where "username" will either be the login name, or "default" if the
  *  platform doesn't support multiple users, either.
  *
- * You should probably use the user dir as the basis for your write dir, and
- *  also put it near the beginning of your search path.
- *
  *  \return READ ONLY string of user dir in platform-dependent notation.
  *
  * \sa PHYSFS_getBaseDir
+ * \sa PHYSFS_getPrefDir
  */
-PHYSFS_DECL const char *PHYSFS_getUserDir(void);
+PHYSFS_DECL const char *PHYSFS_getUserDir(void) PHYSFS_DEPRECATED;
 
 
 /**
@@ -887,12 +916,12 @@ PHYSFS_DECL char **PHYSFS_getSearchPath(void);
  *
  * Helper function.
  *
- * The write dir will be set to "userdir/.organization/appName", which is
+ * The write dir will be set to the pref dir returned by
+ *  \code PHYSFS_getPrefDir(organization, appName) \endcode, which is
  *  created if it doesn't exist.
  *
  * The above is sufficient to make sure your program's configuration directory
- *  is separated from other clutter, and platform-independent. The period
- *  before "mygame" even hides the directory on Unix systems.
+ *  is separated from other clutter, and platform-independent.
  *
  *  The search path will be:
  *
@@ -905,7 +934,8 @@ PHYSFS_DECL char **PHYSFS_getSearchPath(void);
  *  be added to the search path. If you specified "PKG" for (archiveExt), and
  *  there's a file named data.PKG in the base dir, it'll be checked. Archives
  *  can either be appended or prepended to the search path in alphabetical
- *  order, regardless of which directories they were found in.
+ *  order, regardless of which directories they were found in. All archives
+ *  are mounted in the root of the virtual file system ("/").
  *
  * All of this can be accomplished from the application, but this just does it
  *  all for you. Feel free to add more to the search path manually, too.
@@ -2097,7 +2127,7 @@ typedef struct PHYSFS_Allocator
  *  for it, you can probably ignore this forever.)
  *
  * By default, PhysicsFS will use whatever is reasonable for a platform
- *  to manage dynamic memory (usually ANSI C malloc/realloc/calloc/free, but
+ *  to manage dynamic memory (usually ANSI C malloc/realloc/free, but
  *  some platforms might use something else), but in some uncommon cases, the
  *  app might want more control over the library's memory management. This
  *  lets you redirect PhysicsFS to use your own allocation routines instead.
@@ -2425,7 +2455,8 @@ PHYSFS_DECL void PHYSFS_utf8ToUcs4(const char *src, PHYSFS_uint32 *dst,
  *
  * UCS-2 strings are 16-bits per character: \c TCHAR on Windows, when building
  *  with Unicode support. Please note that modern versions of Windows use
- *  UTF-16, not UCS-2. You almost certainly want PHYSFS_utf8FromUtf16() instead.
+ *  UTF-16, which is an extended form of UCS-2, and not UCS-2 itself. You
+ *  almost certainly want PHYSFS_utf8FromUtf16() instead.
  *
  * To ensure that the destination buffer is large enough for the conversion,
  *  please allocate a buffer that is double the size of the source buffer.
@@ -2454,8 +2485,9 @@ PHYSFS_DECL void PHYSFS_utf8FromUcs2(const PHYSFS_uint16 *src, char *dst,
  *
  * UCS-2 strings are 16-bits per character: \c TCHAR on Windows, when building
  *  with Unicode support. Please note that modern versions of Windows use
- *  UTF-16, not UCS-2. You almost certainly want PHYSFS_utf8ToUtf16() instead,
- *  but you need to understand how that changes things, too.
+ *  UTF-16, which is an extended form of UCS-2, and not UCS-2 itself. You
+ *  almost certainly want PHYSFS_utf8ToUtf16() instead, but you need to
+ *  understand how that changes things, too.
  *
  * To ensure that the destination buffer is large enough for the conversion,
  *  please allocate a buffer that is double the size of the source buffer.
@@ -2479,8 +2511,7 @@ PHYSFS_DECL void PHYSFS_utf8ToUcs2(const char *src, PHYSFS_uint16 *dst,
  * \fn void PHYSFS_utf8FromLatin1(const char *src, char *dst, PHYSFS_uint64 len)
  * \brief Convert a UTF-8 string to a Latin1 string.
  *
- * Latin1 strings are 8-bits per character: a popular "high ASCII"
- *  encoding.
+ * Latin1 strings are 8-bits per character: a popular "high ASCII" encoding.
  *
  * To ensure that the destination buffer is large enough for the conversion,
  *  please allocate a buffer that is double the size of the source buffer.
@@ -2586,7 +2617,7 @@ typedef enum PHYSFS_FileType
  * Container for various meta data about a file in the virtual file system.
  *  PHYSFS_stat() uses this structure for returning the information. The time
  *  data will be either the number of seconds since the Unix epoch (midnight,
- *  Jan 1, 1970), or -1 if there the information isn't available or applicable.
+ *  Jan 1, 1970), or -1 if the information isn't available or applicable.
  *  The (filesize) field is measured in bytes.
  *  The (readonly) field tells you whether when you open a file for writing you
  *  are writing to the same file as if you were opening it, given you have
@@ -2711,7 +2742,7 @@ PHYSFS_DECL PHYSFS_sint64 PHYSFS_readBytes(PHYSFS_File *handle, void *buffer,
                                            PHYSFS_uint64 len);
 
 /**
- * \fn PHYSFS_sint64 PHYSFS_write(PHYSFS_File *handle, const void *buffer, PHYSFS_uint64 len)
+ * \fn PHYSFS_sint64 PHYSFS_writeBytes(PHYSFS_File *handle, const void *buffer, PHYSFS_uint64 len)
  * \brief Write data to a PhysicsFS filehandle
  *
  * The file must be opened for writing.
@@ -2778,6 +2809,26 @@ PHYSFS_DECL PHYSFS_sint64 PHYSFS_writeBytes(PHYSFS_File *handle,
  */
 typedef struct PHYSFS_Io
 {
+    /**
+     * \brief Binary compatibility information.
+     *
+     * This must be set to zero at this time. Future versions of this
+     *  struct will increment this field, so we know what a given
+     *  implementation supports. We'll presumably keep supporting older
+     *  versions as we offer new features, though.
+     */
+    PHYSFS_uint32 version;
+
+    /**
+     * \brief Instance data for this struct.
+     *
+     * Each instance has a pointer associated with it that can be used to
+     *  store anything it likes. This pointer is per-instance of the stream,
+     *  so presumably it will change when calling duplicate(). This can be
+     *  deallocated during the destroy() method.
+     */
+    void *opaque;
+
     /**
      * \brief Read more data.
      *
@@ -2905,16 +2956,6 @@ typedef struct PHYSFS_Io
      *   \param s The i/o instance to destroy.
      */
     void (*destroy)(struct PHYSFS_Io *io);
-
-    /**
-     * \brief Instance data for this struct.
-     *
-     * Each instance has a pointer associated with it that can be used to
-     *  store anything it likes. This pointer is per-instance of the stream,
-     *  so presumably it will change when calling duplicate(). This can be
-     *  deallocated during the destroy() method.
-     */
-    void *opaque;
 } PHYSFS_Io;
 
 
@@ -3059,6 +3100,216 @@ PHYSFS_DECL int PHYSFS_mountMemory(const void *buf, PHYSFS_uint64 len,
  */
 PHYSFS_DECL int PHYSFS_mountHandle(PHYSFS_File *file, const char *fname,
                                    const char *mountPoint, int appendToPath);
+
+
+/**
+ * \enum PHYSFS_ErrorCode
+ * \brief Values that represent specific causes of failure.
+ *
+ * Most of the time, you should only concern yourself with whether a given
+ *  operation failed or not, but there may be occasions where you plan to
+ *  handle a specific failure case gracefully, so we provide specific error
+ *  codes.
+ *
+ * Most of these errors are a little vague, and most aren't things you can
+ *  fix...if there's a permission error, for example, all you can really do
+ *  is pass that information on to the user and let them figure out how to
+ *  handle it. In most these cases, your program should only care that it
+ *  failed to accomplish its goals, and not care specifically why.
+ *
+ * \sa PHYSFS_getLastErrorCode
+ * \sa PHYSFS_getErrorByCode
+ */
+typedef enum PHYSFS_ErrorCode
+{
+    PHYSFS_ERR_OK,               /**< Success; no error.                    */
+    PHYSFS_ERR_OTHER_ERROR,      /**< Error not otherwise covered here.     */
+    PHYSFS_ERR_OUT_OF_MEMORY,    /**< Memory allocation failed.             */
+    PHYSFS_ERR_NOT_INITIALIZED,  /**< PhysicsFS is not initialized.         */
+    PHYSFS_ERR_IS_INITIALIZED,   /**< PhysicsFS is already initialized.     */
+    PHYSFS_ERR_ARGV0_IS_NULL,    /**< Needed argv[0], but it is NULL.       */
+    PHYSFS_ERR_UNSUPPORTED,      /**< Operation or feature unsupported.     */
+    PHYSFS_ERR_PAST_EOF,         /**< Attempted to access past end of file. */
+    PHYSFS_ERR_FILES_STILL_OPEN, /**< Files still open.                     */
+    PHYSFS_ERR_INVALID_ARGUMENT, /**< Bad parameter passed to an function.  */
+    PHYSFS_ERR_NOT_MOUNTED,      /**< Requested archive/dir not mounted.    */
+    PHYSFS_ERR_NO_SUCH_PATH,     /**< No such file, directory, or parent.   */
+    PHYSFS_ERR_SYMLINK_FORBIDDEN,/**< Symlink seen when not permitted.      */
+    PHYSFS_ERR_NO_WRITE_DIR,     /**< No write dir has been specified.      */
+    PHYSFS_ERR_OPEN_FOR_READING, /**< Wrote to a file opened for reading.   */
+    PHYSFS_ERR_OPEN_FOR_WRITING, /**< Read from a file opened for writing.  */
+    PHYSFS_ERR_NOT_A_FILE,       /**< Needed a file, got a directory (etc). */
+    PHYSFS_ERR_READ_ONLY,        /**< Wrote to a read-only filesystem.      */
+    PHYSFS_ERR_CORRUPT,          /**< Corrupted data encountered.           */
+    PHYSFS_ERR_SYMLINK_LOOP,     /**< Infinite symbolic link loop.          */
+    PHYSFS_ERR_IO,               /**< i/o error (hardware failure, etc).    */
+    PHYSFS_ERR_PERMISSION,       /**< Permission denied.                    */
+    PHYSFS_ERR_NO_SPACE,         /**< No space (disk full, over quota, etc) */
+    PHYSFS_ERR_BAD_FILENAME,     /**< Filename is bogus/insecure.           */
+    PHYSFS_ERR_BUSY,             /**< Tried to modify a file the OS needs.  */
+    PHYSFS_ERR_DIR_NOT_EMPTY,    /**< Tried to delete dir with files in it. */
+    PHYSFS_ERR_OS_ERROR          /**< Unspecified OS-level error.           */
+} PHYSFS_ErrorCode;
+
+
+/**
+ * \fn PHYSFS_ErrorCode PHYSFS_getLastErrorCode(void)
+ * \brief Get machine-readable error information.
+ *
+ * Get the last PhysicsFS error message as an integer value. This will return
+ *  PHYSFS_ERR_OK if there's been no error since the last call to this
+ *  function. Each thread has a unique error state associated with it, but
+ *  each time a new error message is set, it will overwrite the previous one
+ *  associated with that thread. It is safe to call this function at anytime,
+ *  even before PHYSFS_init().
+ *
+ * PHYSFS_getLastError() and PHYSFS_getLastErrorCode() both reset the same
+ *  thread-specific error state. Calling one will wipe out the other's
+ *  data. If you need both, call PHYSFS_getLastErrorCode(), then pass that
+ *  value to PHYSFS_getErrorByCode().
+ *
+ * Generally, applications should only concern themselves with whether a
+ *  given function failed; however, if you require more specifics, you can
+ *  try this function to glean information, if there's some specific problem
+ *  you're expecting and plan to handle. But with most things that involve
+ *  file systems, the best course of action is usually to give up, report the
+ *  problem to the user, and let them figure out what should be done about it.
+ *  For that, you might prefer PHYSFS_getLastError() instead.
+ *
+ *   \return Enumeration value that represents last reported error.
+ *
+ * \sa PHYSFS_getErrorByCode
+ */
+PHYSFS_DECL PHYSFS_ErrorCode PHYSFS_getLastErrorCode(void);
+
+
+/**
+ * \fn const char *PHYSFS_getErrorByCode(PHYSFS_ErrorCode code)
+ * \brief Get human-readable description string for a given error code.
+ *
+ * Get a static string, in UTF-8 format, that represents an English
+ *  description of a given error code.
+ *
+ * This string is guaranteed to never change (although we may add new strings
+ *  for new error codes in later versions of PhysicsFS), so you can use it
+ *  for keying a localization dictionary.
+ *
+ * It is safe to call this function at anytime, even before PHYSFS_init().
+ *
+ * These strings are meant to be passed on directly to the user.
+ *  Generally, applications should only concern themselves with whether a
+ *  given function failed, but not care about the specifics much.
+ *
+ * Do not attempt to free the returned strings; they are read-only and you
+ *  don't own their memory pages.
+ *
+ *   \param code Error code to convert to a string.
+ *   \return READ ONLY string of requested error message, NULL if this
+ *           is not a valid PhysicsFS error code. Always check for NULL if
+ *           you might be looking up an error code that didn't exist in an
+ *           earlier version of PhysicsFS.
+ *
+ * \sa PHYSFS_getLastErrorCode
+ */
+PHYSFS_DECL const char *PHYSFS_getErrorByCode(PHYSFS_ErrorCode code);
+
+/**
+ * \fn void PHYSFS_setErrorCode(PHYSFS_ErrorCode code)
+ * \brief Set the current thread's error code.
+ *
+ * This lets you set the value that will be returned by the next call to
+ *  PHYSFS_getLastErrorCode(). This will replace any existing error code,
+ *  whether set by your application or internally by PhysicsFS.
+ *
+ * Error codes are stored per-thread; what you set here will not be
+ *  accessible to another thread.
+ *
+ * Any call into PhysicsFS may change the current error code, so any code you
+ *  set here is somewhat fragile, and thus you shouldn't build any serious
+ *  error reporting framework on this function. The primary goal of this
+ *  function is to allow PHYSFS_Io implementations to set the error state,
+ *  which generally will be passed back to your application when PhysicsFS
+ *  makes a PHYSFS_Io call that fails internally.
+ *
+ * This function doesn't care if the error code is a value known to PhysicsFS
+ *  or not (but PHYSFS_getErrorByCode() will return NULL for unknown values).
+ *  The value will be reported unmolested by PHYSFS_getLastErrorCode().
+ *
+ *   \param code Error code to become the current thread's new error state.
+ *
+ * \sa PHYSFS_getLastErrorCode
+ * \sa PHYSFS_getErrorByCode
+ */
+PHYSFS_DECL void PHYSFS_setErrorCode(PHYSFS_ErrorCode code);
+
+
+/**
+ * \fn const char *PHYSFS_getPrefDir(const char *org, const char *app)
+ * \brief Get the user-and-app-specific path where files can be written.
+ *
+ * Helper function.
+ *
+ * Get the "pref dir". This is meant to be where users can write personal
+ *  files (preferences and save games, etc) that are specific to your
+ *  application. This directory is unique per user, per application.
+ *
+ * This function will decide the appropriate location in the native filesystem,
+ *  create the directory if necessary, and return a string in
+ *  platform-dependent notation, suitable for passing to PHYSFS_setWriteDir().
+ *
+ * On Windows, this might look like:
+ *  "C:\\Users\\bob\\AppData\\Roaming\\My Company\\My Program Name"
+ *
+ * On Linux, this might look like:
+ *  "/home/bob/.local/share/My Program Name"
+ *
+ * On Mac OS X, this might look like:
+ *  "/Users/bob/Library/Application Support/My Program Name"
+ *
+ * (etc.)
+ *
+ * You should probably use the pref dir for your write dir, and also put it
+ *  near the beginning of your search path. Older versions of PhysicsFS
+ *  offered only PHYSFS_getUserDir() and left you to figure out where the
+ *  files should go under that tree. This finds the correct location
+ *  for whatever platform, which not only changes between operating systems,
+ *  but also versions of the same operating system.
+ *
+ * You specify the name of your organization (if it's not a real organization,
+ *  your name or an Internet domain you own might do) and the name of your
+ *  application. These should be proper names.
+ *
+ * Both the (org) and (app) strings may become part of a directory name, so
+ *  please follow these rules:
+ *
+ *    - Try to use the same org string (including case-sensitivity) for
+ *      all your applications that use this function.
+ *    - Always use a unique app string for each one, and make sure it never
+ *      changes for an app once you've decided on it.
+ *    - Unicode characters are legal, as long as it's UTF-8 encoded, but...
+ *    - ...only use letters, numbers, and spaces. Avoid punctuation like
+ *      "Game Name 2: Bad Guy's Revenge!" ... "Game Name 2" is sufficient.
+ *
+ * The pointer returned by this function remains valid until you call this
+ *  function again, or call PHYSFS_deinit(). This is not necessarily a fast
+ *  call, though, so you should call this once at startup and copy the string
+ *  if you need it.
+ *
+ * You should assume the path returned by this function is the only safe
+ *  place to write files (and that PHYSFS_getUserDir() and PHYSFS_getBaseDir(),
+ *  while they might be writable, or even parents of the returned path, aren't
+ *  where you should be writing things).
+ *
+ *   \param org The name of your organization.
+ *   \param app The name of your application.
+ *  \return READ ONLY string of user dir in platform-dependent notation. NULL
+ *          if there's a problem (creating directory failed, etc).
+ *
+ * \sa PHYSFS_getBaseDir
+ * \sa PHYSFS_getUserDir
+ */
+PHYSFS_DECL const char *PHYSFS_getPrefDir(const char *org, const char *app);
+
 
 /* Everything above this line is part of the PhysicsFS 2.1 API. */
 
