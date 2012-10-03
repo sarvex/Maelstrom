@@ -200,10 +200,10 @@
 		AA0777D1145EB60A00DB8DB3 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		AA0777D3145EB68300DB8DB3 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		AA0777DA145EC12900DB8DB3 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
-		AA579DCC161BFFCA005F809B /* app-icon57px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "app-icon57px.png"; sourceTree = "<group>"; };
-		AA579DCE161BFFE4005F809B /* app-icon72px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "app-icon72px.png"; sourceTree = "<group>"; };
-		AA579DD2161C0065005F809B /* app-icon144px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "app-icon144px.png"; sourceTree = "<group>"; };
-		AA579DD4161C00A2005F809B /* app-icon114px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "app-icon114px.png"; sourceTree = "<group>"; };
+		AA579DCC161BFFCA005F809B /* app-icon57px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "app-icon57px.png"; path = "Xcode-iOS/app-icon57px.png"; sourceTree = "<group>"; };
+		AA579DCE161BFFE4005F809B /* app-icon72px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "app-icon72px.png"; path = "Xcode-iOS/app-icon72px.png"; sourceTree = "<group>"; };
+		AA579DD2161C0065005F809B /* app-icon144px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "app-icon144px.png"; path = "Xcode-iOS/app-icon144px.png"; sourceTree = "<group>"; };
+		AA579DD4161C00A2005F809B /* app-icon114px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "app-icon114px.png"; path = "Xcode-iOS/app-icon114px.png"; sourceTree = "<group>"; };
 		AA7557A51594EE8F00BBD41B /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		AA7557A71595019400BBD41B /* Maelstrom_GameKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Maelstrom_GameKit.h; path = "Xcode-iOS/Maelstrom_GameKit.h"; sourceTree = "<group>"; };
 		AA7557AA1595062C00BBD41B /* Maelstrom_GameKit.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = Maelstrom_GameKit.mm; path = "Xcode-iOS/Maelstrom_GameKit.mm"; sourceTree = "<group>"; };
@@ -644,10 +644,6 @@
 		AAD13B72145E8A8F0040B19C = {
 			isa = PBXGroup;
 			children = (
-				AA579DD4161C00A2005F809B /* app-icon114px.png */,
-				AA579DD2161C0065005F809B /* app-icon144px.png */,
-				AA579DCE161BFFE4005F809B /* app-icon72px.png */,
-				AA579DCC161BFFCA005F809B /* app-icon57px.png */,
 				AA0777C8145EB43900DB8DB3 /* physfs */,
 				AA077788145EB3F500DB8DB3 /* SDL */,
 				AAC0414C160E800800E22BC5 /* SDL_image */,
@@ -706,6 +702,10 @@
 			children = (
 				AAD13B8A145E8A8F0040B19C /* InfoPlist.strings */,
 				93D8E4A315911CDC00BD8D0E /* Maelstrom-Info.plist */,
+				AA579DCC161BFFCA005F809B /* app-icon57px.png */,
+				AA579DCE161BFFE4005F809B /* app-icon72px.png */,
+				AA579DD4161C00A2005F809B /* app-icon114px.png */,
+				AA579DD2161C0065005F809B /* app-icon144px.png */,
 				AA9781BB1576A14D00472542 /* Maelstrom_Data.zip */,
 			);
 			name = "Supporting Files";
