@@ -30,16 +30,20 @@ LoadXML(const char *file, char *&buffer, rapidxml::xml_document<> &doc)
 
 	fp = PHYSFS_openRead(file);
 	if (!fp) {
+		/*
 		fprintf(stderr, "Warning: Couldn't open %s: %s\n",
 					file, PHYSFS_getLastError());
+		*/
 		return false;
 	}
 
 	size = PHYSFS_fileLength(fp);
 	buffer = new char[size+1];
 	if (PHYSFS_readBytes(fp, buffer, size) != size) {
+		/*
 		fprintf(stderr, "Warning: Couldn't read from %s: %s\n",
 					file, PHYSFS_getLastError());
+		*/
 		PHYSFS_close(fp);
 		delete[] buffer;
 		return false;
@@ -50,8 +54,10 @@ LoadXML(const char *file, char *&buffer, rapidxml::xml_document<> &doc)
 	try {
 		doc.parse<0>(buffer);
 	} catch (rapidxml::parse_error e) {
+		/*
 		fprintf(stderr, "Warning: Couldn't parse %s: error: %s\n",
 					file, e.what());
+		*/
 		delete[] buffer;
 		return false;
 	}

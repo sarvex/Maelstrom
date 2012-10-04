@@ -52,16 +52,12 @@ UITemplates::Load(const char *file)
 
 	fp = PHYSFS_openRead(file);
 	if (!fp) {
-		fprintf(stderr, "Warning: Couldn't open %s: %s\n",
-					file, PHYSFS_getLastError());
 		return false;
 	}
 
 	size = PHYSFS_fileLength(fp);
 	m_data = new char[size+1];
 	if (PHYSFS_readBytes(fp, m_data, size) != size) {
-		fprintf(stderr, "Warning: Couldn't read from %s: %s\n",
-					file, PHYSFS_getLastError());
 		PHYSFS_close(fp);
 		delete[] m_data;
 		m_data = NULL;
@@ -73,8 +69,6 @@ UITemplates::Load(const char *file)
 	try {
 		m_doc.parse<0>(m_data);
 	} catch (rapidxml::parse_error e) {
-		fprintf(stderr, "Warning: Couldn't parse %s: error: %s\n",
-					file, e.what());
 		delete[] m_data;
 		m_data = NULL;
 		return false;

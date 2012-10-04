@@ -19,9 +19,8 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-#include "../utils/physfsrwops.h"
-
 #include "SDL_FrameBuf.h"
+#include "UIManager.h"
 #include "UIElement.h"
 
 UIElementType UIElement::s_elementType;
@@ -463,16 +462,9 @@ UIElement::SetTextShadowColor(Uint32 color)
 bool
 UIElement::SetImage(const char *file)
 {
-	SDL_Surface *bmp;
 	SDL_Texture *image;
 
-	bmp = SDL_LoadBMP_RW(PHYSFSRWOPS_openRead(file), 1);
-	if (!bmp) {
-		return false;
-	}
-
-	image = m_screen->LoadImage(bmp);
-	SDL_FreeSurface(bmp);
+	image = m_ui->LoadImage(file);
 	if (!image) {
 		return false;
 	}

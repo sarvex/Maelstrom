@@ -20,6 +20,8 @@
 */
 
 #include "../utils/loadxml.h"
+#include "../utils/physfsrwops.h"
+
 
 #include "SDL_FrameBuf.h"
 #include "UIManager.h"
@@ -31,8 +33,9 @@ UIManager::UIManager(FrameBuf *screen, Prefs *prefs) :
 {
 	m_screen = screen;
 	m_prefs = prefs;
-	m_loadPath = new char[2];
-	SDL_strlcpy(m_loadPath, ".", 2);
+	for (int i = 0; i < NUM_PATH_TYPES; ++i) {
+		AddLoadPath(i, ".");
+	}
 }
 
 UIManager::~UIManager()
@@ -41,16 +44,48 @@ UIManager::~UIManager()
 	while (m_panels.length() > 0) {
 		delete m_panels[m_panels.length()-1];
 	}
-	delete[] m_loadPath;
+	for (int i = 0; i < NUM_PATH_TYPES; ++i) {
+		ClearLoadPath(i);
+	}
 }
 
 void
-UIManager::SetLoadPath(const char *path)
+UIManager::ClearLoadPath(int pathType)
 {
-	delete[] m_loadPath;
-	size_t size = SDL_strlen(path)+1;
-	m_loadPath = new char[size];
-	SDL_strlcpy(m_loadPath, path, size);
+	SDL_assert(pathType >= 0 && pathType <= SDL_arraysize(m_loadPath));
+	for (int i = 0; i < m_loadPath[pathType].length(); ++i) {
+		SDL_free(m_loadPath[pathType][i]);
+	}
+	m_loadPath[pathType].clear();
+}
+
+void
+UIManager::AddLoadPath(int pathType, const char *path)
+{
+	SDL_assert(pathType >= 0 && pathType <= SDL_arraysize(m_loadPath));
+	m_loadPath[pathType].add(SDL_strdup(path));
+}
+
+SDL_Texture *
+UIManager::LoadImage(const char *file)
+{
+	char path[1024];
+	SDL_Surface *bmp;
+	SDL_Texture *image;
+
+	for (int i = 0; i < m_loadPath[PATH_TYPE_IMAGE].length(); ++i) {
+		SDL_snprintf(path, sizeof(path), "%s/%s", m_loadPath[PATH_TYPE_IMAGE][i], file);
+		bmp = SDL_LoadBMP_RW(PHYSFSRWOPS_openRead(path), 1);
+		if (!bmp) {
+			continue;
+		}
+
+		image = m_screen->LoadImage(bmp);
+		SDL_FreeSurface(bmp);
+		return image;
+	}
+	fprintf(stderr, "Couldn't load image %s\n", file);
+	return NULL;
 }
 
 bool
@@ -58,8 +93,14 @@ UIManager::LoadTemplates(const char *file)
 {
 	char path[1024];
 
-	SDL_snprintf(path, sizeof(path), "%s/%s", m_loadPath, file);
-	return m_templates.Load(path);
+	for (int i = 0; i < m_loadPath[PATH_TYPE_UI].length(); ++i) {
+		SDL_snprintf(path, sizeof(path), "%s/%s", m_loadPath[PATH_TYPE_UI][i], file);
+		if (m_templates.Load(path)) {
+			return true;
+		}
+	}
+	fprintf(stderr, "Couldn't load template %s\n", file);
+	return false;
 }
 
 UIPanel *
@@ -73,8 +114,16 @@ UIManager::LoadPanel(const char *name)
 		char *buffer;
 		rapidxml::xml_document<> doc;
 
-		SDL_snprintf(file, sizeof(file), "%s/%s.xml", m_loadPath, name);
-		if (!LoadXML(file, buffer, doc)) {
+		bool loaded = false;
+		for (int i = 0; i < m_loadPath[PATH_TYPE_UI].length(); ++i) {
+			SDL_snprintf(file, sizeof(file), "%s/%s.xml", m_loadPath[PATH_TYPE_UI][i], name);
+			if (LoadXML(file, buffer, doc)) {
+				loaded = true;
+				break;
+			}
+		}
+		if (!loaded) {
+			fprintf(stderr, "Couldn't load panel %s\n", name);
 			return NULL;
 		}
 

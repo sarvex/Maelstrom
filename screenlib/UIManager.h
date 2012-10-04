@@ -38,6 +38,13 @@ class Prefs;
 class UIManager : public UIArea, public UIFontInterface, public UISoundInterface
 {
 public:
+	enum PATH_TYPE {
+		PATH_TYPE_UI,
+		PATH_TYPE_IMAGE,
+		NUM_PATH_TYPES
+	};
+
+public:
 	UIManager(FrameBuf *screen, Prefs *prefs);
 	virtual ~UIManager();
 
@@ -51,8 +58,10 @@ public:
 		return &m_templates;
 	}
 
-	void SetLoadPath(const char *path);
+	void ClearLoadPath(int pathType);
+	void AddLoadPath(int pathType, const char *path);
 	bool LoadTemplates(const char *file);
+	SDL_Texture *LoadImage(const char *file);
 	UIPanel *LoadPanel(const char *name);
 	UIPanel *GetPanel(const char *name, bool allowLoad = true);
 	template <typename T>
@@ -117,7 +126,7 @@ public:
 protected:
 	FrameBuf *m_screen;
 	Prefs *m_prefs;
-	char *m_loadPath;
+	array<char *> m_loadPath[NUM_PATH_TYPES];
 	UITemplates m_templates;
 	array<UIPanel *> m_panels;
 	array<UIPanel *> m_visible;
