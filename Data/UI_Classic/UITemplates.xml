@@ -74,7 +74,7 @@
 	<Button templateName="HotkeyOnly">
 		<Size w="0" h="0"/>
 	</Button>
-	<Button templateName="MenuButton" image="Images/keyicon.bmp" font="Geneva:9:BOLD">
+	<Button templateName="MenuButton" image="keyicon.bmp" font="Geneva:9:BOLD">
 		<Size w="32" h="32"/>
 		<TextArea>
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" x="13" y="9"/>

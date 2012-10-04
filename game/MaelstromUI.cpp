@@ -62,7 +62,17 @@ MaelstromUI::MaelstromUI(FrameBuf *screen, Prefs *prefs) : UIManager(screen, pre
 	m_strings = hash_create(screen, hash_hash_string, hash_keymatch_string, hash_nuke_string_text);
 
 	/* Load up our UI templates */
-	SetLoadPath("UI");
+	ClearLoadPath(PATH_TYPE_UI);
+	ClearLoadPath(PATH_TYPE_IMAGE);
+	for (int i = gResolutionIndex; i < gResolutions.length(); ++i) {
+		char path[1024];
+
+		SDL_snprintf(path, sizeof(path), "UI%s", gResolutions[i].path_suffix);
+		AddLoadPath(PATH_TYPE_UI, path);
+
+		SDL_snprintf(path, sizeof(path), "Images%s", gResolutions[i].path_suffix);
+		AddLoadPath(PATH_TYPE_IMAGE, path);
+	}
 	LoadTemplates("UITemplates.xml");
 }
 

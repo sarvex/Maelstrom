@@ -172,7 +172,7 @@
 		<Label name="last_score" template="LargeWhite">
 			<Anchor anchorFrom="LEFT" anchorTo="RIGHT" anchor="last_score_label"/>
 		</Label>
-		<Button name="play_last" image="Images/play.bmp">
+		<Button name="play_last" image="play.bmp">
 			<Size w="326" h="22"/>
 			<ImageArea>
 				<Anchor anchorFrom="LEFT" anchorTo="LEFT"/>
@@ -256,7 +256,7 @@
 			<Color r="0xFF" g="0xFF" b="0xFF"/>
 			<Anchor anchorFrom="BOTTOMLEFT" anchorTo="TOPLEFT" anchor="image" x="15" y="148"/>
 		</Label>
-		<Image image="Images/logo.bmp">
+		<Image image="logo.bmp">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="BOTTOMLEFT" anchor="hdivider_right"/>
 		</Image>
 
@@ -266,7 +266,7 @@
 		</Label>
 
 		<!-- Kid mode -->
-		<Checkbox name="KidMode" image="Images/kidmode.bmp" checkedImage="Images/kidmode-selected.bmp" bindValue="Cheat.KidMode">
+		<Checkbox name="KidMode" image="kidmode.bmp" checkedImage="kidmode-selected.bmp" bindValue="Cheat.KidMode">
 			<Anchor anchorFrom="TOP" anchorTo="TOP" anchor="vertical_divider" x="196"/>
 		</Checkbox>
 	</Elements>

@@ -163,12 +163,10 @@ static bool InitResolutions(int &w, int &h)
 	if (gClassic) {
 		w = GAME_WIDTH;
 		h = GAME_HEIGHT;
-		gResolutionIndex = FindResolution(w, h);
-		if (gResolutionIndex >= 0) {
-			return true;
-		}
+		gResolutionIndex = gResolutions.length()-1;
+		return true;
 	}
-		
+
 	// See if the user wants something specific
 	const char *desired = prefs->GetString(PREFERENCES_RESOLUTION);
 	if (desired) {
@@ -886,12 +884,11 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 		return(-1);
 	}
 
-	/* Create the UI manager */
-	ui = new MaelstromUI(screen, prefs);
-
 	/* Set up for the resolution we actually got */
 #if 0 // We don't need this now that we're guaranteed our logical resolution
-	gResolutionIndex = FindResolution(screen->Width(), screen->Height());
+	if (!gClassic) {
+		gResolutionIndex = FindResolution(screen->Width(), screen->Height());
+	}
 
 	const Resolution &resolution = gResolutions[gResolutionIndex];
 	gScrnRect.x = (screen->Width() - resolution.w) / 2;
@@ -899,9 +896,11 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 	gScrnRect.w = resolution.w;
 	gScrnRect.h = resolution.h;
 #else
-	int display_w, display_h;
-	screen->GetDisplaySize(display_w, display_h);
-	gResolutionIndex = FindResolution(display_w, display_h);
+	if (!gClassic) {
+		int display_w, display_h;
+		screen->GetDisplaySize(display_w, display_h);
+		gResolutionIndex = FindResolution(display_w, display_h);
+	}
 
 	gScrnRect.x = 0;
 	gScrnRect.y = 0;
@@ -916,6 +915,9 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 	clipRect.w = gScrnRect.w - (clipRect.x - gScrnRect.x)*2;
 	clipRect.h = gScrnRect.h - (clipRect.y - gScrnRect.y)*2;
 	screen->ClipBlit(&clipRect);
+
+	/* Create the UI manager */
+	ui = new MaelstromUI(screen, prefs);
 
 	/* -- Throw up our intro screen */
 	screen->FadeOut();
@@ -1219,7 +1221,7 @@ static int LoadSprite(bool large, BlitPtr *theBlit, int baseID, int numFrames)
 
 	/* -- Load in the image data */
 	for (index = 0; index < numFrames; index++) {
-		SDL_snprintf(file, sizeof(file), "Sprites/Maelstrom_%s#%d.bmp", large ? "icl" : "ics", baseID+index);
+		SDL_snprintf(file, sizeof(file), "Sprites_Classic/Maelstrom_%s#%d.bmp", large ? "icl" : "ics", baseID+index);
 		surface = SDL_LoadBMP_RW(PHYSFSRWOPS_openRead(file), 1);
 
 		if ( surface == NULL ) {
