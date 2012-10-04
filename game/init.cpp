@@ -847,8 +847,6 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 	}
 	screen->SetLogicalSize(GAME_WIDTH, GAME_HEIGHT);
 	screen->SetCaption("Maelstrom");
-	screen->Clear();
-	screen->Update();
 	SDL_FreeSurface(icon);
 
 	/* Get startup events, which shows the window on Mac OS X */
