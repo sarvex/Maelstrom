@@ -20,6 +20,16 @@
 		AA438FDE161D59C700FE5F41 /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = AA438FDD161D59C700FE5F41 /* Default-Landscape~ipad.png */; };
 		AA438FE0161D5A4200FE5F41 /* Default-Landscape@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = AA438FDF161D5A4200FE5F41 /* Default-Landscape@2x~ipad.png */; };
 		AA439029161EBAA800FE5F41 /* UITexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA439027161EBAA800FE5F41 /* UITexture.cpp */; };
+		AA439067161EBE1800FE5F41 /* archiver_dir.c in Sources */ = {isa = PBXBuildFile; fileRef = AA439055161EBE1800FE5F41 /* archiver_dir.c */; };
+		AA439068161EBE1800FE5F41 /* archiver_zip.c in Sources */ = {isa = PBXBuildFile; fileRef = AA439056161EBE1800FE5F41 /* archiver_zip.c */; };
+		AA43906C161EBE1800FE5F41 /* physfs.c in Sources */ = {isa = PBXBuildFile; fileRef = AA43905A161EBE1800FE5F41 /* physfs.c */; };
+		AA43906D161EBE1800FE5F41 /* physfs_byteorder.c in Sources */ = {isa = PBXBuildFile; fileRef = AA43905C161EBE1800FE5F41 /* physfs_byteorder.c */; };
+		AA43906E161EBE1800FE5F41 /* physfs_unicode.c in Sources */ = {isa = PBXBuildFile; fileRef = AA439061161EBE1800FE5F41 /* physfs_unicode.c */; };
+		AA43906F161EBE1800FE5F41 /* platform_beos.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA439062161EBE1800FE5F41 /* platform_beos.cpp */; };
+		AA439070161EBE1800FE5F41 /* platform_macosx.c in Sources */ = {isa = PBXBuildFile; fileRef = AA439063161EBE1800FE5F41 /* platform_macosx.c */; };
+		AA439071161EBE1800FE5F41 /* platform_posix.c in Sources */ = {isa = PBXBuildFile; fileRef = AA439064161EBE1800FE5F41 /* platform_posix.c */; };
+		AA439072161EBE1800FE5F41 /* platform_unix.c in Sources */ = {isa = PBXBuildFile; fileRef = AA439065161EBE1800FE5F41 /* platform_unix.c */; };
+		AA439073161EBE1800FE5F41 /* platform_windows.c in Sources */ = {isa = PBXBuildFile; fileRef = AA439066161EBE1800FE5F41 /* platform_windows.c */; };
 		AA579DCD161BFFCA005F809B /* app-icon57px.png in Resources */ = {isa = PBXBuildFile; fileRef = AA579DCC161BFFCA005F809B /* app-icon57px.png */; };
 		AA579DCF161BFFE4005F809B /* app-icon72px.png in Resources */ = {isa = PBXBuildFile; fileRef = AA579DCE161BFFE4005F809B /* app-icon72px.png */; };
 		AA579DD3161C0065005F809B /* app-icon144px.png in Resources */ = {isa = PBXBuildFile; fileRef = AA579DD2161C0065005F809B /* app-icon144px.png */; };
@@ -214,6 +224,21 @@
 		AA439026161EBAA800FE5F41 /* UIImageInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIImageInterface.h; sourceTree = "<group>"; };
 		AA439027161EBAA800FE5F41 /* UITexture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UITexture.cpp; sourceTree = "<group>"; };
 		AA439028161EBAA800FE5F41 /* UITexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UITexture.h; sourceTree = "<group>"; };
+		AA439055161EBE1800FE5F41 /* archiver_dir.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = archiver_dir.c; sourceTree = "<group>"; };
+		AA439056161EBE1800FE5F41 /* archiver_zip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = archiver_zip.c; sourceTree = "<group>"; };
+		AA43905A161EBE1800FE5F41 /* physfs.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = physfs.c; sourceTree = "<group>"; };
+		AA43905B161EBE1800FE5F41 /* physfs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = physfs.h; sourceTree = "<group>"; };
+		AA43905C161EBE1800FE5F41 /* physfs_byteorder.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = physfs_byteorder.c; sourceTree = "<group>"; };
+		AA43905D161EBE1800FE5F41 /* physfs_casefolding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = physfs_casefolding.h; sourceTree = "<group>"; };
+		AA43905E161EBE1800FE5F41 /* physfs_internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = physfs_internal.h; sourceTree = "<group>"; };
+		AA43905F161EBE1800FE5F41 /* physfs_miniz.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = physfs_miniz.h; sourceTree = "<group>"; };
+		AA439060161EBE1800FE5F41 /* physfs_platforms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = physfs_platforms.h; sourceTree = "<group>"; };
+		AA439061161EBE1800FE5F41 /* physfs_unicode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = physfs_unicode.c; sourceTree = "<group>"; };
+		AA439062161EBE1800FE5F41 /* platform_beos.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = platform_beos.cpp; sourceTree = "<group>"; };
+		AA439063161EBE1800FE5F41 /* platform_macosx.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = platform_macosx.c; sourceTree = "<group>"; };
+		AA439064161EBE1800FE5F41 /* platform_posix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = platform_posix.c; sourceTree = "<group>"; };
+		AA439065161EBE1800FE5F41 /* platform_unix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = platform_unix.c; sourceTree = "<group>"; };
+		AA439066161EBE1800FE5F41 /* platform_windows.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = platform_windows.c; sourceTree = "<group>"; };
 		AA579DCC161BFFCA005F809B /* app-icon57px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "app-icon57px.png"; path = "Xcode-iOS/app-icon57px.png"; sourceTree = "<group>"; };
 		AA579DCE161BFFE4005F809B /* app-icon72px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "app-icon72px.png"; path = "Xcode-iOS/app-icon72px.png"; sourceTree = "<group>"; };
 		AA579DD2161C0065005F809B /* app-icon144px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "app-icon144px.png"; path = "Xcode-iOS/app-icon144px.png"; sourceTree = "<group>"; };
@@ -499,6 +524,28 @@
 			path = src;
 			sourceTree = "<group>";
 		};
+		AA439054161EBE1800FE5F41 /* physfs */ = {
+			isa = PBXGroup;
+			children = (
+				AA439055161EBE1800FE5F41 /* archiver_dir.c */,
+				AA439056161EBE1800FE5F41 /* archiver_zip.c */,
+				AA43905A161EBE1800FE5F41 /* physfs.c */,
+				AA43905B161EBE1800FE5F41 /* physfs.h */,
+				AA43905C161EBE1800FE5F41 /* physfs_byteorder.c */,
+				AA43905D161EBE1800FE5F41 /* physfs_casefolding.h */,
+				AA43905E161EBE1800FE5F41 /* physfs_internal.h */,
+				AA43905F161EBE1800FE5F41 /* physfs_miniz.h */,
+				AA439060161EBE1800FE5F41 /* physfs_platforms.h */,
+				AA439061161EBE1800FE5F41 /* physfs_unicode.c */,
+				AA439062161EBE1800FE5F41 /* platform_beos.cpp */,
+				AA439063161EBE1800FE5F41 /* platform_macosx.c */,
+				AA439064161EBE1800FE5F41 /* platform_posix.c */,
+				AA439065161EBE1800FE5F41 /* platform_unix.c */,
+				AA439066161EBE1800FE5F41 /* platform_windows.c */,
+			);
+			path = physfs;
+			sourceTree = "<group>";
+		};
 		AA9781191576A00100472542 /* maclib */ = {
 			isa = PBXGroup;
 			children = (
@@ -706,6 +753,7 @@
 				AA97808215769F3400472542 /* mainstub.cpp */,
 				AA9781741576A03700472542 /* game */,
 				AA9781191576A00100472542 /* maclib */,
+				AA439054161EBE1800FE5F41 /* physfs */,
 				AA9781241576A00100472542 /* screenlib */,
 				AA9781491576A00100472542 /* utils */,
 				AAD13B88145E8A8F0040B19C /* Supporting Files */,
@@ -930,6 +978,16 @@
 				AABDBE2015C8A6B200C3E936 /* features.cpp in Sources */,
 				AABDBE2615C8A6F300C3E936 /* loadxml.cpp in Sources */,
 				AA439029161EBAA800FE5F41 /* UITexture.cpp in Sources */,
+				AA439067161EBE1800FE5F41 /* archiver_dir.c in Sources */,
+				AA439068161EBE1800FE5F41 /* archiver_zip.c in Sources */,
+				AA43906C161EBE1800FE5F41 /* physfs.c in Sources */,
+				AA43906D161EBE1800FE5F41 /* physfs_byteorder.c in Sources */,
+				AA43906E161EBE1800FE5F41 /* physfs_unicode.c in Sources */,
+				AA43906F161EBE1800FE5F41 /* platform_beos.cpp in Sources */,
+				AA439070161EBE1800FE5F41 /* platform_macosx.c in Sources */,
+				AA439071161EBE1800FE5F41 /* platform_posix.c in Sources */,
+				AA439072161EBE1800FE5F41 /* platform_unix.c in Sources */,
+				AA439073161EBE1800FE5F41 /* platform_windows.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

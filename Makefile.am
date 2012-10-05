@@ -10,14 +10,15 @@ Maelstrom_LDADD = 			\
 	game/libgame.a		\
 	screenlib/libSDLscreen.a	\
 	maclib/libSDLmac.a		\
+	physfs/libphysfs.a		\
 	utils/libutils.a		\
-	@MATHLIB@ @INETLIB@ @ICONOBJ@
+	@EXTRA_LIBS@ @ICONOBJ@
 
 MaelstromLobby_SOURCES = MaelstromLobby.cpp
 
-MaelstromLobby_LDADD = @INETLIB@
+MaelstromLobby_LDADD = @EXTRA_LIBS@
 
-SUBDIRS = game screenlib maclib utils
+SUBDIRS = game screenlib maclib physfs utils
 
 EXTRA_DIST =			\
 	Docs			\

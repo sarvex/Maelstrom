@@ -21,7 +21,7 @@
 
 #include <stdio.h>
 #include "SDL.h"
-#include "physfs.h"
+#include "../physfs/physfs.h"
 
 #include "UITemplates.h"
 

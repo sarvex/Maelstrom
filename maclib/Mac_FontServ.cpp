@@ -26,7 +26,7 @@
 #include <ctype.h>
 #include <string.h>
 
-#include "physfs.h"
+#include "../physfs/physfs.h"
 #include "SDL_types.h"
 #include "bitesex.h"
 #include "Mac_FontServ.h"

@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		AA4086EF14D490F000EB2196 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA4086EE14D490F000EB2196 /* Cocoa.framework */; };
 		AA4086F914D490F000EB2196 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = AA4086F714D490F000EB2196 /* InfoPlist.strings */; };
 		AA40882B14D493A800EB2196 /* about.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA4087BC14D493A800EB2196 /* about.cpp */; };
 		AA40882C14D493A800EB2196 /* controls.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA4087BF14D493A800EB2196 /* controls.cpp */; };
@@ -52,12 +51,21 @@
 		AA40886014D493A800EB2196 /* prefs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA40882714D493A800EB2196 /* prefs.cpp */; };
 		AA4088ED14D4987200EB2196 /* SDL2_net.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA4088EB14D4987200EB2196 /* SDL2_net.framework */; };
 		AA4088EE14D4987200EB2196 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA4088EC14D4987200EB2196 /* SDL2.framework */; };
-		AA4088F014D4989E00EB2196 /* physfs.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA4088EF14D4989E00EB2196 /* physfs.framework */; };
-		AA4088F114D498B000EB2196 /* physfs.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = AA4088EF14D4989E00EB2196 /* physfs.framework */; };
 		AA4088F414D498CE00EB2196 /* SDL2.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = AA4088EC14D4987200EB2196 /* SDL2.framework */; };
 		AA4088F514D498CE00EB2196 /* SDL2_net.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = AA4088EB14D4987200EB2196 /* SDL2_net.framework */; };
 		AA40890614D49FFE00EB2196 /* Maelstrom.icns in Resources */ = {isa = PBXBuildFile; fileRef = AA40890514D49FFE00EB2196 /* Maelstrom.icns */; };
 		AA439032161EBB5800FE5F41 /* UITexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA439030161EBB5800FE5F41 /* UITexture.cpp */; };
+		AA439047161EBDCA00FE5F41 /* archiver_dir.c in Sources */ = {isa = PBXBuildFile; fileRef = AA439035161EBDCA00FE5F41 /* archiver_dir.c */; };
+		AA439048161EBDCA00FE5F41 /* archiver_zip.c in Sources */ = {isa = PBXBuildFile; fileRef = AA439036161EBDCA00FE5F41 /* archiver_zip.c */; };
+		AA43904C161EBDCA00FE5F41 /* physfs.c in Sources */ = {isa = PBXBuildFile; fileRef = AA43903A161EBDCA00FE5F41 /* physfs.c */; };
+		AA43904D161EBDCA00FE5F41 /* physfs_byteorder.c in Sources */ = {isa = PBXBuildFile; fileRef = AA43903C161EBDCA00FE5F41 /* physfs_byteorder.c */; };
+		AA43904E161EBDCA00FE5F41 /* physfs_unicode.c in Sources */ = {isa = PBXBuildFile; fileRef = AA439041161EBDCA00FE5F41 /* physfs_unicode.c */; };
+		AA43904F161EBDCA00FE5F41 /* platform_beos.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA439042161EBDCA00FE5F41 /* platform_beos.cpp */; };
+		AA439050161EBDCA00FE5F41 /* platform_macosx.c in Sources */ = {isa = PBXBuildFile; fileRef = AA439043161EBDCA00FE5F41 /* platform_macosx.c */; };
+		AA439051161EBDCA00FE5F41 /* platform_posix.c in Sources */ = {isa = PBXBuildFile; fileRef = AA439044161EBDCA00FE5F41 /* platform_posix.c */; };
+		AA439052161EBDCA00FE5F41 /* platform_unix.c in Sources */ = {isa = PBXBuildFile; fileRef = AA439045161EBDCA00FE5F41 /* platform_unix.c */; };
+		AA439053161EBDCA00FE5F41 /* platform_windows.c in Sources */ = {isa = PBXBuildFile; fileRef = AA439046161EBDCA00FE5F41 /* platform_windows.c */; };
+		AA439075161EC0A100FE5F41 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA439074161EC0A100FE5F41 /* CoreFoundation.framework */; };
 		AA8B18F2161C0B59005318A4 /* SDL2_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA8B18F1161C0B59005318A4 /* SDL2_image.framework */; };
 		AA8B1900161C1134005318A4 /* continue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA8B18FA161C1134005318A4 /* continue.cpp */; };
 		AA8B1901161C1134005318A4 /* features.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA8B18FC161C1134005318A4 /* features.cpp */; };
@@ -82,7 +90,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				AA4088F114D498B000EB2196 /* physfs.framework in Copy Frameworks */,
 				AA4088F414D498CE00EB2196 /* SDL2.framework in Copy Frameworks */,
 				AA4088F514D498CE00EB2196 /* SDL2_net.framework in Copy Frameworks */,
 			);
@@ -93,10 +100,6 @@
 
 /* Begin PBXFileReference section */
 		AA4086EA14D490F000EB2196 /* Maelstrom.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Maelstrom.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		AA4086EE14D490F000EB2196 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
-		AA4086F114D490F000EB2196 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
-		AA4086F214D490F000EB2196 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
-		AA4086F314D490F000EB2196 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		AA4086F614D490F000EB2196 /* Maelstrom-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Maelstrom-Info.plist"; sourceTree = SOURCE_ROOT; };
 		AA4086F814D490F000EB2196 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AA4087BC14D493A800EB2196 /* about.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = about.cpp; sourceTree = "<group>"; };
@@ -196,11 +199,26 @@
 		AA40882A14D493A800EB2196 /* rapidxml.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = rapidxml.hpp; sourceTree = "<group>"; };
 		AA4088EB14D4987200EB2196 /* SDL2_net.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_net.framework; path = /Library/Frameworks/SDL2_net.framework; sourceTree = "<absolute>"; };
 		AA4088EC14D4987200EB2196 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = /Library/Frameworks/SDL2.framework; sourceTree = "<absolute>"; };
-		AA4088EF14D4989E00EB2196 /* physfs.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = physfs.framework; path = Frameworks/physfs.framework; sourceTree = SOURCE_ROOT; };
 		AA40890514D49FFE00EB2196 /* Maelstrom.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Maelstrom.icns; sourceTree = SOURCE_ROOT; };
 		AA43902F161EBB5800FE5F41 /* UIImageInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIImageInterface.h; sourceTree = "<group>"; };
 		AA439030161EBB5800FE5F41 /* UITexture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UITexture.cpp; sourceTree = "<group>"; };
 		AA439031161EBB5800FE5F41 /* UITexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UITexture.h; sourceTree = "<group>"; };
+		AA439035161EBDCA00FE5F41 /* archiver_dir.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = archiver_dir.c; sourceTree = "<group>"; };
+		AA439036161EBDCA00FE5F41 /* archiver_zip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = archiver_zip.c; sourceTree = "<group>"; };
+		AA43903A161EBDCA00FE5F41 /* physfs.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = physfs.c; sourceTree = "<group>"; };
+		AA43903B161EBDCA00FE5F41 /* physfs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = physfs.h; sourceTree = "<group>"; };
+		AA43903C161EBDCA00FE5F41 /* physfs_byteorder.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = physfs_byteorder.c; sourceTree = "<group>"; };
+		AA43903D161EBDCA00FE5F41 /* physfs_casefolding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = physfs_casefolding.h; sourceTree = "<group>"; };
+		AA43903E161EBDCA00FE5F41 /* physfs_internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = physfs_internal.h; sourceTree = "<group>"; };
+		AA43903F161EBDCA00FE5F41 /* physfs_miniz.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = physfs_miniz.h; sourceTree = "<group>"; };
+		AA439040161EBDCA00FE5F41 /* physfs_platforms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = physfs_platforms.h; sourceTree = "<group>"; };
+		AA439041161EBDCA00FE5F41 /* physfs_unicode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = physfs_unicode.c; sourceTree = "<group>"; };
+		AA439042161EBDCA00FE5F41 /* platform_beos.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = platform_beos.cpp; sourceTree = "<group>"; };
+		AA439043161EBDCA00FE5F41 /* platform_macosx.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = platform_macosx.c; sourceTree = "<group>"; };
+		AA439044161EBDCA00FE5F41 /* platform_posix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = platform_posix.c; sourceTree = "<group>"; };
+		AA439045161EBDCA00FE5F41 /* platform_unix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = platform_unix.c; sourceTree = "<group>"; };
+		AA439046161EBDCA00FE5F41 /* platform_windows.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = platform_windows.c; sourceTree = "<group>"; };
+		AA439074161EC0A100FE5F41 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		AA8B18F1161C0B59005318A4 /* SDL2_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_image.framework; path = /Library/Frameworks/SDL2_image.framework; sourceTree = "<absolute>"; };
 		AA8B18FA161C1134005318A4 /* continue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = continue.cpp; sourceTree = "<group>"; };
 		AA8B18FB161C1134005318A4 /* continue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = continue.h; sourceTree = "<group>"; };
@@ -218,11 +236,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA4086EF14D490F000EB2196 /* Cocoa.framework in Frameworks */,
+				AA439075161EC0A100FE5F41 /* CoreFoundation.framework in Frameworks */,
 				AA4088EE14D4987200EB2196 /* SDL2.framework in Frameworks */,
 				AA8B18F2161C0B59005318A4 /* SDL2_image.framework in Frameworks */,
 				AA4088ED14D4987200EB2196 /* SDL2_net.framework in Frameworks */,
-				AA4088F014D4989E00EB2196 /* physfs.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -232,6 +249,7 @@
 		AA4086DF14D490F000EB2196 = {
 			isa = PBXGroup;
 			children = (
+				AA439074161EC0A100FE5F41 /* CoreFoundation.framework */,
 				AA4086F414D490F000EB2196 /* Maelstrom */,
 				AA4086ED14D490F000EB2196 /* Frameworks */,
 				AA4086EB14D490F000EB2196 /* Products */,
@@ -250,24 +268,11 @@
 		AA4086ED14D490F000EB2196 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				AA4086EE14D490F000EB2196 /* Cocoa.framework */,
-				AA4086F014D490F000EB2196 /* Other Frameworks */,
-				AA4088EF14D4989E00EB2196 /* physfs.framework */,
 				AA4088EC14D4987200EB2196 /* SDL2.framework */,
 				AA8B18F1161C0B59005318A4 /* SDL2_image.framework */,
 				AA4088EB14D4987200EB2196 /* SDL2_net.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		AA4086F014D490F000EB2196 /* Other Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				AA4086F114D490F000EB2196 /* AppKit.framework */,
-				AA4086F214D490F000EB2196 /* CoreData.framework */,
-				AA4086F314D490F000EB2196 /* Foundation.framework */,
-			);
-			name = "Other Frameworks";
 			sourceTree = "<group>";
 		};
 		AA4086F414D490F000EB2196 /* Maelstrom */ = {
@@ -292,9 +297,10 @@
 		AA40871414D492D900EB2196 /* Source Files */ = {
 			isa = PBXGroup;
 			children = (
+				AA4087F814D493A800EB2196 /* mainstub.cpp */,
 				AA4087BB14D493A800EB2196 /* game */,
 				AA4087ED14D493A800EB2196 /* maclib */,
-				AA4087F814D493A800EB2196 /* mainstub.cpp */,
+				AA439034161EBDCA00FE5F41 /* physfs */,
 				AA4087F914D493A800EB2196 /* screenlib */,
 				AA40881E14D493A800EB2196 /* utils */,
 			);
@@ -436,6 +442,29 @@
 			);
 			name = utils;
 			path = ../utils;
+			sourceTree = "<group>";
+		};
+		AA439034161EBDCA00FE5F41 /* physfs */ = {
+			isa = PBXGroup;
+			children = (
+				AA439035161EBDCA00FE5F41 /* archiver_dir.c */,
+				AA439036161EBDCA00FE5F41 /* archiver_zip.c */,
+				AA43903A161EBDCA00FE5F41 /* physfs.c */,
+				AA43903B161EBDCA00FE5F41 /* physfs.h */,
+				AA43903C161EBDCA00FE5F41 /* physfs_byteorder.c */,
+				AA43903D161EBDCA00FE5F41 /* physfs_casefolding.h */,
+				AA43903E161EBDCA00FE5F41 /* physfs_internal.h */,
+				AA43903F161EBDCA00FE5F41 /* physfs_miniz.h */,
+				AA439040161EBDCA00FE5F41 /* physfs_platforms.h */,
+				AA439041161EBDCA00FE5F41 /* physfs_unicode.c */,
+				AA439042161EBDCA00FE5F41 /* platform_beos.cpp */,
+				AA439043161EBDCA00FE5F41 /* platform_macosx.c */,
+				AA439044161EBDCA00FE5F41 /* platform_posix.c */,
+				AA439045161EBDCA00FE5F41 /* platform_unix.c */,
+				AA439046161EBDCA00FE5F41 /* platform_windows.c */,
+			);
+			name = physfs;
+			path = ../physfs;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -595,6 +624,16 @@
 				AA8B1902161C1134005318A4 /* gameover.cpp in Sources */,
 				AA8B1905161C1188005318A4 /* loadxml.cpp in Sources */,
 				AA439032161EBB5800FE5F41 /* UITexture.cpp in Sources */,
+				AA439047161EBDCA00FE5F41 /* archiver_dir.c in Sources */,
+				AA439048161EBDCA00FE5F41 /* archiver_zip.c in Sources */,
+				AA43904C161EBDCA00FE5F41 /* physfs.c in Sources */,
+				AA43904D161EBDCA00FE5F41 /* physfs_byteorder.c in Sources */,
+				AA43904E161EBDCA00FE5F41 /* physfs_unicode.c in Sources */,
+				AA43904F161EBDCA00FE5F41 /* platform_beos.cpp in Sources */,
+				AA439050161EBDCA00FE5F41 /* platform_macosx.c in Sources */,
+				AA439051161EBDCA00FE5F41 /* platform_posix.c in Sources */,
+				AA439052161EBDCA00FE5F41 /* platform_unix.c in Sources */,
+				AA439053161EBDCA00FE5F41 /* platform_windows.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -664,6 +703,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_PREPROCESSOR_DEFINITIONS = PHYSFS_NO_CDROM_SUPPORT;
 				INFOPLIST_FILE = "Maelstrom-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -675,6 +715,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_PREPROCESSOR_DEFINITIONS = PHYSFS_NO_CDROM_SUPPORT;
 				INFOPLIST_FILE = "Maelstrom-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -27,24 +27,19 @@ esac
 dnl Figure out which math and networking libraries to use
 case "$target" in
     *-*-mingw32*)
-        MATHLIB=""
-        INETLIB="-lwsock32"
+        EXTRA_LIBS="-lwsock32"
         ;;
     *-*-beos*)
-        MATHLIB=""
-        INETLIB=""
+        EXTRA_LIBS=""
         ;;
     *-*-darwin*)
-        MATHLIB=""
-        INETLIB=""
+        EXTRA_LIBS="-framework CoreFoundation"
         ;;
     *)
-        MATHLIB="-lm"
-        INETLIB=""
+        EXTRA_LIBS="-lm"
         ;;
 esac
-AC_SUBST(MATHLIB)
-AC_SUBST(INETLIB)
+AC_SUBST(EXTRA_LIBS)
 
 dnl Check for SDL
 SDL_VERSION=2.0.0
@@ -74,17 +69,6 @@ else
     AC_MSG_ERROR([*** Can't find the SDL_net library
 The SDL_net library can be found at:
 http://www.libsdl.org/projects/SDL_net/
-])
-fi
-
-dnl Check for physfs
-AC_CHECK_LIB(physfs, PHYSFS_init, have_physfs=yes)
-if test x$have_physfs = xyes; then
-    LIBS="$LIBS -lphysfs"
-else
-    AC_MSG_ERROR([*** Can't find the physfs library
-The physfs library can be found at:
-http://icculus.org/physfs
 ])
 fi
 
@@ -128,6 +112,7 @@ Makefile
 game/Makefile
 screenlib/Makefile
 maclib/Makefile
+physfs/Makefile
 utils/Makefile
 Maelstrom.spec
 ])

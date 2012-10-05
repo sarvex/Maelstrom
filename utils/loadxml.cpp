@@ -19,7 +19,7 @@
 /* XML resource loading */
 
 #include <stdio.h>
-#include "physfs.h"
+#include "../physfs/physfs.h"
 #include "loadxml.h"
 
 bool

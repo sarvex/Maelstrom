@@ -18,7 +18,7 @@
 
 #include <stdio.h>
 #include "SDL.h"
-#include "physfs.h"
+#include "../physfs/physfs.h"
 #include "array.h"
 #include "hashtable.h"
 

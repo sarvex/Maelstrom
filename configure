@@ -632,8 +632,7 @@ SDL_CONFIG
 SDL_LIBS
 SDL_CFLAGS
 PKG_CONFIG
-INETLIB
-MATHLIB
+EXTRA_LIBS
 RANLIB
 am__fastdepCXX_FALSE
 am__fastdepCXX_TRUE
@@ -4286,23 +4285,18 @@ esac
 
 case "$target" in
     *-*-mingw32*)
-        MATHLIB=""
-        INETLIB="-lwsock32"
+        EXTRA_LIBS="-lwsock32"
         ;;
     *-*-beos*)
-        MATHLIB=""
-        INETLIB=""
+        EXTRA_LIBS=""
         ;;
     *-*-darwin*)
-        MATHLIB=""
-        INETLIB=""
+        EXTRA_LIBS="-framework CoreFoundation"
         ;;
     *)
-        MATHLIB="-lm"
-        INETLIB=""
+        EXTRA_LIBS="-lm"
         ;;
 esac
-
 
 
 SDL_VERSION=2.0.0
@@ -4862,55 +4856,6 @@ else
     as_fn_error $? "*** Can't find the SDL_net library
 The SDL_net library can be found at:
 http://www.libsdl.org/projects/SDL_net/
-" "$LINENO" 5
-fi
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for PHYSFS_init in -lphysfs" >&5
-$as_echo_n "checking for PHYSFS_init in -lphysfs... " >&6; }
-if ${ac_cv_lib_physfs_PHYSFS_init+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lphysfs  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char PHYSFS_init ();
-int
-main ()
-{
-return PHYSFS_init ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_physfs_PHYSFS_init=yes
-else
-  ac_cv_lib_physfs_PHYSFS_init=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_physfs_PHYSFS_init" >&5
-$as_echo "$ac_cv_lib_physfs_PHYSFS_init" >&6; }
-if test "x$ac_cv_lib_physfs_PHYSFS_init" = xyes; then :
-  have_physfs=yes
-fi
-
-if test x$have_physfs = xyes; then
-    LIBS="$LIBS -lphysfs"
-else
-    as_fn_error $? "*** Can't find the physfs library
-The physfs library can be found at:
-http://icculus.org/physfs
 " "$LINENO" 5
 fi
 
@@ -5513,7 +5458,7 @@ esac
 CXXFLAGS="$CXXFLAGS $CFLAGS"
 
 # Finally create all the generated files
-ac_config_files="$ac_config_files Makefile game/Makefile screenlib/Makefile maclib/Makefile utils/Makefile Maelstrom.spec"
+ac_config_files="$ac_config_files Makefile game/Makefile screenlib/Makefile maclib/Makefile physfs/Makefile utils/Makefile Maelstrom.spec"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -6265,6 +6210,7 @@ do
     "game/Makefile") CONFIG_FILES="$CONFIG_FILES game/Makefile" ;;
     "screenlib/Makefile") CONFIG_FILES="$CONFIG_FILES screenlib/Makefile" ;;
     "maclib/Makefile") CONFIG_FILES="$CONFIG_FILES maclib/Makefile" ;;
+    "physfs/Makefile") CONFIG_FILES="$CONFIG_FILES physfs/Makefile" ;;
     "utils/Makefile") CONFIG_FILES="$CONFIG_FILES utils/Makefile" ;;
     "Maelstrom.spec") CONFIG_FILES="$CONFIG_FILES Maelstrom.spec" ;;
 

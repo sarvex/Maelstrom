@@ -83,7 +83,7 @@ PROGRAMS = $(bin_PROGRAMS) $(noinst_PROGRAMS)
 am_Maelstrom_OBJECTS = mainstub.$(OBJEXT)
 Maelstrom_OBJECTS = $(am_Maelstrom_OBJECTS)
 Maelstrom_DEPENDENCIES = game/libgame.a screenlib/libSDLscreen.a \
-	maclib/libSDLmac.a utils/libutils.a
+	maclib/libSDLmac.a physfs/libphysfs.a utils/libutils.a
 am_MaelstromLobby_OBJECTS = MaelstromLobby.$(OBJEXT)
 MaelstromLobby_OBJECTS = $(am_MaelstromLobby_OBJECTS)
 MaelstromLobby_DEPENDENCIES =
@@ -182,10 +182,10 @@ ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+EXTRA_LIBS = @EXTRA_LIBS@
 GAME_INSTALLDIR = @GAME_INSTALLDIR@
 GREP = @GREP@
 ICONOBJ = @ICONOBJ@
-INETLIB = @INETLIB@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -196,7 +196,6 @@ LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
-MATHLIB = @MATHLIB@
 MKDIR_P = @MKDIR_P@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
@@ -277,12 +276,13 @@ Maelstrom_LDADD = \
 	game/libgame.a		\
 	screenlib/libSDLscreen.a	\
 	maclib/libSDLmac.a		\
+	physfs/libphysfs.a		\
 	utils/libutils.a		\
-	@MATHLIB@ @INETLIB@ @ICONOBJ@
+	@EXTRA_LIBS@ @ICONOBJ@
 
 MaelstromLobby_SOURCES = MaelstromLobby.cpp
-MaelstromLobby_LDADD = @INETLIB@
-SUBDIRS = game screenlib maclib utils
+MaelstromLobby_LDADD = @EXTRA_LIBS@
+SUBDIRS = game screenlib maclib physfs utils
 EXTRA_DIST = \
 	Docs			\
 	COPYING			\

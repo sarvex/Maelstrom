@@ -21,7 +21,7 @@
 */
 
 #include <zlib.h>
-#include "physfs.h"
+#include "../physfs/physfs.h"
 
 #include "Maelstrom_Globals.h"
 #include "netplay.h"

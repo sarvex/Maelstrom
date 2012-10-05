@@ -26,7 +26,7 @@
 
 #include <stdlib.h>	// for qsort()
 
-#include "physfs.h"
+#include "../physfs/physfs.h"
 
 #include "Maelstrom_Globals.h"
 #include "scores.h"
