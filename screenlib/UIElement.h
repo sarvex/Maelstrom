@@ -26,6 +26,8 @@
 #include "UIDrawEngine.h"
 #include "UIFontInterface.h"
 
+class UITexture;
+
 class UIClickCallback
 {
 public:
@@ -157,8 +159,8 @@ public:
 
 	// Image information
 	bool SetImage(const char *file);
-	void SetImage(SDL_Texture *image);
-	SDL_Texture *GetImage() const {
+	void SetImage(UITexture *image);
+	UITexture *GetImage() const {
 		return m_image;
 	}
 	UIArea *GetImageArea() {
@@ -204,7 +206,7 @@ protected:
 	int m_textShadowOffsetX;
 	int m_textShadowOffsetY;
 	Uint32 m_textShadowColor;
-	SDL_Texture *m_image;
+	UITexture *m_image;
 	UIArea m_imageArea;
 	bool m_mouseEnabled;
 	bool m_mouseInside;

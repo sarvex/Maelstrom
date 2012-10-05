@@ -27,6 +27,7 @@
 #include "UIArea.h"
 #include "UIPanel.h"
 #include "UIFontInterface.h"
+#include "UIImageInterface.h"
 #include "UISoundInterface.h"
 #include "UITemplates.h"
 
@@ -35,15 +36,8 @@ class UIBaseElement;
 class UIElement;
 class Prefs;
 
-class UIManager : public UIArea, public UIFontInterface, public UISoundInterface
+class UIManager : public UIArea, public UIFontInterface, public UIImageInterface, public UISoundInterface
 {
-public:
-	enum PATH_TYPE {
-		PATH_TYPE_UI,
-		PATH_TYPE_IMAGE,
-		NUM_PATH_TYPES
-	};
-
 public:
 	UIManager(FrameBuf *screen, Prefs *prefs);
 	virtual ~UIManager();
@@ -58,10 +52,10 @@ public:
 		return &m_templates;
 	}
 
-	void ClearLoadPath(int pathType);
-	void AddLoadPath(int pathType, const char *path);
+	void Shutdown();
+	void ClearLoadPath();
+	void AddLoadPath(const char *path);
 	bool LoadTemplates(const char *file);
-	SDL_Texture *LoadImage(const char *file);
 	UIPanel *LoadPanel(const char *name);
 	UIPanel *GetPanel(const char *name, bool allowLoad = true);
 	template <typename T>
@@ -126,7 +120,7 @@ public:
 protected:
 	FrameBuf *m_screen;
 	Prefs *m_prefs;
-	array<char *> m_loadPath[NUM_PATH_TYPES];
+	array<char *> m_loadPath;
 	UITemplates m_templates;
 	array<UIPanel *> m_panels;
 	array<UIPanel *> m_visible;

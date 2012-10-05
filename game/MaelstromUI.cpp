@@ -62,22 +62,19 @@ MaelstromUI::MaelstromUI(FrameBuf *screen, Prefs *prefs) : UIManager(screen, pre
 	m_strings = hash_create(screen, hash_hash_string, hash_keymatch_string, hash_nuke_string_text);
 
 	/* Load up our UI templates */
-	ClearLoadPath(PATH_TYPE_UI);
-	ClearLoadPath(PATH_TYPE_IMAGE);
+	ClearLoadPath();
 	for (int i = gResolutionIndex; i < gResolutions.length(); ++i) {
 		char path[1024];
 
 		SDL_snprintf(path, sizeof(path), "UI%s", gResolutions[i].path_suffix);
-		AddLoadPath(PATH_TYPE_UI, path);
-
-		SDL_snprintf(path, sizeof(path), "Images%s", gResolutions[i].path_suffix);
-		AddLoadPath(PATH_TYPE_IMAGE, path);
+		AddLoadPath(path);
 	}
 	LoadTemplates("UITemplates.xml");
 }
 
 MaelstromUI::~MaelstromUI()
 {
+	Shutdown();
 	hash_destroy(m_fonts);
 	hash_destroy(m_strings);
 }
@@ -107,7 +104,7 @@ MaelstromUI::GetFont(const char *fontName, int fontSize)
 	return font;
 }
 
-SDL_Texture *
+UITexture *
 MaelstromUI::CreateText(const char *text, const char *fontName, int fontSize, UIFontStyle fontStyle, Uint32 color)
 {
 	MFont *font;
@@ -122,7 +119,7 @@ MaelstromUI::CreateText(const char *text, const char *fontName, int fontSize, UI
 	SDL_snprintf(key, keysize, "%s:%d:%c:%8.8x:%s", fontName, fontSize, '0'+fontStyle, color, text);
 	if (hash_find(m_strings, key, (const void**)&texture)) {
 		SDL_stack_free(key);
-		return texture;
+		return new UITexture(texture);
 	}
 
 	font = GetFont(fontName, fontSize);
@@ -153,14 +150,26 @@ MaelstromUI::CreateText(const char *text, const char *fontName, int fontSize, UI
 	}
 	SDL_stack_free(key);
 
-	return texture;
+	return new UITexture(texture);
 }
 
 void 
-MaelstromUI::FreeText(SDL_Texture *texture)
+MaelstromUI::FreeText(UITexture *texture)
 {
-	/* We'll likely be asked for this again soon, leave it alone */
-	return;
+	/* Leave the SDL texture in the cache */
+	delete texture;
+}
+
+UITexture *
+MaelstromUI::CreateImage(const char *name)
+{
+	return Load_Image(screen, name);
+}
+
+void
+MaelstromUI::FreeImage(UITexture *texture)
+{
+	Free_Texture(screen, texture);
 }
 
 void
@@ -376,16 +385,12 @@ UIDrawEngineIcon::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 		return false;
 	}
 
-	SDL_Texture *image = GetCIcon(m_screen, atoi(attr->value()));
+	UITexture *image = GetCIcon(m_screen, atoi(attr->value()));
 	if (!image) {
 		error("Unable to load icon %d", atoi(attr->value()));
 		return false;
 	}
 
-	UIArea *imageArea = m_element->GetImageArea();
-	if (imageArea->IsAutoSizing()) {
-		imageArea->SetSize(ICON_SIZE, ICON_SIZE);
-	}
 	m_element->SetImage(image);
 
 	return true;
@@ -407,7 +412,7 @@ UIDrawEngineSprite::Load(rapidxml::xml_node<> *node, const UITemplates *template
 		return false;
 	}
 
-	SDL_Texture *image = GetSprite(m_screen, atoi(attr->value()), true);
+	UITexture *image = GetSprite(m_screen, atoi(attr->value()), true);
 	if (!image) {
 		error("Unable to load icon %d", atoi(attr->value()));
 		return false;
@@ -433,7 +438,7 @@ UIDrawEngineTitle::Load(rapidxml::xml_node<> *node, const UITemplates *templates
 		return false;
 	}
 
-	SDL_Texture *image = Load_Title(m_screen, SDL_atoi(attr->value()));
+	UITexture *image = Load_Title(m_screen, SDL_atoi(attr->value()));
 	if (!image) {
 		error("Unable to load icon %d", SDL_atoi(attr->value()));
 		return false;

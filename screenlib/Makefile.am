@@ -27,10 +27,13 @@ libSDLscreen_a_SOURCES =	\
 	UIElementRadio.cpp	\
 	UIElementRadio.h	\
 	UIFontInterface.h	\
+	UIImageInterface.h	\
 	UIManager.cpp		\
 	UIManager.h		\
 	UIPanel.cpp		\
 	UIPanel.h		\
 	UISoundInterface.h	\
 	UITemplates.cpp		\
-	UITemplates.h
+	UITemplates.h		\
+	UITexture.cpp		\
+	UITexture.h

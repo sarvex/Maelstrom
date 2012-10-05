@@ -98,6 +98,7 @@ struct Resolution {
 	int w, h;
 	char path_suffix[32];
 	char file_suffix[32];
+	float scale;
 };
 extern array<Resolution> gResolutions;
 extern int	gResolutionIndex;
@@ -218,8 +219,8 @@ extern BlitPtr	gShrapnel1[MAX_PLAYERS], gShrapnel2[MAX_PLAYERS];
 
 /* -- The prize CICN's */
 
-extern SDL_Texture *gAutoFireIcon, *gAirBrakesIcon, *gMult2Icon, *gMult3Icon;
-extern SDL_Texture *gMult4Icon, *gMult5Icon, *gLuckOfTheIrishIcon;
-extern SDL_Texture *gLongFireIcon, *gTripleFireIcon, *gShieldIcon;
+extern UITexture *gAutoFireIcon, *gAirBrakesIcon, *gMult2Icon, *gMult3Icon;
+extern UITexture *gMult4Icon, *gMult5Icon, *gLuckOfTheIrishIcon;
+extern UITexture *gLongFireIcon, *gTripleFireIcon, *gShieldIcon;
 
 #endif // _Maelstrom_Globals_h

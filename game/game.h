@@ -73,6 +73,6 @@ protected:
 extern void NewGame(void);
 extern void ContinueGame(void);
 extern void GetRenderCoordinates(int &x, int &y);
-extern void RenderSprite(SDL_Texture *sprite, int x, int y, int w, int h);
+extern void RenderSprite(UITexture *sprite, int x, int y, int w, int h);
 
 #endif // _game_h

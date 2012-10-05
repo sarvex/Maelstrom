@@ -124,10 +124,10 @@ UIDrawEngine::OnDraw()
 				m_element->GetCurrentColor());
 	}
 
-	SDL_Texture *image = m_element->GetImage();
+	UITexture *image = m_element->GetImage();
 	if (image) {
 		UIArea *area = m_element->GetImageArea();
-		m_screen->QueueBlit(image, area->X(), area->Y(), area->Width(), area->Height(), NOCLIP);
+		m_screen->QueueBlit(image->Texture(), area->X(), area->Y(), area->Width(), area->Height(), NOCLIP);
 	}
 
 	if (m_textImage) {
@@ -137,14 +137,14 @@ UIDrawEngine::OnDraw()
 			Uint8 r, g, b;
 
 			m_screen->GetRGB(m_element->GetTextShadowColor(), &r, &g, &b);
-			SDL_SetTextureColorMod(m_textImage, r, g, b);
+			SDL_SetTextureColorMod(m_textImage->Texture(), r, g, b);
 
-			m_screen->QueueBlit(m_textImage, area->X()+x, area->Y()+y, NOCLIP);
+			m_screen->QueueBlit(m_textImage->Texture(), area->X()+x, area->Y()+y, NOCLIP);
 
 			m_screen->GetRGB(m_element->GetCurrentColor(), &r, &g, &b);
-			SDL_SetTextureColorMod(m_textImage, r, g, b);
+			SDL_SetTextureColorMod(m_textImage->Texture(), r, g, b);
 		}
-		m_screen->QueueBlit(m_textImage, area->X(), area->Y(), NOCLIP);
+		m_screen->QueueBlit(m_textImage->Texture(), area->X(), area->Y(), NOCLIP);
 	}
 }
 
@@ -185,8 +185,8 @@ UIDrawEngine::OnTextChanged()
 						m_element->GetFontStyle(),
 						m_element->GetCurrentColor());
 
-		w = m_screen->GetImageWidth(m_textImage);
-		h = m_screen->GetImageHeight(m_textImage);
+		w = m_textImage->Width();
+		h = m_textImage->Height();
 		m_element->GetTextArea()->AutoSize(w, h);
 		m_element->AutoSize(w, h);
 	} else {
@@ -198,12 +198,12 @@ UIDrawEngine::OnTextChanged()
 void
 UIDrawEngine::OnImageChanged()
 {
-	SDL_Texture *image = m_element->GetImage();
+	UITexture *image = m_element->GetImage();
 
 	if (image) {
 		int w, h;
-		w = m_screen->GetImageWidth(image);
-		h = m_screen->GetImageHeight(image);
+		w = image->Width();
+		h = image->Height();
 		m_element->GetImageArea()->AutoSize(w, h);
 		m_element->AutoSize(w, h);
 	}

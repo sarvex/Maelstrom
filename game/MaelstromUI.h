@@ -36,8 +36,14 @@ public:
 	//
 	// UIFontInterface
 	//
-	virtual SDL_Texture *CreateText(const char *text, const char *fontName, int fontSize, UIFontStyle fontStyle, Uint32 color);
-	virtual void FreeText(SDL_Texture *texture);
+	virtual UITexture *CreateText(const char *text, const char *fontName, int fontSize, UIFontStyle fontStyle, Uint32 color);
+	virtual void FreeText(UITexture *texture);
+
+	//
+	// UIImageInterface
+	//
+	virtual UITexture *CreateImage(const char *name);
+	virtual void FreeImage(UITexture *texture);
 
 	//
 	// UISoundInterface

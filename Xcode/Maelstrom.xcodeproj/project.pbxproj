@@ -57,6 +57,7 @@
 		AA4088F414D498CE00EB2196 /* SDL2.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = AA4088EC14D4987200EB2196 /* SDL2.framework */; };
 		AA4088F514D498CE00EB2196 /* SDL2_net.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = AA4088EB14D4987200EB2196 /* SDL2_net.framework */; };
 		AA40890614D49FFE00EB2196 /* Maelstrom.icns in Resources */ = {isa = PBXBuildFile; fileRef = AA40890514D49FFE00EB2196 /* Maelstrom.icns */; };
+		AA439032161EBB5800FE5F41 /* UITexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA439030161EBB5800FE5F41 /* UITexture.cpp */; };
 		AA8B18F2161C0B59005318A4 /* SDL2_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA8B18F1161C0B59005318A4 /* SDL2_image.framework */; };
 		AA8B1900161C1134005318A4 /* continue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA8B18FA161C1134005318A4 /* continue.cpp */; };
 		AA8B1901161C1134005318A4 /* features.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA8B18FC161C1134005318A4 /* features.cpp */; };
@@ -197,6 +198,9 @@
 		AA4088EC14D4987200EB2196 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = /Library/Frameworks/SDL2.framework; sourceTree = "<absolute>"; };
 		AA4088EF14D4989E00EB2196 /* physfs.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = physfs.framework; path = Frameworks/physfs.framework; sourceTree = SOURCE_ROOT; };
 		AA40890514D49FFE00EB2196 /* Maelstrom.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Maelstrom.icns; sourceTree = SOURCE_ROOT; };
+		AA43902F161EBB5800FE5F41 /* UIImageInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIImageInterface.h; sourceTree = "<group>"; };
+		AA439030161EBB5800FE5F41 /* UITexture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UITexture.cpp; sourceTree = "<group>"; };
+		AA439031161EBB5800FE5F41 /* UITexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UITexture.h; sourceTree = "<group>"; };
 		AA8B18F1161C0B59005318A4 /* SDL2_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_image.framework; path = /Library/Frameworks/SDL2_image.framework; sourceTree = "<absolute>"; };
 		AA8B18FA161C1134005318A4 /* continue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = continue.cpp; sourceTree = "<group>"; };
 		AA8B18FB161C1134005318A4 /* continue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = continue.h; sourceTree = "<group>"; };
@@ -399,6 +403,7 @@
 				AA40881414D493A800EB2196 /* UIElementRadio.cpp */,
 				AA40881514D493A800EB2196 /* UIElementRadio.h */,
 				AA40881614D493A800EB2196 /* UIFontInterface.h */,
+				AA43902F161EBB5800FE5F41 /* UIImageInterface.h */,
 				AA40881714D493A800EB2196 /* UIManager.cpp */,
 				AA40881814D493A800EB2196 /* UIManager.h */,
 				AA40881914D493A800EB2196 /* UIPanel.cpp */,
@@ -406,6 +411,8 @@
 				AA40881B14D493A800EB2196 /* UISoundInterface.h */,
 				AA40881C14D493A800EB2196 /* UITemplates.cpp */,
 				AA40881D14D493A800EB2196 /* UITemplates.h */,
+				AA439030161EBB5800FE5F41 /* UITexture.cpp */,
+				AA439031161EBB5800FE5F41 /* UITexture.h */,
 			);
 			name = screenlib;
 			path = ../screenlib;
@@ -587,6 +594,7 @@
 				AA8B1901161C1134005318A4 /* features.cpp in Sources */,
 				AA8B1902161C1134005318A4 /* gameover.cpp in Sources */,
 				AA8B1905161C1188005318A4 /* loadxml.cpp in Sources */,
+				AA439032161EBB5800FE5F41 /* UITexture.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -749,6 +757,7 @@
 				AA8B1923161C343E005318A4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

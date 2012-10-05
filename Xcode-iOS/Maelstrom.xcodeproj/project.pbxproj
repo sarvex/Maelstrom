@@ -19,6 +19,7 @@
 		AA438FDC161D59A700FE5F41 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = AA438FDB161D59A700FE5F41 /* Default-568h@2x.png */; };
 		AA438FDE161D59C700FE5F41 /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = AA438FDD161D59C700FE5F41 /* Default-Landscape~ipad.png */; };
 		AA438FE0161D5A4200FE5F41 /* Default-Landscape@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = AA438FDF161D5A4200FE5F41 /* Default-Landscape@2x~ipad.png */; };
+		AA439029161EBAA800FE5F41 /* UITexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA439027161EBAA800FE5F41 /* UITexture.cpp */; };
 		AA579DCD161BFFCA005F809B /* app-icon57px.png in Resources */ = {isa = PBXBuildFile; fileRef = AA579DCC161BFFCA005F809B /* app-icon57px.png */; };
 		AA579DCF161BFFE4005F809B /* app-icon72px.png in Resources */ = {isa = PBXBuildFile; fileRef = AA579DCE161BFFE4005F809B /* app-icon72px.png */; };
 		AA579DD3161C0065005F809B /* app-icon144px.png in Resources */ = {isa = PBXBuildFile; fileRef = AA579DD2161C0065005F809B /* app-icon144px.png */; };
@@ -210,6 +211,9 @@
 		AA438FDB161D59A700FE5F41 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "Xcode-iOS/Default-568h@2x.png"; sourceTree = "<group>"; };
 		AA438FDD161D59C700FE5F41 /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-Landscape~ipad.png"; path = "Xcode-iOS/Default-Landscape~ipad.png"; sourceTree = "<group>"; };
 		AA438FDF161D5A4200FE5F41 /* Default-Landscape@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-Landscape@2x~ipad.png"; path = "Xcode-iOS/Default-Landscape@2x~ipad.png"; sourceTree = "<group>"; };
+		AA439026161EBAA800FE5F41 /* UIImageInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIImageInterface.h; sourceTree = "<group>"; };
+		AA439027161EBAA800FE5F41 /* UITexture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UITexture.cpp; sourceTree = "<group>"; };
+		AA439028161EBAA800FE5F41 /* UITexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UITexture.h; sourceTree = "<group>"; };
 		AA579DCC161BFFCA005F809B /* app-icon57px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "app-icon57px.png"; path = "Xcode-iOS/app-icon57px.png"; sourceTree = "<group>"; };
 		AA579DCE161BFFE4005F809B /* app-icon72px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "app-icon72px.png"; path = "Xcode-iOS/app-icon72px.png"; sourceTree = "<group>"; };
 		AA579DD2161C0065005F809B /* app-icon144px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "app-icon144px.png"; path = "Xcode-iOS/app-icon144px.png"; sourceTree = "<group>"; };
@@ -536,6 +540,7 @@
 				AA97813F1576A00100472542 /* UIElementRadio.cpp */,
 				AA9781401576A00100472542 /* UIElementRadio.h */,
 				AA9781411576A00100472542 /* UIFontInterface.h */,
+				AA439026161EBAA800FE5F41 /* UIImageInterface.h */,
 				AA9781421576A00100472542 /* UIManager.cpp */,
 				AA9781431576A00100472542 /* UIManager.h */,
 				AA9781441576A00100472542 /* UIPanel.cpp */,
@@ -543,6 +548,8 @@
 				AA9781461576A00100472542 /* UISoundInterface.h */,
 				AA9781471576A00100472542 /* UITemplates.cpp */,
 				AA9781481576A00100472542 /* UITemplates.h */,
+				AA439027161EBAA800FE5F41 /* UITexture.cpp */,
+				AA439028161EBAA800FE5F41 /* UITexture.h */,
 			);
 			path = screenlib;
 			sourceTree = "<group>";
@@ -922,6 +929,7 @@
 				AABDBE1F15C8A6B200C3E936 /* continue.cpp in Sources */,
 				AABDBE2015C8A6B200C3E936 /* features.cpp in Sources */,
 				AABDBE2615C8A6F300C3E936 /* loadxml.cpp in Sources */,
+				AA439029161EBAA800FE5F41 /* UITexture.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

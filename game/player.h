@@ -192,8 +192,8 @@ extern Player *gPlayers[MAX_PLAYERS];
 extern Uint8   gPlayerColors[MAX_PLAYERS][3];
 
 /* Their shots! */
-extern SDL_Texture *gPlayerShot;
-extern SDL_Texture *gEnemyShot;
+extern UITexture *gPlayerShot;
+extern UITexture *gEnemyShot;
 
 /* Initialize the player sprites */
 int InitPlayerSprites();

@@ -28,7 +28,7 @@
 #include "../utils/physfsrwops.h"
 
 
-SDL_Texture *Load_Texture(FrameBuf *screen, const char *folder, const char *name)
+UITexture *Load_Texture(FrameBuf *screen, const char *folder, const char *name)
 {
 	static const char *extensions[] = {
 		"png",
@@ -45,33 +45,39 @@ SDL_Texture *Load_Texture(FrameBuf *screen, const char *folder, const char *name
 			if (surface) {
 				SDL_Texture *texture = screen->LoadImage(surface);
 				SDL_FreeSurface(surface);
-				return texture;
+				return new UITexture(texture, gResolutions[i].scale);;
 			}
 		}
 	}
 	return NULL;
 }
 
-SDL_Texture *Load_Image(FrameBuf *screen, const char *name)
+void Free_Texture(FrameBuf *screen, UITexture *texture)
+{
+	screen->FreeImage(texture->Texture());
+	delete texture;
+}
+
+UITexture *Load_Image(FrameBuf *screen, const char *name)
 {
 	return Load_Texture(screen, "Images", name);
 }
 
-SDL_Texture *Load_Title(FrameBuf *screen, int title_id)
+UITexture *Load_Title(FrameBuf *screen, int title_id)
 {
 	char name[256];
 	SDL_snprintf(name, sizeof(name), "Maelstrom_Titles#%d", title_id);
 	return Load_Texture(screen, "Images", name);
 }
 
-SDL_Texture *GetCIcon(FrameBuf *screen, short id)
+UITexture *GetCIcon(FrameBuf *screen, short id)
 {
 	char name[256];
 	SDL_snprintf(name, sizeof(name), "Maelstrom_Icon#%d", id);
 	return Load_Texture(screen, "Images", name);
 }
 
-SDL_Texture *GetSprite(FrameBuf *screen, short id, bool large)
+UITexture *GetSprite(FrameBuf *screen, short id, bool large)
 {
 	char name[256];
 	SDL_snprintf(name, sizeof(name), "Maelstrom_%s#%d", large ? "icl" : "ics", id);

@@ -1,7 +1,6 @@
 <Panel cursor="false" enterSound="113" delegate="GameOverPanel">
 	<Elements>
 		<Title name="image" id="128">
-			<ImageArea><Size w="294" h="56"/></ImageArea>
 			<Anchor anchorFrom="CENTER" anchorTo="CENTER" y="-80"/>
 		</Title>
 

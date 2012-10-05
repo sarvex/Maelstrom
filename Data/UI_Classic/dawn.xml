@@ -3,7 +3,6 @@
 	<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" x="164" y="77"/>
 	<Elements>
 		<Icon name="icon" id="103">
-			<ImageArea><Size w="32" h="32"/></ImageArea>
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" x="19" y="19"/>
 		</Icon>
 		<DialogLabel name="line1" text="No eternal reward will forgive us">

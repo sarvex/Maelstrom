@@ -22,7 +22,9 @@
 #ifndef _UIFontInterface_h
 #define _UIFontInterface_h
 
-#include "SDL.h"
+#include "SDL_types.h"
+
+#include "UITexture.h"
 
 enum UIFontStyle {
 	UIFONT_STYLE_NORMAL,
@@ -34,8 +36,8 @@ enum UIFontStyle {
 class UIFontInterface
 {
 public:
-	virtual SDL_Texture *CreateText(const char *text, const char *fontName, int fontSize, UIFontStyle fontStyle, Uint32 color) = 0;
-	virtual void FreeText(SDL_Texture *texture) = 0;
+	virtual UITexture *CreateText(const char *text, const char *fontName, int fontSize, UIFontStyle fontStyle, Uint32 color) = 0;
+	virtual void FreeText(UITexture *texture) = 0;
 };
 
 #endif // _UIFontInterface_h

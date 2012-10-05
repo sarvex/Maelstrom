@@ -28,9 +28,9 @@
 // it on the screen.
 
 class FrameBuf;
-struct SDL_Texture;
 class UIManager;
 class UIElement;
+class UITexture;
 class UITemplates;
 
 class UIDrawEngine
@@ -88,7 +88,7 @@ protected:
 	FrameBuf *m_screen;
 	UIManager *m_ui;
 	UIElement *m_element;
-	SDL_Texture *m_textImage;
+	UITexture *m_textImage;
 
 protected:
 	bool LoadBool(rapidxml::xml_node<> *node, const char *name, bool &value);

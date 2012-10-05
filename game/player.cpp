@@ -649,13 +649,13 @@ Player::BlitSprite(void)
 
 	/* Draw our ship */
 	if (Ghost) {
-		SDL_SetTextureAlphaMod(myblit->sprite[phase], 0x80);
+		SDL_SetTextureAlphaMod(myblit->sprite[phase]->Texture(), 0x80);
 	}
 
 	Object::BlitSprite();
 
 	if (Ghost) {
-		SDL_SetTextureAlphaMod(myblit->sprite[phase], 0xFF);
+		SDL_SetTextureAlphaMod(myblit->sprite[phase]->Texture(), 0xFF);
 	}
 }
 void 
@@ -761,8 +761,8 @@ Player::KillShot(int index)
 
 /* The Shot sprites for the Shinobi and Player */
 
-SDL_Texture *gPlayerShot;
-SDL_Texture *gEnemyShot;
+UITexture *gPlayerShot;
+UITexture *gEnemyShot;
 
 Uint8 gPlayerColors[MAX_PLAYERS][3] = {
 	{ 0x00, 0x00, 0xFF },		/* Player 1 */

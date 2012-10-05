@@ -1,8 +1,6 @@
 <Panel template="FramedPanel" enterSound="111" leaveSound="123">
 	<Elements>
-		<Title name="image" id="130">
-			<ImageArea><Size w="640" h="480"/></ImageArea>
-		</Title>
+		<Title name="image" id="130"/>
 
 		<!-- Loading Bar -->
 		<Rectangle>

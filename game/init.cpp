@@ -76,9 +76,9 @@ BlitPtr	gThrust1, gThrust2, gShrapnel1[MAX_PLAYERS], gShrapnel2[MAX_PLAYERS];
 
 /* -- The prize CICN's */
 
-SDL_Texture *gAutoFireIcon, *gAirBrakesIcon, *gMult2Icon, *gMult3Icon;
-SDL_Texture *gMult4Icon, *gMult5Icon, *gLuckOfTheIrishIcon, *gLongFireIcon;
-SDL_Texture *gTripleFireIcon, *gShieldIcon;
+UITexture *gAutoFireIcon, *gAirBrakesIcon, *gMult2Icon, *gMult3Icon;
+UITexture *gMult4Icon, *gMult5Icon, *gLuckOfTheIrishIcon, *gLongFireIcon;
+UITexture *gTripleFireIcon, *gShieldIcon;
 
 // Local functions used in this file.
 static void DrawLoadBar(int stage);
@@ -152,6 +152,16 @@ static bool InitResolutions(int &w, int &h)
 			return false;;
 		}
 		SDL_strlcpy(resolution.file_suffix, attr->value(), sizeof(resolution.file_suffix));
+
+		attr = node->first_attribute("scale", 0, false);
+		if (!attr) {
+			error("Resolution missing 'scale' attribute in resolutions.xml\n");
+			delete[] buffer;
+			return false;;
+		}
+		int numerator, denominator;
+		SDL_sscanf(attr->value(), "%d/%d", &numerator, &denominator);
+		resolution.scale = ((float)numerator/denominator);
 
 		gResolutions.add(resolution);
 	}

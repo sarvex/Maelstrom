@@ -69,7 +69,7 @@ UIElement::~UIElement()
 		SDL_free(m_textBinding);
 	}
 	if (m_image) {
-		m_screen->FreeImage(m_image);
+		m_ui->FreeImage(m_image);
 	}
 	if (m_clickCallback) {
 		delete m_clickCallback;
@@ -462,9 +462,9 @@ UIElement::SetTextShadowColor(Uint32 color)
 bool
 UIElement::SetImage(const char *file)
 {
-	SDL_Texture *image;
+	UITexture *image;
 
-	image = m_ui->LoadImage(file);
+	image = m_ui->CreateImage(file);
 	if (!image) {
 		return false;
 	}
@@ -475,10 +475,10 @@ UIElement::SetImage(const char *file)
 }
 
 void
-UIElement::SetImage(SDL_Texture *image)
+UIElement::SetImage(UITexture *image)
 {
 	if (m_image) {
-		m_screen->FreeImage(m_image);
+		m_ui->FreeImage(m_image);
 	}
 	m_image = image;
 
