@@ -70,9 +70,9 @@ AR = ar
 ARFLAGS = cru
 libgame_a_AR = $(AR) $(ARFLAGS)
 libgame_a_LIBADD =
-am_libgame_a_OBJECTS = MacDialog.$(OBJEXT) MaelstromUI.$(OBJEXT) \
-	about.$(OBJEXT) continue.$(OBJEXT) controls.$(OBJEXT) \
-	fastrand.$(OBJEXT) features.$(OBJEXT) game.$(OBJEXT) \
+am_libgame_a_OBJECTS = MacDialog.$(OBJEXT) MaelstromFeatures.$(OBJEXT) \
+	MaelstromUI.$(OBJEXT) about.$(OBJEXT) continue.$(OBJEXT) \
+	controls.$(OBJEXT) fastrand.$(OBJEXT) game.$(OBJEXT) \
 	gameinfo.$(OBJEXT) gameover.$(OBJEXT) init.$(OBJEXT) \
 	load.$(OBJEXT) lobby.$(OBJEXT) main.$(OBJEXT) make.$(OBJEXT) \
 	myerror.$(OBJEXT) netplay.$(OBJEXT) object.$(OBJEXT) \
@@ -217,6 +217,8 @@ libgame_a_SOURCES = \
 	MacDialog.cpp		\
 	MacDialog.h		\
 	Maelstrom.h		\
+	MaelstromFeatures.cpp	\
+	MaelstromFeatures.h	\
 	MaelstromUI.cpp		\
 	MaelstromUI.h		\
 	Maelstrom_Globals.h	\
@@ -229,8 +231,6 @@ libgame_a_SOURCES = \
 	controls.h		\
 	fastrand.cpp		\
 	fastrand.h		\
-	features.cpp		\
-	features.h		\
 	game.cpp		\
 	game.h			\
 	gameinfo.cpp		\
@@ -316,12 +316,12 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MacDialog.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MaelstromFeatures.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MaelstromUI.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/about.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/continue.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/controls.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fastrand.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/features.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/game.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gameinfo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gameover.Po@am__quote@
