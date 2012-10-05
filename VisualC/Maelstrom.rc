@@ -1,4 +1,4 @@
-//Microsoft Developer Studio generated resource script.
+// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -21,7 +21,6 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
 #endif //_WIN32
 
-#ifndef _MAC
 /////////////////////////////////////////////////////////////////////////////
 //
 // Version
@@ -44,14 +43,13 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "CompanyName", "\0"
-            VALUE "FileDescription", "Maelstrom\0"
-            VALUE "FileVersion", "4, 0, 0, 0\0"
-            VALUE "InternalName", "Maelstrom\0"
-            VALUE "LegalCopyright", "Copyright Â© 2011 Sam Lantinga\0"
-            VALUE "OriginalFilename", "Maelstrom.exe\0"
-            VALUE "ProductName", "Maelstrom\0"
-            VALUE "ProductVersion", "4, 0, 0, 0\0"
+            VALUE "FileDescription", "Maelstrom"
+            VALUE "FileVersion", "4, 0, 0, 0"
+            VALUE "InternalName", "Maelstrom"
+            VALUE "LegalCopyright", "Copyright © 2012 Sam Lantinga"
+            VALUE "OriginalFilename", "Maelstrom.exe"
+            VALUE "ProductName", "Maelstrom"
+            VALUE "ProductVersion", "4, 0, 0, 0"
         END
     END
     BLOCK "VarFileInfo"
@@ -60,8 +58,6 @@ BEGIN
     END
 END
 
-#endif    // !_MAC
-
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -69,18 +65,18 @@ END
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE DISCARDABLE 
+1 TEXTINCLUDE 
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE DISCARDABLE 
+2 TEXTINCLUDE 
 BEGIN
     "#include ""afxres.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE DISCARDABLE 
+3 TEXTINCLUDE 
 BEGIN
     "\r\n"
     "\0"
@@ -96,7 +92,7 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-MAELSTROM               ICON    DISCARDABLE     "Maelstrom.ico"
+MAELSTROM               ICON                    "Maelstrom.ico"
 #endif    // English (U.S.) resources
 /////////////////////////////////////////////////////////////////////////////
 

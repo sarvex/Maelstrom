@@ -1,4 +1,7 @@
 /*
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2012 Sam Lantinga <slouken@libsdl.org>
+
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
   arising from the use of this software.
@@ -16,27 +19,20 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-#ifndef _rapidxml_h
-#define _rapidxml_h
+/**
+ *  \file SDL_opengles.h
+ *  
+ *  This is a simple file to encapsulate the OpenGL ES 1.X API headers.
+ */
 
-#ifndef USE_STL
-#define RAPIDXML_NO_STDLIB
-
-#include <assert.h>
-
-namespace std
-{
-	typedef ::size_t size_t;
-}
-
-#ifdef _MSC_VER
-// warning C4291: 'void *operator new(size_t,void *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
-#pragma warning(disable:4291)
+#ifdef __IPHONEOS__
+#include <OpenGLES/ES1/gl.h>
+#include <OpenGLES/ES1/glext.h>
+#else
+#include <GLES/gl.h>
+#include <GLES/glext.h>
 #endif
-extern inline void * operator new (size_t, void * p) throw() { return p ; }
 
-#endif // !USE_STL
-
-#include "rapidxml.hpp"
-
-#endif // _rapidxml_h
+#ifndef APIENTRY
+#define APIENTRY
+#endif
