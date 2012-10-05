@@ -23,6 +23,7 @@
 #define RAPIDXML_NO_STDLIB
 
 #include <assert.h>
+#include <sys/types.h>
 
 namespace std
 {

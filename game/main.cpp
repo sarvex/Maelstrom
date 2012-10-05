@@ -33,13 +33,13 @@
 /* ------------------------------------------------------------- */
 
 #include "Maelstrom_Globals.h"
+#include "MaelstromFeatures.h"
 #include "load.h"
 #include "init.h"
 #include "fastrand.h"
 #include "about.h"
 #include "game.h"
 #include "netplay.h"
-#include "features.h"
 #include "main.h"
 
 #include "../screenlib/UIDialog.h"

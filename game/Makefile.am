@@ -5,6 +5,8 @@ libgame_a_SOURCES =		\
 	MacDialog.cpp		\
 	MacDialog.h		\
 	Maelstrom.h		\
+	MaelstromFeatures.cpp	\
+	MaelstromFeatures.h	\
 	MaelstromUI.cpp		\
 	MaelstromUI.h		\
 	Maelstrom_Globals.h	\
@@ -17,8 +19,6 @@ libgame_a_SOURCES =		\
 	controls.h		\
 	fastrand.cpp		\
 	fastrand.h		\
-	features.cpp		\
-	features.h		\
 	game.cpp		\
 	game.h			\
 	gameinfo.cpp		\

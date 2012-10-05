@@ -30,6 +30,7 @@
 		AA439071161EBE1800FE5F41 /* platform_posix.c in Sources */ = {isa = PBXBuildFile; fileRef = AA439064161EBE1800FE5F41 /* platform_posix.c */; };
 		AA439072161EBE1800FE5F41 /* platform_unix.c in Sources */ = {isa = PBXBuildFile; fileRef = AA439065161EBE1800FE5F41 /* platform_unix.c */; };
 		AA439073161EBE1800FE5F41 /* platform_windows.c in Sources */ = {isa = PBXBuildFile; fileRef = AA439066161EBE1800FE5F41 /* platform_windows.c */; };
+		AA43907B161ED5CB00FE5F41 /* MaelstromFeatures.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA439079161ED5CB00FE5F41 /* MaelstromFeatures.cpp */; };
 		AA579DCD161BFFCA005F809B /* app-icon57px.png in Resources */ = {isa = PBXBuildFile; fileRef = AA579DCC161BFFCA005F809B /* app-icon57px.png */; };
 		AA579DCF161BFFE4005F809B /* app-icon72px.png in Resources */ = {isa = PBXBuildFile; fileRef = AA579DCE161BFFE4005F809B /* app-icon72px.png */; };
 		AA579DD3161C0065005F809B /* app-icon144px.png in Resources */ = {isa = PBXBuildFile; fileRef = AA579DD2161C0065005F809B /* app-icon144px.png */; };
@@ -79,7 +80,6 @@
 		AA9781BA1576A03700472542 /* scores.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA9781A21576A03700472542 /* scores.cpp */; };
 		AA9781BC1576A14D00472542 /* Maelstrom_Data.zip in Resources */ = {isa = PBXBuildFile; fileRef = AA9781BB1576A14D00472542 /* Maelstrom_Data.zip */; };
 		AABDBE1F15C8A6B200C3E936 /* continue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AABDBE1B15C8A6B200C3E936 /* continue.cpp */; };
-		AABDBE2015C8A6B200C3E936 /* features.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AABDBE1D15C8A6B200C3E936 /* features.cpp */; };
 		AABDBE2615C8A6F300C3E936 /* loadxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AABDBE2415C8A6F300C3E936 /* loadxml.cpp */; };
 		AAC0415B160E811F00E22BC5 /* libSDL2_image.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AAC0415A160E809F00E22BC5 /* libSDL2_image.a */; };
 		AAC04173160E837E00E22BC5 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAC04172160E837E00E22BC5 /* ImageIO.framework */; };
@@ -239,6 +239,8 @@
 		AA439064161EBE1800FE5F41 /* platform_posix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = platform_posix.c; sourceTree = "<group>"; };
 		AA439065161EBE1800FE5F41 /* platform_unix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = platform_unix.c; sourceTree = "<group>"; };
 		AA439066161EBE1800FE5F41 /* platform_windows.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = platform_windows.c; sourceTree = "<group>"; };
+		AA439079161ED5CB00FE5F41 /* MaelstromFeatures.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MaelstromFeatures.cpp; sourceTree = "<group>"; };
+		AA43907A161ED5CB00FE5F41 /* MaelstromFeatures.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MaelstromFeatures.h; sourceTree = "<group>"; };
 		AA579DCC161BFFCA005F809B /* app-icon57px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "app-icon57px.png"; path = "Xcode-iOS/app-icon57px.png"; sourceTree = "<group>"; };
 		AA579DCE161BFFE4005F809B /* app-icon72px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "app-icon72px.png"; path = "Xcode-iOS/app-icon72px.png"; sourceTree = "<group>"; };
 		AA579DD2161C0065005F809B /* app-icon144px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "app-icon144px.png"; path = "Xcode-iOS/app-icon144px.png"; sourceTree = "<group>"; };
@@ -346,8 +348,6 @@
 		AA9781BF1576A3BD00472542 /* physfs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = physfs.h; sourceTree = "<group>"; };
 		AABDBE1B15C8A6B200C3E936 /* continue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = continue.cpp; sourceTree = "<group>"; };
 		AABDBE1C15C8A6B200C3E936 /* continue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = continue.h; sourceTree = "<group>"; };
-		AABDBE1D15C8A6B200C3E936 /* features.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = features.cpp; sourceTree = "<group>"; };
-		AABDBE1E15C8A6B200C3E936 /* features.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = features.h; sourceTree = "<group>"; };
 		AABDBE2415C8A6F300C3E936 /* loadxml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = loadxml.cpp; sourceTree = "<group>"; };
 		AABDBE2515C8A6F300C3E936 /* loadxml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = loadxml.h; sourceTree = "<group>"; };
 		AAC04154160E808500E22BC5 /* SDL_image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_image.h; sourceTree = "<group>"; };
@@ -632,8 +632,6 @@
 				AA9781791576A03700472542 /* controls.h */,
 				AA97817A1576A03700472542 /* fastrand.cpp */,
 				AA97817B1576A03700472542 /* fastrand.h */,
-				AABDBE1D15C8A6B200C3E936 /* features.cpp */,
-				AABDBE1E15C8A6B200C3E936 /* features.h */,
 				AA97817C1576A03700472542 /* game.cpp */,
 				AA97817D1576A03700472542 /* game.h */,
 				AA97817E1576A03700472542 /* gameinfo.cpp */,
@@ -650,6 +648,8 @@
 				AA9781871576A03700472542 /* MacDialog.h */,
 				AA9781881576A03700472542 /* Maelstrom.h */,
 				AA9781891576A03700472542 /* Maelstrom_Globals.h */,
+				AA439079161ED5CB00FE5F41 /* MaelstromFeatures.cpp */,
+				AA43907A161ED5CB00FE5F41 /* MaelstromFeatures.h */,
 				AA97818A1576A03700472542 /* MaelstromUI.cpp */,
 				AA97818B1576A03700472542 /* MaelstromUI.h */,
 				AA97818C1576A03700472542 /* main.cpp */,
@@ -975,7 +975,6 @@
 				AA7557AB1595062C00BBD41B /* Maelstrom_GameKit.mm in Sources */,
 				AACF51001598BC2C00585701 /* gameover.cpp in Sources */,
 				AABDBE1F15C8A6B200C3E936 /* continue.cpp in Sources */,
-				AABDBE2015C8A6B200C3E936 /* features.cpp in Sources */,
 				AABDBE2615C8A6F300C3E936 /* loadxml.cpp in Sources */,
 				AA439029161EBAA800FE5F41 /* UITexture.cpp in Sources */,
 				AA439067161EBE1800FE5F41 /* archiver_dir.c in Sources */,
@@ -988,6 +987,7 @@
 				AA439071161EBE1800FE5F41 /* platform_posix.c in Sources */,
 				AA439072161EBE1800FE5F41 /* platform_unix.c in Sources */,
 				AA439073161EBE1800FE5F41 /* platform_windows.c in Sources */,
+				AA43907B161ED5CB00FE5F41 /* MaelstromFeatures.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

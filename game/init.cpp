@@ -27,13 +27,13 @@
 #include <stdlib.h>
 
 #include "Maelstrom_Globals.h"
+#include "MaelstromFeatures.h"
 #include "load.h"
 #include "init.h"
 #include "game.h"
 #include "player.h"
 #include "colortable.h"
 #include "fastrand.h"
-#include "features.h"
 #include "MaelstromUI.h"
 #include "../screenlib/UIElement.h"
 

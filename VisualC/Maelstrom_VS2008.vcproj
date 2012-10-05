@@ -224,14 +224,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\game\features.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\game\features.h"
-					>
-				</File>
-				<File
 					RelativePath="..\game\game.cpp"
 					>
 				</File>
@@ -293,6 +285,14 @@
 				</File>
 				<File
 					RelativePath="..\game\Maelstrom_Globals.h"
+					>
+				</File>
+				<File
+					RelativePath="..\game\MaelstromFeatures.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\game\MaelstromFeatures.h"
 					>
 				</File>
 				<File
