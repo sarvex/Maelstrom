@@ -199,6 +199,14 @@ UIBaseElement::HandleEvent(const SDL_Event &event)
 	return false;
 }
 
+void
+UIBaseElement::Action(UIBaseElement *sender, const char *action)
+{
+	if (m_parent) {
+		m_parent->Action(sender, action);
+	}
+}
+
 UIBaseElement *
 UIBaseElement::CreateElement(const char *name)
 {

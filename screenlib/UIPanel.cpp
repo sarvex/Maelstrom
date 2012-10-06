@@ -173,3 +173,19 @@ UIPanel::HandleEvent(const SDL_Event &event)
 	}
 	return false;
 }
+
+void
+UIPanel::Action(UIBaseElement *sender, const char *action)
+{
+	if (m_delegate) {
+		if (m_delegate->OnAction(sender, action)) {
+			return;
+		}
+	}
+
+	// Dialogs pass actions to their parents
+	UIPanel *panel = m_ui->GetFullscreenPanel();
+	if (panel && panel != this) {
+		panel->Action(sender, action);
+	}
+}

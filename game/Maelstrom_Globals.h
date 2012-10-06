@@ -81,7 +81,6 @@ typedef Uint8 Bool;
 extern void   PrintUsage(void);
 extern int    DrawText(int x, int y, const char *text, MFont *font, Uint8 style,
 						Uint8 R, Uint8 G, Uint8 B);
-extern void   Message(const char *message);
 extern void   DelayFrame(void);
 
 // Functions from init.cpp

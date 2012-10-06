@@ -50,6 +50,7 @@ UIElement::UIElement(UIBaseElement *parent, const char *name, UIDrawEngine *draw
 	m_mouseInside = false;
 	m_mousePressed = false;
 	m_clickCallback = NULL;
+	m_action = NULL;
 
 	SetDrawEngine(drawEngine);
 }
@@ -74,6 +75,9 @@ UIElement::~UIElement()
 	if (m_clickCallback) {
 		delete m_clickCallback;
 	}
+	if (m_action) {
+		SDL_free(m_action);
+	}
 }
 
 bool
@@ -87,6 +91,8 @@ UIElement::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 	}
 
 	LoadString(node, "name", m_name);
+
+	LoadString(node, "action", m_action);
 
 	bool border;
 	if (LoadBool(node, "border", border)) {
@@ -568,6 +574,19 @@ UIElement::SetClickCallback(UIClickCallback *callback)
 	}
 }
 
+void
+UIElement::SetAction(const char *action)
+{
+	if (m_action) {
+		SDL_free(m_action);
+	}
+	if (action) {
+		m_action = SDL_strdup(action);
+	} else {
+		m_action = NULL;
+	}
+}
+
 // These can be overridden by inheriting classes
 void
 UIElement::OnMouseEnter()
@@ -604,6 +623,9 @@ UIElement::OnMouseUp()
 void
 UIElement::OnClick()
 {
+	if (m_action) {
+		Action(this, m_action);
+	}
 	if (m_clickCallback) {
 		(*m_clickCallback)();
 	}

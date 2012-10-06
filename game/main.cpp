@@ -64,10 +64,6 @@ Bool	gRunning;
 
 
 // Main Menu actions:
-static void RunDoAbout(void*)
-{
-	ui->ShowPanel(PANEL_ABOUT);
-}
 static void RunSinglePlayerGame()
 {
 	if (InitNetData(false) < 0) {
@@ -76,26 +72,7 @@ static void RunSinglePlayerGame()
 	NewGame();
 	HaltNetData();
 }
-static void RunPlayGame(void*)
-{
-	gGameInfo.SetHost(DEFAULT_START_WAVE, DEFAULT_START_LIVES, DEFAULT_START_TURBO, 0, prefs->GetBool(PREFERENCES_KIDMODE));
-	gGameInfo.SetPlayerSlot(0, prefs->GetString(PREFERENCES_HANDLE), CONTROL_LOCAL);
-	RunSinglePlayerGame();
-}
-static void RunMultiplayerGame(void*)
-{
-	UIDialog *dialog;
 
-	if (!HasFeature(FEATURE_NETWORK)) {
-		ShowFeature(FEATURE_NETWORK);
-		return;
-	}
-
-	dialog = ui->GetPanel<UIDialog>(DIALOG_LOBBY);
-	if (dialog) {
-		ui->ShowPanel(dialog);
-	}
-}
 static void RunReplayGame(const char *file)
 {
 	if (!gReplay.Load(file)) {
@@ -105,52 +82,7 @@ static void RunReplayGame(const char *file)
 	gReplay.SetMode(REPLAY_PLAYBACK);
 	RunSinglePlayerGame();
 }
-static void RunLastReplay(void*)
-{
-	RunReplayGame(LAST_REPLAY);
-}
-static void RunQuitGame(void*)
-{
-	while ( sound->Playing() )
-		Delay(SOUND_DELAY);
-	gRunning = false;
-}
-static void IncrementSound(void*)
-{
-	if ( gSoundLevel < 8 ) {
-		sound->Volume(++gSoundLevel);
-		sound->PlaySound(gNewLife, 5);
 
-		/* -- Draw the new sound level */
-		gUpdateBuffer = true;
-	}
-}
-static void DecrementSound(void*)
-{
-	if ( gSoundLevel > 0 ) {
-		sound->Volume(--gSoundLevel);
-		sound->PlaySound(gNewLife, 5);
-
-		/* -- Draw the new sound level */
-		gUpdateBuffer = true;
-	}
-}
-static void SetSoundLevel(int volume)
-{
-	/* Make sure the device is working */
-	sound->Volume(volume);
-
-	/* Set the new sound level! */
-	gSoundLevel = volume;
-	sound->PlaySound(gNewLife, 5);
-
-	/* -- Draw the new sound level */
-	gUpdateBuffer = true;
-}
-static void RunToggleFullscreen(void*)
-{
-	screen->ToggleFullScreen();
-}
 static void CheatDialogInit(void*, UIDialog *dialog)
 {
 	UIElementEditbox *editbox;
@@ -198,50 +130,7 @@ static void CheatDialogDone(void*, UIDialog *dialog, int status)
 		RunSinglePlayerGame();
 	}
 }
-static void RunScreenshot(void*)
-{
-	screen->ScreenDump("ScoreDump", 64, 48, 298, 384);
-}
-static void UpdateKidMode(void *param)
-{
-	UIElementCheckbox *checkbox = (UIElementCheckbox*)param;
 
-	if (checkbox->IsChecked()) {
-		if (!HasFeature(FEATURE_KIDMODE)) {
-			ShowFeature(FEATURE_KIDMODE);
-			checkbox->SetChecked(false);
-		}
-	}
-
-	checkbox->SaveData(prefs);
-}
-
-class RunReplayCallback : public UIClickCallback
-{
-public:
-	RunReplayCallback(int index) : m_index(index) { }
-
-	virtual void operator()() {
-		const char *file = hScores[m_index].file;
-		if (file) {
-			RunReplayGame(file);
-		}
-	}
-private:
-	int m_index;
-};
-
-class SetVolumeCallback : public UIClickCallback
-{
-public:
-	SetVolumeCallback(int volume) : m_volume(volume) { }
-
-	virtual void operator()() {
-		SetSoundLevel(m_volume);
-	}
-private:
-	int m_volume;
-};
 
 /* ----------------------------------------------------------------- */
 /* -- Print a Usage message and quit.
@@ -325,16 +214,6 @@ void ShowFrame(void*)
 		while ( screen->PollEvent(&event) ) {
 			if ( ui->HandleEvent(event) )
 				continue;
-
-			/* -- Handle file drop requests */
-			if ( event.type == SDL_DROPFILE ) {
-				gReplayFile = event.drop.file;
-			}
-
-			/* -- Handle window close requests */
-			if ( event.type == SDL_QUIT ) {
-				RunQuitGame(0);
-			}
 		}
 	}
 }
@@ -417,90 +296,12 @@ int MaelstromMain(int argc, char *argv[])
 bool
 MainPanelDelegate::OnLoad()
 {
-	char name[128];
-	int i;
 	UIElement *label;
-	UIElementButton *button;
-	UIElementCheckbox *checkbox;
 
 	/* Set the version */
 	label = m_panel->GetElement<UIElement>("version");
 	if (label) {
 		label->SetText(VERSION_STRING);
-	}
-
-	/* Hook up the action click callbacks */
-	button = m_panel->GetElement<UIElementButton>("PlayButton");
-	if (button) {
-		button->SetClickCallback(RunPlayGame);
-	}
-	button = m_panel->GetElement<UIElementButton>("MultiplayerButton");
-	if (button) {
-		button->SetClickCallback(RunMultiplayerGame);
-	}
-	button = m_panel->GetElement<UIElementButton>("ControlsButton");
-	if (button) {
-		button->SetClickCallback(new UIDialogLauncher(ui, DIALOG_CONTROLS));
-	}
-	button = m_panel->GetElement<UIElementButton>("ZapButton");
-	if (button) {
-		button->SetClickCallback(new UIDialogLauncher(ui, DIALOG_ZAP, NULL, ZapHighScores));
-	}
-	button = m_panel->GetElement<UIElementButton>("AboutButton");
-	if (button) {
-		button->SetClickCallback(RunDoAbout);
-	}
-	button = m_panel->GetElement<UIElementButton>("QuitButton");
-	if (button) {
-		button->SetClickCallback(RunQuitGame);
-	}
-	button = m_panel->GetElement<UIElementButton>("VolumeDownButton");
-	if (button) {
-		button->SetClickCallback(DecrementSound);
-	}
-	button = m_panel->GetElement<UIElementButton>("VolumeUpButton");
-	if (button) {
-		button->SetClickCallback(IncrementSound);
-	}
-	button = m_panel->GetElement<UIElementButton>("ToggleFullscreen");
-	if (button) {
-		button->SetClickCallback(RunToggleFullscreen);
-	}
-	button = m_panel->GetElement<UIElementButton>("Cheat");
-	if (button) {
-		button->SetClickCallback(new UIDialogLauncher(ui, DIALOG_CHEAT, CheatDialogInit, CheatDialogDone));
-	}
-	button = m_panel->GetElement<UIElementButton>("Special");
-	if (button) {
-		button->SetClickCallback(new UIDialogLauncher(ui, DIALOG_DAWN));
-	}
-	button = m_panel->GetElement<UIElementButton>("Screenshot");
-	if (button) {
-		button->SetClickCallback(RunScreenshot);
-	}
-	checkbox = m_panel->GetElement<UIElementCheckbox>("KidMode");
-	if (checkbox) {
-		checkbox->SetClickCallback(UpdateKidMode, checkbox);
-	}
-
-	for (i = 0; i < 9; ++i) {
-		SDL_snprintf(name, sizeof(name), "SetVolume%d", i);
-		button = m_panel->GetElement<UIElementButton>(name);
-		if (button) {
-			button->SetClickCallback(new SetVolumeCallback(i));
-		}
-	}
-
-	for (i = 0; i < NUM_SCORES; ++i) {
-		SDL_snprintf(name, sizeof(name), "play_%d", i);
-		button = m_panel->GetElement<UIElementButton>(name);
-		if (button) {
-			button->SetClickCallback(new RunReplayCallback(i));
-		}
-	}
-	button = m_panel->GetElement<UIElementButton>("play_last");
-	if (button) {
-		button->SetClickCallback(RunLastReplay);
 	}
 
 	return true;
@@ -578,11 +379,189 @@ MainPanelDelegate::OnTick()
 	}
 }
 
-
-void Message(const char *message)
+bool
+MainPanelDelegate::HandleEvent(const SDL_Event &event)
 {
-	// FIXME: This totally doesn't work anymore
+	/* -- Handle file drop requests */
+	if ( event.type == SDL_DROPFILE ) {
+		gReplayFile = event.drop.file;
+		return true;
+	}
+
+	/* -- Handle window close requests */
+	if ( event.type == SDL_QUIT ) {
+		OnActionQuitGame();
+		return true;
+	}
+
+	return false;
 }
+
+bool
+MainPanelDelegate::OnAction(UIBaseElement *sender, const char *action)
+{
+	if (SDL_strncmp(action, "show_", 5) == 0) {
+		ui->ShowPanel(action+5);
+	} else if (SDL_strcmp(action, "play") == 0) {
+		OnActionPlay();
+	} else if (SDL_strcmp(action, "multiplayer") == 0) {
+		OnActionMultiplayer();
+	} else if (SDL_strcmp(action, "quit") == 0) {
+		OnActionQuitGame();
+	} else if (SDL_strcmp(action, "volume_down") == 0) {
+		OnActionVolumeDown();
+	} else if (SDL_strcmp(action, "volume_up") == 0) {
+		OnActionVolumeUp();
+	} else if (SDL_strncmp(action, "setvolume", 9) == 0) {
+		OnActionSetVolume(SDL_atoi(action+9));
+	} else if (SDL_strcmp(action, "toggle_kidmode") == 0) {
+		OnActionToggleKidMode(sender);
+	} else if (SDL_strcmp(action, "toggle_fullscreen") == 0) {
+		OnActionToggleFullscreen();
+	} else if (SDL_strcmp(action, "screenshot") == 0) {
+		OnActionScreenshot();
+	} else if (SDL_strcmp(action, "cheat") == 0) {
+		OnActionCheat();
+	} else if (SDL_strcmp(action, "play_last") == 0) {
+		OnActionRunLastReplay();
+	} else if (SDL_strncmp(action, "play_", 5) == 0) {
+		OnActionRunReplay(SDL_atoi(action+5));
+	} else if (SDL_strcmp(action, "zap") == 0) {
+		OnActionZapHighScores();
+	}
+	return true;
+}
+
+void
+MainPanelDelegate::OnActionPlay()
+{
+	gGameInfo.SetHost(DEFAULT_START_WAVE, DEFAULT_START_LIVES, DEFAULT_START_TURBO, 0, prefs->GetBool(PREFERENCES_KIDMODE));
+	gGameInfo.SetPlayerSlot(0, prefs->GetString(PREFERENCES_HANDLE), CONTROL_LOCAL);
+	RunSinglePlayerGame();
+}
+
+void
+MainPanelDelegate::OnActionMultiplayer()
+{
+	if (!HasFeature(FEATURE_NETWORK)) {
+		ShowFeature(FEATURE_NETWORK);
+		return;
+	}
+
+	ui->ShowPanel(DIALOG_LOBBY);
+}
+
+void
+MainPanelDelegate::OnActionQuitGame()
+{
+	while ( sound->Playing() )
+		Delay(SOUND_DELAY);
+	gRunning = false;
+}
+
+void
+MainPanelDelegate::OnActionVolumeDown()
+{
+	if ( gSoundLevel > 0 ) {
+		sound->Volume(--gSoundLevel);
+		sound->PlaySound(gNewLife, 5);
+
+		/* -- Draw the new sound level */
+		gUpdateBuffer = true;
+	}
+}
+
+void
+MainPanelDelegate::OnActionVolumeUp()
+{
+	if ( gSoundLevel < 8 ) {
+		sound->Volume(++gSoundLevel);
+		sound->PlaySound(gNewLife, 5);
+
+		/* -- Draw the new sound level */
+		gUpdateBuffer = true;
+	}
+}
+
+void
+MainPanelDelegate::OnActionSetVolume(int volume)
+{
+	/* Make sure the device is working */
+	sound->Volume(volume);
+
+	/* Set the new sound level! */
+	gSoundLevel = volume;
+	sound->PlaySound(gNewLife, 5);
+
+	/* -- Draw the new sound level */
+	gUpdateBuffer = true;
+}
+
+void
+MainPanelDelegate::OnActionToggleFullscreen()
+{
+	screen->ToggleFullScreen();
+}
+
+void
+MainPanelDelegate::OnActionToggleKidMode(UIBaseElement *sender)
+{
+	UIElementCheckbox *checkbox = sender->Cast<UIElementCheckbox>();
+
+	if (!checkbox) {
+		return;
+	}
+
+	if (checkbox->IsChecked()) {
+		if (!HasFeature(FEATURE_KIDMODE)) {
+			ShowFeature(FEATURE_KIDMODE);
+			checkbox->SetChecked(false);
+		}
+	}
+	checkbox->SaveData(prefs);
+}
+
+void
+MainPanelDelegate::OnActionScreenshot()
+{
+	screen->ScreenDump("ScoreDump", 64, 48, 298, 384);
+}
+
+void
+MainPanelDelegate::OnActionCheat()
+{
+	UIDialog *dialog;
+
+	dialog = ui->GetPanel<UIDialog>(DIALOG_CHEAT);
+	if (dialog) {
+		dialog->SetDialogInitHandler(CheatDialogInit);
+		dialog->SetDialogDoneHandler(CheatDialogDone);
+
+		ui->ShowPanel(dialog);
+	}
+}
+
+void
+MainPanelDelegate::OnActionZapHighScores()
+{
+	ZapHighScores();
+}
+
+void
+MainPanelDelegate::OnActionRunLastReplay()
+{
+	RunReplayGame(LAST_REPLAY);
+}
+
+void
+MainPanelDelegate::OnActionRunReplay(int index)
+{
+	const char *file = hScores[index].file;
+	if (file) {
+		RunReplayGame(file);
+	}
+}
+
 
 void DelayFrame(void)
 {

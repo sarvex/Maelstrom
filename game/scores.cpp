@@ -108,13 +108,9 @@ void FreeScores(void)
 
 }
 
-void ZapHighScores(void*, UIDialog *dialog, int status)
+void ZapHighScores()
 {
 	char path[1024];
-
-	if (!status) {
-		return;
-	}
 
 	// Delete all the games
 	char **rc = PHYSFS_enumerateFiles(REPLAY_DIRECTORY);

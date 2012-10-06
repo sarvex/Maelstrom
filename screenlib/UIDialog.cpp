@@ -87,25 +87,3 @@ UIDialogDelegate::UIDialogDelegate(UIPanel *panel) :
 	}
 	assert(m_dialog);
 }
-
-UIDialogLauncher::UIDialogLauncher(UIManager *ui, const char *name, UIDialogInitHandler handleInit, UIDialogDoneHandler handleDone)
-{
-	m_ui = ui;
-	m_name = name;
-	m_handleInit = handleInit;
-	m_handleDone = handleDone;
-}
-
-void
-UIDialogLauncher::operator()()
-{
-	UIDialog *dialog;
-
-	dialog = m_ui->GetPanel<UIDialog>(m_name);
-	if (dialog) {
-		dialog->SetDialogInitHandler(m_handleInit);
-		dialog->SetDialogDoneHandler(m_handleDone);
-
-		m_ui->ShowPanel(dialog);
-	}
-}

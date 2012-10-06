@@ -508,7 +508,7 @@ int Send_NewGame()
 				}
 			}
 		}
-		Message(message);
+		//Message(message);
 
 		now = SDL_GetTicks();
 		for (i = 0; i < gGameInfo.GetNumNodes(); ++i) {

@@ -159,6 +159,18 @@ UIManager::GetPanel(const char *name, bool allowLoad)
 }
 
 UIPanel *
+UIManager::GetFullscreenPanel()
+{
+	if (m_visible.length() > 0) {
+		UIPanel *panel = m_visible[0];
+		if (panel->IsFullscreen()) {
+			return panel;
+		}
+	}
+	return NULL;
+}
+
+UIPanel *
 UIManager::GetCurrentPanel()
 {
 	if (m_visible.length() > 0) {

@@ -182,6 +182,7 @@ public:
 		SetClickCallback(new UIFunctionClickCallback(callback, param));
 	}
 	void SetClickCallback(UIClickCallback *callback);
+	void SetAction(const char *action);
 
 	// These can be overridden by inheriting classes
 	virtual void OnMouseEnter();
@@ -212,6 +213,7 @@ protected:
 	bool m_mouseInside;
 	bool m_mousePressed;
 	UIClickCallback *m_clickCallback;
+	char *m_action;
 
 protected:
 	bool LoadColor(rapidxml::xml_node<> *node, const char *name, Uint32 &value);

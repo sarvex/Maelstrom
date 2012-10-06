@@ -78,21 +78,4 @@ protected:
 	void *m_handleDoneData;
 };
 
-//
-// A class to make it easy to launch a dialog from a button
-//
-class UIDialogLauncher : public UIClickCallback
-{
-public:
-	UIDialogLauncher(UIManager *ui, const char *name, UIDialogInitHandler = NULL, UIDialogDoneHandler handleDone = NULL);
-
-	override void operator()();
-
-protected:
-	UIManager *m_ui;
-	const char *m_name;
-	UIDialogInitHandler m_handleInit;
-	UIDialogDoneHandler m_handleDone;
-};
-
 #endif // _UIDialog_h

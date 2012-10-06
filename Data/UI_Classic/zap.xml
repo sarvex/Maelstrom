@@ -5,7 +5,7 @@
 		<Title id="102">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" x="4" y="4"/>
 		</Title>
-		<DialogButton name="clearButton" text="Clear" id="1">
+		<DialogButton name="clearButton" text="Clear" action="zap">
 			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" x="99" y="74"/>
 		</DialogButton>
 		<DialogButton text="Cancel" default="true">

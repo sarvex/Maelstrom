@@ -62,6 +62,9 @@ public:
 	// This is called for events not handled by UI elements
 	virtual bool HandleEvent(const SDL_Event &event) { return false; }
 
+	// This is called for button actions
+	virtual bool OnAction(UIBaseElement *sender, const char *action) { return false; }
+
 protected:
 	UIPanel *m_panel;
 };
@@ -95,6 +98,7 @@ public:
 	virtual void Tick();
 	override void Draw();
 	override bool HandleEvent(const SDL_Event &event);
+	override void Action(UIBaseElement *sender, const char *action);
 
 protected:
 	bool m_fullscreen;

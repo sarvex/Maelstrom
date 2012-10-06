@@ -66,6 +66,7 @@ public:
 		}
 		return NULL;
 	}
+	UIPanel *GetFullscreenPanel();
 	UIPanel *GetCurrentPanel();
 
 	/* These are called by the UIPanel class */

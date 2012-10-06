@@ -46,6 +46,14 @@ public:
 	virtual bool IsA(UIElementType type) {
 		return type == GetType();
 	}
+	template <typename T>
+	T *Cast() {
+		if (IsA(T::GetType())) {
+			return (T*)this;
+		}
+		return NULL;
+	}
+
 
 	FrameBuf *GetScreen() const {
 		return m_screen;
@@ -188,6 +196,7 @@ public:
 
 	virtual void Draw();
 	virtual bool HandleEvent(const SDL_Event &event);
+	virtual void Action(UIBaseElement *sender, const char *action);
 
 	virtual void OnChildShown(UIBaseElement *child) { }
 	virtual void OnChildHidden(UIBaseElement *child) { }

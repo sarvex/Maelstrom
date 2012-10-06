@@ -33,6 +33,23 @@ public:
 	virtual bool OnLoad();
 	virtual void OnShow();
 	virtual void OnTick();
+	virtual bool HandleEvent(const SDL_Event &event);
+	virtual bool OnAction(UIBaseElement *sender, const char *action);
+
+protected:
+	void OnActionPlay();
+	void OnActionMultiplayer();
+	void OnActionQuitGame();
+	void OnActionVolumeDown();
+	void OnActionVolumeUp();
+	void OnActionSetVolume(int volume);
+	void OnActionToggleFullscreen();
+	void OnActionToggleKidMode(UIBaseElement *sender);
+	void OnActionScreenshot();
+	void OnActionCheat();
+	void OnActionRunLastReplay();
+	void OnActionRunReplay(int index);
+	void OnActionZapHighScores();
 };
 
 // The real main function in main.cpp

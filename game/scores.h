@@ -23,12 +23,10 @@
 #ifndef _scores_h
 #define _scores_h
 
-class UIDialog;
-
 // Functions from scores.cpp
 extern void LoadScores(void);
 extern void FreeScores(void);
-extern void ZapHighScores(void*, UIDialog *dialog, int status);
+extern void ZapHighScores();
 
 /* The high scores structure */
 typedef	struct {
