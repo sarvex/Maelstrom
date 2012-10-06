@@ -476,6 +476,7 @@
 			buildPhases = (
 				AA4086E614D490F000EB2196 /* Sources */,
 				AA4086E714D490F000EB2196 /* Frameworks */,
+				AA43907C162020D000FE5F41 /* Build Data Archive */,
 				AA4086E814D490F000EB2196 /* Resources */,
 				AA4088E414D497FC00EB2196 /* Copy Frameworks */,
 				AA4088F614D4990C00EB2196 /* Concatenate Resources */,
@@ -557,6 +558,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "cat ../Maelstrom_Data.zip >>$TARGET_BUILD_DIR/$EXECUTABLE_PATH";
+		};
+		AA43907C162020D000FE5F41 /* Build Data Archive */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Build Data Archive";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "DATA=Maelstrom_Data.zip\ncd $SRCROOT/../Data && (find . -type f | fgrep -v .svn | zip -r ../$DATA.new -@ && mv ../$DATA.new ../$DATA)";
 		};
 		AA8B1926161C347B005318A4 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -665,14 +680,14 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = $FRAMEWORK_SEARCH_PATHS_QUOTED;
-				FRAMEWORK_SEARCH_PATHS_QUOTED = "\"$(SRCROOT)/Frameworks\" \"/Library/Frameworks\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED = "\"/Library/Frameworks\"";
 				HEADER_SEARCH_PATHS = (
 					$HEADER_SEARCH_PATHS_QUOTED,
 					/Library/Frameworks/SDL2.framework/Headers,
 					/Library/Frameworks/SDL2_image.framework/Headers,
 					/Library/Frameworks/SDL2_net.framework/Headers,
 				);
-				HEADER_SEARCH_PATHS_QUOTED = "\"$(SRCROOT)/Frameworks/physfs.framework/Headers\"";
+				HEADER_SEARCH_PATHS_QUOTED = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				OTHER_LDFLAGS = "-lz";
 				SDKROOT = macosx;
@@ -685,14 +700,14 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = $FRAMEWORK_SEARCH_PATHS_QUOTED;
-				FRAMEWORK_SEARCH_PATHS_QUOTED = "\"$(SRCROOT)/Frameworks\" \"/Library/Frameworks\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED = "\"/Library/Frameworks\"";
 				HEADER_SEARCH_PATHS = (
 					$HEADER_SEARCH_PATHS_QUOTED,
 					/Library/Frameworks/SDL2.framework/Headers,
 					/Library/Frameworks/SDL2_image.framework/Headers,
 					/Library/Frameworks/SDL2_net.framework/Headers,
 				);
-				HEADER_SEARCH_PATHS_QUOTED = "\"$(SRCROOT)/Frameworks/physfs.framework/Headers\"";
+				HEADER_SEARCH_PATHS_QUOTED = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				OTHER_LDFLAGS = "-lz";
 				SDKROOT = macosx;
