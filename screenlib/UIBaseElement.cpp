@@ -217,7 +217,15 @@ UIBaseElement::CreateElement(const char *name)
 bool
 UIBaseElement::LoadElements(rapidxml::xml_node<> *node, const UITemplates *templates)
 {
+	rapidxml::xml_attribute<> *attr;
+
 	for (node = node->first_node(); node; node = node->next_sibling()) {
+		/* Check conditions before creating elements */
+		attr = node->first_attribute("condition", 0, false);
+		if (attr && !GetUI()->CheckCondition(attr->value())) {
+			continue;
+		}
+
 		UIBaseElement *element = CreateElement(node->name());
 		if (!element) {
 			fprintf(stderr, "Warning: Couldn't find handler for element %s\n", node->name());

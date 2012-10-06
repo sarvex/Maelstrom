@@ -61,6 +61,18 @@ MaelstromUI::MaelstromUI(FrameBuf *screen, Prefs *prefs) : UIManager(screen, pre
 	m_fonts = hash_create(screen, hash_hash_string, hash_keymatch_string, hash_nuke_string_font);
 	m_strings = hash_create(screen, hash_hash_string, hash_keymatch_string, hash_nuke_string_text);
 
+	/* Set up some conditions useful for UI loading */
+#if __IPHONEOS__ || __ANDROID__
+	SetCondition("MOBILE");
+	SetCondition("TOUCH");
+#endif
+#if __IPHONEOS__
+	SetCondition("IOS");
+#endif
+	if (gClassic) {
+		SetCondition("CLASSIC");
+	}
+
 	/* Load up our UI templates */
 	ClearLoadPath();
 	for (int i = gResolutionIndex; i < gResolutions.length(); ++i) {

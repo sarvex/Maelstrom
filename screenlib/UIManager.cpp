@@ -21,6 +21,7 @@
 
 #include "../utils/loadxml.h"
 #include "../utils/physfsrwops.h"
+#include "../utils/hashtable.h"
 
 
 #include "SDL_FrameBuf.h"
@@ -28,11 +29,19 @@
 #include "UIPanel.h"
 
 
+static void
+hash_nuke_string(const void *key, const void *value, void *data)
+{
+	SDL_free((char*)key);
+}
+
 UIManager::UIManager(FrameBuf *screen, Prefs *prefs) :
 	UIArea(NULL, screen->Width(), screen->Height())
 {
 	m_screen = screen;
 	m_prefs = prefs;
+	m_conditions = hash_create(screen, hash_hash_string, hash_keymatch_string, hash_nuke_string);
+
 	AddLoadPath(".");
 }
 
@@ -41,6 +50,7 @@ UIManager::~UIManager()
 	/* Make sure Shutdown() has been called */
 	SDL_assert(m_panels.length() == 0);
 	ClearLoadPath();
+	hash_destroy(m_conditions);
 }
 
 void
@@ -234,6 +244,30 @@ UIManager::DeletePanel(UIPanel *panel)
 		HidePanel(panel);
 		m_delete.add(panel);
 	}
+}
+
+void
+UIManager::SetCondition(const char *token, bool isTrue)
+{
+	if (isTrue) {
+		hash_insert(m_conditions, SDL_strdup(token), NULL);
+	} else {
+		hash_remove(m_conditions, token);
+	}
+}
+
+bool
+UIManager::CheckCondition(const char *condition)
+{
+	if (!condition || !*condition) {
+		return false;
+	}
+
+	if (*condition == '!') {
+		return !CheckCondition(condition+1);
+	}
+
+	return hash_find(m_conditions, condition, NULL) != 0;
 }
 
 void

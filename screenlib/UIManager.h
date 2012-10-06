@@ -35,6 +35,7 @@ class FrameBuf;
 class UIBaseElement;
 class UIElement;
 class Prefs;
+struct HashTable;
 
 class UIManager : public UIArea, public UIFontInterface, public UIImageInterface, public UISoundInterface
 {
@@ -93,6 +94,9 @@ public:
 		DeletePanel(GetPanel(name, false));
 	}
 
+	void SetCondition(const char *token, bool isTrue = true);
+	bool CheckCondition(const char *condition);
+
 	void Poll();
 	void Draw(bool fullUpdate = true);
 	bool HandleEvent(const SDL_Event &event);
@@ -126,6 +130,7 @@ protected:
 	array<UIPanel *> m_panels;
 	array<UIPanel *> m_visible;
 	array<UIPanel *> m_delete;
+	HashTable *m_conditions;
 };
 
 #endif // _UIManager_h
