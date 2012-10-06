@@ -214,6 +214,8 @@ protected:
 	bool m_mousePressed;
 	UIClickCallback *m_clickCallback;
 	char *m_action;
+	char *m_actionPressed;
+	char *m_actionReleased;
 
 protected:
 	bool LoadColor(rapidxml::xml_node<> *node, const char *name, Uint32 &value);

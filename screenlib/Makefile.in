@@ -76,8 +76,8 @@ am_libSDLscreen_a_OBJECTS = SDL_FrameBuf.$(OBJEXT) UIArea.$(OBJEXT) \
 	UIDrawEngine.$(OBJEXT) UIElement.$(OBJEXT) \
 	UIElementButton.$(OBJEXT) UIElementCheckbox.$(OBJEXT) \
 	UIElementEditbox.$(OBJEXT) UIElementRadio.$(OBJEXT) \
-	UIManager.$(OBJEXT) UIPanel.$(OBJEXT) UITemplates.$(OBJEXT) \
-	UITexture.$(OBJEXT)
+	UIElementThumbstick.$(OBJEXT) UIManager.$(OBJEXT) \
+	UIPanel.$(OBJEXT) UITemplates.$(OBJEXT) UITexture.$(OBJEXT)
 libSDLscreen_a_OBJECTS = $(am_libSDLscreen_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/build-scripts/depcomp
@@ -238,6 +238,8 @@ libSDLscreen_a_SOURCES = \
 	UIElementEditbox.h	\
 	UIElementRadio.cpp	\
 	UIElementRadio.h	\
+	UIElementThumbstick.cpp	\
+	UIElementThumbstick.h	\
 	UIFontInterface.h	\
 	UIImageInterface.h	\
 	UIManager.cpp		\
@@ -310,6 +312,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UIElementCheckbox.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UIElementEditbox.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UIElementRadio.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UIElementThumbstick.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UIManager.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UIPanel.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UITemplates.Po@am__quote@

@@ -37,6 +37,7 @@
 #include "../screenlib/UIElementCheckbox.h"
 #include "../screenlib/UIElementEditbox.h"
 #include "../screenlib/UIElementRadio.h"
+#include "../screenlib/UIElementThumbstick.h"
 #include "../screenlib/UIDialogButton.h"
 #include "../utils/hashtable.h"
 
@@ -62,9 +63,11 @@ MaelstromUI::MaelstromUI(FrameBuf *screen, Prefs *prefs) : UIManager(screen, pre
 	m_strings = hash_create(screen, hash_hash_string, hash_keymatch_string, hash_nuke_string_text);
 
 	/* Set up some conditions useful for UI loading */
+#ifdef USE_TOUCHCONTROL
+	SetCondition("TOUCH");
+#endif
 #if __IPHONEOS__ || __ANDROID__
 	SetCondition("MOBILE");
-	SetCondition("TOUCH");
 #endif
 #if __IPHONEOS__
 	SetCondition("IOS");
@@ -243,14 +246,14 @@ MaelstromUI::CreateElement(UIBaseElement *parent, const char *type, const char *
 		element = new UIElementButton(parent, name, new UIDrawEngine());
 	} else if (SDL_strcasecmp(type, "Checkbox") == 0) {
 		element = new UIElementCheckbox(parent, name, new UIDrawEngine());
+	} else if (SDL_strcasecmp(type, "Thumbstick") == 0) {
+		element = new UIElementThumbstick(parent, name, new UIDrawEngine());
 	} else if (SDL_strcasecmp(type, "Icon") == 0) {
 		element = new UIElement(parent, name, new UIDrawEngineIcon());
 	} else if (SDL_strcasecmp(type, "Sprite") == 0) {
 		element = new UIElement(parent, name, new UIDrawEngineSprite());
 	} else if (SDL_strcasecmp(type, "Title") == 0) {
 		element = new UIElement(parent, name, new UIDrawEngineTitle());
-	} else if (SDL_strcasecmp(type, "ControlButton") == 0) {
-		element = new UIElementControlButton(parent, name, new UIDrawEngine());
 	} else if (SDL_strcasecmp(type, "DialogLabel") == 0) {
 		element = new UIElement(parent, name, new MacDialogDrawEngine());
 	} else if (SDL_strcasecmp(type, "DialogContainer") == 0) {
@@ -269,116 +272,6 @@ MaelstromUI::CreateElement(UIBaseElement *parent, const char *type, const char *
 		element = UIManager::CreateElement(parent, name, type);
 	}
 	return element;
-}
-
-//////////////////////////////////////////////////////////////////////////////
-UIElementControlButton::UIElementControlButton(UIBaseElement *parent, const char *name, UIDrawEngine *drawEngine) :
-	UIElement(parent, name, drawEngine)
-{
-#ifndef __IPHONEOS__
-	// Use the mouse if touch control isn't available
-	m_mouseEnabled = true;
-#endif
-}
-
-bool
-UIElementControlButton::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
-{
-	rapidxml::xml_attribute<> *attr;
-
-	if (!UIElement::Load(node, templates)) {
-		return false;
-	}
-
-	attr = node->first_attribute("action", 0, false);
-	if (!attr) {
-		error("Element '%s' missing attribute 'action'", node->name());
-		return false;
-	}
-
-	if (SDL_strcasecmp(attr->value(), "THRUST") == 0) {
-		m_control = THRUST_KEY;
-	} else if (SDL_strcasecmp(attr->value(), "RIGHT") == 0) {
-		m_control = RIGHT_KEY;
-	} else if (SDL_strcasecmp(attr->value(), "LEFT") == 0) {
-		m_control = LEFT_KEY;
-	} else if (SDL_strcasecmp(attr->value(), "SHIELD") == 0) {
-		m_control = SHIELD_KEY;
-	} else if (SDL_strcasecmp(attr->value(), "FIRE") == 0) {
-		m_control = FIRE_KEY;
-	} else if (SDL_strcasecmp(attr->value(), "PAUSE") == 0) {
-		m_control = PAUSE_KEY;
-	} else if (SDL_strcasecmp(attr->value(), "ABORT") == 0) {
-		m_control = ABORT_KEY;
-	} else {
-		error("Element '%s' has unknown action '%s'", node->name(), attr->value());
-		return false;
-	}
-
-	return true;
-}
-
-bool
-UIElementControlButton::HandleEvent(const SDL_Event &event)
-{
-	if (UIElement::HandleEvent(event)) {
-		return true;
-	}
-
-	if (event.type == SDL_FINGERDOWN) {
-		// Convert the touch coordinate into something useful here
-		int x, y;
-
-		if (!m_screen->ConvertTouchCoordinates(event.tfinger, &x, &y)) {
-			return false;
-		}
-		if (ContainsPoint(x, y)) {
-			m_finger = event.tfinger.fingerId;
-			OnMouseDown();
-			return true;
-		}
-	}
-	if (event.type == SDL_FINGERUP && event.tfinger.fingerId == m_finger) {
-		m_finger = 0;
-		OnMouseUp();
-		return true;
-	}
-
-	return false;
-}
-
-void
-UIElementControlButton::OnMouseDown()
-{
-	if (m_control == PAUSE_KEY) {
-		return;
-	}
-	if (m_control == ABORT_KEY) {
-		return;
-	}
-
-	Player *player = GetControlPlayer(CONTROL_TOUCH);
-	if (player) {
-		player->SetControl(m_control, true);
-	}
-}
-
-void
-UIElementControlButton::OnMouseUp()
-{
-	if (m_control == PAUSE_KEY) {
-		gGameInfo.ToggleLocalState(STATE_PAUSE);
-		return;
-	}
-	if (m_control == ABORT_KEY) {
-		gGameInfo.SetLocalState(STATE_ABORT, true);
-		return;
-	}
-
-	Player *player = GetControlPlayer(CONTROL_TOUCH);
-	if (player) {
-		player->SetControl(m_control, false);
-	}
 }
 
 //////////////////////////////////////////////////////////////////////////////

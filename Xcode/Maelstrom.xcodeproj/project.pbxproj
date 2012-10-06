@@ -67,6 +67,7 @@
 		AA439053161EBDCA00FE5F41 /* platform_windows.c in Sources */ = {isa = PBXBuildFile; fileRef = AA439046161EBDCA00FE5F41 /* platform_windows.c */; };
 		AA439075161EC0A100FE5F41 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA439074161EC0A100FE5F41 /* CoreFoundation.framework */; };
 		AA439078161ED5AC00FE5F41 /* MaelstromFeatures.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA439076161ED5AC00FE5F41 /* MaelstromFeatures.cpp */; };
+		AA4390821620E38800FE5F41 /* UIElementThumbstick.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA4390801620E38800FE5F41 /* UIElementThumbstick.cpp */; };
 		AA8B18F2161C0B59005318A4 /* SDL2_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA8B18F1161C0B59005318A4 /* SDL2_image.framework */; };
 		AA8B1900161C1134005318A4 /* continue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA8B18FA161C1134005318A4 /* continue.cpp */; };
 		AA8B1902161C1134005318A4 /* gameover.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA8B18FE161C1134005318A4 /* gameover.cpp */; };
@@ -221,6 +222,8 @@
 		AA439074161EC0A100FE5F41 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		AA439076161ED5AC00FE5F41 /* MaelstromFeatures.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MaelstromFeatures.cpp; sourceTree = "<group>"; };
 		AA439077161ED5AC00FE5F41 /* MaelstromFeatures.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MaelstromFeatures.h; sourceTree = "<group>"; };
+		AA4390801620E38800FE5F41 /* UIElementThumbstick.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UIElementThumbstick.cpp; sourceTree = "<group>"; };
+		AA4390811620E38800FE5F41 /* UIElementThumbstick.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIElementThumbstick.h; sourceTree = "<group>"; };
 		AA8B18F1161C0B59005318A4 /* SDL2_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_image.framework; path = /Library/Frameworks/SDL2_image.framework; sourceTree = "<absolute>"; };
 		AA8B18FA161C1134005318A4 /* continue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = continue.cpp; sourceTree = "<group>"; };
 		AA8B18FB161C1134005318A4 /* continue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = continue.h; sourceTree = "<group>"; };
@@ -408,6 +411,8 @@
 				AA40881314D493A800EB2196 /* UIElementEditbox.h */,
 				AA40881414D493A800EB2196 /* UIElementRadio.cpp */,
 				AA40881514D493A800EB2196 /* UIElementRadio.h */,
+				AA4390801620E38800FE5F41 /* UIElementThumbstick.cpp */,
+				AA4390811620E38800FE5F41 /* UIElementThumbstick.h */,
 				AA40881614D493A800EB2196 /* UIFontInterface.h */,
 				AA43902F161EBB5800FE5F41 /* UIImageInterface.h */,
 				AA40881714D493A800EB2196 /* UIManager.cpp */,
@@ -565,13 +570,15 @@
 			files = (
 			);
 			inputPaths = (
+				"$(SRCROOT)/../Data",
 			);
 			name = "Build Data Archive";
 			outputPaths = (
+				"$(SRCROOT/../Maelstrom_Data.zip",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "DATA=Maelstrom_Data.zip\ncd $SRCROOT/../Data && (find . -type f | fgrep -v .svn | zip -r ../$DATA.new -@ && mv ../$DATA.new ../$DATA)";
+			shellScript = "DATA=Maelstrom_Data.zip\ncd $SRCROOT/../Data\n(find . -type f | fgrep -v .svn | zip -r ../$DATA.new -@) || exit 1\ncd ..\nmv $DATA.new ../$DATA";
 		};
 		AA8B1926161C347B005318A4 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -649,6 +656,7 @@
 				AA439052161EBDCA00FE5F41 /* platform_unix.c in Sources */,
 				AA439053161EBDCA00FE5F41 /* platform_windows.c in Sources */,
 				AA439078161ED5AC00FE5F41 /* MaelstromFeatures.cpp in Sources */,
+				AA4390821620E38800FE5F41 /* UIElementThumbstick.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

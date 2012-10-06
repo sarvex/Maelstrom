@@ -235,6 +235,19 @@ UIArea::LoadNumber(rapidxml::xml_node<> *node, const char *name, int &value)
 }
 
 bool
+UIArea::LoadNumber(rapidxml::xml_node<> *node, const char *name, float &value)
+{
+	rapidxml::xml_attribute<> *attr;
+
+	attr = node->first_attribute(name, 0, false);
+	if (attr) {
+		value = (float)SDL_atof(attr->value());
+		return true;
+	}
+	return false;
+}
+
+bool
 UIArea::LoadString(rapidxml::xml_node<> *node, const char *name, char *&value)
 {
 	rapidxml::xml_attribute<> *attr;

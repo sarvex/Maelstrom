@@ -26,6 +26,8 @@ libSDLscreen_a_SOURCES =	\
 	UIElementEditbox.h	\
 	UIElementRadio.cpp	\
 	UIElementRadio.h	\
+	UIElementThumbstick.cpp	\
+	UIElementThumbstick.h	\
 	UIFontInterface.h	\
 	UIImageInterface.h	\
 	UIManager.cpp		\

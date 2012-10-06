@@ -55,6 +55,9 @@ public:
 	// This is called once per frame before the screen is drawn
 	virtual void OnTick() { }
 
+	// This is called before the panel is drawn
+	virtual void OnDrawBackground() { }
+
 	// This is called after the panel is drawn, before the screen
 	// is updated, to allow any additional custom drawing.
 	virtual void OnDraw() { }

@@ -51,6 +51,8 @@ UIElement::UIElement(UIBaseElement *parent, const char *name, UIDrawEngine *draw
 	m_mousePressed = false;
 	m_clickCallback = NULL;
 	m_action = NULL;
+	m_actionPressed = NULL;
+	m_actionReleased = NULL;
 
 	SetDrawEngine(drawEngine);
 }
@@ -78,6 +80,12 @@ UIElement::~UIElement()
 	if (m_action) {
 		SDL_free(m_action);
 	}
+	if (m_actionPressed) {
+		SDL_free(m_actionPressed);
+	}
+	if (m_actionReleased) {
+		SDL_free(m_actionReleased);
+	}
 }
 
 bool
@@ -93,6 +101,8 @@ UIElement::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 	LoadString(node, "name", m_name);
 
 	LoadString(node, "action", m_action);
+	LoadString(node, "actionPressed", m_actionPressed);
+	LoadString(node, "actionReleased", m_actionReleased);
 
 	bool border;
 	if (LoadBool(node, "border", border)) {
@@ -610,6 +620,9 @@ UIElement::OnMouseDown()
 	if (m_drawEngine) {
 		m_drawEngine->OnMouseDown();
 	}
+	if (m_actionPressed) {
+		Action(this, m_actionPressed);
+	}
 }
 
 void
@@ -617,6 +630,9 @@ UIElement::OnMouseUp()
 {
 	if (m_drawEngine) {
 		m_drawEngine->OnMouseUp();
+	}
+	if (m_actionReleased) {
+		Action(this, m_actionReleased);
 	}
 }
 

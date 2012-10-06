@@ -112,9 +112,7 @@ void NewGame(void)
 	gShownContinue = 0;
 
 	ui->ShowPanel(PANEL_GAME);
-#ifdef USE_TOUCHCONTROL
-	ui->ShowPanel("touchcontrol");
-#endif
+
 }	/* -- NewGame */
 
 void ContinueGame(void)
@@ -406,7 +404,7 @@ GamePanelDelegate::OnTick()
 }
 
 void
-GamePanelDelegate::OnDraw()
+GamePanelDelegate::OnDrawBackground()
 {
 	int i;
 
@@ -434,6 +432,60 @@ GamePanelDelegate::OnDraw()
 		}
 		gPlayers[i]->BlitSprite();
 	}
+}
+
+bool
+GamePanelDelegate::OnAction(UIBaseElement *sender, const char *action)
+{
+	if (SDL_strncmp(action, "CONTROL_", 8) == 0) {
+		action += 8;
+
+		bool down = false;
+		if (SDL_strncmp(action, "DOWN_", 5) == 0) {
+			down = true;
+			action += 5;
+		} else if (SDL_strncmp(action, "UP_", 3) == 0) {
+			down = false;
+			action += 3;
+		}
+
+		unsigned char control;
+		if (SDL_strcasecmp(action, "THRUST") == 0) {
+			control = THRUST_KEY;
+		} else if (SDL_strcasecmp(action, "RIGHT") == 0) {
+			control = RIGHT_KEY;
+		} else if (SDL_strcasecmp(action, "LEFT") == 0) {
+			control = LEFT_KEY;
+		} else if (SDL_strcasecmp(action, "SHIELD") == 0) {
+			control = SHIELD_KEY;
+		} else if (SDL_strcasecmp(action, "FIRE") == 0) {
+			control = FIRE_KEY;
+		} else if (SDL_strcasecmp(action, "PAUSE") == 0) {
+			control = PAUSE_KEY;
+		} else if (SDL_strcasecmp(action, "ABORT") == 0) {
+			control = ABORT_KEY;
+		} else {
+			error("Unknown control action '%s'", action);
+			return false;
+		}
+
+		if (control == PAUSE_KEY || control == ABORT_KEY) {
+			if (!down) {
+				if (control == PAUSE_KEY) {
+					gGameInfo.ToggleLocalState(STATE_PAUSE);
+				}
+				if (control == ABORT_KEY) {
+					gGameInfo.SetLocalState(STATE_ABORT, true);
+				}
+			}
+		} else {
+			Player *player = GetControlPlayer(CONTROL_TOUCH);
+			if (player) {
+				player->SetControl(control, down);
+			}
+		}
+	}
+	return true;
 }
 
 /* ----------------------------------------------------------------- */
@@ -986,9 +1038,6 @@ GamePanelDelegate::NextWave()
 void
 GamePanelDelegate::GameOver()
 {
-#ifdef USE_TOUCHCONTROL
-	ui->HidePanel("touchcontrol");
-#endif
 	ui->ShowPanel(PANEL_GAMEOVER);
 
 	QuitPlayerControls();

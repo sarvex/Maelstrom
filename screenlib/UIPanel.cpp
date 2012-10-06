@@ -154,6 +154,10 @@ UIPanel::Tick()
 void
 UIPanel::Draw()
 {
+	if (m_delegate) {
+		m_delegate->OnDrawBackground();
+	}
+
 	UIBaseElement::Draw();
 
 	if (m_delegate) {

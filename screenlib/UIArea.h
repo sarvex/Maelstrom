@@ -86,6 +86,12 @@ public:
 	int Y() const {
 		return m_rect.y;
 	}
+	int CenterX() const {
+		return m_rect.x + m_rect.w/2;
+	}
+	int CenterY() const {
+		return m_rect.y + m_rect.h/2;
+	}
 	int Width() const {
 		return m_rect.w;
 	}
@@ -107,6 +113,7 @@ public:
 protected:
 	bool LoadBool(rapidxml::xml_node<> *node, const char *name, bool &value);
 	bool LoadNumber(rapidxml::xml_node<> *node, const char *name, int &value);
+	bool LoadNumber(rapidxml::xml_node<> *node, const char *name, float &value);
 	bool LoadString(rapidxml::xml_node<> *node, const char *name, char *&value);
 	bool LoadAnchorLocation(rapidxml::xml_node<> *node, const char *name, AnchorLocation &value);
 
