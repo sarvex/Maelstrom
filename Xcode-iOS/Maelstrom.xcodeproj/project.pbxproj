@@ -113,13 +113,6 @@
 			remoteGlobalIDString = 006E982211955059001DE610;
 			remoteInfo = testsdl;
 		};
-		93D8E492159116B400BD8D0E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 93D8E48B159116B300BD8D0E /* physfs.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = AAD1407B145EA8C90040B19C;
-			remoteInfo = physfs;
-		};
 		93D8E494159117BC00BD8D0E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 938A4498157D555C0081A436 /* SDL_net.xcodeproj */;
@@ -134,13 +127,6 @@
 			remoteGlobalIDString = FD6526620DE8FCCB002AD96B;
 			remoteInfo = libSDL;
 		};
-		93D8E498159117BC00BD8D0E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 93D8E48B159116B300BD8D0E /* physfs.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = AAD1407A145EA8C90040B19C;
-			remoteInfo = physfs;
-		};
 		AAC04159160E809F00E22BC5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = AAC04155160E809E00E22BC5 /* SDL_image.xcodeproj */;
@@ -153,7 +139,6 @@
 /* Begin PBXFileReference section */
 		938A4498157D555C0081A436 /* SDL_net.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL_net.xcodeproj; path = "Xcode-iOS/SDL_net.xcodeproj"; sourceTree = "<group>"; };
 		938A44A3157D55AE0081A436 /* SDL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL.xcodeproj; path = "Xcode-iOS/SDL/SDL.xcodeproj"; sourceTree = "<group>"; };
-		93D8E48B159116B300BD8D0E /* physfs.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = physfs.xcodeproj; path = physfs/physfs.xcodeproj; sourceTree = SOURCE_ROOT; };
 		93D8E4A315911CDC00BD8D0E /* Maelstrom-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Maelstrom-Info.plist"; path = "Xcode-iOS/Maelstrom-Info.plist"; sourceTree = "<group>"; };
 		AA07778A145EB40800DB8DB3 /* begin_code.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = begin_code.h; sourceTree = "<group>"; };
 		AA07778B145EB40800DB8DB3 /* close_code.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = close_code.h; sourceTree = "<group>"; };
@@ -347,7 +332,6 @@
 		AA9781A41576A03700472542 /* shinobi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = shinobi.h; sourceTree = "<group>"; };
 		AA9781BB1576A14D00472542 /* Maelstrom_Data.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = Maelstrom_Data.zip; sourceTree = "<group>"; };
 		AA9781BE1576A39F00472542 /* SDL_net.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_net.h; sourceTree = "<group>"; };
-		AA9781BF1576A3BD00472542 /* physfs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = physfs.h; sourceTree = "<group>"; };
 		AABDBE1B15C8A6B200C3E936 /* continue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = continue.cpp; sourceTree = "<group>"; };
 		AABDBE1C15C8A6B200C3E936 /* continue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = continue.h; sourceTree = "<group>"; };
 		AABDBE2415C8A6F300C3E936 /* loadxml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = loadxml.cpp; sourceTree = "<group>"; };
@@ -402,14 +386,6 @@
 			children = (
 				938A44AE157D55AE0081A436 /* libSDL2.a */,
 				938A44B0157D55AE0081A436 /* testsdl.app */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		93D8E48C159116B300BD8D0E /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				93D8E493159116B400BD8D0E /* libphysfs.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -509,21 +485,10 @@
 		AA0777C8145EB43900DB8DB3 /* physfs */ = {
 			isa = PBXGroup;
 			children = (
-				93D8E48B159116B300BD8D0E /* physfs.xcodeproj */,
-				AA0777C9145EB44700DB8DB3 /* include */,
 			);
 			name = physfs;
 			path = ../../../../../3rdparty/iphone/physfs;
 			sourceTree = SOURCE_ROOT;
-		};
-		AA0777C9145EB44700DB8DB3 /* include */ = {
-			isa = PBXGroup;
-			children = (
-				AA9781BF1576A3BD00472542 /* physfs.h */,
-			);
-			name = include;
-			path = src;
-			sourceTree = "<group>";
 		};
 		AA439054161EBE1800FE5F41 /* physfs */ = {
 			isa = PBXGroup;
@@ -801,7 +766,6 @@
 			dependencies = (
 				93D8E495159117BC00BD8D0E /* PBXTargetDependency */,
 				93D8E497159117BC00BD8D0E /* PBXTargetDependency */,
-				93D8E499159117BC00BD8D0E /* PBXTargetDependency */,
 			);
 			name = Maelstrom;
 			productName = Maelstrom;
@@ -827,10 +791,6 @@
 			productRefGroup = AAD13B7E145E8A8F0040B19C /* Products */;
 			projectDirPath = "";
 			projectReferences = (
-				{
-					ProductGroup = 93D8E48C159116B300BD8D0E /* Products */;
-					ProjectRef = 93D8E48B159116B300BD8D0E /* physfs.xcodeproj */;
-				},
 				{
 					ProductGroup = 938A44A4157D55AE0081A436 /* Products */;
 					ProjectRef = 938A44A3157D55AE0081A436 /* SDL.xcodeproj */;
@@ -871,13 +831,6 @@
 			fileType = wrapper.application;
 			path = testsdl.app;
 			remoteRef = 938A44AF157D55AE0081A436 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		93D8E493159116B400BD8D0E /* libphysfs.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libphysfs.a;
-			remoteRef = 93D8E492159116B400BD8D0E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		AAC0415A160E809F00E22BC5 /* libSDL2_image.a */ = {
@@ -1007,11 +960,6 @@
 			isa = PBXTargetDependency;
 			name = libSDL;
 			targetProxy = 93D8E496159117BC00BD8D0E /* PBXContainerItemProxy */;
-		};
-		93D8E499159117BC00BD8D0E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = physfs;
-			targetProxy = 93D8E498159117BC00BD8D0E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
