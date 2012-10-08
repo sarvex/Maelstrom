@@ -21,7 +21,7 @@
 */
 
 #include "Maelstrom_Globals.h"
-#include "features.h"
+#include "MaelstromFeatures.h"
 
 #include "../screenlib/UIElementCheckbox.h"
 
