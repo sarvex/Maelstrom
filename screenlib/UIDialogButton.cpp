@@ -57,6 +57,11 @@ UIDialogButton::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 void
 UIDialogButton::OnClick()
 {
+	// Hide before doing the action (which may change the current panel)
+	if (m_closeDialog) {
+		GetUI()->HidePanel(GetUI()->GetCurrentPanel());
+	}
+
 	UIElementButton::OnClick();
 
 	if (m_statusID) {
@@ -64,8 +69,5 @@ UIDialogButton::OnClick()
 		if (panel && panel->IsA(UIDialog::GetType())) {
 			static_cast<UIDialog*>(panel)->SetDialogStatus(m_statusID);
 		}
-	}
-	if (m_closeDialog) {
-		GetUI()->HidePanel(GetUI()->GetCurrentPanel());
 	}
 }
