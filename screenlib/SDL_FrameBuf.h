@@ -112,7 +112,7 @@ public:
 	void GetLogicalSize(int &w, int &h) const;
 	void SetLogicalSize(int w, int h);
 	float GetLogicalScale() const {
-		return logicalScale;
+		return logicalScale ? logicalScale : 1.0f;
 	}
 	void SetLogicalScale(float scale);
 
