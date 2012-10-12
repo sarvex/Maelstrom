@@ -224,21 +224,34 @@ FrameBuf:: SetLogicalSize(int w, int h)
 void
 FrameBuf:: SetLogicalScale(float scale)
 {
-	logicalScale = scale;
-
 	int w, h;
-	if (Resizable()) {
-		SDL_GetWindowSize(window, &w, &h);
+	SDL_Texture *target;
+
+	target = SDL_GetRenderTarget(renderer);
+	if (target) {
+		// This is a temporary scale change
+		SDL_QueryTexture(target, NULL, NULL, &w, &h);
+		if (scale > 0.0f) {
+			w = (int)(w/scale);
+			h = (int)(h/scale);
+		}
+		SDL_RenderSetLogicalSize(renderer, w, h);
 	} else {
-		w = Width();
-		h = Height();
-	}
-	if (logicalScale > 0.0f) {
-		w = (int)(w/logicalScale);
-		h = (int)(h/logicalScale);
-		SetLogicalSize(w, h);
-	} else {
-		UpdateWindowSize(w, h);
+		logicalScale = scale;
+
+		if (Resizable()) {
+			SDL_GetWindowSize(window, &w, &h);
+		} else {
+			w = Width();
+			h = Height();
+		}
+		if (logicalScale > 0.0f) {
+			w = (int)(w/logicalScale);
+			h = (int)(h/logicalScale);
+			SetLogicalSize(w, h);
+		} else {
+			UpdateWindowSize(w, h);
+		}
 	}
 }
 
