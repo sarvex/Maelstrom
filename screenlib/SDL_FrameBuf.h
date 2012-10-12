@@ -107,10 +107,14 @@ public:
 	bool Resizable() const {
 		return resizable;
 	}
-	void GetDesktopSize(int &w, int &h);
-	void GetDisplaySize(int &w, int &h);
-	void GetLogicalSize(int &w, int &h);
+	void GetDesktopSize(int &w, int &h) const;
+	void GetDisplaySize(int &w, int &h) const;
+	void GetLogicalSize(int &w, int &h) const;
 	void SetLogicalSize(int w, int h);
+	float GetLogicalScale() const {
+		return logicalScale;
+	}
+	void SetLogicalScale(float scale);
 
 	/* Blit and update routines */
 	void QueueBlit(SDL_Texture *src,
@@ -210,9 +214,7 @@ public:
 	void HideCursor(void) {
 		SDL_ShowCursor(0);
 	}
-	void GetCursorPosition(int *x, int *y) {
-		SDL_GetMouseState(x, y);
-	}
+	void GetCursorPosition(int *x, int *y);
 	void SetCaption(const char *caption, const char *icon = NULL) {
 		SDL_SetWindowTitle(window, caption);
 	}
@@ -226,6 +228,7 @@ private:
 	SDL_Rect clip;
 	SDL_Rect output;
 	bool resizable;
+	float logicalScale;
 
 	void UpdateWindowSize(int width, int height) {
 		clip.x = rect.x = 0;

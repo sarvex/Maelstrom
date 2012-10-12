@@ -39,6 +39,7 @@ FrameBuf:: FrameBuf() : ErrorBase()
 	renderer = NULL;
 	faded = 0;
 	resizable = false;
+	logicalScale = 0.0f;
 }
 
 int
@@ -109,7 +110,13 @@ FrameBuf::ProcessEvent(SDL_Event *event)
 				SDL_GetWindowSize(window, &w, &h);
 				SDL_RenderSetViewport(renderer, NULL);
 			}
-			UpdateWindowSize(w, h);
+			if (logicalScale > 0.0f) {
+				w = (int)(w/logicalScale);
+				h = (int)(h/logicalScale);
+				SetLogicalSize(w, h);
+			} else {
+				UpdateWindowSize(w, h);
+			}
 		}
 		break;
 	}
@@ -144,6 +151,20 @@ extern "C" {
 #endif
 
 void
+FrameBuf:: GetCursorPosition(int *x, int *y)
+{
+	float scale_x, scale_y;
+
+	SDL_GetMouseState(x, y);
+	SDL_RenderGetScale(renderer, &scale_x, &scale_y);
+
+	*x = (int)(*x/scale_x) - output.x;
+	*y = (int)(*y/scale_y) - output.y;
+	*x = (*x * rect.w) / output.w;
+	*y = (*y * rect.h) / output.h;
+}
+
+void
 FrameBuf::EnableTextInput()
 {
 	SDL_StartTextInput();
@@ -164,7 +185,7 @@ FrameBuf::DisableTextInput()
 }
 
 void
-FrameBuf:: GetDesktopSize(int &w, int &h)
+FrameBuf:: GetDesktopSize(int &w, int &h) const
 {
 	SDL_DisplayMode mode;
 
@@ -178,13 +199,13 @@ FrameBuf:: GetDesktopSize(int &w, int &h)
 }
 
 void
-FrameBuf:: GetDisplaySize(int &w, int &h)
+FrameBuf:: GetDisplaySize(int &w, int &h) const
 {
 	SDL_GetWindowSize(window, &w, &h);
 }
 
 void
-FrameBuf:: GetLogicalSize(int &w, int &h)
+FrameBuf:: GetLogicalSize(int &w, int &h) const
 {
 	SDL_RenderGetLogicalSize(renderer, &w, &h);
 	if (!w || !h) {
@@ -198,6 +219,27 @@ FrameBuf:: SetLogicalSize(int w, int h)
 {
 	SDL_RenderSetLogicalSize(renderer, w, h);
 	UpdateWindowSize(w, h);
+}
+
+void
+FrameBuf:: SetLogicalScale(float scale)
+{
+	logicalScale = scale;
+
+	int w, h;
+	if (Resizable()) {
+		SDL_GetWindowSize(window, &w, &h);
+	} else {
+		w = Width();
+		h = Height();
+	}
+	if (logicalScale > 0.0f) {
+		w = (int)(w/logicalScale);
+		h = (int)(h/logicalScale);
+		SetLogicalSize(w, h);
+	} else {
+		UpdateWindowSize(w, h);
+	}
 }
 
 void
