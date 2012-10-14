@@ -66,11 +66,11 @@ UIDialog::HandleEvent(const SDL_Event &event)
 		return true;
 	}
 
-	if (event.type != SDL_QUIT) {
+	if (event.type != SDL_QUIT && event.type != SDL_DROPFILE) {
 		/* Press escape to cancel out of dialogs */
 		if (event.type == SDL_KEYUP &&
 		    event.key.keysym.sym == SDLK_ESCAPE) {
-			GetUI()->HidePanel(GetUI()->GetCurrentPanel());
+			GetUI()->HidePanel(this);
 		}
 		return true;
 	}
