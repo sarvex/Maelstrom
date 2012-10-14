@@ -59,13 +59,13 @@ UIDialogButton::OnClick()
 {
 	UIPanel *panel = GetUI()->GetCurrentPanel();
 
+	if (m_statusID && panel && panel->IsA(UIDialog::GetType())) {
+		static_cast<UIDialog*>(panel)->SetDialogStatus(m_statusID);
+	}
+
 	// Hide before doing the action (which may change the current panel)
 	if (m_closeDialog && panel) {
 		GetUI()->HidePanel(panel);
-	}
-
-	if (m_statusID && panel && panel->IsA(UIDialog::GetType())) {
-		static_cast<UIDialog*>(panel)->SetDialogStatus(m_statusID);
 	}
 
 	UIElementButton::OnClick();
