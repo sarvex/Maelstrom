@@ -280,6 +280,14 @@ UIManager::Poll()
 
 		panel->Poll();
 	}
+
+	// Clean up any deleted panels when we're done...
+	if (!m_delete.empty()) {
+		for (i = 0; i < m_delete.length(); ++i) {
+			delete m_delete[i];
+		}
+		m_delete.clear();
+	}
 }
 
 void
@@ -307,14 +315,6 @@ UIManager::Draw(bool fullUpdate)
 		m_screen->Update();
 		m_screen->FadeIn();
 	}
-
-	// Clean up any deleted panels when we're done...
-	if (!m_delete.empty()) {
-		for (i = 0; i < m_delete.length(); ++i) {
-			delete m_delete[i];
-		}
-		m_delete.clear();
-	}
 }
 
 bool
@@ -335,6 +335,9 @@ UIManager::HandleEvent(const SDL_Event &event)
 		// Resize to match window size
 		SetSize(m_screen->Width(), m_screen->Height());
 	}
+
+	// In case it's not called any other time...
+	Poll();
 
 	for (unsigned i = m_visible.length(); i--; ) {
 		UIPanel *panel = m_visible[i];
