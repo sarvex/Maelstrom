@@ -247,6 +247,17 @@ UIManager::DeletePanel(UIPanel *panel)
 }
 
 void
+UIManager::HideDialogs()
+{
+	for (int i = m_visible.length()-1; i >= 0; --i) {
+		UIPanel *panel = m_visible[i];
+		if (!panel->IsFullscreen()) {
+			HidePanel(panel);
+		}
+	}
+}
+
+void
 UIManager::SetCondition(const char *token, bool isTrue)
 {
 	if (isTrue) {

@@ -94,6 +94,8 @@ public:
 		DeletePanel(GetPanel(name, false));
 	}
 
+	void HideDialogs();
+
 	void SetCondition(const char *token, bool isTrue = true);
 	bool CheckCondition(const char *condition);
 
