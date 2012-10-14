@@ -31,6 +31,7 @@ UIContainer::UIContainer(UIBaseElement *parent, const char *name, UIDrawEngine *
 {
 	m_layoutType = LAYOUT_VERTICAL;
 	m_spacing = 0;
+	m_borderSpacing = 0;
 	m_layoutInProgress = false;
 }
 
@@ -53,6 +54,7 @@ UIContainer::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 	}
 
 	LoadNumber(node, "spacing", m_spacing);
+	LoadNumber(node, "borderSpacing", m_borderSpacing);
 
 	return true;
 }
@@ -75,9 +77,12 @@ UIContainer::LayoutChildren()
 	anchor = NULL;
 	for (i = 0; i < m_elements.length(); ++i) {
 		if (m_elements[i]->IsShown()) {
+			int anchorOffset = m_borderSpacing;
+			if (HasBorder()) {
+				anchorOffset += 1;
+			}
 			m_elements[i]->SetAnchor(TOPLEFT, TOPLEFT, this,
-						HasBorder() ? 1 : 0,
-						HasBorder() ? 1 : 0);
+						anchorOffset, anchorOffset);
 			anchor = m_elements[i];
 			break;
 		}
@@ -118,6 +123,8 @@ UIContainer::LayoutChildren()
 				w += 1;
 			}
 		}
+		w += 1*m_borderSpacing;
+		h += 2*m_borderSpacing;
 	} else {
 		// Width is the max of children, height is the sum of children
 		for (i = 0; i < m_elements.length(); ++i) {
@@ -136,6 +143,8 @@ UIContainer::LayoutChildren()
 				h += 1;
 			}
 		}
+		w += 2*m_borderSpacing;
+		h += 1*m_borderSpacing;
 	}
 	AutoSize(w, h);
 

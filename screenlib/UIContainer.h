@@ -55,6 +55,7 @@ public:
 protected:
 	LAYOUT_TYPE m_layoutType;
 	int m_spacing;
+	int m_borderSpacing;
 	bool m_layoutInProgress;
 
 protected:
