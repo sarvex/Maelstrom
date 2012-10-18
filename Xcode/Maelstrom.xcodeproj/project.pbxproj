@@ -72,6 +72,7 @@
 		AA8B1900161C1134005318A4 /* continue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA8B18FA161C1134005318A4 /* continue.cpp */; };
 		AA8B1902161C1134005318A4 /* gameover.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA8B18FE161C1134005318A4 /* gameover.cpp */; };
 		AA8B1905161C1188005318A4 /* loadxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA8B1903161C1188005318A4 /* loadxml.cpp */; };
+		AAAA999F162FE466008140E1 /* Maelstrom_Data.zip in Resources */ = {isa = PBXBuildFile; fileRef = AAAA999E162FE466008140E1 /* Maelstrom_Data.zip */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -232,6 +233,7 @@
 		AA8B1903161C1188005318A4 /* loadxml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = loadxml.cpp; sourceTree = "<group>"; };
 		AA8B1904161C1188005318A4 /* loadxml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = loadxml.h; sourceTree = "<group>"; };
 		AA8B191A161C343E005318A4 /* Package */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Package; sourceTree = BUILT_PRODUCTS_DIR; };
+		AAAA999E162FE466008140E1 /* Maelstrom_Data.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; name = Maelstrom_Data.zip; path = ../Maelstrom_Data.zip; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -252,7 +254,6 @@
 		AA4086DF14D490F000EB2196 = {
 			isa = PBXGroup;
 			children = (
-				AA439074161EC0A100FE5F41 /* CoreFoundation.framework */,
 				AA4086F414D490F000EB2196 /* Maelstrom */,
 				AA4086ED14D490F000EB2196 /* Frameworks */,
 				AA4086EB14D490F000EB2196 /* Products */,
@@ -271,6 +272,7 @@
 		AA4086ED14D490F000EB2196 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AA439074161EC0A100FE5F41 /* CoreFoundation.framework */,
 				AA4088EC14D4987200EB2196 /* SDL2.framework */,
 				AA8B18F1161C0B59005318A4 /* SDL2_image.framework */,
 				AA4088EB14D4987200EB2196 /* SDL2_net.framework */,
@@ -290,6 +292,7 @@
 		AA4086F514D490F000EB2196 /* Resource Files */ = {
 			isa = PBXGroup;
 			children = (
+				AAAA999E162FE466008140E1 /* Maelstrom_Data.zip */,
 				AA40890514D49FFE00EB2196 /* Maelstrom.icns */,
 				AA4086F714D490F000EB2196 /* InfoPlist.strings */,
 				AA4086F614D490F000EB2196 /* Maelstrom-Info.plist */,
@@ -484,7 +487,6 @@
 				AA43907C162020D000FE5F41 /* Build Data Archive */,
 				AA4086E814D490F000EB2196 /* Resources */,
 				AA4088E414D497FC00EB2196 /* Copy Frameworks */,
-				AA4088F614D4990C00EB2196 /* Concatenate Resources */,
 			);
 			buildRules = (
 			);
@@ -544,26 +546,13 @@
 			files = (
 				AA4086F914D490F000EB2196 /* InfoPlist.strings in Resources */,
 				AA40890614D49FFE00EB2196 /* Maelstrom.icns in Resources */,
+				AAAA999F162FE466008140E1 /* Maelstrom_Data.zip in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		AA4088F614D4990C00EB2196 /* Concatenate Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Concatenate Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cat ../Maelstrom_Data.zip >>$TARGET_BUILD_DIR/$EXECUTABLE_PATH";
-		};
 		AA43907C162020D000FE5F41 /* Build Data Archive */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;

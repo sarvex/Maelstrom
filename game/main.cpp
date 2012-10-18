@@ -190,6 +190,11 @@ InitFilesystem(const char *argv0)
 		return true;
 	}
 
+	SDL_snprintf(path, SDL_arraysize(path), "%sContents/Resources/%s", PHYSFS_getBaseDir(), MAELSTROM_DATA);
+	if (PHYSFS_mount(path, "/", 1)) {
+		return true;
+	}
+
 	error("Couldn't find %s", MAELSTROM_DATA);
 	return false;
 }
