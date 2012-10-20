@@ -43,7 +43,7 @@ UIArea::UIArea(UIArea *anchor, int w, int h) : ErrorBase()
 UIArea::~UIArea()
 {
 	SetAnchorElement(NULL);
-	for (int i = 0; i < m_anchoredAreas.length(); ++i) {
+	for (int i = m_anchoredAreas.length(); i--; ) {
 		m_anchoredAreas[i]->SetAnchor(CENTER, CENTER, NULL);
 	}
 }
