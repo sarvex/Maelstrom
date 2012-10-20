@@ -32,21 +32,17 @@ UIArea::UIArea(UIArea *anchor, int w, int h) : ErrorBase()
 	m_rect.y = 0;
 	m_rect.w = w;
 	m_rect.h = h;
-	m_anchor.element = anchor;
+	m_anchor.element = NULL;
+	SetAnchorElement(anchor);
 	m_anchor.anchorFrom = CENTER;
 	m_anchor.anchorTo = CENTER;
 	m_anchor.offsetX = 0;
 	m_anchor.offsetY = 0;
-	if (anchor) {
-		anchor->AddAnchoredArea(this);
-	}
 }
 
 UIArea::~UIArea()
 {
-	if (m_anchor.element) {
-		m_anchor.element->DelAnchoredArea(this);
-	}
+	SetAnchorElement(NULL);
 	for (int i = 0; i < m_anchoredAreas.length(); ++i) {
 		m_anchoredAreas[i]->SetAnchor(CENTER, CENTER, NULL);
 	}
@@ -72,13 +68,8 @@ UIArea::Load(rapidxml::xml_node<> *node)
 	child = node->first_node("anchor", 0, false);
 	if (child) {
 		attr = child->first_attribute("anchor", 0, false);
-		if (m_anchor.element) {
-			m_anchor.element->DelAnchoredArea(this);
-		}
-		m_anchor.element = GetAnchorElement(attr ? attr->value() : NULL);
-		if (m_anchor.element) {
-			m_anchor.element->AddAnchoredArea(this);
-		} else {
+		SetAnchorElement(GetAnchorElement(attr ? attr->value() : NULL));
+		if (!m_anchor.element) {
 			SetError("Element 'anchor' couldn't find anchor element %s",
 				attr ? attr->value() : "NULL");
 			return false;
@@ -116,7 +107,7 @@ UIArea::GetAnchorElement(const char *name)
 void
 UIArea::SetPosition(int x, int y) {
 	/* Setting the position breaks the anchoring */
-	m_anchor.element = NULL;
+	SetAnchorElement(NULL);
 
 	if (x != m_rect.x || y != m_rect.y) {
 		m_rect.x = x;
@@ -194,7 +185,7 @@ void
 UIArea::SetAnchor(AnchorLocation from, AnchorLocation to, UIArea *anchor,
 						int offsetX, int offsetY)
 {
-	m_anchor.element = anchor;
+	SetAnchorElement(anchor);
 	m_anchor.anchorFrom = from;
 	m_anchor.anchorTo = to;
 	m_anchor.offsetX = offsetX;
@@ -297,6 +288,20 @@ UIArea::LoadAnchorLocation(rapidxml::xml_node<> *node, const char *name, AnchorL
 		return true;
 	}
 	return false;
+}
+
+void
+UIArea::SetAnchorElement(UIArea *anchor)
+{
+	if (m_anchor.element) {
+		m_anchor.element->DelAnchoredArea(this);
+	}
+
+	m_anchor.element = anchor;
+
+	if (m_anchor.element) {
+		m_anchor.element->AddAnchoredArea(this);
+	}
 }
 
 void

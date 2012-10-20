@@ -117,6 +117,7 @@ protected:
 	bool LoadString(rapidxml::xml_node<> *node, const char *name, char *&value);
 	bool LoadAnchorLocation(rapidxml::xml_node<> *node, const char *name, AnchorLocation &value);
 
+	void SetAnchorElement(UIArea *anchor);
 	void GetAnchorLocation(AnchorLocation spot, int *x, int *y) const;
 	void CalculateAnchor(bool triggerRectChanged = true);
 	virtual void OnRectChanged();
