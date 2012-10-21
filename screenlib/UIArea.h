@@ -69,6 +69,12 @@ public:
 	bool IsAutoSizing() const {
 		return m_autosizeWidth && m_autosizeHeight;
 	}
+	bool IsAutoSizingWidth() const {
+		return m_autosizeWidth;
+	}
+	bool IsAutoSizingHeight() const {
+		return m_autosizeHeight;
+	}
 	void SetAnchor(AnchorLocation from, AnchorLocation to, UIArea *anchor,
 					int offsetX = 0, int offsetY = 0);
 
