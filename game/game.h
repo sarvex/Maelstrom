@@ -37,7 +37,7 @@ public:
 	virtual void OnShow();
 	virtual void OnHide();
 	virtual void OnTick();
-	virtual void OnDrawBackground();
+	virtual void OnDraw(DRAWLEVEL drawLevel);
 	virtual bool OnAction(UIBaseElement *sender, const char *action);
 
 protected:

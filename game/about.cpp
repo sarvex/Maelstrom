@@ -92,9 +92,13 @@ AboutPanelDelegate::OnHide()
 }
 
 void
-AboutPanelDelegate::OnDraw()
+AboutPanelDelegate::OnDraw(DRAWLEVEL drawLevel)
 {
 	int i;
+
+	if ( drawLevel != DRAWLEVEL_NORMAL ) {
+		return;
+	}
 
 	for ( i=0; i<numsprites; ++i ) {
 		objects[i]->Move(0);

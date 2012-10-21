@@ -504,13 +504,13 @@ UIElement::SetImage(UITexture *image)
 }
 
 void
-UIElement::Draw()
+UIElement::Draw(DRAWLEVEL drawLevel)
 {
-	if (m_drawEngine) {
+	if (m_drawEngine && drawLevel == GetDrawLevel()) {
 		m_drawEngine->OnDraw();
 	}
 
-	UIBaseElement::Draw();
+	UIBaseElement::Draw(drawLevel);
 }
 
 bool

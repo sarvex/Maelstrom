@@ -55,12 +55,9 @@ public:
 	// This is called once per frame before the screen is drawn
 	virtual void OnTick() { }
 
-	// This is called before the panel is drawn
-	virtual void OnDrawBackground() { }
-
 	// This is called after the panel is drawn, before the screen
 	// is updated, to allow any additional custom drawing.
-	virtual void OnDraw() { }
+	virtual void OnDraw(DRAWLEVEL drawLevel) { }
 
 	// This is called for events not handled by UI elements
 	virtual bool HandleEvent(const SDL_Event &event) { return false; }
@@ -99,7 +96,7 @@ public:
 
 	virtual void Poll();
 	virtual void Tick();
-	override void Draw();
+	override void Draw(DRAWLEVEL drawLevel);
 	override bool HandleEvent(const SDL_Event &event);
 	override void Action(UIBaseElement *sender, const char *action);
 

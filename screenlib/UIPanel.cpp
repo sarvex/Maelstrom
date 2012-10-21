@@ -152,16 +152,12 @@ UIPanel::Tick()
 }
 
 void
-UIPanel::Draw()
+UIPanel::Draw(DRAWLEVEL drawLevel)
 {
-	if (m_delegate) {
-		m_delegate->OnDrawBackground();
-	}
-
-	UIBaseElement::Draw();
+	UIBaseElement::Draw(drawLevel);
 
 	if (m_delegate) {
-		m_delegate->OnDraw();
+		m_delegate->OnDraw(drawLevel);
 	}
 }
 

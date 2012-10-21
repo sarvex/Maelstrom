@@ -39,7 +39,7 @@ public:
 
 	virtual void OnShow();
 	virtual void OnHide();
-	virtual void OnDraw();
+	virtual void OnDraw(DRAWLEVEL drawLevel);
 
 protected:
 	int numsprites;

@@ -320,7 +320,9 @@ UIManager::Draw(bool fullUpdate)
 	for (i = 0; i < m_visible.length(); ++i) {
 		UIPanel *panel = m_visible[i];
 
-		panel->Draw();
+		for (int drawLevel = 0; drawLevel < NUM_DRAWLEVELS; ++drawLevel) {
+			panel->Draw((DRAWLEVEL)drawLevel);
+		}
 	}
 	if (fullUpdate) {
 		m_screen->Update();

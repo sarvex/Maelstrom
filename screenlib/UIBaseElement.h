@@ -35,6 +35,14 @@ class UITemplates;
 
 typedef int UIElementType;
 
+enum DRAWLEVEL
+{
+	DRAWLEVEL_BACKGROUND,
+	DRAWLEVEL_NORMAL,
+	DRAWLEVEL_POPUP,
+	NUM_DRAWLEVELS
+};
+
 class UIBaseElement : public UIArea
 {
 public:
@@ -194,7 +202,10 @@ public:
 		return m_disabled || m_parentDisabled;
 	}
 
-	virtual void Draw();
+	void SetDrawLevel(DRAWLEVEL drawLevel);
+	DRAWLEVEL GetDrawLevel() const { return m_drawLevel; }
+
+	virtual void Draw(DRAWLEVEL drawLevel);
 	virtual bool HandleEvent(const SDL_Event &event);
 	virtual void Action(UIBaseElement *sender, const char *action);
 
@@ -210,12 +221,14 @@ protected:
 	bool m_shown;
 	bool m_disabled;
 	bool m_parentDisabled;
+	DRAWLEVEL m_drawLevel;
 	array<UIBaseElement *> m_elements;
 
 protected:
 	UIBaseElement *CreateElement(const char *type);
 
 	bool LoadElements(rapidxml::xml_node<> *node, const UITemplates *templates);
+	bool LoadDrawLevel(rapidxml::xml_node<> *node, const char *name, DRAWLEVEL &value);
 
 	virtual void UpdateDisabledState();
 

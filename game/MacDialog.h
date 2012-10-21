@@ -35,7 +35,7 @@ public:
 	override bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
 
 	override void Show();
-	override void Draw();
+	override void Draw(DRAWLEVEL drawLevel);
 
 protected:
 	enum {

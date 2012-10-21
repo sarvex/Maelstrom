@@ -42,6 +42,7 @@ UIBaseElement::UIBaseElement(UIManager *ui, const char *name) :
 	m_shown = true;
 	m_disabled = false;
 	m_parentDisabled = false;
+	m_drawLevel = DRAWLEVEL_NORMAL;
 }
 
 UIBaseElement::UIBaseElement(UIBaseElement *parent, const char *name) :
@@ -54,6 +55,7 @@ UIBaseElement::UIBaseElement(UIBaseElement *parent, const char *name) :
 	m_shown = true;
 	m_disabled = false;
 	m_parentDisabled = parent->IsDisabled();
+	m_drawLevel = DRAWLEVEL_NORMAL;
 }
 
 UIBaseElement::~UIBaseElement()
@@ -93,6 +95,11 @@ UIBaseElement::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 		if (!LoadElements(child, templates)) {
 			return false;
 		}
+	}
+
+	DRAWLEVEL drawLevel;
+	if (LoadDrawLevel(node, "drawLevel", drawLevel)) {
+		SetDrawLevel(drawLevel);
 	}
 
 	return true;
@@ -173,11 +180,21 @@ UIBaseElement::UpdateDisabledState()
 }
 
 void
-UIBaseElement::Draw()
+UIBaseElement::SetDrawLevel(DRAWLEVEL drawLevel)
+{
+	m_drawLevel = drawLevel;
+
+	for (int i = 0; i < m_elements.length(); ++i) {
+		m_elements[i]->SetDrawLevel(drawLevel);
+	}
+}
+
+void
+UIBaseElement::Draw(DRAWLEVEL drawLevel)
 {
 	for (int i = 0; i < m_elements.length(); ++i) {
 		if (m_elements[i]->IsShown()) {
-			m_elements[i]->Draw();
+			m_elements[i]->Draw(drawLevel);
 		}
 	}
 }
@@ -241,4 +258,30 @@ UIBaseElement::LoadElements(rapidxml::xml_node<> *node, const UITemplates *templ
 		}
 	}
 	return true;
+}
+
+bool
+UIBaseElement::LoadDrawLevel(rapidxml::xml_node<> *node, const char *name, DRAWLEVEL &value)
+{
+	rapidxml::xml_attribute<> *attr;
+
+	attr = node->first_attribute(name, 0, false);
+	if (attr) {
+		static const char *s_drawLevels[] = {
+			"background",
+			"normal",
+			"popup"
+		};
+		SDL_COMPILE_TIME_ASSERT(drawLevels, SDL_arraysize(s_drawLevels) == NUM_DRAWLEVELS);
+
+		for (int i = 0; i < NUM_DRAWLEVELS; ++i) {
+			if (SDL_strcasecmp(attr->value(), s_drawLevels[i]) == 0) {
+				value = (DRAWLEVEL)i;
+				return true;
+			}
+		}
+		fprintf(stderr, "Warning: Unknown draw level: %s\n", attr->value());
+		return false;
+	}
+	return false;
 }

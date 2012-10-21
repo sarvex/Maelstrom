@@ -168,7 +168,7 @@ public:
 	}
 
 	// Draw!
-	override void Draw();
+	override void Draw(DRAWLEVEL drawLevel);
 
 	// Events
 	override bool HandleEvent(const SDL_Event &event);

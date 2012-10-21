@@ -404,9 +404,13 @@ GamePanelDelegate::OnTick()
 }
 
 void
-GamePanelDelegate::OnDrawBackground()
+GamePanelDelegate::OnDraw(DRAWLEVEL drawLevel)
 {
 	int i;
+
+	if (drawLevel != DRAWLEVEL_BACKGROUND) {
+		return;
+	}
 
 	/* Draw the status frame */
 	DrawStatus(false);
