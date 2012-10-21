@@ -184,11 +184,12 @@ UIDrawEngine::OnTextChanged()
 						m_element->GetFontSize(),
 						m_element->GetFontStyle(),
 						m_element->GetCurrentColor());
-
-		w = m_textImage->Width();
-		h = m_textImage->Height();
-		m_element->GetTextArea()->AutoSize(w, h);
-		m_element->AutoSize(w, h);
+		if (m_textImage) {
+			w = m_textImage->Width();
+			h = m_textImage->Height();
+			m_element->GetTextArea()->AutoSize(w, h);
+			m_element->AutoSize(w, h);
+		}
 	} else {
 		m_element->GetTextArea()->AutoSize(0, m_element->Height());
 		m_element->AutoSize(0, m_element->Height());
