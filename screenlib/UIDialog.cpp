@@ -66,14 +66,19 @@ UIDialog::HandleEvent(const SDL_Event &event)
 		return true;
 	}
 
-	if (event.type != SDL_QUIT && event.type != SDL_DROPFILE) {
-		/* Press escape to cancel out of dialogs */
+	// Dialogs grab keyboard and mouse events
+	if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP ||
+	    event.type == SDL_TEXTEDITING || event.type == SDL_TEXTINPUT ||
+	    event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP ||
+	    event.type == SDL_MOUSEMOTION || event.type == SDL_MOUSEWHEEL) {
+		// Press escape to cancel out of dialogs
 		if (event.type == SDL_KEYUP &&
 		    event.key.keysym.sym == SDLK_ESCAPE) {
 			GetUI()->HidePanel(this);
 		}
 		return true;
 	}
+
 	return false;
 }
 
