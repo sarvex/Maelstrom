@@ -127,6 +127,11 @@ MaelstromUI::CreateText(const char *text, const char *fontName, int fontSize, UI
 	char *key;
 	int keysize;
 	SDL_Texture *texture;
+	float logicalScale;
+
+	/* Adjust the font size by our logical scale */
+	logicalScale = m_screen->GetLogicalScale();
+	fontSize = (int)(fontSize * logicalScale);
 
 	/* First see if we can find it in our cache */
 	keysize = strlen(fontName)+1+2+1+1+1+8+1+strlen(text)+1;
@@ -134,7 +139,7 @@ MaelstromUI::CreateText(const char *text, const char *fontName, int fontSize, UI
 	SDL_snprintf(key, keysize, "%s:%d:%c:%8.8x:%s", fontName, fontSize, '0'+fontStyle, color, text);
 	if (hash_find(m_strings, key, (const void**)&texture)) {
 		SDL_stack_free(key);
-		return new UITexture(texture);
+		return new UITexture(texture, logicalScale);
 	}
 
 	font = GetFont(fontName, fontSize);
@@ -165,7 +170,7 @@ MaelstromUI::CreateText(const char *text, const char *fontName, int fontSize, UI
 	}
 	SDL_stack_free(key);
 
-	return new UITexture(texture);
+	return new UITexture(texture, logicalScale);
 }
 
 void 

@@ -139,12 +139,12 @@ UIDrawEngine::OnDraw()
 			m_screen->GetRGB(m_element->GetTextShadowColor(), &r, &g, &b);
 			SDL_SetTextureColorMod(m_textImage->Texture(), r, g, b);
 
-			m_screen->QueueBlit(m_textImage->Texture(), area->X()+x, area->Y()+y, NOCLIP);
+			m_screen->QueueBlit(m_textImage->Texture(), area->X()+x, area->Y()+y, area->Width(), area->Height(), NOCLIP);
 
 			m_screen->GetRGB(m_element->GetCurrentColor(), &r, &g, &b);
 			SDL_SetTextureColorMod(m_textImage->Texture(), r, g, b);
 		}
-		m_screen->QueueBlit(m_textImage->Texture(), area->X(), area->Y(), NOCLIP);
+		m_screen->QueueBlit(m_textImage->Texture(), area->X(), area->Y(), area->Width(), area->Height(), NOCLIP);
 	}
 }
 
