@@ -40,6 +40,7 @@ UIManager::UIManager(FrameBuf *screen, Prefs *prefs) :
 {
 	m_screen = screen;
 	m_prefs = prefs;
+	m_panelTransition = PANEL_TRANSITION_NONE;
 	m_conditions = hash_create(screen, hash_hash_string, hash_keymatch_string, hash_nuke_string);
 
 	AddLoadPath(".");
@@ -220,7 +221,8 @@ UIManager::HidePanel(UIPanel *panel)
 	if (panel && m_visible.remove(panel)) {
 		panel->Hide();
 
-		if (panel->IsFullscreen()) {
+		if (m_panelTransition == PANEL_TRANSITION_FADE &&
+		    panel->IsFullscreen()) {
 			m_screen->FadeOut();
 		}
 		if (!panel->IsCursorVisible()) {
@@ -326,7 +328,9 @@ UIManager::Draw(bool fullUpdate)
 	}
 	if (fullUpdate) {
 		m_screen->Update();
-		m_screen->FadeIn();
+		if (m_panelTransition == PANEL_TRANSITION_FADE) {
+			m_screen->FadeIn();
+		}
 	}
 }
 

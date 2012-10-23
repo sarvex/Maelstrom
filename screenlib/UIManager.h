@@ -37,6 +37,12 @@ class UIElement;
 class Prefs;
 struct HashTable;
 
+enum PANEL_TRANSITION_TYPE
+{
+	PANEL_TRANSITION_NONE,
+	PANEL_TRANSITION_FADE,
+};
+
 class UIManager : public UIArea, public UIFontInterface, public UIImageInterface, public UISoundInterface
 {
 public:
@@ -94,6 +100,10 @@ public:
 		DeletePanel(GetPanel(name, false));
 	}
 
+	void SetPanelTransition(PANEL_TRANSITION_TYPE transition) {
+		m_panelTransition = transition;
+	}
+
 	void HideDialogs();
 
 	void SetCondition(const char *token, bool isTrue = true);
@@ -132,6 +142,7 @@ protected:
 	array<UIPanel *> m_panels;
 	array<UIPanel *> m_visible;
 	array<UIPanel *> m_delete;
+	PANEL_TRANSITION_TYPE m_panelTransition;
 	HashTable *m_conditions;
 };
 

@@ -32,7 +32,7 @@
 #define MAX(A, B)	((A > B) ? A : B)
 
 /* Constructors cannot fail. :-/ */
-FrameBuf:: FrameBuf() : ErrorBase()
+FrameBuf::FrameBuf() : ErrorBase()
 {
 	/* Initialize various variables to null state */
 	window = NULL;
@@ -43,7 +43,7 @@ FrameBuf:: FrameBuf() : ErrorBase()
 }
 
 int
-FrameBuf:: Init(int width, int height, Uint32 window_flags, Uint32 render_flags,
+FrameBuf::Init(int width, int height, Uint32 window_flags, Uint32 render_flags,
 		SDL_Surface *icon)
 {
 	if (window_flags & SDL_WINDOW_RESIZABLE) {
@@ -84,7 +84,7 @@ FrameBuf:: Init(int width, int height, Uint32 window_flags, Uint32 render_flags,
 	return(0);
 }
 
-FrameBuf:: ~FrameBuf()
+FrameBuf::~FrameBuf()
 {
 	if (renderer) {
 		SDL_DestroyRenderer(renderer);
@@ -151,7 +151,7 @@ extern "C" {
 #endif
 
 void
-FrameBuf:: GetCursorPosition(int *x, int *y)
+FrameBuf::GetCursorPosition(int *x, int *y)
 {
 	float scale_x, scale_y;
 
@@ -185,7 +185,7 @@ FrameBuf::DisableTextInput()
 }
 
 void
-FrameBuf:: GetDesktopSize(int &w, int &h) const
+FrameBuf::GetDesktopSize(int &w, int &h) const
 {
 	SDL_DisplayMode mode;
 
@@ -199,13 +199,13 @@ FrameBuf:: GetDesktopSize(int &w, int &h) const
 }
 
 void
-FrameBuf:: GetDisplaySize(int &w, int &h) const
+FrameBuf::GetDisplaySize(int &w, int &h) const
 {
 	SDL_GetWindowSize(window, &w, &h);
 }
 
 void
-FrameBuf:: GetLogicalSize(int &w, int &h) const
+FrameBuf::GetLogicalSize(int &w, int &h) const
 {
 	SDL_RenderGetLogicalSize(renderer, &w, &h);
 	if (!w || !h) {
@@ -215,14 +215,14 @@ FrameBuf:: GetLogicalSize(int &w, int &h) const
 }
 
 void
-FrameBuf:: SetLogicalSize(int w, int h)
+FrameBuf::SetLogicalSize(int w, int h)
 {
 	SDL_RenderSetLogicalSize(renderer, w, h);
 	UpdateWindowSize(w, h);
 }
 
 void
-FrameBuf:: SetLogicalScale(float scale)
+FrameBuf::SetLogicalScale(float scale)
 {
 	int w, h;
 	SDL_Texture *target;
@@ -256,7 +256,7 @@ FrameBuf:: SetLogicalScale(float scale)
 }
 
 void
-FrameBuf:: QueueBlit(SDL_Texture *src,
+FrameBuf::QueueBlit(SDL_Texture *src,
 			int srcx, int srcy, int srcw, int srch,
 			int dstx, int dsty, int dstw, int dsth, clipval do_clip)
 {
@@ -289,19 +289,19 @@ FrameBuf:: QueueBlit(SDL_Texture *src,
 }
 
 void
-FrameBuf:: StretchBlit(const SDL_Rect *dstrect, SDL_Texture *src, const SDL_Rect *srcrect)
+FrameBuf::StretchBlit(const SDL_Rect *dstrect, SDL_Texture *src, const SDL_Rect *srcrect)
 {
 	SDL_RenderCopy(renderer, src, srcrect, dstrect);
 }
 
 void
-FrameBuf:: Update(void)
+FrameBuf::Update(void)
 {
 	SDL_RenderPresent(renderer);
 }
 
 void
-FrameBuf:: Fade(void)
+FrameBuf::Fade(void)
 {
 #ifdef FAST_ITERATION
 	return;
@@ -329,7 +329,7 @@ FrameBuf:: Fade(void)
 } 
 
 int
-FrameBuf:: ScreenDump(const char *prefix, int x, int y, int w, int h)
+FrameBuf::ScreenDump(const char *prefix, int x, int y, int w, int h)
 {
 	SDL_Rect rect;
 	SDL_Surface *dump;
@@ -383,7 +383,7 @@ FrameBuf:: ScreenDump(const char *prefix, int x, int y, int w, int h)
 }
 
 SDL_Texture *
-FrameBuf:: LoadImage(const char *file)
+FrameBuf::LoadImage(const char *file)
 {
 	SDL_Surface *surface;
 	SDL_Texture *texture;
@@ -398,13 +398,13 @@ FrameBuf:: LoadImage(const char *file)
 }
 
 SDL_Texture *
-FrameBuf:: LoadImage(SDL_Surface *surface)
+FrameBuf::LoadImage(SDL_Surface *surface)
 {
 	return SDL_CreateTextureFromSurface(renderer, surface);
 }
 
 SDL_Texture *
-FrameBuf:: LoadImage(int w, int h, Uint32 *pixels)
+FrameBuf::LoadImage(int w, int h, Uint32 *pixels)
 {
 	SDL_Texture *texture;
 
@@ -423,13 +423,13 @@ FrameBuf:: LoadImage(int w, int h, Uint32 *pixels)
 }
 
 void
-FrameBuf:: FreeImage(SDL_Texture *image)
+FrameBuf::FreeImage(SDL_Texture *image)
 {
 	SDL_DestroyTexture(image);
 }
 
 SDL_Texture *
-FrameBuf:: CreateRenderTarget(int w, int h)
+FrameBuf::CreateRenderTarget(int w, int h)
 {
 	SDL_Texture *texture;
 
@@ -442,7 +442,7 @@ FrameBuf:: CreateRenderTarget(int w, int h)
 }
 
 int
-FrameBuf:: SetRenderTarget(SDL_Texture *texture)
+FrameBuf::SetRenderTarget(SDL_Texture *texture)
 {
 	if (SDL_SetRenderTarget(renderer, texture) < 0) {
 		SetError("Couldn't set render target: %s", SDL_GetError());
@@ -452,7 +452,7 @@ FrameBuf:: SetRenderTarget(SDL_Texture *texture)
 }
 
 void
-FrameBuf:: FreeRenderTarget(SDL_Texture *texture)
+FrameBuf::FreeRenderTarget(SDL_Texture *texture)
 {
 	SDL_DestroyTexture(texture);
 }
