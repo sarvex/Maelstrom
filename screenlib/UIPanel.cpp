@@ -23,6 +23,7 @@
 #include "UIPanel.h"
 #include "UIManager.h"
 #include "UIElement.h"
+#include "UIElementEditbox.h"
 #include "UITemplates.h"
 
 UIElementType UIPanel::s_elementType;
@@ -97,6 +98,12 @@ UIPanel::Show()
 
 	UIBaseElement::Show();
 
+	// Give the first editbox focus
+	UIElementEditbox *editbox = FindElement<UIElementEditbox>();
+	if (editbox) {
+		editbox->SetFocus(true);
+	}
+
 	if (m_delegate) {
 		m_delegate->OnShow();
 	}
@@ -110,6 +117,13 @@ UIPanel::Hide()
 	}
 
 	UIBaseElement::Hide();
+
+	// Clear focus on editboxes
+	array<UIElementEditbox*> editboxes;
+	FindElements<UIElementEditbox>(editboxes);
+	for (int i = 0; i < editboxes.length(); ++i) {
+		editboxes[i]->SetFocus(false);
+	}
 
 	// Save data to preferences
 	if (ShouldSaveData()) {
