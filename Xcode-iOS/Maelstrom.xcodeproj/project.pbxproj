@@ -6,6 +6,21 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		026598AB163AC12800A8047B /* Package Maelstrom */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 026598AC163AC12800A8047B /* Build configuration list for PBXAggregateTarget "Package Maelstrom" */;
+			buildPhases = (
+				026598B1163AC1CF00A8047B /* Package */,
+			);
+			dependencies = (
+				026598B0163AC12F00A8047B /* PBXTargetDependency */,
+			);
+			name = "Package Maelstrom";
+			productName = "Package Maelstrom";
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		93D8E49B15911A6700BD8D0E /* libSDL2_net.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 938A44A2157D55870081A436 /* libSDL2_net.a */; };
 		93D8E49C15911A6C00BD8D0E /* libSDL2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 938A44AE157D55AE0081A436 /* libSDL2.a */; };
@@ -92,6 +107,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		026598AF163AC12F00A8047B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AAD13B74145E8A8F0040B19C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AAD13B7C145E8A8F0040B19C;
+			remoteInfo = Maelstrom;
+		};
 		938A44A1157D55870081A436 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 938A4498157D555C0081A436 /* SDL_net.xcodeproj */;
@@ -137,6 +159,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		02659AB0163AE3FB00A8047B /* package-post-process.rb */ = {isa = PBXFileReference; lastKnownFileType = text.script.ruby; path = "package-post-process.rb"; sourceTree = "<group>"; };
 		938A4498157D555C0081A436 /* SDL_net.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL_net.xcodeproj; path = "Xcode-iOS/SDL_net.xcodeproj"; sourceTree = "<group>"; };
 		938A44A3157D55AE0081A436 /* SDL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL.xcodeproj; path = "Xcode-iOS/SDL/SDL.xcodeproj"; sourceTree = "<group>"; };
 		93D8E4A315911CDC00BD8D0E /* Maelstrom-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Maelstrom-Info.plist"; path = "Xcode-iOS/Maelstrom-Info.plist"; sourceTree = "<group>"; };
@@ -373,6 +396,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		02659AAF163AE3EA00A8047B /* scripts */ = {
+			isa = PBXGroup;
+			children = (
+				02659AB0163AE3FB00A8047B /* package-post-process.rb */,
+			);
+			path = scripts;
+			sourceTree = "<group>";
+		};
 		938A449E157D55870081A436 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -676,6 +707,7 @@
 		AAD13B72145E8A8F0040B19C = {
 			isa = PBXGroup;
 			children = (
+				02659AAF163AE3EA00A8047B /* scripts */,
 				AA0777C8145EB43900DB8DB3 /* physfs */,
 				AA077788145EB3F500DB8DB3 /* SDL */,
 				AAC0414C160E800800E22BC5 /* SDL_image */,
@@ -807,6 +839,7 @@
 			projectRoot = "";
 			targets = (
 				AAD13B7C145E8A8F0040B19C /* Maelstrom */,
+				026598AB163AC12800A8047B /* Package Maelstrom */,
 			);
 		};
 /* End PBXProject section */
@@ -864,6 +897,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		026598B1163AC1CF00A8047B /* Package */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = Package;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "ruby $SRCROOT/scripts/package-post-process.rb\nif [ $? -ne 0 ]; then\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
 		AAC04120160E7D8000E22BC5 /* Build Data Archive */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -951,6 +999,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		026598B0163AC12F00A8047B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AAD13B7C145E8A8F0040B19C /* Maelstrom */;
+			targetProxy = 026598AF163AC12F00A8047B /* PBXContainerItemProxy */;
+		};
 		93D8E495159117BC00BD8D0E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = "Static Library";
@@ -976,6 +1029,26 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		026598AD163AC12800A8047B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DMGDEST = "$(SRCROOT)/build";
+				DWARF_DSYM_FOLDER_PATH = "$(SRCROOT)/dSYMs";
+				FULL_PRODUCT_NAME = Maelstrom.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		026598AE163AC12800A8047B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DMGDEST = "$(SRCROOT)/build";
+				DWARF_DSYM_FOLDER_PATH = "$(SRCROOT)/dSYMs";
+				FULL_PRODUCT_NAME = Maelstrom.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		AAD13B93145E8A8F0040B19C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -998,6 +1071,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 4.1;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
+				SVNROOT = ../../../../..;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -1018,6 +1092,7 @@
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
+				SVNROOT = ../../../../..;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1060,6 +1135,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		026598AC163AC12800A8047B /* Build configuration list for PBXAggregateTarget "Package Maelstrom" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				026598AD163AC12800A8047B /* Debug */,
+				026598AE163AC12800A8047B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		AAD13B77145E8A8F0040B19C /* Build configuration list for PBXProject "Maelstrom" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
