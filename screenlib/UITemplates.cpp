@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include "SDL.h"
 #include "../physfs/physfs.h"
+#include "../utils/loadxml.h"
 
 #include "UITemplates.h"
 
@@ -66,6 +67,15 @@ UITemplates::Load(const char *file)
 	m_data[size] = '\0';
 	PHYSFS_close(fp);
 
+#ifdef RAPIDXML_NO_EXCEPTIONS
+	gLoadXMLError = NULL;
+	m_doc.parse<0>(m_data);
+	if (gLoadXMLError) {
+		delete[] m_data;
+		m_data = NULL;
+		return false;
+	}
+#else
 	try {
 		m_doc.parse<0>(m_data);
 	} catch (rapidxml::parse_error e) {
@@ -73,7 +83,7 @@ UITemplates::Load(const char *file)
 		m_data = NULL;
 		return false;
 	}
-
+#endif // RAPIDXML_NO_EXCEPTIONS
 
 	m_hashTable = hash_create(NULL, HashTable_Hash,
 					HashTable_KeyMatch,

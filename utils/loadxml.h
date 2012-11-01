@@ -23,6 +23,10 @@
 
 #include "rapidxml.h"
 
+#ifdef RAPIDXML_NO_EXCEPTIONS
+extern const char *gLoadXMLError;
+#endif
+
 extern bool LoadXML(const char *file, char *&buffer, rapidxml::xml_document<> &doc);
 
 #endif /* _loadxml_h */

@@ -38,6 +38,8 @@ extern inline void * operator new (size_t, void * p) throw() { return p ; }
 
 #endif // !USE_STL
 
+#define RAPIDXML_NO_EXCEPTIONS
+
 #include "rapidxml.hpp"
 
 #endif // _rapidxml_h

@@ -22,6 +22,10 @@
 #include "../physfs/physfs.h"
 #include "loadxml.h"
 
+#ifdef RAPIDXML_NO_EXCEPTIONS
+const char *gLoadXMLError = NULL;
+#endif
+
 bool
 LoadXML(const char *file, char *&buffer, rapidxml::xml_document<> &doc)
 {
@@ -51,6 +55,18 @@ LoadXML(const char *file, char *&buffer, rapidxml::xml_document<> &doc)
 	buffer[size] = '\0';
 	PHYSFS_close(fp);
 
+#ifdef RAPIDXML_NO_EXCEPTIONS
+	gLoadXMLError = NULL;
+	doc.parse<0>(buffer);
+	if (gLoadXMLError) {
+		/*
+		fprintf(stderr, "Warning: Couldn't parse %s: error: %s\n",
+					file, gLoadXMLError);
+		*/
+		delete[] buffer;
+		return false;
+	}
+#else
 	try {
 		doc.parse<0>(buffer);
 	} catch (rapidxml::parse_error e) {
@@ -61,6 +77,14 @@ LoadXML(const char *file, char *&buffer, rapidxml::xml_document<> &doc)
 		delete[] buffer;
 		return false;
 	}
+#endif // RAPIDXML_NO_EXCEPTIONS
 
 	return true;
 }
+
+#ifdef RAPIDXML_NO_EXCEPTIONS
+void rapidxml::parse_error_handler(const char *what, void *where)
+{
+	gLoadXMLError = what;
+}
+#endif // RAPIDXML_NO_EXCEPTIONS

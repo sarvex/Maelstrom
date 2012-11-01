@@ -182,8 +182,8 @@ UIElementThumbstick::GetTouchPosition(const SDL_Event &event, int &x, int &y)
 bool
 UIElementThumbstick::GetTouchAngleAndDistance(int x, int y, float &angle, float &distance)
 {
-	int a = (x - m_startX);
-	int b = (y - m_startY);
+	float a = (float)(x - m_startX);
+	float b = (float)(y - m_startY);
 
 	// The angle is in the 0 - 2PI range with 0 being the +Y axis
 	angle = M_PI - SDL_atan2(a, b);
