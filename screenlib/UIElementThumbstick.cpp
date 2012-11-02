@@ -72,11 +72,11 @@ UIElementThumbstick::Load(rapidxml::xml_node<> *node, const UITemplates *templat
 		LoadNumber(child, "arc", arc);
 		action.arc_begin = DEGREES_TO_RADS(angle - arc/2);
 		if (action.arc_begin < 0) {
-			action.arc_begin += 2 * M_PI;
+			action.arc_begin += (float)(2 * M_PI);
 		}
 		action.arc_end = DEGREES_TO_RADS(angle + arc/2);
 		if (action.arc_end > (2 * M_PI)) {
-			action.arc_end -= 2 * M_PI;
+			action.arc_end -= (float)(2 * M_PI);
 		}
 
 		LoadNumber(child, "active_radius", action.active_radius);
@@ -186,8 +186,8 @@ UIElementThumbstick::GetTouchAngleAndDistance(int x, int y, float &angle, float 
 	float b = (float)(y - m_startY);
 
 	// The angle is in the 0 - 2PI range with 0 being the +Y axis
-	angle = M_PI - SDL_atan2(a, b);
-	distance = SDL_sqrt((a*a) + (b*b));
+	angle = (float)(M_PI - SDL_atan2(a, b));
+	distance = (float)SDL_sqrt((a*a) + (b*b));
 	return true;
 }
 

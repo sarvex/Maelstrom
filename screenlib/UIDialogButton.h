@@ -31,7 +31,9 @@ public:
 	UIDialogButton(UIBaseElement *parent, const char *name, UIDrawEngine *drawEngine);
 
 	override bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
-
+	
+	void SetCloseDialog(bool close)	    { m_closeDialog = close; }
+	
 	bool IsDefault() const {
 		return m_default;
 	}
