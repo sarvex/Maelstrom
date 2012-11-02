@@ -239,7 +239,7 @@ int MaelstromMain(int argc, char *argv[])
 	SeedRandom(0L);
 
 	/* Parse command line arguments */
-#if !defined(FAST_ITERATION) || defined(__IPHONEOS__)
+#if 0 //!defined(FAST_ITERATION) || defined(__IPHONEOS__)
 	window_flags |= SDL_WINDOW_FULLSCREEN;
 #endif
 	for ( progname=argv[0]; --argc; ++argv ) {
