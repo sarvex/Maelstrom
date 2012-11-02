@@ -103,6 +103,9 @@ public:
 	void SetPanelTransition(PANEL_TRANSITION_TYPE transition) {
 		m_panelTransition = transition;
 	}
+	PANEL_TRANSITION_TYPE GetPanelTransition() const {
+		return m_panelTransition;
+	}
 
 	void HideDialogs();
 
