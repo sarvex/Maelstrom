@@ -932,7 +932,9 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 	}
 
 	/* -- Throw up our intro screen */
-	screen->FadeOut();
+	if (ui->GetPanelTransition() == PANEL_TRANSITION_FADE) {
+		screen->FadeOut();
+	}
 	ui->ShowPanel(PANEL_LOADING);
 	ui->Draw();
 
