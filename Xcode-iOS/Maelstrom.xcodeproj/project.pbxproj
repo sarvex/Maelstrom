@@ -52,6 +52,8 @@
 		AA579DD5161C00A2005F809B /* app-icon114px.png in Resources */ = {isa = PBXBuildFile; fileRef = AA579DD4161C00A2005F809B /* app-icon114px.png */; };
 		AA7557A61594EE8F00BBD41B /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA7557A51594EE8F00BBD41B /* GameKit.framework */; };
 		AA7557AB1595062C00BBD41B /* Maelstrom_GameKit.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA7557AA1595062C00BBD41B /* Maelstrom_GameKit.mm */; };
+		AA9352DA1643958300B7B41B /* libSDL2_ttf.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AAD53E7E164392D700203E03 /* libSDL2_ttf.a */; };
+		AA9352E21643960B00B7B41B /* libFreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA9352E11643960B00B7B41B /* libFreetype.a */; };
 		AA97808315769F3400472542 /* mainstub.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA97808215769F3400472542 /* mainstub.cpp */; };
 		AA9781571576A00100472542 /* Mac_FontServ.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA97811D1576A00100472542 /* Mac_FontServ.cpp */; };
 		AA9781581576A00100472542 /* Mac_Sound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA97811F1576A00100472542 /* Mac_Sound.cpp */; };
@@ -104,6 +106,7 @@
 		AAD13B84145E8A8F0040B19C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAD13B83145E8A8F0040B19C /* Foundation.framework */; };
 		AAD13B86145E8A8F0040B19C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAD13B85145E8A8F0040B19C /* CoreGraphics.framework */; };
 		AAD13B8C145E8A8F0040B19C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = AAD13B8A145E8A8F0040B19C /* InfoPlist.strings */; };
+		AAD53E5F1643923500203E03 /* SDL_ttf.xcodeproj in Resources */ = {isa = PBXBuildFile; fileRef = AAD53E5E1643923500203E03 /* SDL_ttf.xcodeproj */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -155,6 +158,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = BE1FA74107AF4C45004B6283;
 			remoteInfo = libSDL_image;
+		};
+		AAD53E7D164392D700203E03 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AAD53E5E1643923500203E03 /* SDL_ttf.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BE48FD6E07AFA17000BB41DA;
+			remoteInfo = "Static Library";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -258,6 +268,7 @@
 		AA7557A51594EE8F00BBD41B /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		AA7557A71595019400BBD41B /* Maelstrom_GameKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Maelstrom_GameKit.h; path = "Xcode-iOS/Maelstrom_GameKit.h"; sourceTree = "<group>"; };
 		AA7557AA1595062C00BBD41B /* Maelstrom_GameKit.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = Maelstrom_GameKit.mm; path = "Xcode-iOS/Maelstrom_GameKit.mm"; sourceTree = "<group>"; };
+		AA9352E11643960B00B7B41B /* libFreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libFreetype.a; path = "../../../../../3rdparty/iphone/libfreetype/Xcode-iPhoneOS/build/Release-iphoneos/libFreetype.a"; sourceTree = "<group>"; };
 		AA97808215769F3400472542 /* mainstub.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mainstub.cpp; sourceTree = "<group>"; };
 		AA97811A1576A00100472542 /* bitesex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bitesex.h; sourceTree = "<group>"; };
 		AA97811C1576A00100472542 /* Mac_Compat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mac_Compat.h; sourceTree = "<group>"; };
@@ -370,6 +381,8 @@
 		AAD13B83145E8A8F0040B19C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		AAD13B85145E8A8F0040B19C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		AAD13B8B145E8A8F0040B19C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		AAD53E5D1643922300203E03 /* SDL_ttf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_ttf.h; sourceTree = "<group>"; };
+		AAD53E5E1643923500203E03 /* SDL_ttf.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL_ttf.xcodeproj; path = "Xcode-iOS/SDL_ttf.xcodeproj"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -379,8 +392,10 @@
 			files = (
 				AA0777DB145EC12900DB8DB3 /* libz.dylib in Frameworks */,
 				93D8E49C15911A6C00BD8D0E /* libSDL2.a in Frameworks */,
-				93D8E49B15911A6700BD8D0E /* libSDL2_net.a in Frameworks */,
 				AAC0415B160E811F00E22BC5 /* libSDL2_image.a in Frameworks */,
+				AA9352DA1643958300B7B41B /* libSDL2_ttf.a in Frameworks */,
+				93D8E49B15911A6700BD8D0E /* libSDL2_net.a in Frameworks */,
+				AA9352E21643960B00B7B41B /* libFreetype.a in Frameworks */,
 				AAD13B82145E8A8F0040B19C /* UIKit.framework in Frameworks */,
 				AAD13B84145E8A8F0040B19C /* Foundation.framework in Frameworks */,
 				AAC04179160E84D000E22BC5 /* MobileCoreServices.framework in Frameworks */,
@@ -707,10 +722,12 @@
 		AAD13B72145E8A8F0040B19C = {
 			isa = PBXGroup;
 			children = (
+				AA9352E11643960B00B7B41B /* libFreetype.a */,
 				02659AAF163AE3EA00A8047B /* scripts */,
 				AA0777C8145EB43900DB8DB3 /* physfs */,
 				AA077788145EB3F500DB8DB3 /* SDL */,
 				AAC0414C160E800800E22BC5 /* SDL_image */,
+				AAD53E43164391BD00203E03 /* SDL_ttf */,
 				AA0777C4145EB42200DB8DB3 /* SDL_net */,
 				AAD13B87145E8A8F0040B19C /* Maelstrom */,
 				AAD13B80145E8A8F0040B19C /* Frameworks */,
@@ -781,6 +798,32 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		AAD53E43164391BD00203E03 /* SDL_ttf */ = {
+			isa = PBXGroup;
+			children = (
+				AAD53E5E1643923500203E03 /* SDL_ttf.xcodeproj */,
+				AAD53E5C1643921100203E03 /* include */,
+			);
+			name = SDL_ttf;
+			path = ../../../../../3rdparty/iphone/SDL_ttf;
+			sourceTree = "<group>";
+		};
+		AAD53E5C1643921100203E03 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				AAD53E5D1643922300203E03 /* SDL_ttf.h */,
+			);
+			name = include;
+			sourceTree = "<group>";
+		};
+		AAD53E7A164392D700203E03 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AAD53E7E164392D700203E03 /* libSDL2_ttf.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -835,6 +878,10 @@
 					ProductGroup = 938A449E157D55870081A436 /* Products */;
 					ProjectRef = 938A4498157D555C0081A436 /* SDL_net.xcodeproj */;
 				},
+				{
+					ProductGroup = AAD53E7A164392D700203E03 /* Products */;
+					ProjectRef = AAD53E5E1643923500203E03 /* SDL_ttf.xcodeproj */;
+				},
 			);
 			projectRoot = "";
 			targets = (
@@ -873,6 +920,13 @@
 			remoteRef = AAC04159160E809F00E22BC5 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		AAD53E7E164392D700203E03 /* libSDL2_ttf.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libSDL2_ttf.a;
+			remoteRef = AAD53E7D164392D700203E03 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
@@ -891,6 +945,7 @@
 				AA438FDC161D59A700FE5F41 /* Default-568h@2x.png in Resources */,
 				AA438FDE161D59C700FE5F41 /* Default-Landscape~ipad.png in Resources */,
 				AA438FE0161D5A4200FE5F41 /* Default-Landscape@2x~ipad.png in Resources */,
+				AAD53E5F1643923500203E03 /* SDL_ttf.xcodeproj in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

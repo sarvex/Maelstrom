@@ -130,7 +130,12 @@ MaelstromUI::CreateText(const char *text, const char *fontName, int fontSize, UI
 	float logicalScale;
 
 	/* Adjust the font size by our logical scale */
-	logicalScale = m_screen->GetLogicalScale();
+	//logicalScale = m_screen->GetLogicalScale();
+	int displayWidth, displayHeight;
+	int logicalWidth, logicalHeight;
+	m_screen->GetDisplaySize(displayWidth, displayHeight);
+	m_screen->GetLogicalSize(logicalWidth, logicalHeight);
+	logicalScale = (float)displayWidth / logicalWidth;
 	fontSize = (int)(fontSize * logicalScale);
 
 	/* First see if we can find it in our cache */

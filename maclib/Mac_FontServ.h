@@ -37,6 +37,8 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+#include "SDL_ttf.h"
+
 #include "../utils/ErrorBase.h"
 #include "../screenlib/SDL_FrameBuf.h"
 
@@ -82,13 +84,17 @@ typedef struct MFont {
 
 	/* The Raw Data */
 	Uint8 *nfnt;
+
+	/* TrueType font information */
+	TTF_Font *font;
 } MFont;
 
 class FontServ : public ErrorBase {
 
 public:
 	/* The "fontfile" parameter should be a Macintosh Resource fork file
-	   that contains FOND and NFNT information for the desired fonts.
+	   that contains FOND and NFNT information for the desired fonts, or
+	   a TrueType font file.
 	*/
 	FontServ(FrameBuf *screen, const char *fontfile);
 	virtual ~FontServ();

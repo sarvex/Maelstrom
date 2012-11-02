@@ -46,7 +46,6 @@
 Prefs    *prefs = NULL;
 Sound    *sound = NULL;
 FontServ *fontserv = NULL;
-MFont    *fonts[NUM_FONTS];
 FrameBuf *screen = NULL;
 UIManager *ui = NULL;
 
@@ -804,7 +803,6 @@ void CleanUp(void)
 /* -- Perform some initializations and report failure if we choke */
 int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 {
-	int i;
 	int w, h;
 	SDL_Surface *icon;
 
@@ -872,17 +870,6 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 	if ( fontserv->Error() ) {
 		error("Fatal: %s\n", fontserv->Error());
 		return(-1);
-	}
-	memset(fonts, 0, sizeof(fonts));
-	fonts[CHICAGO_12] = fontserv->NewFont("Chicago", 12);
-	fonts[GENEVA_9] = fontserv->NewFont("Geneva", 9);
-	fonts[NEWYORK_14] = fontserv->NewFont("New York", 14);
-	fonts[NEWYORK_18] = fontserv->NewFont("New York", 18);
-	for ( i = 0; i < NUM_FONTS; ++i ) {
-		if ( !fonts[i] ) {
-			error("Fatal: Couldn't load fonts");
-			return(-1);
-		}
 	}
 
 	/* Load the Sound Server and initialize sound */

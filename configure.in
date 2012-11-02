@@ -61,6 +61,17 @@ http://www.libsdl.org/projects/SDL_image/
 ])
 fi
 
+dnl Check for SDL_ttf
+AC_CHECK_LIB(SDL2_ttf, TTF_Init, have_SDL_ttf=yes)
+if test x$have_SDL_ttf = xyes; then
+    LIBS="$LIBS -lSDL2_ttf"
+else
+    AC_MSG_ERROR([*** Can't find the SDL_ttf library
+The SDL_ttf library can be found at:
+http://www.libsdl.org/projects/SDL_ttf/
+])
+fi
+
 dnl Check for SDL_net
 AC_CHECK_LIB(SDL2_net, SDLNet_Init, have_SDL_net=yes)
 if test x$have_SDL_net = xyes; then

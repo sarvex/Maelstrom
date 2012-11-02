@@ -27,6 +27,7 @@
 #include <string.h>
 
 #include "../physfs/physfs.h"
+#include "../utils/physfsrwops.h"
 #include "SDL_types.h"
 #include "bitesex.h"
 #include "Mac_FontServ.h"
@@ -70,6 +71,19 @@ struct FOND {
 };
 
 
+static TTF_Font *GetTrueTypeFont(const char *name, int ptsize)
+{
+	char file[128];
+	SDL_RWops *src;
+
+	SDL_snprintf(file, sizeof(file), "Fonts/%s.ttf", name);
+	src = PHYSFSRWOPS_openRead(file);
+	if (src) {
+		return TTF_OpenFontRW(src, 1, ptsize);
+	}
+	return NULL;
+}
+
 static Uint8 *GetFontData(const char *type, int ID)
 {
 	char file[128];
@@ -97,18 +111,20 @@ static Uint8 *GetFontData(const char *type, int ID)
 	return data;
 }
 
-FontServ:: FontServ(FrameBuf *_screen, const char *fontfile) : ErrorBase()
+FontServ::FontServ(FrameBuf *_screen, const char *fontfile) : ErrorBase()
 {
 	screen = _screen;
+	TTF_Init();
 }
 
-FontServ:: ~FontServ()
+FontServ::~FontServ()
 {
+	TTF_Quit();
 }
 
 
 MFont *
-FontServ:: NewFont(const char *fontname, int ptsize)
+FontServ::NewFont(const char *fontname, int ptsize)
 {
 	static struct {
 		const char *fontname;
@@ -127,6 +143,16 @@ FontServ:: NewFont(const char *fontname, int ptsize)
 	int i, swapfont;
 	MFont *font;
 
+	font = new MFont;
+	SDL_zerop(font);
+
+	/* See if this is a TrueType font */
+	font->font = GetTrueTypeFont(fontname, ptsize);
+	if ( font->font ) {
+		/* That was easy :) */
+		return font;
+	}
+
 	/* Get the font family */
 	fond = NULL;
 	for (i = 0; i < (int)SDL_arraysize(fonts); ++i) {
@@ -136,6 +162,7 @@ FontServ:: NewFont(const char *fontname, int ptsize)
 		}
 	}
 	if ( fond == NULL ) {
+		delete font;
 		SetError("Warning: Font family '%s' not found", fontname);
 		return(NULL);
 	}
@@ -167,6 +194,7 @@ FontServ:: NewFont(const char *fontname, int ptsize)
 	} 
 	delete[] fond;
 	if ( i == Fond.num_fonts ) {
+		delete font;
 		SetError(
 		"Warning: Font family '%s' doesn't have %d pt fonts",
 							fontname, ptsize);
@@ -174,8 +202,7 @@ FontServ:: NewFont(const char *fontname, int ptsize)
 	}
 
 	/* Now, Fent.ID is the ID of the correct NFNT resource */
-	font = new MFont;
-    size_t size = SDL_strlen(fontname)+1;
+	size_t size = SDL_strlen(fontname)+1;
 	font->name = new char[size];
 	SDL_strlcpy(font->name, fontname, size);
 	font->ptsize = ptsize;
@@ -237,10 +264,17 @@ FontServ:: NewFont(const char *fontname, int ptsize)
 }
 
 void
-FontServ:: FreeFont(MFont *font)
+FontServ::FreeFont(MFont *font)
 {
-	delete[] font->name;
-	delete[] font->nfnt;
+	if ( font->font ) {
+		TTF_CloseFont(font->font);
+	}
+	if ( font->name ) {
+		delete[] font->name;
+	}
+	if ( font->nfnt ) {
+		delete[] font->nfnt;
+	}
 	delete font;
 }
 
@@ -252,12 +286,19 @@ FontServ:: FreeFont(MFont *font)
    specified font and style.
 */
 Uint16
-FontServ:: TextWidth(const char *text, MFont *font, Uint8 style)
+FontServ::TextWidth(const char *text, MFont *font, Uint8 style)
 {
 	int nchars, i;
 	int space_width;	/* The width of the whole character */
 	int extra_width;	/* Stylistic width */
 	Uint16 Width;
+
+	if ( font->font ) {
+		int w = 0, h = 0;
+
+		TTF_SizeText(font->font, text, &w, &h);
+		return w;
+	}
 
 	switch (style) {
 		case STYLE_NORM:	extra_width = 0;
@@ -286,8 +327,11 @@ FontServ:: TextWidth(const char *text, MFont *font, Uint8 style)
 	return(Width);
 }
 Uint16
-FontServ:: TextHeight(MFont *font)
+FontServ::TextHeight(MFont *font)
 {
+	if ( font->font ) {
+		return TTF_FontHeight(font->font);
+	}
 	return((font->header)->fRectHeight);
 }
 
@@ -296,7 +340,7 @@ FontServ:: TextHeight(MFont *font)
 		((scanline[(i)/16] >> (15 - (i)%16)) & 1)
 
 SDL_Texture *
-FontServ:: TextImage(const char *text, MFont *font, Uint8 style, SDL_Color fg)
+FontServ::TextImage(const char *text, MFont *font, Uint8 style, SDL_Color fg)
 {
 	int width, height;
 	SDL_Texture *image;
@@ -311,6 +355,41 @@ FontServ:: TextImage(const char *text, MFont *font, Uint8 style, SDL_Color fg)
 	int bold_offset, boldness;
 	int ascii, i, y;
 	int bit;
+
+	if ( font->font ) {
+		SDL_Color white = { 0xff, 0xff, 0xff, 0xff };
+		SDL_Surface *surface;
+
+		switch (style) {
+		case STYLE_NORM:
+			TTF_SetFontStyle(font->font, TTF_STYLE_NORMAL);
+			break;
+		case STYLE_BOLD:
+			TTF_SetFontStyle(font->font, TTF_STYLE_BOLD);
+			break;
+		case STYLE_ULINE:
+			TTF_SetFontStyle(font->font, TTF_STYLE_UNDERLINE);
+			break;
+		case STYLE_ITALIC:
+			TTF_SetFontStyle(font->font, TTF_STYLE_ITALIC);
+			break;
+		default:		SetError(
+					"FontServ: Unknown text style!");
+					return(NULL);
+		}
+
+		surface = TTF_RenderText_Blended(font->font, text, white);
+		if (!surface) {
+			SetError(SDL_GetError());
+			return(NULL);
+		}
+
+		image = screen->LoadImage(surface);
+		SDL_FreeSurface(surface);
+		SDL_SetTextureBlendMode(image, SDL_BLENDMODE_BLEND);
+		SDL_SetTextureColorMod(image, fg.r, fg.g, fg.b);
+		return image;
+	}
 
 	switch (style) {
 		case STYLE_NORM:	bold_offset = 0;
@@ -427,7 +506,7 @@ FontServ:: TextImage(const char *text, MFont *font, Uint8 style, SDL_Color fg)
 }
 
 void
-FontServ:: FreeText(SDL_Texture *text)
+FontServ::FreeText(SDL_Texture *text)
 {
 	screen->FreeImage(text);
 }

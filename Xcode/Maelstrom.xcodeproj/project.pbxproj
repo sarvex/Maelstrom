@@ -72,6 +72,7 @@
 		AA8B1900161C1134005318A4 /* continue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA8B18FA161C1134005318A4 /* continue.cpp */; };
 		AA8B1902161C1134005318A4 /* gameover.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA8B18FE161C1134005318A4 /* gameover.cpp */; };
 		AA8B1905161C1188005318A4 /* loadxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA8B1903161C1188005318A4 /* loadxml.cpp */; };
+		AA93530E164399C400B7B41B /* SDL2_ttf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA93530D164399C400B7B41B /* SDL2_ttf.framework */; };
 		AAAA999F162FE466008140E1 /* Maelstrom_Data.zip in Resources */ = {isa = PBXBuildFile; fileRef = AAAA999E162FE466008140E1 /* Maelstrom_Data.zip */; };
 /* End PBXBuildFile section */
 
@@ -233,6 +234,7 @@
 		AA8B1903161C1188005318A4 /* loadxml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = loadxml.cpp; sourceTree = "<group>"; };
 		AA8B1904161C1188005318A4 /* loadxml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = loadxml.h; sourceTree = "<group>"; };
 		AA8B191A161C343E005318A4 /* Package */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Package; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA93530D164399C400B7B41B /* SDL2_ttf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_ttf.framework; path = /Library/Frameworks/SDL2_ttf.framework; sourceTree = "<absolute>"; };
 		AAAA999E162FE466008140E1 /* Maelstrom_Data.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; name = Maelstrom_Data.zip; path = ../Maelstrom_Data.zip; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -244,6 +246,7 @@
 				AA439075161EC0A100FE5F41 /* CoreFoundation.framework in Frameworks */,
 				AA4088EE14D4987200EB2196 /* SDL2.framework in Frameworks */,
 				AA8B18F2161C0B59005318A4 /* SDL2_image.framework in Frameworks */,
+				AA93530E164399C400B7B41B /* SDL2_ttf.framework in Frameworks */,
 				AA4088ED14D4987200EB2196 /* SDL2_net.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -275,6 +278,7 @@
 				AA439074161EC0A100FE5F41 /* CoreFoundation.framework */,
 				AA4088EC14D4987200EB2196 /* SDL2.framework */,
 				AA8B18F1161C0B59005318A4 /* SDL2_image.framework */,
+				AA93530D164399C400B7B41B /* SDL2_ttf.framework */,
 				AA4088EB14D4987200EB2196 /* SDL2_net.framework */,
 			);
 			name = Frameworks;
@@ -716,6 +720,13 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				GCC_PREPROCESSOR_DEFINITIONS = PHYSFS_NO_CDROM_SUPPORT;
+				HEADER_SEARCH_PATHS = (
+					$HEADER_SEARCH_PATHS_QUOTED,
+					/Library/Frameworks/SDL2.framework/Headers,
+					/Library/Frameworks/SDL2_image.framework/Headers,
+					/Library/Frameworks/SDL2_ttf.framework/Headers,
+					/Library/Frameworks/SDL2_net.framework/Headers,
+				);
 				INFOPLIST_FILE = "Maelstrom-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -728,6 +739,13 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				GCC_PREPROCESSOR_DEFINITIONS = PHYSFS_NO_CDROM_SUPPORT;
+				HEADER_SEARCH_PATHS = (
+					$HEADER_SEARCH_PATHS_QUOTED,
+					/Library/Frameworks/SDL2.framework/Headers,
+					/Library/Frameworks/SDL2_image.framework/Headers,
+					/Library/Frameworks/SDL2_ttf.framework/Headers,
+					/Library/Frameworks/SDL2_net.framework/Headers,
+				);
 				INFOPLIST_FILE = "Maelstrom-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
