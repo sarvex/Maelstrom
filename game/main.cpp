@@ -405,9 +405,7 @@ MainPanelDelegate::HandleEvent(const SDL_Event &event)
 bool
 MainPanelDelegate::OnAction(UIBaseElement *sender, const char *action)
 {
-	if (SDL_strncmp(action, "show_", 5) == 0) {
-		ui->ShowPanel(action+5);
-	} else if (SDL_strcmp(action, "play") == 0) {
+	if (SDL_strcmp(action, "play") == 0) {
 		OnActionPlay();
 	} else if (SDL_strcmp(action, "multiplayer") == 0) {
 		OnActionMultiplayer();
@@ -433,6 +431,8 @@ MainPanelDelegate::OnAction(UIBaseElement *sender, const char *action)
 		OnActionRunReplay(SDL_atoi(action+5));
 	} else if (SDL_strcmp(action, "zap") == 0) {
 		OnActionZapHighScores();
+	} else {
+		return false;
 	}
 	return true;
 }

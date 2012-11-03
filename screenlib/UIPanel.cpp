@@ -201,5 +201,9 @@ UIPanel::Action(UIBaseElement *sender, const char *action)
 	UIPanel *panel = m_ui->GetFullscreenPanel();
 	if (panel && panel != this) {
 		panel->Action(sender, action);
+	} else {
+		if (SDL_strncmp(action, "show_", 5) == 0) {
+			GetUI()->ShowPanel(action+5);
+		}
 	}
 }

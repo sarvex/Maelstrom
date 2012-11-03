@@ -488,6 +488,8 @@ GamePanelDelegate::OnAction(UIBaseElement *sender, const char *action)
 				player->SetControl(control, down);
 			}
 		}
+	} else {
+		return false;
 	}
 	return true;
 }
