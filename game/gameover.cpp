@@ -33,10 +33,10 @@ struct FinalScore {
 	int Frags;
 };
 
-static int cmp_byscore(const void *_A, const void *_B)
+static int cmp_byscore(const void *pA, const void *pB)
 {
-	const FinalScore *A = static_cast<const FinalScore*>(_A);
-	const FinalScore *B = static_cast<const FinalScore*>(_B);
+	const FinalScore *A = static_cast<const FinalScore*>(pA);
+	const FinalScore *B = static_cast<const FinalScore*>(pB);
 	if (A->Score == B->Score) {
 		// Sort lowest player first
 		return A->Player - B->Player;
@@ -44,10 +44,10 @@ static int cmp_byscore(const void *_A, const void *_B)
 	return B->Score - A->Score;
 }
 
-static int cmp_byfrags(const void *_A, const void *_B)
+static int cmp_byfrags(const void *pA, const void *pB)
 {
-	const FinalScore *A = static_cast<const FinalScore*>(_A);
-	const FinalScore *B = static_cast<const FinalScore*>(_B);
+	const FinalScore *A = static_cast<const FinalScore*>(pA);
+	const FinalScore *B = static_cast<const FinalScore*>(pB);
 	if (A->Frags == B->Frags) {
 		return cmp_byscore(A, B);
 	}
