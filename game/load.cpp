@@ -25,7 +25,7 @@
 #include "Maelstrom_Globals.h"
 #include "load.h"
 
-#include "../utils/physfsrwops.h"
+#include "../utils/files.h"
 
 
 UITexture *Load_Texture(FrameBuf *screen, const char *folder, const char *name)
@@ -41,7 +41,7 @@ UITexture *Load_Texture(FrameBuf *screen, const char *folder, const char *name)
 		for (int j = 0; j < SDL_arraysize(extensions); ++j) {
 			SDL_snprintf(file, sizeof(file), "%s%s/%s%s.%s",
 					folder, gResolutions[i].path_suffix, name, gResolutions[i].file_suffix, extensions[j]);
-			SDL_Surface *surface = IMG_Load_RW(PHYSFSRWOPS_openRead(file), 1);
+			SDL_Surface *surface = IMG_Load_RW(OpenRead(file), 1);
 			if (surface) {
 				SDL_Texture *texture = screen->LoadImage(surface);
 				SDL_FreeSurface(surface);

@@ -22,9 +22,9 @@
 #include <stdio.h>
 #include <signal.h>
 
-#include "../utils/physfsrwops.h"
 #include "Mac_Sound.h"
 #include "Mac_Compat.h"
+#include "../utils/files.h"
 
 static int bogus_running = 0;
 
@@ -184,7 +184,7 @@ Sound:: LoadSound(Uint16 sndID)
 	SDL_AudioSpec spec;
 
 	SDL_snprintf(file, sizeof(file), "Sounds/snd_%d.wav", sndID);
-	fp = PHYSFSRWOPS_openRead(file);
+	fp = OpenRead(file);
 	if (!fp) {
 		fprintf(stderr, "Couldn't open %s\n", file);
 		return NULL;

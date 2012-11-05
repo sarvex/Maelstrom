@@ -70,8 +70,8 @@ AR = ar
 ARFLAGS = cru
 libutils_a_AR = $(AR) $(ARFLAGS)
 libutils_a_LIBADD =
-am_libutils_a_OBJECTS = hashtable.$(OBJEXT) loadxml.$(OBJEXT) \
-	physfsrwops.$(OBJEXT) prefs.$(OBJEXT)
+am_libutils_a_OBJECTS = files.$(OBJEXT) hashtable.$(OBJEXT) \
+	loadxml.$(OBJEXT) physfsrwops.$(OBJEXT) prefs.$(OBJEXT)
 libutils_a_OBJECTS = $(am_libutils_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/build-scripts/depcomp
@@ -210,6 +210,8 @@ noinst_LIBRARIES = libutils.a
 libutils_a_SOURCES = \
 	ErrorBase.h	\
 	array.h		\
+	files.c		\
+	files.h		\
 	hashtable.c	\
 	hashtable.h	\
 	loadxml.cpp	\
@@ -269,6 +271,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/files.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hashtable.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/loadxml.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/physfsrwops.Po@am__quote@

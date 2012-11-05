@@ -27,6 +27,7 @@
 extern const char *gLoadXMLError;
 #endif
 
+// If this function returns true, you should call SDL_free(buffer)
 extern bool LoadXML(const char *file, char *&buffer, rapidxml::xml_document<> &doc);
 
 #endif /* _loadxml_h */

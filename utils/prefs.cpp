@@ -18,7 +18,7 @@
 
 #include <stdio.h>
 #include "SDL.h"
-#include "../physfs/physfs.h"
+#include "files.h"
 #include "array.h"
 #include "hashtable.h"
 
@@ -54,28 +54,14 @@ Prefs::~Prefs()
 bool
 Prefs::Load()
 {
-	PHYSFS_File *fp;
-	PHYSFS_sint64 size;
 	char *data;
 	char *key, *value, *next;
 
-	fp = PHYSFS_openRead(m_file);
-	if (!fp) {
+	data = LoadFile(m_file);
+	if (!data) {
 		/* This is fine, we just haven't written them yet */
 		return false;
 	}
-
-	size = PHYSFS_fileLength(fp);
-	data = new char[size+1];
-	if (PHYSFS_readBytes(fp, data, size) != size) {
-		fprintf(stderr, "Warning: Couldn't read from %s: %s\n",
-					m_file, PHYSFS_getLastError());
-		PHYSFS_close(fp);
-		delete[] data;
-		return false;
-	}
-	data[size] = '\0';
-	PHYSFS_close(fp);
 
 	key = data;
 	while (*key) {
@@ -100,22 +86,22 @@ Prefs::Load()
 			++key;
 		}
 	}
-	delete[] data;
+	SDL_free(data);
 
 	return true;
 }
 
 static __inline__ bool
-writeString(PHYSFS_File *fp, const char *string)
+writeString(SDL_RWops *fp, const char *string)
 {
 	size_t len = SDL_strlen(string);
-	return ((size_t)PHYSFS_writeBytes(fp, string, len) == len);
+	return (SDL_RWwrite(fp, string, 1, len) == len);
 }
 
 bool
 Prefs::Save()
 {
-	PHYSFS_File *fp;
+	SDL_RWops *fp;
 	const char *key, *value;
 	void *iter;
 
@@ -124,10 +110,10 @@ Prefs::Save()
 		return true;
 	}
 
-	fp = PHYSFS_openWrite(m_file);
+	fp = OpenWrite(m_file);
 	if (!fp) {
 		fprintf(stderr, "Warning: Couldn't open %s: %s\n",
-					m_file, PHYSFS_getLastError());
+					m_file, SDL_GetError());
 		return false;
 	}
 
@@ -145,12 +131,12 @@ Prefs::Save()
 		    !writeString(fp, value) ||
 		    !writeString(fp, "\r\n")) {
 			fprintf(stderr, "Warning: Couldn't write to %s: %s\n",
-						m_file, PHYSFS_getLastError());
-			PHYSFS_close(fp);
+						m_file, SDL_GetError());
+			SDL_RWclose(fp);
 			return false;
 		}
 	}
-	PHYSFS_close(fp);
+	SDL_RWclose(fp);
 
 	m_dirty = false;
 

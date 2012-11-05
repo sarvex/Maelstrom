@@ -26,10 +26,9 @@
 #include <ctype.h>
 #include <string.h>
 
-#include "../physfs/physfs.h"
-#include "../utils/physfsrwops.h"
 #include "SDL_types.h"
 #include "bitesex.h"
+#include "../utils/files.h"
 #include "Mac_FontServ.h"
 
 #define copy_short(S, D)	memcpy(&S, D, 2); D += 2;
@@ -77,7 +76,7 @@ static TTF_Font *GetTrueTypeFont(const char *name, int ptsize)
 	SDL_RWops *src;
 
 	SDL_snprintf(file, sizeof(file), "Fonts/%s.ttf", name);
-	src = PHYSFSRWOPS_openRead(file);
+	src = OpenRead(file);
 	if (src) {
 		return TTF_OpenFontRW(src, 1, ptsize);
 	}
@@ -87,28 +86,8 @@ static TTF_Font *GetTrueTypeFont(const char *name, int ptsize)
 static Uint8 *GetFontData(const char *type, int ID)
 {
 	char file[128];
-	PHYSFS_File *fp;
-	PHYSFS_sint64 size;
-	Uint8 *data;
-
 	SDL_snprintf(file, sizeof(file), "Fonts/Maelstrom_%s#%d", type, ID);
-	fp = PHYSFS_openRead(file);
-	if (!fp) {
-		fprintf(stderr, "Couldn't open %s: %s\n", file, PHYSFS_getLastError());
-		return NULL;
-	}
-
-	size = PHYSFS_fileLength(fp);
-	data = new Uint8[size];
-	if (PHYSFS_readBytes(fp, data, size) != size) {
-		fprintf(stderr, "Couldn't read data from %s: %s\n", file, PHYSFS_getLastError());
-		PHYSFS_close(fp);
-		delete[] data;
-		return NULL;
-	}
-
-	PHYSFS_close(fp);
-	return data;
+	return (Uint8 *)LoadFile(file);
 }
 
 FontServ::FontServ(FrameBuf *_screen, const char *fontfile) : ErrorBase()
@@ -192,7 +171,7 @@ FontServ::NewFont(const char *fontname, int ptsize)
 		if ( (Fent.size == ptsize) && ! Fent.style )
 			break;
 	} 
-	delete[] fond;
+	SDL_free(fond);
 	if ( i == Fond.num_fonts ) {
 		delete font;
 		SetError(
@@ -273,7 +252,7 @@ FontServ::FreeFont(MFont *font)
 		delete[] font->name;
 	}
 	if ( font->nfnt ) {
-		delete[] font->nfnt;
+		SDL_free(font->nfnt);
 	}
 	delete font;
 }

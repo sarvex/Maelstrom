@@ -16,46 +16,48 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-/* XML resource loading */
-
-#include <stdio.h>
+#include "physfsrwops.h"
 #include "files.h"
-#include "loadxml.h"
 
-#ifdef RAPIDXML_NO_EXCEPTIONS
-const char *gLoadXMLError = NULL;
-#endif
+/* Provide file routines that use PHYSFS on most platforms and SDL on Android */
 
-bool
-LoadXML(const char *file, char *&buffer, rapidxml::xml_document<> &doc)
+SDL_RWops *OpenRead(const char *fname)
 {
-	buffer = LoadFile(file);
-	if (!buffer) {
-		return false;
-	}
-
-#ifdef RAPIDXML_NO_EXCEPTIONS
-	gLoadXMLError = NULL;
-	doc.parse<0>(buffer);
-	if (gLoadXMLError) {
-		SDL_free(buffer);
-		return false;
-	}
+#ifdef __ANDROID__
+	return SDL_RWFromFile(fname, "rb");
 #else
-	try {
-		doc.parse<0>(buffer);
-	} catch (rapidxml::parse_error e) {
-		SDL_free(buffer);
-		return false;
-	}
-#endif // RAPIDXML_NO_EXCEPTIONS
-
-	return true;
+	return PHYSFSRWOPS_openRead(fname);
+#endif
 }
 
-#ifdef RAPIDXML_NO_EXCEPTIONS
-void rapidxml::parse_error_handler(const char *what, void *where)
+SDL_RWops *OpenWrite(const char *fname)
 {
-	gLoadXMLError = what;
+#ifdef __ANDROID__
+	return SDL_RWFromFile(fname, "wb");
+#else
+	return PHYSFSRWOPS_openWrite(fname);
+#endif
 }
-#endif // RAPIDXML_NO_EXCEPTIONS
+
+char *LoadFile(const char *fname)
+{
+	SDL_RWops *fp;
+	Sint64 size;
+	char *data;
+
+	fp = OpenRead(fname);
+	if (!fp) {
+		return NULL;
+	}
+
+	size = SDL_RWsize(fp);
+	data = (char*)SDL_malloc(size+1);
+	if (SDL_RWread(fp, data, size, 1)) {
+		data[size] = '\0';
+	} else {
+		SDL_free(data);
+		data = NULL;
+	}
+	SDL_RWclose(fp);
+	return data;
+}

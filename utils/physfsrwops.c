@@ -23,10 +23,20 @@
 #include <stdio.h>  /* used for SEEK_SET, SEEK_CUR, SEEK_END ... */
 #include "physfsrwops.h"
 
-static long physfsrwops_seek(SDL_RWops *rw, long offset, int whence)
+static Sint64 physfsrwops_size(SDL_RWops *rw)
 {
     PHYSFS_File *handle = (PHYSFS_File *) rw->hidden.unknown.data1;
-    long pos = 0;
+    Sint64 size = PHYSFS_fileLength(handle);
+    if (size < 0) {
+        SDL_SetError("Can't get file size: %s", PHYSFS_getLastError());
+    }
+    return size;
+}
+
+static Sint64 physfsrwops_seek(SDL_RWops *rw, Sint64 offset, int whence)
+{
+    PHYSFS_File *handle = (PHYSFS_File *) rw->hidden.unknown.data1;
+    Sint64 pos = 0;
 
     if (whence == SEEK_SET)
     {
@@ -35,18 +45,11 @@ static long physfsrwops_seek(SDL_RWops *rw, long offset, int whence)
 
     else if (whence == SEEK_CUR)
     {
-        PHYSFS_sint64 current = PHYSFS_tell(handle);
-        if (current == -1)
+        pos = PHYSFS_tell(handle);
+        if (pos == -1)
         {
             SDL_SetError("Can't find position in file: %s",
                           PHYSFS_getLastError());
-            return -1;
-        } /* if */
-
-        pos = (long) current;
-        if ( ((PHYSFS_sint64) pos) != current )
-        {
-            SDL_SetError("Can't fit current file position in an int!");
             return -1;
         } /* if */
 
@@ -58,17 +61,10 @@ static long physfsrwops_seek(SDL_RWops *rw, long offset, int whence)
 
     else if (whence == SEEK_END)
     {
-        PHYSFS_sint64 len = PHYSFS_fileLength(handle);
-        if (len == -1)
+        pos = PHYSFS_fileLength(handle);
+        if (pos == -1)
         {
             SDL_SetError("Can't find end of file: %s", PHYSFS_getLastError());
-            return -1;
-        } /* if */
-
-        pos = (int) len;
-        if ( ((PHYSFS_sint64) pos) != len )
-        {
-            SDL_SetError("Can't fit end-of-file position in an int!");
             return -1;
         } /* if */
 
@@ -147,6 +143,7 @@ static SDL_RWops *create_rwops(PHYSFS_File *handle)
         retval = SDL_AllocRW();
         if (retval != NULL)
         {
+            retval->size  = physfsrwops_size;
             retval->seek  = physfsrwops_seek;
             retval->read  = physfsrwops_read;
             retval->write = physfsrwops_write;

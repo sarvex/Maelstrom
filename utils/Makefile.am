@@ -4,6 +4,8 @@ noinst_LIBRARIES = libutils.a
 libutils_a_SOURCES =	\
 	ErrorBase.h	\
 	array.h		\
+	files.c		\
+	files.h		\
 	hashtable.c	\
 	hashtable.h	\
 	loadxml.cpp	\

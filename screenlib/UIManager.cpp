@@ -20,9 +20,7 @@
 */
 
 #include "../utils/loadxml.h"
-#include "../utils/physfsrwops.h"
 #include "../utils/hashtable.h"
-
 
 #include "SDL_FrameBuf.h"
 #include "UIManager.h"
@@ -124,7 +122,7 @@ UIManager::LoadPanel(const char *name)
 		if (!panel) {
 			fprintf(stderr, "Warning: Couldn't create panel %s in %s\n",
 						node->name(), file);
-			delete[] buffer;
+			SDL_free(buffer);
 			return NULL;
 		}
 
@@ -135,7 +133,7 @@ UIManager::LoadPanel(const char *name)
 			delegate = CreatePanelDelegate(panel, attr->value());
 			if (!delegate) {
 				fprintf(stderr, "Warning: Couldn't find delegate '%s'\n", attr->value());
-				delete[] buffer;
+				SDL_free(buffer);
 				delete panel;
 				return NULL;
 			}
@@ -146,11 +144,11 @@ UIManager::LoadPanel(const char *name)
 		    !panel->FinishLoading()) {
 			fprintf(stderr, "Warning: Couldn't load %s: %s\n",
 						file, panel->Error());
-			delete[] buffer;
+			SDL_free(buffer);
 			delete panel;
 			return NULL;
 		}
-		delete[] buffer;
+		SDL_free(buffer);
 	}
 	return panel;
 }

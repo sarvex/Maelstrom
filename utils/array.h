@@ -63,7 +63,7 @@ public:
 	bool remove(const T& item) {
 		for (unsigned i = 0; i < m_len; ++i) {
 			if (m_data[i] == item) {
-				memcpy(&m_data[i], &m_data[i+1], (m_len-i-1)*sizeof(T));
+				memmove(&m_data[i], &m_data[i+1], (m_len-i-1)*sizeof(T));
 				--m_len;
 				return true;
 			}

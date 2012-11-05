@@ -21,7 +21,7 @@
 
 #include <stdio.h>
 #include "SDL.h"
-#include "../physfs/physfs.h"
+#include "../utils/files.h"
 #include "../utils/loadxml.h"
 
 #include "UITemplates.h"
@@ -39,48 +39,34 @@ UITemplates::~UITemplates()
 		hash_destroy(m_hashTable);
 	}
 	if (m_data) {
-		delete[] m_data;
+		SDL_free(m_data);
 	}
 }
 
 bool
 UITemplates::Load(const char *file)
 {
-	PHYSFS_File *fp;
-	PHYSFS_sint64 size;
 	rapidxml::xml_node<> *node;
 	rapidxml::xml_attribute<> *attr;
 
-	fp = PHYSFS_openRead(file);
-	if (!fp) {
+	if (m_data) {
+		SDL_free(m_data);
+	}
+	m_data = LoadFile(file);
+	if (!m_data) {
 		return false;
 	}
-
-	size = PHYSFS_fileLength(fp);
-	m_data = new char[size+1];
-	if (PHYSFS_readBytes(fp, m_data, size) != size) {
-		PHYSFS_close(fp);
-		delete[] m_data;
-		m_data = NULL;
-		return false;
-	}
-	m_data[size] = '\0';
-	PHYSFS_close(fp);
 
 #ifdef RAPIDXML_NO_EXCEPTIONS
 	gLoadXMLError = NULL;
 	m_doc.parse<0>(m_data);
 	if (gLoadXMLError) {
-		delete[] m_data;
-		m_data = NULL;
 		return false;
 	}
 #else
 	try {
 		m_doc.parse<0>(m_data);
 	} catch (rapidxml::parse_error e) {
-		delete[] m_data;
-		m_data = NULL;
 		return false;
 	}
 #endif // RAPIDXML_NO_EXCEPTIONS

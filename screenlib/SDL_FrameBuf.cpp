@@ -20,8 +20,8 @@
 */
 
 #include <stdio.h>
-#include "../utils/physfsrwops.h"
 
+#include "../utils/files.h"
 #include "SDL_FrameBuf.h"
 
 
@@ -168,19 +168,11 @@ void
 FrameBuf::EnableTextInput()
 {
 	SDL_StartTextInput();
-
-#ifdef __IPHONEOS__
-	SDL_iPhoneKeyboardShow(window);
-#endif
 }
 
 void
 FrameBuf::DisableTextInput()
 {
-#ifdef __IPHONEOS__
-	SDL_iPhoneKeyboardHide(window);
-#endif
-
 	SDL_StopTextInput();
 }
 
@@ -368,12 +360,16 @@ FrameBuf::ScreenDump(const char *prefix, int x, int y, int w, int h)
 	/* Get a suitable new filename */
 	found = 0;
 	for ( which=0; !found; ++which ) {
+		SDL_RWops *fp;
 		SDL_snprintf(file, sizeof(file), "%s%d.bmp", prefix, which);
-		if (!PHYSFS_exists(file)) {
+		fp = OpenRead(file);
+		if (fp) {
+			SDL_RWclose(fp);
+		} else {
 			found = 1;
 		}
 	}
-	retval = SDL_SaveBMP_RW(dump, PHYSFSRWOPS_openWrite(file), 1);
+	retval = SDL_SaveBMP_RW(dump, OpenWrite(file), 1);
 	if ( retval < 0 ) {
 		SetError("%s", SDL_GetError());
 	}
@@ -389,7 +385,7 @@ FrameBuf::LoadImage(const char *file)
 	SDL_Texture *texture;
 	
 	texture = NULL;
-	surface = SDL_LoadBMP_RW(PHYSFSRWOPS_openRead(file), 1);
+	surface = SDL_LoadBMP_RW(OpenRead(file), 1);
 	if (surface) {
 		texture = LoadImage(surface);
 		SDL_FreeSurface(surface);

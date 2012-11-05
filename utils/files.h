@@ -16,46 +16,26 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-/* XML resource loading */
+#ifndef _files_h
+#define _files_h
 
-#include <stdio.h>
-#include "files.h"
-#include "loadxml.h"
+/* Provide file routines that use PHYSFS on most platforms and SDL on Android */
 
-#ifdef RAPIDXML_NO_EXCEPTIONS
-const char *gLoadXMLError = NULL;
+#include "SDL.h"
+
+#ifdef __cplusplus
+extern "C" {
 #endif
 
-bool
-LoadXML(const char *file, char *&buffer, rapidxml::xml_document<> &doc)
-{
-	buffer = LoadFile(file);
-	if (!buffer) {
-		return false;
-	}
+SDL_RWops *OpenRead(const char *fname);
+SDL_RWops *OpenWrite(const char *fname);
 
-#ifdef RAPIDXML_NO_EXCEPTIONS
-	gLoadXMLError = NULL;
-	doc.parse<0>(buffer);
-	if (gLoadXMLError) {
-		SDL_free(buffer);
-		return false;
-	}
-#else
-	try {
-		doc.parse<0>(buffer);
-	} catch (rapidxml::parse_error e) {
-		SDL_free(buffer);
-		return false;
-	}
-#endif // RAPIDXML_NO_EXCEPTIONS
+/* Returns the contents of the file, or NULL on error.
+   You should call SDL_free() on the returned data when you are done with it.
+*/
+char *LoadFile(const char *fname);
 
-	return true;
+#ifdef __cplusplus
 }
-
-#ifdef RAPIDXML_NO_EXCEPTIONS
-void rapidxml::parse_error_handler(const char *what, void *where)
-{
-	gLoadXMLError = what;
-}
-#endif // RAPIDXML_NO_EXCEPTIONS
+#endif
+#endif /* _files_h */

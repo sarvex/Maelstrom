@@ -37,7 +37,9 @@
 #include "MaelstromUI.h"
 #include "../screenlib/UIElement.h"
 
+#include "../physfs/physfs.h"
 #include "../utils/loadxml.h"
+#include "../utils/files.h"
 
 
 #define GAME_PREFS_FILE	"Maelstrom_Prefs.txt"
@@ -123,7 +125,7 @@ static bool InitResolutions(int &w, int &h)
 		attr = node->first_attribute("w", 0, false);
 		if (!attr) {
 			error("Resolution missing 'w' attribute in resolutions.xml\n");
-			delete[] buffer;
+			SDL_free(buffer);
 			return false;;
 		}
 		resolution.w = SDL_atoi(attr->value());
@@ -131,7 +133,7 @@ static bool InitResolutions(int &w, int &h)
 		attr = node->first_attribute("h", 0, false);
 		if (!attr) {
 			error("Resolution missing 'h' attribute in resolutions.xml\n");
-			delete[] buffer;
+			SDL_free(buffer);
 			return false;;
 		}
 		resolution.h = SDL_atoi(attr->value());
@@ -139,7 +141,7 @@ static bool InitResolutions(int &w, int &h)
 		attr = node->first_attribute("path_suffix", 0, false);
 		if (!attr) {
 			error("Resolution missing 'path_suffix' attribute in resolutions.xml\n");
-			delete[] buffer;
+			SDL_free(buffer);
 			return false;;
 		}
 		SDL_strlcpy(resolution.path_suffix, attr->value(), sizeof(resolution.path_suffix));
@@ -147,7 +149,7 @@ static bool InitResolutions(int &w, int &h)
 		attr = node->first_attribute("file_suffix", 0, false);
 		if (!attr) {
 			error("Resolution missing 'file_suffix' attribute in resolutions.xml\n");
-			delete[] buffer;
+			SDL_free(buffer);
 			return false;;
 		}
 		SDL_strlcpy(resolution.file_suffix, attr->value(), sizeof(resolution.file_suffix));
@@ -155,7 +157,7 @@ static bool InitResolutions(int &w, int &h)
 		attr = node->first_attribute("scale", 0, false);
 		if (!attr) {
 			error("Resolution missing 'scale' attribute in resolutions.xml\n");
-			delete[] buffer;
+			SDL_free(buffer);
 			return false;;
 		}
 		int numerator, denominator;
@@ -164,7 +166,7 @@ static bool InitResolutions(int &w, int &h)
 
 		gResolutions.add(resolution);
 	}
-	delete[] buffer;
+	SDL_free(buffer);
 
 	if (prefs->GetBool(PREFERENCES_CLASSIC)) {
 		gClassic = true;
@@ -835,7 +837,7 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 	}
 
 	/* Load the Maelstrom icon */
-	icon = SDL_LoadBMP_RW(PHYSFSRWOPS_openRead("icon.bmp"), 1);
+	icon = SDL_LoadBMP_RW(OpenRead("icon.bmp"), 1);
 	if ( icon == NULL ) {
 		error("Fatal: Couldn't load icon: %s\n", SDL_GetError());
 		return(-1);
@@ -1223,7 +1225,7 @@ static int LoadSprite(bool large, BlitPtr *theBlit, int baseID, int numFrames)
 	/* -- Load in the image data */
 	for (index = 0; index < numFrames; index++) {
 		SDL_snprintf(file, sizeof(file), "Sprites_Classic/Maelstrom_%s#%d.bmp", large ? "icl" : "ics", baseID+index);
-		surface = SDL_LoadBMP_RW(PHYSFSRWOPS_openRead(file), 1);
+		surface = SDL_LoadBMP_RW(OpenRead(file), 1);
 
 		if ( surface == NULL ) {
 			error("LoadSprite(): Couldn't load image %s\n", file);

@@ -42,6 +42,8 @@
 #include "netplay.h"
 #include "main.h"
 
+#include "../physfs/physfs.h"
+
 #include "../screenlib/UIDialog.h"
 #include "../screenlib/UIElement.h"
 #include "../screenlib/UIElementCheckbox.h"
@@ -162,7 +164,11 @@ InitFilesystem(const char *argv0)
 	}
 
 	// Set up the write directory for this platform
+#ifdef __ANDROID__
+	prefspath = SDL_AndroidGetInternalStoragePath();
+#else
 	prefspath = PHYSFS_getPrefDir(MAELSTROM_ORGANIZATION, MAELSTROM_NAME);
+#endif
 	if (!prefspath) {
 		error("Couldn't get preferences path for this platform\n");
 		return false;
@@ -175,6 +181,11 @@ InitFilesystem(const char *argv0)
 	/* Put the write directory first in the search path */
 	PHYSFS_mount(prefspath, NULL, 0);
 
+#ifdef __ANDROID__
+	// We'll use SDL's asset manager code path for Android
+	return true;
+
+#else
 	/* Then add the base directory to the search path */
 	PHYSFS_mount(PHYSFS_getBaseDir(), NULL, 0);
 
@@ -197,6 +208,7 @@ InitFilesystem(const char *argv0)
 
 	error("Couldn't find %s", MAELSTROM_DATA);
 	return false;
+#endif // __ANDROID__
 }
 
 /* ----------------------------------------------------------------- */

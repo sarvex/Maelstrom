@@ -74,6 +74,7 @@
 		AA8B1905161C1188005318A4 /* loadxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA8B1903161C1188005318A4 /* loadxml.cpp */; };
 		AA93530E164399C400B7B41B /* SDL2_ttf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA93530D164399C400B7B41B /* SDL2_ttf.framework */; };
 		AAAA999F162FE466008140E1 /* Maelstrom_Data.zip in Resources */ = {isa = PBXBuildFile; fileRef = AAAA999E162FE466008140E1 /* Maelstrom_Data.zip */; };
+		AAC2576C1647AA6700F5FB43 /* files.c in Sources */ = {isa = PBXBuildFile; fileRef = AAC2576A1647AA6700F5FB43 /* files.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -236,6 +237,8 @@
 		AA8B191A161C343E005318A4 /* Package */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Package; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA93530D164399C400B7B41B /* SDL2_ttf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_ttf.framework; path = /Library/Frameworks/SDL2_ttf.framework; sourceTree = "<absolute>"; };
 		AAAA999E162FE466008140E1 /* Maelstrom_Data.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; name = Maelstrom_Data.zip; path = ../Maelstrom_Data.zip; sourceTree = SOURCE_ROOT; };
+		AAC2576A1647AA6700F5FB43 /* files.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = files.c; sourceTree = "<group>"; };
+		AAC2576B1647AA6700F5FB43 /* files.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = files.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -441,6 +444,8 @@
 			children = (
 				AA40881F14D493A800EB2196 /* array.h */,
 				AA40882014D493A800EB2196 /* ErrorBase.h */,
+				AAC2576A1647AA6700F5FB43 /* files.c */,
+				AAC2576B1647AA6700F5FB43 /* files.h */,
 				AA40882114D493A800EB2196 /* hashtable.c */,
 				AA40882214D493A800EB2196 /* hashtable.h */,
 				AA8B1903161C1188005318A4 /* loadxml.cpp */,
@@ -650,6 +655,7 @@
 				AA439053161EBDCA00FE5F41 /* platform_windows.c in Sources */,
 				AA439078161ED5AC00FE5F41 /* MaelstromFeatures.cpp in Sources */,
 				AA4390821620E38800FE5F41 /* UIElementThumbstick.cpp in Sources */,
+				AAC2576C1647AA6700F5FB43 /* files.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
