@@ -15,7 +15,7 @@
 			<string>Owner</string>
 			<key>LSItemContentTypes</key>
 			<array>
-				<string>com.galaxygameworks.Maelstrom.replay</string>
+				<string>com.ambrosiasw.Maelstrom.replay</string>
 			</array>
 		</dict>
 	</array>
@@ -104,7 +104,7 @@
 			<key>UTTypeDescription</key>
 			<string>Maelstrom Replay</string>
 			<key>UTTypeIdentifier</key>
-			<string>com.galaxygameworks.Maelstrom.replay</string>
+			<string>com.ambrosiasw.Maelstrom.replay</string>
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.filename-extension</key>
