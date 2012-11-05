@@ -31,22 +31,28 @@
 
 void error(const char *fmt, ...)
 {
-	char mesg[BUFSIZ];
-	va_list ap;
+    char mesg[BUFSIZ];
+    va_list ap;
 
-	va_start(ap, fmt);
-	SDL_vsnprintf(mesg, sizeof(mesg), fmt, ap);
-	fputs(mesg, stderr);
-	va_end(ap);
+    va_start(ap, fmt);
+    SDL_vsnprintf(mesg, sizeof(mesg), fmt, ap);
+    if (mesg[SDL_strlen(mesg)-1] == '\n') {
+        mesg[SDL_strlen(mesg)-1] = '\0';
+    }
+    SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "%s", mesg);
+    va_end(ap);
 }
 
 void mesg(const char *fmt, ...)
 {
-	char mesg[BUFSIZ];
-	va_list ap;
+    char mesg[BUFSIZ];
+    va_list ap;
 
-	va_start(ap, fmt);
-	SDL_vsnprintf(mesg, sizeof(mesg), fmt, ap);
-	fputs(mesg, stdout);
-	va_end(ap);
+    va_start(ap, fmt);
+    SDL_vsnprintf(mesg, sizeof(mesg), fmt, ap);
+    if (mesg[SDL_strlen(mesg)-1] == '\n') {
+        mesg[SDL_strlen(mesg)-1] = '\0';
+    }
+    SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "%s", mesg);
+    va_end(ap);
 }
