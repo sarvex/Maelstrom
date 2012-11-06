@@ -46,6 +46,7 @@ UIElementButton::~UIElementButton()
 		SDL_free(m_clickPanel);
 	}
 
+	SetImage((UITexture*)0);
 	for (int i = 0; i < SDL_arraysize(m_stateImages); ++i) {
 		UITexture *image = m_stateImages[i];
 		if (image) {
