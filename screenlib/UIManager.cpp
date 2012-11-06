@@ -87,7 +87,7 @@ UIManager::LoadTemplates(const char *file)
 			return true;
 		}
 	}
-	fprintf(stderr, "Couldn't load template %s\n", file);
+	SDL_Log("Couldn't load template %s", file);
 	return false;
 }
 
@@ -111,7 +111,7 @@ UIManager::LoadPanel(const char *name)
 			}
 		}
 		if (!loaded) {
-			fprintf(stderr, "Couldn't load panel %s\n", name);
+			SDL_Log("Couldn't load panel %s", name);
 			return NULL;
 		}
 
@@ -120,7 +120,7 @@ UIManager::LoadPanel(const char *name)
 
 		panel = CreatePanel(node->name(), name);
 		if (!panel) {
-			fprintf(stderr, "Warning: Couldn't create panel %s in %s\n",
+			SDL_Log("Warning: Couldn't create panel %s in %s",
 						node->name(), file);
 			SDL_free(buffer);
 			return NULL;
@@ -132,7 +132,7 @@ UIManager::LoadPanel(const char *name)
 
 			delegate = CreatePanelDelegate(panel, attr->value());
 			if (!delegate) {
-				fprintf(stderr, "Warning: Couldn't find delegate '%s'\n", attr->value());
+				SDL_Log("Warning: Couldn't find delegate '%s'", attr->value());
 				SDL_free(buffer);
 				delete panel;
 				return NULL;
@@ -142,7 +142,7 @@ UIManager::LoadPanel(const char *name)
 		
 		if (!panel->Load(node, GetTemplates()) ||
 		    !panel->FinishLoading()) {
-			fprintf(stderr, "Warning: Couldn't load %s: %s\n",
+			SDL_Log("Warning: Couldn't load %s: %s",
 						file, panel->Error());
 			SDL_free(buffer);
 			delete panel;

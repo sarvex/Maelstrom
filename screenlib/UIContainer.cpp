@@ -48,7 +48,7 @@ UIContainer::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 	attr = node->first_attribute("layout", 0, false);
 	if (attr) {
 		if (!ParseLayoutType(attr->value())) {
-			fprintf(stderr, "Warning: Unknown layout type '%s'\n", attr->value());
+			SDL_Log("Warning: Unknown layout type '%s'", attr->value());
 			return false;
 		}
 	}

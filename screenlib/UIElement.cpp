@@ -132,7 +132,7 @@ UIElement::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 	attr = node->first_attribute("font", 0, false);
 	if (attr) {
 		if (!ParseFont(attr->value())) {
-			fprintf(stderr, "Warning: Couldn't parse font '%s'\n", attr->value());
+			SDL_Log("Warning: Couldn't parse font '%s'", attr->value());
 			return false;
 		}
 	}
@@ -147,7 +147,7 @@ UIElement::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 	child = node->first_node("TextArea", 0, false);
 	if (child) {
 		if (!m_textArea.Load(child)) {
-			fprintf(stderr, "Warning: Couldn't load TextArea\n");
+			SDL_Log("Warning: Couldn't load TextArea");
 			return false;
 		}
 	}
@@ -176,7 +176,7 @@ UIElement::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 	attr = node->first_attribute("image", 0, false);
 	if (attr) {
 		if (!SetImage(attr->value())) {
-			fprintf(stderr, "Warning: Couldn't load image '%s'\n", attr->value());
+			SDL_Log("Warning: Couldn't load image '%s'", attr->value());
 			return false;
 		}
 	}
@@ -184,7 +184,7 @@ UIElement::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 	child = node->first_node("ImageArea", 0, false);
 	if (child) {
 		if (!m_imageArea.Load(child)) {
-			fprintf(stderr, "Warning: Couldn't load ImageArea\n");
+			SDL_Log("Warning: Couldn't load ImageArea");
 			return false;
 		}
 	}

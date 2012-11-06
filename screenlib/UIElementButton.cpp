@@ -116,7 +116,7 @@ UIElementButton::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 			image->SetLocked(true);
 			m_stateImages[i] = image;
 		} else {
-			fprintf(stderr, "Warning: Couldn't load image '%s'\n", attr->value());
+			SDL_Log("Warning: Couldn't load image '%s'", attr->value());
 			return false;
 		}
 	}

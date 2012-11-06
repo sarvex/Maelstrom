@@ -84,7 +84,7 @@ UITemplates::Load(const char *file)
 			key->name = attr->value();
 			hash_insert(m_hashTable, key, node);
 		} else {
-			fprintf(stderr, "Warning: UITemplate %s missing 'templateName'\n", node->name());
+			SDL_Log("Warning: UITemplate %s missing 'templateName'", node->name());
 		}
 	}
 	return true;

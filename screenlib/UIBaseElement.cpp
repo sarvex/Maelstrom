@@ -245,13 +245,13 @@ UIBaseElement::LoadElements(rapidxml::xml_node<> *node, const UITemplates *templ
 
 		UIBaseElement *element = CreateElement(node->name());
 		if (!element) {
-			fprintf(stderr, "Warning: Couldn't find handler for element %s\n", node->name());
+			SDL_Log("Warning: Couldn't find handler for element %s", node->name());
 			continue;
 		}
 
 		if (!element->Load(node, templates) ||
 		    !element->FinishLoading()) {
-			fprintf(stderr, "Warning: Couldn't load element %s: %s\n", node->name(), element->Error());
+			SDL_Log("Warning: Couldn't load element %s: %s", node->name(), element->Error());
 			delete element;
 		} else {
 			AddElement(element);
@@ -280,7 +280,7 @@ UIBaseElement::LoadDrawLevel(rapidxml::xml_node<> *node, const char *name, DRAWL
 				return true;
 			}
 		}
-		fprintf(stderr, "Warning: Unknown draw level: %s\n", attr->value());
+		SDL_Log("Warning: Unknown draw level: %s", attr->value());
 		return false;
 	}
 	return false;
