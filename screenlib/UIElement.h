@@ -149,6 +149,10 @@ public:
 	UIArea *GetTextArea() {
 		return &m_textArea;
 	}
+	void GetTextOffset(int *x, int *y) const {
+		*x = m_textOffset.x;
+		*y = m_textOffset.y;
+	}
 	void SetTextShadowOffset(int x, int y);
 	bool GetTextShadowOffset(int *x, int *y) const;
 	void SetTextShadowColor(Uint8 R, Uint8 G, Uint8 B);
@@ -204,8 +208,8 @@ protected:
 	char *m_text;
 	char *m_textBinding;
 	UIArea m_textArea;
-	int m_textShadowOffsetX;
-	int m_textShadowOffsetY;
+	SDL_Point m_textOffset;
+	SDL_Point m_textShadowOffset;
 	Uint32 m_textShadowColor;
 	UITexture *m_image;
 	UIArea m_imageArea;

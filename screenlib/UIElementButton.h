@@ -35,8 +35,19 @@ public:
 	override bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
 
 	override bool HandleEvent(const SDL_Event &event);
+	override void OnMouseDown();
+	override void OnMouseUp();
 
 protected:
+	enum BUTTON_STATE {
+		BUTTON_STATE_NORMAL,
+		BUTTON_STATE_PRESSED,
+		BUTTON_STATE_DISABLED,
+		NUM_BUTTON_STATES
+	};
+	void SetButtonState(BUTTON_STATE state);
+
+	override void UpdateDisabledState();
 	override void OnClick();
 
 	bool ShouldHandleKey(SDL_Keycode key);
@@ -46,6 +57,8 @@ protected:
 	int m_hotkeyMod;
 	int m_clickSound;
 	char *m_clickPanel;
+	BUTTON_STATE m_buttonState;
+	UITexture *m_stateImages[NUM_BUTTON_STATES];
 };
 
 #endif // _UIElementButton_h

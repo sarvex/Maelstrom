@@ -29,4 +29,5 @@ UITexture::UITexture(SDL_Texture *texture, float scale)
 	m_texture = texture;
 	m_scale = scale;
 	SDL_QueryTexture(texture, NULL, NULL, &m_textureWidth, &m_textureHeight);
+	m_locked = false;
 }

@@ -36,12 +36,22 @@ UIElementButton::UIElementButton(UIBaseElement *parent, const char *name, UIDraw
 	m_hotkeyMod = KMOD_NONE;
 	m_clickSound = 0;
 	m_clickPanel = NULL;
+	m_buttonState = NUM_BUTTON_STATES;
+	SDL_zero(m_stateImages);
 }
 
 UIElementButton::~UIElementButton()
 {
 	if (m_clickPanel) {
 		SDL_free(m_clickPanel);
+	}
+
+	for (int i = 0; i < SDL_arraysize(m_stateImages); ++i) {
+		UITexture *image = m_stateImages[i];
+		if (image) {
+			image->SetLocked(false);
+			m_ui->FreeImage(image);
+		}
 	}
 }
 
@@ -87,7 +97,31 @@ UIElementButton::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 		}
 	}
 
-	
+	// Load the button state images, if any
+	static const char *stateImageNames[] = {
+		"normal_image",
+		"pressed_image",
+		"disabled_image",
+	};
+	SDL_COMPILE_TIME_ASSERT(stateImageNames, SDL_arraysize(stateImageNames) == NUM_BUTTON_STATES);
+
+	for (int i = 0; i < NUM_BUTTON_STATES; ++i) {
+		attr = node->first_attribute(stateImageNames[i], 0, false);
+		if (!attr) {
+			continue;
+		}
+
+		UITexture *image = m_ui->CreateImage(attr->value());
+		if (image) {
+			image->SetLocked(true);
+			m_stateImages[i] = image;
+		} else {
+			fprintf(stderr, "Warning: Couldn't load image '%s'\n", attr->value());
+			return false;
+		}
+	}
+	SetButtonState(BUTTON_STATE_NORMAL);
+
 	LoadNumber(node, "clickSound", m_clickSound);
 	LoadString(node, "clickPanel", m_clickPanel);
 
@@ -144,6 +178,56 @@ UIElementButton::HandleEvent(const SDL_Event &event)
 	}
 
 	return UIElement::HandleEvent(event);
+}
+
+void
+UIElementButton::OnMouseDown()
+{
+	UIElement::OnMouseDown();
+
+	SetButtonState(BUTTON_STATE_PRESSED);
+}
+
+void
+UIElementButton::OnMouseUp()
+{
+	UIElement::OnMouseUp();
+
+	SetButtonState(BUTTON_STATE_NORMAL);
+}
+
+void
+UIElementButton::UpdateDisabledState()
+{
+	UIElement::UpdateDisabledState();
+
+	if (IsDisabled()) {
+		SetButtonState(BUTTON_STATE_DISABLED);
+	} else {
+		SetButtonState(BUTTON_STATE_NORMAL);
+	}
+}
+
+void
+UIElementButton::SetButtonState(BUTTON_STATE state)
+{
+	if (state == m_buttonState) {
+		return;
+	}
+
+	if (state == BUTTON_STATE_PRESSED) {
+		m_textOffset.x = 1;
+		m_textOffset.y = 1;
+	} else {
+		m_textOffset.x = 0;
+		m_textOffset.y = 0;
+	}
+
+	if (m_stateImages[state]) {
+		SetImage(m_stateImages[state]);
+	}
+
+	m_buttonState = state;
 }
 
 void

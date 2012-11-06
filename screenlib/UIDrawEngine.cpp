@@ -132,19 +132,21 @@ UIDrawEngine::OnDraw()
 
 	if (m_textImage) {
 		UIArea *area = m_element->GetTextArea();
-		int x, y;
-		if (m_element->GetTextShadowOffset(&x, &y)) {
+		int x, y, shadowX, shadowY;
+		m_element->GetTextOffset(&x, &y);
+
+		if (m_element->GetTextShadowOffset(&shadowX, &shadowY)) {
 			Uint8 r, g, b;
 
 			m_screen->GetRGB(m_element->GetTextShadowColor(), &r, &g, &b);
 			SDL_SetTextureColorMod(m_textImage->Texture(), r, g, b);
 
-			m_screen->QueueBlit(m_textImage->Texture(), area->X()+x, area->Y()+y, area->Width(), area->Height(), NOCLIP);
+			m_screen->QueueBlit(m_textImage->Texture(), area->X()+x+shadowX, area->Y()+y+shadowY, area->Width(), area->Height(), NOCLIP);
 
 			m_screen->GetRGB(m_element->GetCurrentColor(), &r, &g, &b);
 			SDL_SetTextureColorMod(m_textImage->Texture(), r, g, b);
 		}
-		m_screen->QueueBlit(m_textImage->Texture(), area->X(), area->Y(), area->Width(), area->Height(), NOCLIP);
+		m_screen->QueueBlit(m_textImage->Texture(), area->X()+x, area->Y()+y, area->Width(), area->Height(), NOCLIP);
 	}
 }
 

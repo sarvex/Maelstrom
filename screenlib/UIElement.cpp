@@ -42,8 +42,10 @@ UIElement::UIElement(UIBaseElement *parent, const char *name, UIDrawEngine *draw
 	m_fontStyle = UIFONT_STYLE_NORMAL;
 	m_text = NULL;
 	m_textBinding = NULL;
-	m_textShadowOffsetX = 0;
-	m_textShadowOffsetY = 0;
+	m_textOffset.x = 0;
+	m_textOffset.y = 0;
+	m_textShadowOffset.x = 0;
+	m_textShadowOffset.y = 0;
 	m_textShadowColor = m_screen->MapRGB(0x00, 0x00, 0x00);
 	m_image = NULL;
 	m_mouseEnabled = false;
@@ -71,7 +73,7 @@ UIElement::~UIElement()
 	if (m_textBinding) {
 		SDL_free(m_textBinding);
 	}
-	if (m_image) {
+	if (m_image && !m_image->IsLocked()) {
 		m_ui->FreeImage(m_image);
 	}
 	if (m_clickCallback) {
@@ -121,6 +123,10 @@ UIElement::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 
 	if (LoadColor(node, "color", color)) {
 		SetColor(color);
+	}
+
+	if (LoadColor(node, "disabledColor", color)) {
+		SetDisabledColor(color);
 	}
 
 	attr = node->first_attribute("font", 0, false);
@@ -445,16 +451,16 @@ UIElement::SetText(const char *text)
 void
 UIElement::SetTextShadowOffset(int x, int y)
 {
-	m_textShadowOffsetX = x;
-	m_textShadowOffsetY = y;
+	m_textShadowOffset.x = x;
+	m_textShadowOffset.y = y;
 }
 
 bool
 UIElement::GetTextShadowOffset(int *x, int *y) const
 {
-	if (m_textShadowOffsetX || m_textShadowOffsetY) {
-		*x = m_textShadowOffsetX;
-		*y = m_textShadowOffsetY;
+	if (m_textShadowOffset.x || m_textShadowOffset.y) {
+		*x = m_textShadowOffset.y;
+		*y = m_textShadowOffset.y;
 		return true;
 	} else {
 		*x = 0;
@@ -493,7 +499,7 @@ UIElement::SetImage(const char *file)
 void
 UIElement::SetImage(UITexture *image)
 {
-	if (m_image) {
+	if (m_image && !m_image->IsLocked()) {
 		m_ui->FreeImage(m_image);
 	}
 	m_image = image;

@@ -57,11 +57,20 @@ public:
 		m_scale = scale;
 	}
 
+	// When a texture is locked it shouldn't be freed
+	void SetLocked(bool locked) {
+		m_locked = locked;
+	}
+	bool IsLocked() const {
+		return m_locked;
+	}
+
 protected:
 	SDL_Texture *m_texture;
 	int m_textureWidth;
 	int m_textureHeight;
 	float m_scale;
+	bool m_locked;
 };
 
 #endif // _UITexture_h
