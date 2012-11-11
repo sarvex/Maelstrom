@@ -22,6 +22,7 @@
 #ifndef _UITemplates_h
 #define _UITemplates_h
 
+#include "../utils/array.h"
 #include "../utils/hashtable.h"
 #include "../utils/rapidxml.h"
 
@@ -37,7 +38,7 @@ public:
 	rapidxml::xml_node<> *GetTemplate(const char *type, const char *name) const;
 
 protected:
-	char *m_data;
+	array<char*> m_data;
 	rapidxml::xml_document<> m_doc;
 	struct HashKey {
 		const char *type;

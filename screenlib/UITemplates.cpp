@@ -29,7 +29,6 @@
 
 UITemplates::UITemplates()
 {
-	m_data = NULL;
 	m_hashTable = NULL;
 }
 
@@ -38,34 +37,33 @@ UITemplates::~UITemplates()
 	if (m_hashTable) {
 		hash_destroy(m_hashTable);
 	}
-	if (m_data) {
-		SDL_free(m_data);
+	for (int i = 0; i < m_data.length(); ++i) {
+		SDL_free(m_data[i]);
 	}
 }
 
 bool
 UITemplates::Load(const char *file)
 {
+	char *data;
 	rapidxml::xml_node<> *node;
 	rapidxml::xml_attribute<> *attr;
 
-	if (m_data) {
-		SDL_free(m_data);
-	}
-	m_data = LoadFile(file);
-	if (!m_data) {
+	data = LoadFile(file);
+	if (!data) {
 		return false;
 	}
+	m_data.add(data);
 
 #ifdef RAPIDXML_NO_EXCEPTIONS
 	gLoadXMLError = NULL;
-	m_doc.parse<0>(m_data);
+	m_doc.parse<0>(data);
 	if (gLoadXMLError) {
 		return false;
 	}
 #else
 	try {
-		m_doc.parse<0>(m_data);
+		m_doc.parse<0>(data);
 	} catch (rapidxml::parse_error e) {
 		return false;
 	}
