@@ -149,8 +149,8 @@ public:
 	void Clear(int x, int y, int w, int h) {
 		FillRect(x, y, w, h, 0);
 	}
-	void Clear(void) {
-		UpdateDrawColor(0);
+	void Clear(Uint32 color = 0) {
+		UpdateDrawColor(color);
 		SDL_RenderClear(renderer);
 	}
 	void DrawPoint(int x, int y, Uint32 color) {
