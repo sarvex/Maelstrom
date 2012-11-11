@@ -45,7 +45,7 @@ UITexture *Load_Texture(FrameBuf *screen, const char *folder, const char *name)
 			if (surface) {
 				SDL_Texture *texture = screen->LoadImage(surface);
 				SDL_FreeSurface(surface);
-				return new UITexture(texture, gResolutions[i].scale);;
+				return new UITexture(texture, gResolutions[i].scale);
 			}
 		}
 	}

@@ -23,6 +23,7 @@
 #define _UITexture_h
 
 struct SDL_Texture;
+class FrameBuf;
 
 /* The scale in this class represents the scale of the pixels relative to
    the layout resolution.  For example, if the layout resolution is 1024x768,
@@ -38,12 +39,6 @@ public:
 	SDL_Texture *Texture() const {
 		return m_texture;
 	}
-	int TextureWidth() const {
-		return m_textureWidth;
-	}
-	int TextureHeight() const {
-		return m_textureHeight;
-	}
 	int Width() const {
 		return (int)(m_textureWidth / m_scale);
 	}
@@ -56,6 +51,9 @@ public:
 	void SetScale(float scale) {
 		m_scale = scale;
 	}
+	void SetStretchGrid(int cornerSize);
+
+	void Draw(FrameBuf *screen, int x, int y, int w, int h);
 
 	// When a texture is locked it shouldn't be freed
 	void SetLocked(bool locked) {
@@ -65,11 +63,32 @@ public:
 		return m_locked;
 	}
 
+protected: 
+	enum {
+		STRETCH_CENTER,
+		STRETCH_LEFT,
+		STRETCH_RIGHT,
+		STRETCH_TOP,
+		STRETCH_BOTTOM,
+		STRETCH_UPPER_LEFT,
+		STRETCH_UPPER_RIGHT,
+		STRETCH_LOWER_LEFT,
+		STRETCH_LOWER_RIGHT,
+		NUM_STRETCH_AREAS
+	};
+	void CalculateStretchAreas(int cornerSize, int x, int y, int w, int h,
+				      SDL_Rect areas[NUM_STRETCH_AREAS]);
+
 protected:
 	SDL_Texture *m_texture;
 	int m_textureWidth;
 	int m_textureHeight;
 	float m_scale;
+
+	bool m_stretch;
+	int m_stretchCornerSize;
+	SDL_Rect m_stretchAreas[NUM_STRETCH_AREAS];
+
 	bool m_locked;
 };
 

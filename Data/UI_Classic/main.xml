@@ -175,6 +175,7 @@
 		<Button name="play_last" image="play" action="play_last">
 			<Size w="326" h="22"/>
 			<ImageArea>
+				<Size w="24" h="24"/>
 				<Anchor anchorFrom="LEFT" anchorTo="LEFT"/>
 			</ImageArea>
 			<Anchor anchorFrom="LEFT" anchorTo="LEFT" anchor="last_score_label" x="-38"/>

@@ -29,6 +29,14 @@ class UIElementButton : public UIElement
 {
 DECLARE_TYPESAFE_CLASS(UIElement)
 public:
+	enum BUTTON_STATE {
+		BUTTON_STATE_NORMAL,
+		BUTTON_STATE_PRESSED,
+		BUTTON_STATE_DISABLED,
+		NUM_BUTTON_STATES
+	};
+
+public:
 	UIElementButton(UIBaseElement *parent, const char *name, UIDrawEngine *drawEngine);
 	virtual ~UIElementButton();
 
@@ -38,13 +46,11 @@ public:
 	override void OnMouseDown();
 	override void OnMouseUp();
 
+	UITexture *GetButtonStateImage(BUTTON_STATE state) {
+		return m_stateImages[state];
+	}
+
 protected:
-	enum BUTTON_STATE {
-		BUTTON_STATE_NORMAL,
-		BUTTON_STATE_PRESSED,
-		BUTTON_STATE_DISABLED,
-		NUM_BUTTON_STATES
-	};
 	void SetButtonState(BUTTON_STATE state);
 
 	override void UpdateDisabledState();

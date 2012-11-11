@@ -127,7 +127,7 @@ UIDrawEngine::OnDraw()
 	UITexture *image = m_element->GetImage();
 	if (image) {
 		UIArea *area = m_element->GetImageArea();
-		m_screen->QueueBlit(image->Texture(), area->X(), area->Y(), area->Width(), area->Height(), NOCLIP);
+		image->Draw(m_screen, area->X(), area->Y(), area->Width(), area->Height());
 	}
 
 	if (m_textImage) {
@@ -205,8 +205,16 @@ UIDrawEngine::OnImageChanged()
 
 	if (image) {
 		int w, h;
-		w = image->Width();
-		h = image->Height();
+		if (m_element->IsAutoSizingWidth()) {
+			w = image->Width();
+		} else {
+			w = m_element->Width();
+		}
+		if (m_element->IsAutoSizingHeight()) {
+			h = image->Height();
+		} else {
+			h = m_element->Height();
+		}
 		m_element->GetImageArea()->AutoSize(w, h);
 		m_element->AutoSize(w, h);
 	}
