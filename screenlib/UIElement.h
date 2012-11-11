@@ -92,6 +92,12 @@ public:
 	override void LoadData(Prefs *prefs);
 	override void SaveData(Prefs *prefs);
 
+	override void OnRectChanged() {
+		UIBaseElement::OnRectChanged();
+
+		m_imageArea.AutoSize(Width(), Height(), true);
+	}
+
 	// Set the draw engine for this element
 	// This should be called before Load() so the draw engine can load too.
 	// Once set, the element owns the draw engine and will free it.

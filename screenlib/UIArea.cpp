@@ -57,11 +57,12 @@ UIArea::Load(rapidxml::xml_node<> *node)
 
 	child = node->first_node("size", 0, false);
 	if (child) {
-		if (LoadNumber(child, "w", m_rect.w)) {
-			m_autosizeWidth = false;
+		int w, h;
+		if (LoadNumber(child, "w", w)) {
+			SetWidth(w);
 		}
-		if (LoadNumber(child, "h", m_rect.h)) {
-			m_autosizeHeight = false;
+		if (LoadNumber(child, "h", h)) {
+			SetHeight(h);
 		}
 	}
 

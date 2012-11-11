@@ -205,17 +205,20 @@ UIDrawEngine::OnImageChanged()
 
 	if (image) {
 		int w, h;
+		bool parent = false;
 		if (m_element->IsAutoSizingWidth()) {
 			w = image->Width();
 		} else {
 			w = m_element->Width();
+			parent = true;
 		}
 		if (m_element->IsAutoSizingHeight()) {
 			h = image->Height();
 		} else {
 			h = m_element->Height();
+			parent = true;
 		}
-		m_element->GetImageArea()->AutoSize(w, h);
+		m_element->GetImageArea()->AutoSize(w, h, parent);
 		m_element->AutoSize(w, h);
 	}
 }
