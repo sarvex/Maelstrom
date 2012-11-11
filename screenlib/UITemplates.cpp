@@ -143,7 +143,7 @@ int
 UITemplates::HashTable_KeyMatch(const void *_a, const void *_b, void *data)
 {
 	const HashKey *a = static_cast<const HashKey *>(_a);
-	const HashKey *b = static_cast<const HashKey *>(_a);
+	const HashKey *b = static_cast<const HashKey *>(_b);
 
 	return SDL_strcasecmp(a->type, b->type) == 0 && 
 	       SDL_strcasecmp(a->name, b->name) == 0;
