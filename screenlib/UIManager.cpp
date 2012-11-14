@@ -202,7 +202,13 @@ UIManager::ShowPanel(UIPanel *panel)
 			}
 		}
 
-		m_visible.add(panel);
+		// Make sure that fullscreen panels go behind dialogs
+		if (panel->IsFullscreen()) {
+			m_visible.insert(panel, 0);
+		} else {
+			m_visible.add(panel);
+		}
+
 		panel->Show();
 		if (panel->IsFullscreen()) {
 			Draw();
