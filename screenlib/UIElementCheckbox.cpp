@@ -81,14 +81,20 @@ UIElementCheckbox::FinishLoading()
 	// Extend the sensitive area to encompass the label
 	if (!m_textArea.IsEmpty()) {
 		if (m_textArea.X() >= X()) {
-			SetWidth((m_textArea.X()+m_textArea.Width()) - X());
+			int width = ((m_textArea.X()+m_textArea.Width()) - X());
+			if (width > Width()) {
+				SetWidth(width);
+			}
 		} else {
 			assert(!"Need code for labels on the left");
 		}
 	}
 	if (!m_imageArea.IsEmpty()) {
 		if (m_imageArea.X() >= X()) {
-			SetWidth((m_imageArea.X()+m_imageArea.Width()) - X());
+			int width = ((m_imageArea.X()+m_imageArea.Width()) - X());
+			if (width > Width()) {
+				SetWidth(width);
+			}
 		} else {
 			assert(!"Need code for images on the left");
 		}
