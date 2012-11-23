@@ -60,7 +60,8 @@ UIDialogButton::OnClick()
 	UIBaseElement *parent;
 	UIPanel *panel = NULL;
 
-	while (!panel && (parent = GetParent()) != NULL) {
+	parent = this;
+	while (!panel && (parent = parent->GetParent()) != NULL) {
 		panel = parent->Cast<UIPanel>();
 	}
 
