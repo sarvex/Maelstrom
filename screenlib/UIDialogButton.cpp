@@ -69,10 +69,9 @@ UIDialogButton::OnClick()
 		static_cast<UIDialog*>(panel)->SetDialogStatus(m_statusID);
 	}
 
-	// Hide before doing the action (which may change the current panel)
+	UIElementButton::OnClick();
+
 	if (m_closeDialog && panel) {
 		GetUI()->HidePanel(panel);
 	}
-
-	UIElementButton::OnClick();
 }
