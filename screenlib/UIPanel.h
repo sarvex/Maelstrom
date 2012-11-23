@@ -79,8 +79,20 @@ public:
 	bool IsFullscreen() const {
 		return m_fullscreen;
 	}
+	bool AlwaysOnTop() const {
+		return m_alwaysOnTop;
+	}
 	bool IsCursorVisible() const {
 		return m_cursorVisible;
+	}
+	int GetPriority() {
+		if (IsFullscreen()) {
+			return 1;
+		}
+		if (!AlwaysOnTop()) {
+			return 2;
+		}
+		return 3;
 	}
 
 	override bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
@@ -102,6 +114,7 @@ public:
 
 protected:
 	bool m_fullscreen;
+	bool m_alwaysOnTop;
 	bool m_cursorVisible;
 	int m_enterSound;
 	int m_leaveSound;

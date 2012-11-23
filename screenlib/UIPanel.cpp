@@ -34,6 +34,7 @@ UIPanel::UIPanel(UIManager *ui, const char *name) :
 {
 	m_shown = false;
 	m_fullscreen = true;
+	m_alwaysOnTop = false;
 	m_cursorVisible = true;
 	m_enterSound = 0;
 	m_leaveSound = 0;
@@ -58,6 +59,7 @@ UIPanel::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 	}
 
 	LoadBool(node, "fullscreen", m_fullscreen);
+	LoadBool(node, "alwaysOnTop", m_alwaysOnTop);
 	LoadBool(node, "cursor", m_cursorVisible);
 	LoadNumber(node, "enterSound", m_enterSound);
 	LoadNumber(node, "leaveSound", m_leaveSound);
