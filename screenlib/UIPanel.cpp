@@ -200,8 +200,8 @@ UIPanel::Action(UIBaseElement *sender, const char *action)
 	}
 
 	// Dialogs pass actions to their parents
-	UIPanel *panel = m_ui->GetFullscreenPanel();
-	if (panel && panel != this) {
+	UIPanel *panel = m_ui->GetPrevPanel(this);
+	if (panel) {
 		panel->Action(sender, action);
 	} else {
 		if (SDL_strncmp(action, "show_", 5) == 0) {

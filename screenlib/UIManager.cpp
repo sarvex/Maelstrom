@@ -180,6 +180,36 @@ UIManager::GetFullscreenPanel()
 }
 
 UIPanel *
+UIManager::GetNextPanel(UIPanel *panel)
+{
+	for (int i = 0; i < m_visible.length(); ++i) {
+		if (m_visible[i] == panel) {
+			if (i+1 < m_visible.length()) {
+				return m_visible[i+1];
+			} else {
+				return NULL;
+			}
+		}
+	}
+	return NULL;
+}
+
+UIPanel *
+UIManager::GetPrevPanel(UIPanel *panel)
+{
+	for (int i = 0; i < m_visible.length(); ++i) {
+		if (m_visible[i] == panel) {
+			if (i > 0) {
+				return m_visible[i-1];
+			} else {
+				return NULL;
+			}
+		}
+	}
+	return NULL;
+}
+
+UIPanel *
 UIManager::GetCurrentPanel()
 {
 	if (m_visible.length() > 0) {

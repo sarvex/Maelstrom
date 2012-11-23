@@ -74,6 +74,8 @@ public:
 		return NULL;
 	}
 	UIPanel *GetFullscreenPanel();
+	UIPanel *GetNextPanel(UIPanel *panel);
+	UIPanel *GetPrevPanel(UIPanel *panel);
 	UIPanel *GetCurrentPanel();
 
 	/* These are called by the UIPanel class */

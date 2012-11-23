@@ -57,7 +57,12 @@ UIDialogButton::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 void
 UIDialogButton::OnClick()
 {
-	UIPanel *panel = GetUI()->GetCurrentPanel();
+	UIBaseElement *parent;
+	UIPanel *panel = NULL;
+
+	while (!panel && (parent = GetParent()) != NULL) {
+		panel = parent->Cast<UIPanel>();
+	}
 
 	if (m_statusID && panel && panel->IsA(UIDialog::GetType())) {
 		static_cast<UIDialog*>(panel)->SetDialogStatus(m_statusID);
