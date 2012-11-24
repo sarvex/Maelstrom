@@ -29,6 +29,9 @@ class UIImageInterface
 public:
 	virtual UITexture *CreateImage(const char *name) = 0;
 	virtual void FreeImage(UITexture *texture) = 0;
+
+	virtual UITexture *CreateBackground(const char *name) = 0;
+	virtual void FreeBackground(UITexture *texture) = 0;
 };
 
 #endif // _UIImageInterface_h

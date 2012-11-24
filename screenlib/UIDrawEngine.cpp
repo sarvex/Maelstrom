@@ -118,6 +118,11 @@ UIDrawEngine::OnDraw()
 				m_element->GetFillColor());
 	}
 
+	UITexture *background = m_element->GetBackground();
+	if (background) {
+		background->Draw(m_screen, m_element->X(), m_element->Y(), m_element->Width(), m_element->Height());
+	}
+
 	if (m_element->HasBorder()) {
 		m_screen->DrawRect(m_element->X(), m_element->Y(),
 				m_element->Width(), m_element->Height(),

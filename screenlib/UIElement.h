@@ -167,8 +167,15 @@ public:
 		return m_textShadowColor;
 	}
 
+	// Background
+	bool SetBackground(const char *name);
+	void SetBackground(UITexture *background);
+	UITexture *GetBackground() const {
+		return m_background;
+	}
+
 	// Image information
-	bool SetImage(const char *file);
+	bool SetImage(const char *name);
 	void SetImage(UITexture *image);
 	UITexture *GetImage() const {
 		return m_image;
@@ -217,6 +224,7 @@ protected:
 	SDL_Point m_textOffset;
 	SDL_Point m_textShadowOffset;
 	Uint32 m_textShadowColor;
+	UITexture *m_background;
 	UITexture *m_image;
 	UIArea m_imageArea;
 	bool m_mouseEnabled;

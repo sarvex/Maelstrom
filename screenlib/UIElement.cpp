@@ -47,6 +47,7 @@ UIElement::UIElement(UIBaseElement *parent, const char *name, UIDrawEngine *draw
 	m_textShadowOffset.x = 0;
 	m_textShadowOffset.y = 0;
 	m_textShadowColor = m_screen->MapRGB(0x00, 0x00, 0x00);
+	m_background = NULL;
 	m_image = NULL;
 	m_mouseEnabled = false;
 	m_mouseInside = false;
@@ -72,6 +73,9 @@ UIElement::~UIElement()
 	}
 	if (m_textBinding) {
 		SDL_free(m_textBinding);
+	}
+	if (m_background && !m_background->IsLocked()) {
+		m_ui->FreeBackground(m_background);
 	}
 	if (m_image && !m_image->IsLocked()) {
 		m_ui->FreeImage(m_image);
@@ -170,6 +174,14 @@ UIElement::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 
 		if (LoadColor(child, "color", color)) {
 			SetTextShadowColor(color);
+		}
+	}
+
+	attr = node->first_attribute("background", 0, false);
+	if (attr) {
+		if (!SetBackground(attr->value())) {
+			SDL_Log("Warning: Couldn't load background '%s'", attr->value());
+			return false;
 		}
 	}
 
@@ -482,11 +494,35 @@ UIElement::SetTextShadowColor(Uint32 color)
 }
 
 bool
-UIElement::SetImage(const char *file)
+UIElement::SetBackground(const char *name)
+{
+	UITexture *background;
+
+	background = m_ui->CreateBackground(name);
+	if (!background) {
+		return false;
+	}
+
+	SetBackground(background);
+
+	return true;
+}
+
+void
+UIElement::SetBackground(UITexture *background)
+{
+	if (m_background && !m_background->IsLocked()) {
+		m_ui->FreeBackground(m_background);
+	}
+	m_background = background;
+}
+
+bool
+UIElement::SetImage(const char *name)
 {
 	UITexture *image;
 
-	image = m_ui->CreateImage(file);
+	image = m_ui->CreateImage(name);
 	if (!image) {
 		return false;
 	}

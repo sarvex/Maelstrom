@@ -197,6 +197,30 @@ MaelstromUI::FreeImage(UITexture *texture)
 	Free_Texture(screen, texture);
 }
 
+UITexture *
+MaelstromUI::CreateBackground(const char *name)
+{
+    UITexture *background;
+
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
+
+    background = CreateImage(name);
+    if (background) {
+        int gridSize = background->Width() / 3;
+        background->SetStretchGrid(gridSize);
+    }
+
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");
+
+    return background;
+}
+
+void
+MaelstromUI::FreeBackground(UITexture *texture)
+{
+    FreeImage(texture);
+}
+
 void
 MaelstromUI::PlaySound(int soundID)
 {

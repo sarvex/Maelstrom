@@ -44,6 +44,8 @@ public:
 	//
 	virtual UITexture *CreateImage(const char *name);
 	virtual void FreeImage(UITexture *texture);
+	virtual UITexture *CreateBackground(const char *name);
+	virtual void FreeBackground(UITexture *texture);
 
 	//
 	// UISoundInterface
