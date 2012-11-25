@@ -49,6 +49,14 @@ enum AnchorLocation {
 	BOTTOMRIGHT = (Y_BOTTOM|X_RIGHT)
 };
 
+class UIArea;
+
+struct UIAnchorInfo {
+	UIArea *element;
+	AnchorLocation anchorFrom;
+	AnchorLocation anchorTo;
+	int offsetX, offsetY;
+};
 
 class UIArea : public ErrorBase
 {
@@ -77,6 +85,9 @@ public:
 	}
 	void SetAnchor(AnchorLocation from, AnchorLocation to, UIArea *anchor,
 					int offsetX = 0, int offsetY = 0);
+	void GetAnchor(UIAnchorInfo &anchor) {
+		anchor = m_anchor;
+	}
 
 	bool ContainsPoint(int x, int y) const {
 		return (x >= m_rect.x && x < m_rect.x+m_rect.w &&
@@ -134,13 +145,7 @@ private:
 	bool m_autosizeWidth;
 	bool m_autosizeHeight;
 	SDL_Rect m_rect;
-
-	struct {
-		UIArea *element;
-		AnchorLocation anchorFrom;
-		AnchorLocation anchorTo;
-		int offsetX, offsetY;
-	} m_anchor;
+	UIAnchorInfo m_anchor;
 
 	array<UIArea *> m_anchoredAreas;
 };
