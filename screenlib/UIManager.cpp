@@ -218,6 +218,12 @@ UIManager::GetCurrentPanel()
 	return NULL;
 }
 
+bool
+UIManager::IsShown(UIPanel *panel) const
+{
+	return (panel && m_visible.find(panel));
+}
+
 void
 UIManager::ShowPanel(UIPanel *panel)
 {

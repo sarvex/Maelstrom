@@ -200,7 +200,12 @@ UIPanel::Action(UIBaseElement *sender, const char *action)
 	}
 
 	// Dialogs pass actions to their parents
-	UIPanel *panel = m_ui->GetPrevPanel(this);
+	UIPanel *panel;
+	if (m_ui->IsShown(this)) {
+		panel = m_ui->GetPrevPanel(this);
+	} else {
+		panel = m_ui->GetCurrentPanel();
+	}
 	if (panel) {
 		panel->Action(sender, action);
 	} else {

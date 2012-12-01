@@ -89,6 +89,7 @@ public:
 		m_panels.remove(panel);
 	}
 
+	bool IsShown(UIPanel *panel) const;
 	void ShowPanel(UIPanel *panel);
 	void ShowPanel(const char *name) {
 		ShowPanel(GetPanel(name));
