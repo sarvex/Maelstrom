@@ -27,7 +27,6 @@
 #include <stdlib.h>
 
 #include "Maelstrom_Globals.h"
-#include "MaelstromFeatures.h"
 #include "load.h"
 #include "init.h"
 #include "game.h"
@@ -50,6 +49,7 @@ Sound    *sound = NULL;
 FontServ *fontserv = NULL;
 FrameBuf *screen = NULL;
 UIManager *ui = NULL;
+StoreManager *store = NULL;
 
 Bool	gClassic;
 array<Resolution> gResolutions;
@@ -775,6 +775,10 @@ void CleanUp(void)
 {
 	FreeScores();
 	SaveControls();
+	if ( store ) {
+		delete store;
+		store = NULL;
+	}
 	if ( ui ) {
 		delete ui;
 		ui = NULL;
@@ -820,9 +824,6 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 
 	// -- Load our controls
 	LoadControls();
-
-	// -- Load our features
-	InitFeatures();
 
 	Uint32 init_flags = (SDL_INIT_VIDEO|SDL_INIT_AUDIO);
 #ifdef SDL_INIT_JOYSTICK
@@ -926,6 +927,9 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 	}
 	ui->ShowPanel(PANEL_LOADING);
 	ui->Draw();
+
+	/* -- Create the store manager */
+	store = StoreManager::Create();
 
 	/* -- Load in the prize CICN's */
 	if ( LoadCICNS() < 0 )

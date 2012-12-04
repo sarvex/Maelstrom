@@ -33,7 +33,6 @@
 /* ------------------------------------------------------------- */
 
 #include "Maelstrom_Globals.h"
-#include "MaelstromFeatures.h"
 #include "load.h"
 #include "init.h"
 #include "fastrand.h"
@@ -399,6 +398,11 @@ MainPanelDelegate::OnTick()
 bool
 MainPanelDelegate::HandleEvent(const SDL_Event &event)
 {
+	/* -- Handle store events */
+	if (store->HandleEvent(event)) {
+		return true;
+	}
+
 	/* -- Handle file drop requests */
 	if ( event.type == SDL_DROPFILE ) {
 		gReplayFile = event.drop.file;
@@ -421,6 +425,8 @@ MainPanelDelegate::OnAction(UIBaseElement *sender, const char *action)
 		OnActionPlay();
 	} else if (SDL_strcmp(action, "multiplayer") == 0) {
 		OnActionMultiplayer();
+	} else if (SDL_strcmp(action, "multiplayer_activated") == 0) {
+		OnActionMultiplayerActivated();
 	} else if (SDL_strcmp(action, "quit") == 0) {
 		OnActionQuitGame();
 	} else if (SDL_strcmp(action, "volume_down") == 0) {
@@ -431,6 +437,8 @@ MainPanelDelegate::OnAction(UIBaseElement *sender, const char *action)
 		OnActionSetVolume(SDL_atoi(action+9));
 	} else if (SDL_strcmp(action, "toggle_kidmode") == 0) {
 		OnActionToggleKidMode(sender);
+	} else if (SDL_strcmp(action, "kidmode_activated") == 0) {
+		OnActionKidModeActivated();
 	} else if (SDL_strcmp(action, "toggle_fullscreen") == 0) {
 		OnActionToggleFullscreen();
 	} else if (SDL_strcmp(action, "screenshot") == 0) {
@@ -460,11 +468,12 @@ MainPanelDelegate::OnActionPlay()
 void
 MainPanelDelegate::OnActionMultiplayer()
 {
-	if (!HasFeature(FEATURE_NETWORK)) {
-		ShowFeature(FEATURE_NETWORK);
-		return;
-	}
+	store->ActivateFeature(FEATURE_NETWORK, "multiplayer_activated");
+}
 
+void
+MainPanelDelegate::OnActionMultiplayerActivated()
+{
 	ui->ShowPanel(DIALOG_LOBBY);
 }
 
@@ -530,12 +539,23 @@ MainPanelDelegate::OnActionToggleKidMode(UIBaseElement *sender)
 	}
 
 	if (checkbox->IsChecked()) {
-		if (!HasFeature(FEATURE_KIDMODE)) {
-			ShowFeature(FEATURE_KIDMODE);
+		if (!store->HasFeature(FEATURE_KIDMODE)) {
 			checkbox->SetChecked(false);
+			store->ActivateFeature(FEATURE_KIDMODE, "kidmode_activated");
 		}
 	}
 	checkbox->SaveData(prefs);
+}
+
+void
+MainPanelDelegate::OnActionKidModeActivated()
+{
+	UIElementCheckbox *checkbox = m_panel->GetElement<UIElementCheckbox>("kidmode");
+
+	if (!checkbox) {
+		return;
+	}
+	checkbox->SetChecked(true);
 }
 
 void

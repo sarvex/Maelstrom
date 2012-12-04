@@ -41,6 +41,146 @@
 #include "../screenlib/UIDialogButton.h"
 #include "../utils/hashtable.h"
 
+struct DialogInfo {
+    DialogInfo(const char *text,
+               const char *button1Text, const char *button1Action,
+               const char *button2Text, const char *button2Action,
+               const char *button3Text, const char *button3Action)
+        : text(text ? SDL_strdup(text) : NULL),
+          button1Text(button1Text ? SDL_strdup(button1Text) : NULL),
+          button1Action(button1Action ? SDL_strdup(button1Action) : NULL),
+          button2Text(button2Text ? SDL_strdup(button2Text) : NULL),
+          button2Action(button2Action ? SDL_strdup(button2Action) : NULL),
+          button3Text(button3Text ? SDL_strdup(button3Text) : NULL),
+          button3Action(button3Action ? SDL_strdup(button3Action) : NULL)
+    { }
+
+    ~DialogInfo() {
+        if (this->text) {
+            SDL_free(this->text);
+        }
+        if (this->button1Text) {
+            SDL_free(this->button1Text);
+        }
+        if (this->button1Action) {
+            SDL_free(this->button1Action);
+        }
+        if (this->button2Text) {
+            SDL_free(this->button2Text);
+        }
+        if (this->button2Action) {
+            SDL_free(this->button2Action);
+        }
+        if (this->button3Text) {
+            SDL_free(this->button3Text);
+        }
+        if (this->button3Action) {
+            SDL_free(this->button3Action);
+        }
+    }
+
+    char *text;
+    char *button1Text;
+    char *button1Action;
+    char *button2Text;
+    char *button2Action;
+    char *button3Text;
+    char *button3Action;
+};
+
+static void MessageDialogInit(void *param, UIDialog *dialog)
+{
+    DialogInfo *info = (DialogInfo *)param;
+
+    UIElement *message = dialog->GetElement<UIElement>("message");
+    if (message) {
+        message->SetText(info->text);
+    }
+
+    UIElement *button1 = dialog->GetElement<UIElement>("button1");
+    if (button1) {
+        if (info->button1Text) {
+            button1->SetText(info->button1Text);
+            button1->Show();
+        } else {
+            button1->Hide();
+        }
+        if (info->button1Action) {
+            button1->SetAction(info->button1Action);
+        } else {
+            button1->SetAction(NULL);
+        }
+    }
+
+    UIElement *button2 = dialog->GetElement<UIElement>("button2");
+    if (button2) {
+        if (info->button2Text) {
+            button2->SetText(info->button2Text);
+            button2->Show();
+        } else {
+            button2->Hide();
+        }
+        if (info->button2Action) {
+            button2->SetAction(info->button2Action);
+        } else {
+            button2->SetAction(NULL);
+        }
+    }
+
+    UIElement *button3 = dialog->GetElement<UIElement>("button3");
+    if (button3) {
+        if (info->button3Text) {
+            button3->SetText(info->button3Text);
+            button3->Show();
+        } else {
+            button3->Hide();
+        }
+        if (info->button3Action) {
+            button3->SetAction(info->button3Action);
+        } else {
+            button3->SetAction(NULL);
+        }
+    }
+}
+
+static void MessageDialogDone(void *param, UIDialog *dialog, int status)
+{
+    DialogInfo *info = (DialogInfo *)param;
+
+    delete info;
+}
+
+void ShowMessage(const char *text,
+                 const char *button1Text, const char *button1Action,
+                 const char *button2Text, const char *button2Action,
+                 const char *button3Text, const char *button3Action)
+{
+    if (!ui) {
+        // Not initialized yet
+        return;
+    }
+
+    UIDialog *dialog = ui->GetPanel<UIDialog>(DIALOG_MESSAGE);
+    if (dialog) {
+        // Free any existing message
+        ui->HidePanel(dialog);
+
+        DialogInfo *info = new DialogInfo(text, button1Text, button1Action,
+                                          button2Text, button2Action,
+                                          button3Text, button3Action);
+        dialog->SetDialogInitHandler(MessageDialogInit, info);
+        dialog->SetDialogDoneHandler(MessageDialogDone, info);
+        ui->ShowPanel(dialog);
+    }
+}
+
+void HideMessage()
+{
+    UIDialog *dialog = ui->GetPanel<UIDialog>(DIALOG_MESSAGE);
+    if (dialog) {
+        ui->HidePanel(dialog);
+    }
+}
 
 static void
 hash_nuke_string_font(const void *key, const void *value, void *data)

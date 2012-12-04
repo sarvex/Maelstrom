@@ -29,6 +29,10 @@
 		AA0777D2145EB60A00DB8DB3 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA0777D1145EB60A00DB8DB3 /* AudioToolbox.framework */; };
 		AA0777D4145EB68300DB8DB3 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA0777D3145EB68300DB8DB3 /* QuartzCore.framework */; };
 		AA0777DB145EC12900DB8DB3 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AA0777DA145EC12900DB8DB3 /* libz.dylib */; };
+		AA425CE9166DBC4E005F2C24 /* ServiceManager_StoreKit.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA425CE8166DBC4E005F2C24 /* ServiceManager_StoreKit.mm */; };
+		AA425CEC166DBCE5005F2C24 /* ServiceManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA425CEA166DBCE5005F2C24 /* ServiceManager.cpp */; };
+		AA425CEF166DBCF6005F2C24 /* store.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA425CED166DBCF6005F2C24 /* store.cpp */; };
+		AA425CF1166DBF59005F2C24 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA425CF0166DBF59005F2C24 /* StoreKit.framework */; };
 		AA438FD8161D57E300FE5F41 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = AA438FD7161D57E300FE5F41 /* Default.png */; };
 		AA438FDA161D599E00FE5F41 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = AA438FD9161D599E00FE5F41 /* Default@2x.png */; };
 		AA438FDC161D59A700FE5F41 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = AA438FDB161D59A700FE5F41 /* Default-568h@2x.png */; };
@@ -45,7 +49,6 @@
 		AA439071161EBE1800FE5F41 /* platform_posix.c in Sources */ = {isa = PBXBuildFile; fileRef = AA439064161EBE1800FE5F41 /* platform_posix.c */; };
 		AA439072161EBE1800FE5F41 /* platform_unix.c in Sources */ = {isa = PBXBuildFile; fileRef = AA439065161EBE1800FE5F41 /* platform_unix.c */; };
 		AA439073161EBE1800FE5F41 /* platform_windows.c in Sources */ = {isa = PBXBuildFile; fileRef = AA439066161EBE1800FE5F41 /* platform_windows.c */; };
-		AA43907B161ED5CB00FE5F41 /* MaelstromFeatures.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA439079161ED5CB00FE5F41 /* MaelstromFeatures.cpp */; };
 		AA43907F1620E35800FE5F41 /* UIElementThumbstick.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA43907D1620E35800FE5F41 /* UIElementThumbstick.cpp */; };
 		AA579DCD161BFFCA005F809B /* app-icon57px.png in Resources */ = {isa = PBXBuildFile; fileRef = AA579DCC161BFFCA005F809B /* app-icon57px.png */; };
 		AA579DCF161BFFE4005F809B /* app-icon72px.png in Resources */ = {isa = PBXBuildFile; fileRef = AA579DCE161BFFE4005F809B /* app-icon72px.png */; };
@@ -264,6 +267,12 @@
 		AA0777D1145EB60A00DB8DB3 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		AA0777D3145EB68300DB8DB3 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		AA0777DA145EC12900DB8DB3 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		AA425CE8166DBC4E005F2C24 /* ServiceManager_StoreKit.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = ServiceManager_StoreKit.mm; path = "Xcode-iOS/ServiceManager_StoreKit.mm"; sourceTree = "<group>"; };
+		AA425CEA166DBCE5005F2C24 /* ServiceManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ServiceManager.cpp; sourceTree = "<group>"; };
+		AA425CEB166DBCE5005F2C24 /* ServiceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServiceManager.h; sourceTree = "<group>"; };
+		AA425CED166DBCF6005F2C24 /* store.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = store.cpp; sourceTree = "<group>"; };
+		AA425CEE166DBCF6005F2C24 /* store.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = store.h; sourceTree = "<group>"; };
+		AA425CF0166DBF59005F2C24 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		AA438FD7161D57E300FE5F41 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = "Xcode-iOS/Default.png"; sourceTree = "<group>"; };
 		AA438FD9161D599E00FE5F41 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x.png"; path = "Xcode-iOS/Default@2x.png"; sourceTree = "<group>"; };
 		AA438FDB161D59A700FE5F41 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "Xcode-iOS/Default-568h@2x.png"; sourceTree = "<group>"; };
@@ -287,8 +296,6 @@
 		AA439064161EBE1800FE5F41 /* platform_posix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = platform_posix.c; sourceTree = "<group>"; };
 		AA439065161EBE1800FE5F41 /* platform_unix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = platform_unix.c; sourceTree = "<group>"; };
 		AA439066161EBE1800FE5F41 /* platform_windows.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = platform_windows.c; sourceTree = "<group>"; };
-		AA439079161ED5CB00FE5F41 /* MaelstromFeatures.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MaelstromFeatures.cpp; sourceTree = "<group>"; };
-		AA43907A161ED5CB00FE5F41 /* MaelstromFeatures.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MaelstromFeatures.h; sourceTree = "<group>"; };
 		AA43907D1620E35800FE5F41 /* UIElementThumbstick.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UIElementThumbstick.cpp; sourceTree = "<group>"; };
 		AA43907E1620E35800FE5F41 /* UIElementThumbstick.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIElementThumbstick.h; sourceTree = "<group>"; };
 		AA579DCC161BFFCA005F809B /* app-icon57px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "app-icon57px.png"; path = "Xcode-iOS/app-icon57px.png"; sourceTree = "<group>"; };
@@ -436,6 +443,7 @@
 				AAC04173160E837E00E22BC5 /* ImageIO.framework in Frameworks */,
 				AA0777D2145EB60A00DB8DB3 /* AudioToolbox.framework in Frameworks */,
 				AA7557A61594EE8F00BBD41B /* GameKit.framework in Frameworks */,
+				AA425CF1166DBF59005F2C24 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -703,8 +711,6 @@
 				AA9781871576A03700472542 /* MacDialog.h */,
 				AA9781881576A03700472542 /* Maelstrom.h */,
 				AA9781891576A03700472542 /* Maelstrom_Globals.h */,
-				AA439079161ED5CB00FE5F41 /* MaelstromFeatures.cpp */,
-				AA43907A161ED5CB00FE5F41 /* MaelstromFeatures.h */,
 				AA97818A1576A03700472542 /* MaelstromUI.cpp */,
 				AA97818B1576A03700472542 /* MaelstromUI.h */,
 				AA97818C1576A03700472542 /* main.cpp */,
@@ -729,7 +735,11 @@
 				AA9781A11576A03700472542 /* replay.h */,
 				AA9781A21576A03700472542 /* scores.cpp */,
 				AA9781A31576A03700472542 /* scores.h */,
+				AA425CEA166DBCE5005F2C24 /* ServiceManager.cpp */,
+				AA425CEB166DBCE5005F2C24 /* ServiceManager.h */,
 				AA9781A41576A03700472542 /* shinobi.h */,
+				AA425CED166DBCF6005F2C24 /* store.cpp */,
+				AA425CEE166DBCF6005F2C24 /* store.h */,
 			);
 			path = game;
 			sourceTree = "<group>";
@@ -797,6 +807,7 @@
 				AAC04178160E84D000E22BC5 /* MobileCoreServices.framework */,
 				AA0777CD145EB56C00DB8DB3 /* OpenGLES.framework */,
 				AA0777D3145EB68300DB8DB3 /* QuartzCore.framework */,
+				AA425CF0166DBF59005F2C24 /* StoreKit.framework */,
 				AAD13B81145E8A8F0040B19C /* UIKit.framework */,
 			);
 			name = Frameworks;
@@ -805,9 +816,10 @@
 		AAD13B87145E8A8F0040B19C /* Maelstrom */ = {
 			isa = PBXGroup;
 			children = (
+				AA97808215769F3400472542 /* mainstub.cpp */,
 				AA7557A71595019400BBD41B /* Maelstrom_GameKit.h */,
 				AA7557AA1595062C00BBD41B /* Maelstrom_GameKit.mm */,
-				AA97808215769F3400472542 /* mainstub.cpp */,
+				AA425CE8166DBC4E005F2C24 /* ServiceManager_StoreKit.mm */,
 				AA9781741576A03700472542 /* game */,
 				AA9781191576A00100472542 /* maclib */,
 				AA439054161EBE1800FE5F41 /* physfs */,
@@ -1036,7 +1048,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "DATA=Maelstrom_Data.zip\ncd $SRCROOT/../Data\n(find . -type f | fgrep -v .svn | zip -r ../$DATA.new -@) || exit 1\ncd ..\nmv $DATA.new ../$DATA";
+			shellScript = "DATA=Maelstrom_Data.zip\ncd $SRCROOT/../Data\n(find . -type f | fgrep -v .svn | zip -r ../$DATA.new -@) || exit 1\ncd ..\nmv $DATA.new $DATA";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1101,9 +1113,11 @@
 				AA439071161EBE1800FE5F41 /* platform_posix.c in Sources */,
 				AA439072161EBE1800FE5F41 /* platform_unix.c in Sources */,
 				AA439073161EBE1800FE5F41 /* platform_windows.c in Sources */,
-				AA43907B161ED5CB00FE5F41 /* MaelstromFeatures.cpp in Sources */,
 				AA43907F1620E35800FE5F41 /* UIElementThumbstick.cpp in Sources */,
 				AAC257641647A9B000F5FB43 /* files.c in Sources */,
+				AA425CE9166DBC4E005F2C24 /* ServiceManager_StoreKit.mm in Sources */,
+				AA425CEC166DBCE5005F2C24 /* ServiceManager.cpp in Sources */,
+				AA425CEF166DBCF6005F2C24 /* store.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1227,13 +1241,13 @@
 		AAD13B96145E8A8F0040B19C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					armv6,
-					armv7,
-				);
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				HEADER_SEARCH_PATHS = ../../../../../3rdparty/iphone/physfs;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"USING_STOREKIT=1",
+					"$(inherited)",
+				);
 				INFOPLIST_FILE = "Maelstrom-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -1244,13 +1258,13 @@
 		AAD13B97145E8A8F0040B19C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					armv6,
-					armv7,
-				);
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				HEADER_SEARCH_PATHS = ../../../../../3rdparty/iphone/physfs;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"USING_STOREKIT=1",
+					"$(inherited)",
+				);
 				INFOPLIST_FILE = "Maelstrom-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";

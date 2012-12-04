@@ -2,14 +2,15 @@
 noinst_LIBRARIES = libgame.a
 
 libgame_a_SOURCES =		\
+	Localization.h		\
 	MacDialog.cpp		\
 	MacDialog.h		\
 	Maelstrom.h		\
-	MaelstromFeatures.cpp	\
-	MaelstromFeatures.h	\
 	MaelstromUI.cpp		\
 	MaelstromUI.h		\
 	Maelstrom_Globals.h	\
+	ServiceManager.cpp	\
+	ServiceManager.h	\
 	about.cpp		\
 	about.h			\
 	colortable.h		\
@@ -53,4 +54,6 @@ libgame_a_SOURCES =		\
 	replay.h		\
 	scores.cpp		\
 	scores.h		\
+	store.cpp		\
+	store.h			\
 	shinobi.h

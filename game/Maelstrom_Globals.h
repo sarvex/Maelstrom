@@ -42,6 +42,7 @@
 #include "scores.h"
 #include "controls.h"
 #include "gameinfo.h"
+#include "store.h"
 
 // Preferences keys
 #define PREFERENCES_CLASSIC "Classic"
@@ -65,6 +66,9 @@ extern FrameBuf *screen;
 
 // The UI system
 extern UIManager *ui;
+
+// The Store
+extern StoreManager *store;
 
 /* Boolean type */
 typedef Uint8 Bool;
@@ -159,6 +163,7 @@ extern int	gNumSprites;
 #define DIALOG_DAWN	"dawn"
 #define DIALOG_CHEAT	"cheat"
 #define DIALOG_FEATURE	"feature"
+#define DIALOG_MESSAGE	"message"
 
 // Sound resource definitions...
 #define gShotSound	100

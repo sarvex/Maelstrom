@@ -93,3 +93,14 @@ public:
 
 	override bool Load(rapidxml::xml_node<> *node, const UITemplates *templates);
 };
+
+// Generic dialog function
+extern void ShowMessage(const char *text,
+                        const char *button1Text = TEXT("Okay"),
+                        const char *button1Action = NULL,
+                        const char *button2Text = NULL,
+                        const char *button2Action = NULL,
+                        const char *button3Text = NULL,
+                        const char *button3Action = NULL);
+extern void HideMessage();
+

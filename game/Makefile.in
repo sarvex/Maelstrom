@@ -70,14 +70,14 @@ AR = ar
 ARFLAGS = cru
 libgame_a_AR = $(AR) $(ARFLAGS)
 libgame_a_LIBADD =
-am_libgame_a_OBJECTS = MacDialog.$(OBJEXT) MaelstromFeatures.$(OBJEXT) \
-	MaelstromUI.$(OBJEXT) about.$(OBJEXT) continue.$(OBJEXT) \
+am_libgame_a_OBJECTS = MacDialog.$(OBJEXT) MaelstromUI.$(OBJEXT) \
+	ServiceManager.$(OBJEXT) about.$(OBJEXT) continue.$(OBJEXT) \
 	controls.$(OBJEXT) fastrand.$(OBJEXT) game.$(OBJEXT) \
 	gameinfo.$(OBJEXT) gameover.$(OBJEXT) init.$(OBJEXT) \
 	load.$(OBJEXT) lobby.$(OBJEXT) main.$(OBJEXT) make.$(OBJEXT) \
 	myerror.$(OBJEXT) netplay.$(OBJEXT) object.$(OBJEXT) \
 	objects.$(OBJEXT) player.$(OBJEXT) rect.$(OBJEXT) \
-	replay.$(OBJEXT) scores.$(OBJEXT)
+	replay.$(OBJEXT) scores.$(OBJEXT) store.$(OBJEXT)
 libgame_a_OBJECTS = $(am_libgame_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/build-scripts/depcomp
@@ -214,14 +214,15 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 noinst_LIBRARIES = libgame.a
 libgame_a_SOURCES = \
+	Localization.h		\
 	MacDialog.cpp		\
 	MacDialog.h		\
 	Maelstrom.h		\
-	MaelstromFeatures.cpp	\
-	MaelstromFeatures.h	\
 	MaelstromUI.cpp		\
 	MaelstromUI.h		\
 	Maelstrom_Globals.h	\
+	ServiceManager.cpp	\
+	ServiceManager.h	\
 	about.cpp		\
 	about.h			\
 	colortable.h		\
@@ -265,6 +266,8 @@ libgame_a_SOURCES = \
 	replay.h		\
 	scores.cpp		\
 	scores.h		\
+	store.cpp		\
+	store.h			\
 	shinobi.h
 
 all: all-am
@@ -316,8 +319,8 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MacDialog.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MaelstromFeatures.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MaelstromUI.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ServiceManager.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/about.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/continue.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/controls.Po@am__quote@
@@ -338,6 +341,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rect.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/replay.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scores.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/store.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
