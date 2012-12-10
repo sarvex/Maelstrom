@@ -219,6 +219,17 @@ UIManager::GetCurrentPanel()
 }
 
 bool
+UIManager::IsShown(const char *name) const
+{
+	for (int i = 0; i < m_panels.length(); ++i) {
+		if (strcmp(name, m_panels[i]->GetName()) == 0) {
+			return m_visible.find(m_panels[i]);
+		}
+	}
+	return false;
+}
+
+bool
 UIManager::IsShown(UIPanel *panel) const
 {
 	return (panel && m_visible.find(panel));
