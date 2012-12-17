@@ -30,7 +30,7 @@ class UIElementDropdown : public UIElementButton
 DECLARE_TYPESAFE_CLASS(UIElementButton)
 public:
 	UIElementDropdown(UIBaseElement *parent, const char *name, UIDrawEngine *drawEngine);
-	virtual ~UIElementDropdown() { }
+	virtual ~UIElementDropdown();
 
 	override bool FinishLoading();
 

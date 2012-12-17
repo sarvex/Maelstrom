@@ -19,6 +19,7 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
+#include "UIManager.h"
 #include "UIElementDropdown.h"
 
 UIElementType UIElementDropdown::s_elementType;
@@ -28,6 +29,11 @@ UIElementDropdown::UIElementDropdown(UIBaseElement *parent, const char *name, UI
 	UIElementButton(parent, name, drawEngine)
 {
 	m_showingElements = true;
+}
+
+UIElementDropdown::~UIElementDropdown()
+{
+	GetUI()->ReleaseEvents(this);
 }
 
 bool
@@ -76,6 +82,8 @@ UIElementDropdown::OnClick()
 void
 UIElementDropdown::ShowElements()
 {
+	GetUI()->CaptureEvents(this);
+
 	for (unsigned int i = 0; i < m_elements.length(); ++i) {
 		m_elements[i]->Show();
 	}
@@ -85,6 +93,8 @@ UIElementDropdown::ShowElements()
 void
 UIElementDropdown::HideElements()
 {
+	GetUI()->ReleaseEvents(this);
+
 	for (unsigned int i = 0; i < m_elements.length(); ++i) {
 		m_elements[i]->Hide();
 	}

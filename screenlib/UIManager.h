@@ -111,6 +111,10 @@ public:
 		return m_panelTransition;
 	}
 
+	void CaptureEvents(UIBaseElement *element);
+	void ReleaseEvents(UIBaseElement *element);
+	bool IsCapturingEvents(UIBaseElement *element);
+
 	void HideDialogs();
 
 	void SetCondition(const char *token, bool isTrue = true);
@@ -149,6 +153,7 @@ protected:
 	array<UIPanel *> m_panels;
 	array<UIPanel *> m_visible;
 	array<UIPanel *> m_delete;
+	array<UIBaseElement *> m_eventCapture;
 	PANEL_TRANSITION_TYPE m_panelTransition;
 	HashTable *m_conditions;
 };

@@ -306,6 +306,26 @@ UIManager::DeletePanel(UIPanel *panel)
 }
 
 void
+UIManager::CaptureEvents(UIBaseElement *element)
+{
+	if (!IsCapturingEvents(element)) {
+		m_eventCapture.add(element);
+	}
+}
+
+void
+UIManager::ReleaseEvents(UIBaseElement *element)
+{
+	m_eventCapture.remove(element);
+}
+
+bool
+UIManager::IsCapturingEvents(UIBaseElement *element)
+{
+	return m_eventCapture.find(element);
+}
+
+void
 UIManager::HideDialogs()
 {
 	for (int i = m_visible.length()-1; i >= 0; --i) {
@@ -394,6 +414,8 @@ UIManager::Draw(bool fullUpdate)
 bool
 UIManager::HandleEvent(const SDL_Event &event)
 {
+	unsigned int i;
+
 	if (event.type == SDL_WINDOWEVENT &&
 	    event.window.event == SDL_WINDOWEVENT_RESIZED &&
 	    m_screen->Resizable()) {
@@ -413,7 +435,17 @@ UIManager::HandleEvent(const SDL_Event &event)
 	// In case it's not called any other time...
 	Poll();
 
-	for (unsigned i = m_visible.length(); i--; ) {
+	for (i = m_eventCapture.length(); i--; ) {
+		UIBaseElement *element = m_eventCapture[i];
+
+		for (int drawLevel = NUM_DRAWLEVELS; drawLevel--; ) {
+			if (element->DispatchEvent(event, (DRAWLEVEL)drawLevel)) {
+				return true;
+			}
+		}
+	}
+
+	for (i = m_visible.length(); i--; ) {
 		UIPanel *panel = m_visible[i];
 
 		for (int drawLevel = NUM_DRAWLEVELS; drawLevel--; ) {
