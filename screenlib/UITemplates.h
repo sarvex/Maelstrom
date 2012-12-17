@@ -40,10 +40,6 @@ public:
 protected:
 	array<char*> m_data;
 	rapidxml::xml_document<> m_doc;
-	struct HashKey {
-		const char *type;
-		const char *name;
-	};
 	HashTable *m_hashTable;
 
 protected:

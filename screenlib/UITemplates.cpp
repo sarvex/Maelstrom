@@ -77,10 +77,7 @@ UITemplates::Load(const char *file)
 	for (node = node->first_node(); node; node = node->next_sibling()) {
 		attr = node->first_attribute("templateName", 0, false);
 		if (attr) {
-			HashKey *key = new HashKey;
-			key->type = node->name();
-			key->name = attr->value();
-			hash_insert(m_hashTable, key, node);
+			hash_insert(m_hashTable, attr->value(), node);
 		} else {
 			SDL_Log("Warning: UITemplate %s missing 'templateName'", node->name());
 		}
@@ -103,16 +100,13 @@ UITemplates::GetTemplateFor(rapidxml::xml_node<> *node) const
 rapidxml::xml_node<> *
 UITemplates::GetTemplate(const char *type, const char *name) const
 {
-	HashKey key;
 	rapidxml::xml_node<> *templateNode;
 
 	if (!m_hashTable) {
 		return NULL;
 	}
 
-	key.type = type;
-	key.name = name;
-	if (hash_find(m_hashTable, &key, (const void **)&templateNode)) {
+	if (hash_find(m_hashTable, name, (const void **)&templateNode)) {
 		return templateNode;
 	}
 	return NULL;
@@ -122,17 +116,12 @@ UITemplates::GetTemplate(const char *type, const char *name) const
 unsigned
 UITemplates::HashTable_Hash(const void *_key, void *data)
 {
-	const HashKey *key = static_cast<const HashKey *>(_key);
-	const char *p;
+	const char *key = static_cast<const char *>(_key);
 	register unsigned hash = 5381;
 
-	p = key->type;
-	while (*p) {
-		hash = ((hash << 5) + hash) ^ *(p++);
-	}
-	p = key->name;
-	while (*p) {
-		hash = ((hash << 5) + hash) ^ *(p++);
+	while (*key) {
+		hash = ((hash << 5) + hash) ^ toupper(*key);
+		++key;
 	}
 	return hash;
 }
@@ -140,16 +129,13 @@ UITemplates::HashTable_Hash(const void *_key, void *data)
 int
 UITemplates::HashTable_KeyMatch(const void *_a, const void *_b, void *data)
 {
-	const HashKey *a = static_cast<const HashKey *>(_a);
-	const HashKey *b = static_cast<const HashKey *>(_b);
+	const char *a = static_cast<const char *>(_a);
+	const char *b = static_cast<const char *>(_b);
 
-	return SDL_strcasecmp(a->type, b->type) == 0 && 
-	       SDL_strcasecmp(a->name, b->name) == 0;
+	return SDL_strcasecmp(a, b) == 0;
 }
 
 void
 UITemplates::HashTable_Nuke(const void *_key, const void *value, void *data)
 {
-	HashKey *key = (HashKey *)_key;
-	delete key;
 }
