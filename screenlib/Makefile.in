@@ -75,9 +75,10 @@ am_libSDLscreen_a_OBJECTS = SDL_FrameBuf.$(OBJEXT) UIArea.$(OBJEXT) \
 	UIDialog.$(OBJEXT) UIDialogButton.$(OBJEXT) \
 	UIDrawEngine.$(OBJEXT) UIElement.$(OBJEXT) \
 	UIElementButton.$(OBJEXT) UIElementCheckbox.$(OBJEXT) \
-	UIElementEditbox.$(OBJEXT) UIElementRadio.$(OBJEXT) \
-	UIElementThumbstick.$(OBJEXT) UIManager.$(OBJEXT) \
-	UIPanel.$(OBJEXT) UITemplates.$(OBJEXT) UITexture.$(OBJEXT)
+	UIElementDropdown.$(OBJEXT) UIElementEditbox.$(OBJEXT) \
+	UIElementRadio.$(OBJEXT) UIElementThumbstick.$(OBJEXT) \
+	UIManager.$(OBJEXT) UIPanel.$(OBJEXT) UITemplates.$(OBJEXT) \
+	UITexture.$(OBJEXT)
 libSDLscreen_a_OBJECTS = $(am_libSDLscreen_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/build-scripts/depcomp
@@ -234,6 +235,8 @@ libSDLscreen_a_SOURCES = \
 	UIElementButton.h	\
 	UIElementCheckbox.cpp	\
 	UIElementCheckbox.h	\
+	UIElementDropdown.cpp	\
+	UIElementDropdown.h	\
 	UIElementEditbox.cpp	\
 	UIElementEditbox.h	\
 	UIElementRadio.cpp	\
@@ -310,6 +313,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UIElement.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UIElementButton.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UIElementCheckbox.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UIElementDropdown.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UIElementEditbox.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UIElementRadio.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UIElementThumbstick.Po@am__quote@
