@@ -200,19 +200,30 @@ UIBaseElement::Draw(DRAWLEVEL drawLevel)
 }
 
 bool
-UIBaseElement::HandleEvent(const SDL_Event &event)
+UIBaseElement::DispatchEvent(const SDL_Event &event, DRAWLEVEL drawLevel)
 {
 	for (int i = m_elements.length(); i--; ) {
-		if (!m_elements[i]->IsShown()) {
+		UIBaseElement *element = m_elements[i];
+
+		if (!element->IsShown()) {
 			continue;
 		}
-		if (m_elements[i]->IsDisabled()) {
+		if (element->IsDisabled()) {
 			continue;
 		}
-		if (m_elements[i]->HandleEvent(event)) {
+		if (element->DispatchEvent(event, drawLevel)) {
 			return true;
 		}
 	}
+	if (drawLevel == GetDrawLevel()) {
+		return HandleEvent(event);
+	}
+	return false;
+}
+
+bool
+UIBaseElement::HandleEvent(const SDL_Event &event)
+{
 	return false;
 }
 

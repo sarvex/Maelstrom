@@ -206,6 +206,7 @@ public:
 	DRAWLEVEL GetDrawLevel() const { return m_drawLevel; }
 
 	virtual void Draw(DRAWLEVEL drawLevel);
+	bool DispatchEvent(const SDL_Event &event, DRAWLEVEL drawLevel);
 	virtual bool HandleEvent(const SDL_Event &event);
 	virtual void Action(UIBaseElement *sender, const char *action);
 

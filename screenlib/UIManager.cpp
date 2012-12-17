@@ -416,8 +416,10 @@ UIManager::HandleEvent(const SDL_Event &event)
 	for (unsigned i = m_visible.length(); i--; ) {
 		UIPanel *panel = m_visible[i];
 
-		if (panel->HandleEvent(event)) {
-			return true;
+		for (int drawLevel = NUM_DRAWLEVELS; drawLevel--; ) {
+			if (panel->DispatchEvent(event, (DRAWLEVEL)drawLevel)) {
+				return true;
+			}
 		}
 		if (panel->IsFullscreen()) {
 			break;
