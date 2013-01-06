@@ -72,6 +72,15 @@ UIElementDropdown::Action(UIBaseElement *sender, const char *action)
 }
 
 void
+UIElementDropdown::UpdateDisabledState()
+{
+	// Hide the dropdown when we are disabled
+	HideElements();
+
+	UIElementButton::UpdateDisabledState();
+}
+
+void
 UIElementDropdown::OnClick()
 {
 	ToggleElements();

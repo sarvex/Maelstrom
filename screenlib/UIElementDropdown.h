@@ -36,6 +36,7 @@ public:
 
 	override bool HandleEvent(const SDL_Event &event);
 	override void Action(UIBaseElement *sender, const char *action);
+	override void UpdateDisabledState();
 	override void OnClick();
 
 	void ShowElements();
