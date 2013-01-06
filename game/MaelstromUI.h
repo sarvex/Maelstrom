@@ -50,7 +50,7 @@ public:
 	//
 	// UISoundInterface
 	//
-	virtual void PlaySound(int soundID);
+	virtual void PlaySound(const char *name);
 
 	//
 	// UIManager functions

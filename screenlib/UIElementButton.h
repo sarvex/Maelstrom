@@ -61,7 +61,7 @@ protected:
 protected:
 	SDL_Keycode m_hotkey;
 	int m_hotkeyMod;
-	int m_clickSound;
+	char *m_clickSound;
 	char *m_clickPanel;
 	BUTTON_STATE m_buttonState;
 	UITexture *m_stateImages[NUM_BUTTON_STATES];

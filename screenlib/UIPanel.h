@@ -116,8 +116,8 @@ protected:
 	bool m_fullscreen;
 	bool m_alwaysOnTop;
 	bool m_cursorVisible;
-	int m_enterSound;
-	int m_leaveSound;
+	char *m_enterSound;
+	char *m_leaveSound;
 	UIPanelDelegate *m_delegate;
 	bool m_deleteDelegate;
 };

@@ -34,7 +34,7 @@ UIElementButton::UIElementButton(UIBaseElement *parent, const char *name, UIDraw
 
 	m_hotkey = SDLK_UNKNOWN;
 	m_hotkeyMod = KMOD_NONE;
-	m_clickSound = 0;
+	m_clickSound = NULL;
 	m_clickPanel = NULL;
 	m_buttonState = NUM_BUTTON_STATES;
 	SDL_zero(m_stateImages);
@@ -42,6 +42,9 @@ UIElementButton::UIElementButton(UIBaseElement *parent, const char *name, UIDraw
 
 UIElementButton::~UIElementButton()
 {
+	if (m_clickSound) {
+		SDL_free(m_clickSound);
+	}
 	if (m_clickPanel) {
 		SDL_free(m_clickPanel);
 	}
@@ -123,7 +126,7 @@ UIElementButton::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 	}
 	SetButtonState(BUTTON_STATE_NORMAL);
 
-	LoadNumber(node, "clickSound", m_clickSound);
+	LoadString(node, "clickSound", m_clickSound);
 	LoadString(node, "clickPanel", m_clickPanel);
 
 	return true;

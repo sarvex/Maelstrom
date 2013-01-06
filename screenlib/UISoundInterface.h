@@ -25,7 +25,7 @@
 class UISoundInterface
 {
 public:
-	virtual void PlaySound(int soundID) = 0;
+	virtual void PlaySound(const char *name) = 0;
 };
 
 #endif // _UISoundInterface_h

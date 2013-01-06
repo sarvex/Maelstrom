@@ -36,8 +36,8 @@ UIPanel::UIPanel(UIManager *ui, const char *name) :
 	m_fullscreen = true;
 	m_alwaysOnTop = false;
 	m_cursorVisible = true;
-	m_enterSound = 0;
-	m_leaveSound = 0;
+	m_enterSound = NULL;
+	m_leaveSound = NULL;
 	m_delegate = NULL;
 	m_deleteDelegate = false;
 
@@ -49,6 +49,13 @@ UIPanel::~UIPanel()
 	m_ui->RemovePanel(this);
 
 	SetPanelDelegate(NULL);
+
+	if (m_enterSound) {
+		SDL_free(m_enterSound);
+	}
+	if (m_leaveSound) {
+		SDL_free(m_leaveSound);
+	}
 }
 
 bool
@@ -61,8 +68,8 @@ UIPanel::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 	LoadBool(node, "fullscreen", m_fullscreen);
 	LoadBool(node, "alwaysOnTop", m_alwaysOnTop);
 	LoadBool(node, "cursor", m_cursorVisible);
-	LoadNumber(node, "enterSound", m_enterSound);
-	LoadNumber(node, "leaveSound", m_leaveSound);
+	LoadString(node, "enterSound", m_enterSound);
+	LoadString(node, "leaveSound", m_leaveSound);
 
 	return true;
 }

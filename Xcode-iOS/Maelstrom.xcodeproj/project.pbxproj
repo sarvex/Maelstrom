@@ -110,7 +110,6 @@
 		AAD13B84145E8A8F0040B19C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAD13B83145E8A8F0040B19C /* Foundation.framework */; };
 		AAD13B86145E8A8F0040B19C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAD13B85145E8A8F0040B19C /* CoreGraphics.framework */; };
 		AAD13B8C145E8A8F0040B19C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = AAD13B8A145E8A8F0040B19C /* InfoPlist.strings */; };
-		AAD53E5F1643923500203E03 /* SDL_ttf.xcodeproj in Resources */ = {isa = PBXBuildFile; fileRef = AAD53E5E1643923500203E03 /* SDL_ttf.xcodeproj */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1012,7 +1011,6 @@
 				AA438FDC161D59A700FE5F41 /* Default-568h@2x.png in Resources */,
 				AA438FDE161D59C700FE5F41 /* Default-Landscape~ipad.png in Resources */,
 				AA438FE0161D5A4200FE5F41 /* Default-Landscape@2x~ipad.png in Resources */,
-				AAD53E5F1643923500203E03 /* SDL_ttf.xcodeproj in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1189,6 +1187,58 @@
 			};
 			name = Release;
 		};
+		932D49F31693382100B8A913 /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.1;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				PROVISIONING_PROFILE = "";
+				SDKROOT = iphoneos;
+				SVNROOT = ../../../../..;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Distribution;
+		};
+		932D49F41693382100B8A913 /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"USING_STOREKIT=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "Maelstrom-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Distribution;
+		};
+		932D49F51693382100B8A913 /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DMGDEST = "$(SRCROOT)/build";
+				DWARF_DSYM_FOLDER_PATH = "$(SRCROOT)/dSYMs";
+				FULL_PRODUCT_NAME = Maelstrom.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Distribution;
+		};
 		AAD13B93145E8A8F0040B19C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1249,6 +1299,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "Maelstrom-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
@@ -1266,6 +1317,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "Maelstrom-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
@@ -1280,6 +1332,7 @@
 			buildConfigurations = (
 				026598AD163AC12800A8047B /* Debug */,
 				026598AE163AC12800A8047B /* Release */,
+				932D49F51693382100B8A913 /* Distribution */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1289,6 +1342,7 @@
 			buildConfigurations = (
 				AAD13B93145E8A8F0040B19C /* Debug */,
 				AAD13B94145E8A8F0040B19C /* Release */,
+				932D49F31693382100B8A913 /* Distribution */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1298,6 +1352,7 @@
 			buildConfigurations = (
 				AAD13B96145E8A8F0040B19C /* Debug */,
 				AAD13B97145E8A8F0040B19C /* Release */,
+				932D49F41693382100B8A913 /* Distribution */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -362,9 +362,9 @@ MaelstromUI::FreeBackground(UITexture *texture)
 }
 
 void
-MaelstromUI::PlaySound(int soundID)
+MaelstromUI::PlaySound(const char *name)
 {
-	sound->PlaySound(soundID, 5);
+	sound->PlaySound(SDL_atoi(name), 5);
 }
 
 UIPanel *
