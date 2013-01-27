@@ -25,6 +25,8 @@
 
 #include "../screenlib/UIPanel.h"
 
+class UITexture;
+
 class MainPanelDelegate : public UIPanelDelegate
 {
 public:
@@ -52,6 +54,9 @@ protected:
 	void OnActionRunLastReplay();
 	void OnActionRunReplay(int index);
 	void OnActionZapHighScores();
+
+protected:
+	UITexture *m_spinnerImage;
 };
 
 // The real main function in main.cpp

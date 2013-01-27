@@ -29,6 +29,7 @@ UITexture::UITexture(SDL_Texture *texture, float scale)
 {
 	m_texture = texture;
 	m_scale = scale;
+	m_angle = 0.0f;
 	SDL_QueryTexture(texture, NULL, NULL, &m_textureWidth, &m_textureHeight);
 	m_stretch = false;
 	m_locked = false;
@@ -119,6 +120,6 @@ UITexture::Draw(FrameBuf *screen, int x, int y, int w, int h)
 					dst->x, dst->y, dst->w, dst->h, NOCLIP);
 		}
 	} else {
-		screen->QueueBlit(m_texture, x, y, w, h, NOCLIP);
+		screen->QueueBlit(m_texture, x, y, w, h, NOCLIP, m_angle);
 	}
 }

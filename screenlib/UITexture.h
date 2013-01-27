@@ -51,6 +51,12 @@ public:
 	void SetScale(float scale) {
 		m_scale = scale;
 	}
+	float Angle() const {
+		return m_angle;
+	}
+	void SetAngle(float angle) {
+		m_angle = angle;
+	}
 	void SetStretchGrid(int cornerSize);
 
 	void Draw(FrameBuf *screen, int x, int y, int w, int h);
@@ -84,6 +90,7 @@ protected:
 	int m_textureWidth;
 	int m_textureHeight;
 	float m_scale;
+	float m_angle;
 
 	bool m_stretch;
 	int m_stretchCornerSize;

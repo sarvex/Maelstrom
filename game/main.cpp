@@ -275,12 +275,16 @@ int MaelstromMain(int argc, char *argv[])
 		exit(1);
 	}
 
-	DropEvents();
 	gRunning = true;
+
+#ifdef WAIT_BOOM  // Don't wait for the boom, since we don't fade on iOS
+	DropEvents();
+
 #ifndef FAST_ITERATION
 	while ( sound->Playing() )
 		Delay(SOUND_DELAY);
 #endif
+#endif // WAIT_BOOM
 
 	ui->ShowPanel(PANEL_MAIN);
 
@@ -320,6 +324,13 @@ MainPanelDelegate::OnLoad()
 		label->SetText(VERSION_STRING);
 	}
 
+	m_spinnerImage = NULL;
+
+	UIElement *m_spinner = m_panel->GetElement<UIElement>("spinner");
+	if (m_spinner) {
+		m_spinnerImage = m_spinner->GetImage();
+	}
+
 	return true;
 }
 
@@ -335,6 +346,15 @@ MainPanelDelegate::OnTick()
 	UIElement *label;
 	char name[32];
 	char text[128];
+
+	// Rotate the spinner, if needed
+	if (m_spinnerImage) {
+		float angle = m_spinnerImage->Angle();
+		const float FPS = (60.0f / FRAME_DELAY);
+		const float SPINNER_RATE = 60.0f; // seconds per rotation
+		const float increment = 360.0f / (SPINNER_RATE * FPS);
+		m_spinnerImage->SetAngle(angle + increment);
+	}
 
 	if (!gUpdateBuffer) {
 		return;

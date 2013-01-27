@@ -250,7 +250,8 @@ FrameBuf::SetLogicalScale(float scale)
 void
 FrameBuf::QueueBlit(SDL_Texture *src,
 			int srcx, int srcy, int srcw, int srch,
-			int dstx, int dsty, int dstw, int dsth, clipval do_clip)
+			int dstx, int dsty, int dstw, int dsth, clipval do_clip,
+			float angle)
 {
 	SDL_Rect srcrect;
 	SDL_Rect dstrect;
@@ -277,7 +278,11 @@ FrameBuf::QueueBlit(SDL_Texture *src,
 		srcrect.w = (int)(dstrect.w * scaleX);
 		srcrect.h = (int)(dstrect.h * scaleY);
 	}
-	SDL_RenderCopy(renderer, src, &srcrect, &dstrect);
+	if (angle) {
+		SDL_RenderCopyEx(renderer, src, &srcrect, &dstrect, angle, NULL, SDL_FLIP_NONE);
+	} else {
+		SDL_RenderCopy(renderer, src, &srcrect, &dstrect);
+	}
 }
 
 void

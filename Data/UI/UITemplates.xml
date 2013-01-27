@@ -71,19 +71,7 @@
 		<Color r="0xFF" g="0xFF" b="0x00"/>
 	</Label>
 
-	<Button templateName="HotkeyOnly">
-		<Size w="0" h="0"/>
-	</Button>
-	<Button templateName="MenuButton" image="keyicon" font="FreeSansBold:9">
-		<Size w="32" h="32"/>
-		<TextArea>
-			<Anchor anchorFrom="TOPLEFT" anchorTo="TOPLEFT" x="13" y="9"/>
-		</TextArea>
-		<TextShadow offset="1,1">
-			<Color r="0xFF" g="0xFF" b="0xFF"/>
-		</TextShadow>
-		<Color r="0x00" g="0x00" b="0x00"/>
-	</Button>
+	<Button templateName="HotkeyOnly"/>
 
 	<Rectangle templateName="ControlKeyBox">
 		<Size w="170" h="20"/>
