@@ -71,7 +71,9 @@
 		<Color r="0xFF" g="0xFF" b="0x00"/>
 	</Label>
 
-	<Button templateName="HotkeyOnly"/>
+	<Button templateName="HotkeyOnly">
+		<Size w="0" h="0"/>
+	</Button>
 
 	<Rectangle templateName="ControlKeyBox">
 		<Size w="170" h="20"/>
