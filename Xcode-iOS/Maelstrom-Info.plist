@@ -23,10 +23,10 @@
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIconFiles</key>
 	<array>
-		<string>app-icon57px.png</string>
-		<string>app-icon72px.png</string>
-		<string>app-icon144px.png</string>
-		<string>app-icon114px.png</string>
+		<string>Icon.png</string>
+		<string>Icon-72.png</string>
+		<string>Icon-72@2x.png</string>
+		<string>Icon@2x.png</string>
 	</array>
 	<key>CFBundleIcons</key>
 	<dict>
@@ -34,13 +34,11 @@
 		<dict>
 			<key>CFBundleIconFiles</key>
 			<array>
-				<string>app-icon57px.png</string>
-				<string>app-icon72px.png</string>
-				<string>app-icon144px.png</string>
-				<string>app-icon114px.png</string>
+				<string>Icon.png</string>
+				<string>Icon-72.png</string>
+				<string>Icon-72@2x.png</string>
+				<string>Icon@2x.png</string>
 			</array>
-			<key>UIPrerenderedIcon</key>
-			<true/>
 		</dict>
 	</dict>
 	<key>CFBundleIdentifier</key>
@@ -65,8 +63,6 @@
 	<string>Copyright © 2012 Sam Lantinga. All rights reserved.</string>
 	<key>NSPrincipalClass</key>
 	<string>UIApplication</string>
-	<key>UIPrerenderedIcon</key>
-	<true/>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>gamekit</string>
