@@ -61,6 +61,8 @@ protected:
 protected:
 	SDL_Keycode m_hotkey;
 	int m_hotkeyMod;
+	char *m_pressSound;
+	char *m_releaseSound;
 	char *m_clickSound;
 	char *m_clickPanel;
 	BUTTON_STATE m_buttonState;

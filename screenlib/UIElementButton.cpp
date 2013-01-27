@@ -34,6 +34,8 @@ UIElementButton::UIElementButton(UIBaseElement *parent, const char *name, UIDraw
 
 	m_hotkey = SDLK_UNKNOWN;
 	m_hotkeyMod = KMOD_NONE;
+	m_pressSound = NULL;
+	m_releaseSound = NULL;
 	m_clickSound = NULL;
 	m_clickPanel = NULL;
 	m_buttonState = NUM_BUTTON_STATES;
@@ -42,6 +44,12 @@ UIElementButton::UIElementButton(UIBaseElement *parent, const char *name, UIDraw
 
 UIElementButton::~UIElementButton()
 {
+	if (m_pressSound) {
+		SDL_free(m_pressSound);
+	}
+	if (m_releaseSound) {
+		SDL_free(m_releaseSound);
+	}
 	if (m_clickSound) {
 		SDL_free(m_clickSound);
 	}
@@ -126,6 +134,8 @@ UIElementButton::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 	}
 	SetButtonState(BUTTON_STATE_NORMAL);
 
+	LoadString(node, "pressSound", m_pressSound);
+	LoadString(node, "releaseSound", m_releaseSound);
 	LoadString(node, "clickSound", m_clickSound);
 	LoadString(node, "clickPanel", m_clickPanel);
 
@@ -229,6 +239,17 @@ UIElementButton::SetButtonState(BUTTON_STATE state)
 
 	if (m_stateImages[state]) {
 		SetImage(m_stateImages[state]);
+	}
+
+	if (m_buttonState == BUTTON_STATE_NORMAL && state == BUTTON_STATE_PRESSED) {
+		if (m_pressSound) {
+			GetUI()->PlaySound(m_pressSound);
+		}
+	}
+	if (m_buttonState == BUTTON_STATE_PRESSED && state == BUTTON_STATE_NORMAL) {
+		if (m_releaseSound) {
+			GetUI()->PlaySound(m_releaseSound);
+		}
 	}
 
 	m_buttonState = state;

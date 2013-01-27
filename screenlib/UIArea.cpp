@@ -249,7 +249,11 @@ UIArea::LoadString(rapidxml::xml_node<> *node, const char *name, char *&value)
 		if (value) {
 			SDL_free(value);
 		}
-		value = SDL_strdup(attr->value());
+		if (*attr->value()) {
+			value = SDL_strdup(attr->value());
+		} else {
+			value = NULL;
+		}
 		return true;
 	}
 	return false;
