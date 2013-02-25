@@ -341,8 +341,17 @@ FrameBuf::ScreenDump(const char *prefix, int x, int y, int w, int h)
 	if (!h) {
 		h = Height();
 	}
+
+	// Convert to real output coordinates
 	SDL_RenderGetScale(renderer, &scale_x, &scale_y);
 
+	x = (x * output.w) / this->rect.w;
+	y = (y * output.h) / this->rect.h;
+	x = (int)((x + output.x) * scale_x);
+	y = (int)((y + output.y) * scale_y);
+
+	w = (w * output.w) / this->rect.w;
+	h = (h * output.h) / this->rect.h;
 	w = (int)(w * scale_x);
 	h = (int)(h * scale_y);
 
