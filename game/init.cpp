@@ -25,6 +25,7 @@
 #endif
 #include <signal.h>
 #include <stdlib.h>
+#include "SDL_image.h"
 
 #include "Maelstrom_Globals.h"
 #include "load.h"
@@ -838,7 +839,7 @@ int DoInitializations(Uint32 window_flags, Uint32 render_flags)
 	}
 
 	/* Load the Maelstrom icon */
-	icon = SDL_LoadBMP_RW(OpenRead("icon.bmp"), 1);
+	icon = IMG_Load_RW(OpenRead("icon.png"), 1);
 	if ( icon == NULL ) {
 		error("Fatal: Couldn't load icon: %s\n", SDL_GetError());
 		return(-1);

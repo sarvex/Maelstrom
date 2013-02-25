@@ -340,8 +340,7 @@ EXTRA_DIST = \
 	Xcode			\
 	Xcode-iOS		\
 	autogen.sh		\
-	ico_o			\
-	icon.xpm
+	ico_o
 
 DIST_SUBDIRS = $(SUBDIRS)
 all: all-recursive

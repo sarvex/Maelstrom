@@ -51,7 +51,7 @@ static struct {
     const char *feature;
     const char *product;
 } SupportedFeatures[] = {
-    { FEATURE_KIDMODE, "maelstrom_kidmode" },
+    { FEATURE_KIDMODE, "maelstrom_kid_mode" },
     { FEATURE_NETWORK, "maelstrom_network_play" },
 };
 

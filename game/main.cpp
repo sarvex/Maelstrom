@@ -581,7 +581,13 @@ MainPanelDelegate::OnActionKidModeActivated()
 void
 MainPanelDelegate::OnActionScreenshot()
 {
-	screen->ScreenDump("ScoreDump", 64, 48, 298, 384);
+	if (gClassic) {
+		// Dump just the score screen
+		screen->ScreenDump("ScoreDump", 64, 48, 298, 384);
+	} else {
+		// Get a screenshot of our lovely new main screen
+		screen->ScreenDump("ScreenShot", 0, 0, 0, 0);
+	}
 }
 
 void
