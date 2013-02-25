@@ -328,11 +328,23 @@ FrameBuf::Fade(void)
 int
 FrameBuf::ScreenDump(const char *prefix, int x, int y, int w, int h)
 {
+	float scale_x, scale_y;
 	SDL_Rect rect;
 	SDL_Surface *dump;
 	int which, found;
 	char file[1024];
 	int retval;
+
+	if (!w) {
+		w = Width();
+	}
+	if (!h) {
+		h = Height();
+	}
+	SDL_RenderGetScale(renderer, &scale_x, &scale_y);
+
+	w = (int)(w * scale_x);
+	h = (int)(h * scale_y);
 
 	/* Create a BMP format surface */
 	dump = SDL_CreateRGBSurface(0, w, h, 24, 
@@ -347,12 +359,6 @@ FrameBuf::ScreenDump(const char *prefix, int x, int y, int w, int h)
 	}
 
 	/* Read the screen into it */
-	if (!w) {
-		w = Width();
-	}
-	if (!h) {
-		h = Height();
-	}
 	rect.x = x;
 	rect.y = y;
 	rect.w = w;
