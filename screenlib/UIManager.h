@@ -127,7 +127,7 @@ public:
 	virtual void OnRectChanged() {
 		UIArea::OnRectChanged();
 
-		for (int i = 0; i < m_panels.length(); ++i) {
+		for (unsigned int i = 0; i < m_panels.length(); ++i) {
 			UIPanel *panel = m_panels[i];
 			panel->AutoSize(Width(), Height(), true);
 		}

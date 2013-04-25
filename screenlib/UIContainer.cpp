@@ -66,7 +66,7 @@ UIContainer::LayoutChildren()
 	AnchorLocation anchorLocation;
 	int offsetX = 0;
 	int offsetY = 0;
-	int i;
+	unsigned int i;
 
 	if (m_layoutInProgress) {
 		return;

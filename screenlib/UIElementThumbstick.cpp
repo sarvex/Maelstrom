@@ -40,7 +40,7 @@ UIElementThumbstick::UIElementThumbstick(UIBaseElement *parent, const char *name
 
 UIElementThumbstick::~UIElementThumbstick()
 {
-	for (int i = 0; i < m_actions.length(); ++i) {
+	for (unsigned int i = 0; i < m_actions.length(); ++i) {
 		if (m_actions[i].action_enter) {
 			SDL_free(m_actions[i].action_enter);
 		}
@@ -148,7 +148,7 @@ UIElementThumbstick::HandleEvent(const SDL_Event &event)
 			    GetTouchPosition(event, x, y)) {
 				MoveCenter(x, y);
 			}
-			for (int i = 0; i < m_actions.length(); ++i) {
+			for (unsigned int i = 0; i < m_actions.length(); ++i) {
 				SetActionActive(i, false);
 			}
 			m_finger = 0;
@@ -168,7 +168,7 @@ UIElementThumbstick::MoveCenter(int x, int y)
 void
 UIElementThumbstick::HandleFinger(float angle, float distance)
 {
-	for (int i = 0; i < m_actions.length(); ++i) {
+	for (unsigned int i = 0; i < m_actions.length(); ++i) {
 		SetActionActive(i, ShouldActivateAction(i, angle, distance));
 	}
 }

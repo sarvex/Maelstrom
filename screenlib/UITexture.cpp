@@ -109,7 +109,7 @@ UITexture::Draw(FrameBuf *screen, int x, int y, int w, int h)
 	if (m_stretch) {
 		SDL_Rect dstAreas[NUM_STRETCH_AREAS];
 
-		CalculateStretchAreas(m_stretchCornerSize / m_scale, x, y, w, h, dstAreas);
+		CalculateStretchAreas((int)(m_stretchCornerSize / m_scale), x, y, w, h, dstAreas);
 		// Draw the grid
 		for (int i = 0; i < NUM_STRETCH_AREAS; ++i) {
 			const SDL_Rect *src, *dst;

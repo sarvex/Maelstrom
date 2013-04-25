@@ -64,7 +64,7 @@ UIManager::Shutdown()
 void
 UIManager::ClearLoadPath()
 {
-	for (int i = 0; i < m_loadPath.length(); ++i) {
+	for (unsigned int i = 0; i < m_loadPath.length(); ++i) {
 		SDL_free(m_loadPath[i]);
 	}
 	m_loadPath.clear();
@@ -81,7 +81,7 @@ UIManager::LoadTemplates(const char *file)
 {
 	char path[1024];
 
-	for (int i = 0; i < m_loadPath.length(); ++i) {
+	for (unsigned int i = 0; i < m_loadPath.length(); ++i) {
 		SDL_snprintf(path, sizeof(path), "%s/%s", m_loadPath[i], file);
 		if (m_templates.Load(path)) {
 			return true;
@@ -103,7 +103,7 @@ UIManager::LoadPanel(const char *name)
 		rapidxml::xml_document<> doc;
 
 		bool loaded = false;
-		for (int i = 0; i < m_loadPath.length(); ++i) {
+		for (unsigned int i = 0; i < m_loadPath.length(); ++i) {
 			SDL_snprintf(file, sizeof(file), "%s/%s.xml", m_loadPath[i], name);
 			if (LoadXML(file, buffer, doc)) {
 				loaded = true;
@@ -156,7 +156,7 @@ UIManager::LoadPanel(const char *name)
 UIPanel *
 UIManager::GetPanel(const char *name, bool allowLoad)
 {
-	for (int i = 0; i < m_panels.length(); ++i) {
+	for (unsigned int i = 0; i < m_panels.length(); ++i) {
 		if (strcmp(name, m_panels[i]->GetName()) == 0) {
 			return m_panels[i];
 		}
@@ -182,7 +182,7 @@ UIManager::GetFullscreenPanel()
 UIPanel *
 UIManager::GetNextPanel(UIPanel *panel)
 {
-	for (int i = 0; i < m_visible.length(); ++i) {
+	for (unsigned int i = 0; i < m_visible.length(); ++i) {
 		if (m_visible[i] == panel) {
 			if (i+1 < m_visible.length()) {
 				return m_visible[i+1];
@@ -197,7 +197,7 @@ UIManager::GetNextPanel(UIPanel *panel)
 UIPanel *
 UIManager::GetPrevPanel(UIPanel *panel)
 {
-	for (int i = 0; i < m_visible.length(); ++i) {
+	for (unsigned int i = 0; i < m_visible.length(); ++i) {
 		if (m_visible[i] == panel) {
 			if (i > 0) {
 				return m_visible[i-1];
@@ -221,7 +221,7 @@ UIManager::GetCurrentPanel()
 bool
 UIManager::IsShown(const char *name) const
 {
-	for (int i = 0; i < m_panels.length(); ++i) {
+	for (unsigned int i = 0; i < m_panels.length(); ++i) {
 		if (strcmp(name, m_panels[i]->GetName()) == 0) {
 			return m_visible.find(m_panels[i]);
 		}
@@ -363,7 +363,7 @@ UIManager::CheckCondition(const char *condition)
 void
 UIManager::Poll()
 {
-	int i;
+	unsigned int i;
 
 	for (i = 0; i < m_visible.length(); ++i) {
 		UIPanel *panel = m_visible[i];
@@ -383,7 +383,7 @@ UIManager::Poll()
 void
 UIManager::Draw(bool fullUpdate)
 {
-	int i;
+	unsigned int i;
 
 	// Run the tick before we draw in case it changes drawing state
 	for (i = 0; i < m_visible.length(); ++i) {

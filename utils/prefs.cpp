@@ -124,7 +124,7 @@ Prefs::Save()
 	}
 	qsort(&keys[0], keys.length(), sizeof(key), sort_keys);
 	
-	for (int i = 0; i < keys.length(); ++i) {
+	for (unsigned int i = 0; i < keys.length(); ++i) {
 		hash_find(m_values, keys[i], (const void **)&value);
 		if (!writeString(fp, keys[i]) ||
 		    !writeString(fp, "=") ||

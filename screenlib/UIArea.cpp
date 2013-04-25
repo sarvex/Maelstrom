@@ -400,7 +400,7 @@ UIArea::CalculateAnchor(bool triggerRectChanged)
 void
 UIArea::OnRectChanged()
 {
-	for (int i = 0; i < m_anchoredAreas.length(); ++i) {
+	for (unsigned int i = 0; i < m_anchoredAreas.length(); ++i) {
 		m_anchoredAreas[i]->CalculateAnchor(true);
 	}
 }

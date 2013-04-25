@@ -51,6 +51,10 @@ public:
 	override void OnChildRectChanged(UIBaseElement *child) {
 		LayoutChildren();
 	}
+    
+    int Spacing() { return m_spacing; }
+    int BorderSpacing() { return m_borderSpacing; }
+    
 
 protected:
 	LAYOUT_TYPE m_layoutType;

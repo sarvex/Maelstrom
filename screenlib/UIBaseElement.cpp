@@ -62,7 +62,7 @@ UIBaseElement::~UIBaseElement()
 {
 	SDL_free(m_name);
 
-	for (int i = 0; i < m_elements.length(); ++i) {
+	for (unsigned int i = 0; i < m_elements.length(); ++i) {
 		delete m_elements[i];
 	}
 }
@@ -108,7 +108,7 @@ UIBaseElement::Load(rapidxml::xml_node<> *node, const UITemplates *templates)
 void
 UIBaseElement::LoadData(Prefs *prefs)
 {
-	for (int i = 0; i < m_elements.length(); ++i) {
+	for (unsigned int i = 0; i < m_elements.length(); ++i) {
 		m_elements[i]->LoadData(prefs);
 	}
 }
@@ -116,7 +116,7 @@ UIBaseElement::LoadData(Prefs *prefs)
 void
 UIBaseElement::SaveData(Prefs *prefs)
 {
-	for (int i = 0; i < m_elements.length(); ++i) {
+	for (unsigned int i = 0; i < m_elements.length(); ++i) {
 		m_elements[i]->SaveData(prefs);
 	}
 }
@@ -174,7 +174,7 @@ UIBaseElement::SetParentDisabled(bool disabled)
 void
 UIBaseElement::UpdateDisabledState()
 {
-	for (int i = 0; i < m_elements.length(); ++i) {
+	for (unsigned int i = 0; i < m_elements.length(); ++i) {
 		m_elements[i]->SetParentDisabled(IsDisabled());
 	}
 }
@@ -184,7 +184,7 @@ UIBaseElement::SetDrawLevel(DRAWLEVEL drawLevel)
 {
 	m_drawLevel = drawLevel;
 
-	for (int i = 0; i < m_elements.length(); ++i) {
+	for (unsigned int i = 0; i < m_elements.length(); ++i) {
 		m_elements[i]->SetDrawLevel(drawLevel);
 	}
 }
@@ -192,7 +192,7 @@ UIBaseElement::SetDrawLevel(DRAWLEVEL drawLevel)
 void
 UIBaseElement::Draw(DRAWLEVEL drawLevel)
 {
-	for (int i = 0; i < m_elements.length(); ++i) {
+	for (unsigned int i = 0; i < m_elements.length(); ++i) {
 		if (m_elements[i]->IsShown()) {
 			m_elements[i]->Draw(drawLevel);
 		}

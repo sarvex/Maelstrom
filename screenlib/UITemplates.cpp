@@ -37,7 +37,7 @@ UITemplates::~UITemplates()
 	if (m_hashTable) {
 		hash_destroy(m_hashTable);
 	}
-	for (int i = 0; i < m_data.length(); ++i) {
+	for (unsigned int i = 0; i < m_data.length(); ++i) {
 		SDL_free(m_data[i]);
 	}
 }
@@ -120,7 +120,7 @@ UITemplates::HashTable_Hash(const void *_key, void *data)
 	register unsigned hash = 5381;
 
 	while (*key) {
-		hash = ((hash << 5) + hash) ^ toupper(*key);
+		hash = ((hash << 5) + hash) ^ SDL_toupper(*key);
 		++key;
 	}
 	return hash;

@@ -130,7 +130,7 @@ UIPanel::Hide()
 	// Clear focus on editboxes
 	array<UIElementEditbox*> editboxes;
 	FindElements<UIElementEditbox>(editboxes);
-	for (int i = 0; i < editboxes.length(); ++i) {
+	for (unsigned int i = 0; i < editboxes.length(); ++i) {
 		editboxes[i]->SetFocus(false);
 	}
 
@@ -153,7 +153,7 @@ UIPanel::Hide()
 void
 UIPanel::HideAll()
 {
-	for (int i = 0; i < m_elements.length(); ++i) {
+	for (unsigned int i = 0; i < m_elements.length(); ++i) {
 		m_elements[i]->Hide();
 	}
 }

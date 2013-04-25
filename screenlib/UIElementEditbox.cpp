@@ -142,7 +142,7 @@ UIElementEditbox::SetFocus(bool focus)
 
 		// Take focus away from other editboxes
 		m_parent->FindElements<UIElementEditbox>(editboxes);
-		for (int i = 0; i < editboxes.length(); ++i) {
+		for (unsigned int i = 0; i < editboxes.length(); ++i) {
 			if (editboxes[i] != this) {
 				editboxes[i]->SetFocus(false);
 			}

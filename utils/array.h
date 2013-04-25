@@ -73,7 +73,7 @@ public:
 	bool empty() const {
 		return length() == 0;
 	}
-	int length() const {
+	unsigned int length() const {
 		return m_len;
 	}
 	const T& operator[](unsigned index) const {

@@ -91,7 +91,7 @@ public:
 		m_elements.add(element);
 	}
 	void GetElements(array<UIBaseElement*> &elements) {
-		for (int i = 0; i < m_elements.length(); ++i) {
+		for (unsigned int i = 0; i < m_elements.length(); ++i) {
 			elements.add(m_elements[i]);
 		}
 	}
@@ -99,7 +99,7 @@ public:
 	T *GetElement(const char *name) {
 		// Do a breadth first search
 		array<UIBaseElement*> lists[2];
-		int i, current = 0;
+		unsigned int i, current = 0;
 
 		GetElements(lists[current]);
 		while (lists[current].length() > 0) {
@@ -127,7 +127,7 @@ public:
 	}
 	template <typename T>
 	T *FindElement(UIBaseElement *start = NULL) {
-		int i, j;
+		unsigned int i, j;
 		if (start) {
 			// Find the starting element
 			for (i = 0; i < m_elements.length(); ++i) {
@@ -158,7 +158,7 @@ public:
 	}
 	template <typename T>
 	void FindElements(array<T*> &elements) {
-		for (int i = 0; i < m_elements.length(); ++i) {
+		for (unsigned int i = 0; i < m_elements.length(); ++i) {
 			UIBaseElement *element = m_elements[i];
 			if (element->IsA(T::GetType())) {
 				elements.add((T*)element);
@@ -187,7 +187,7 @@ public:
 	virtual void OnRectChanged() {
 		UIArea::OnRectChanged();
 
-		for (int i = 0; i < m_elements.length(); ++i) {
+		for (unsigned int i = 0; i < m_elements.length(); ++i) {
 			UIBaseElement *element = m_elements[i];
 			element->AutoSize(Width(), Height(), true);
 		}
