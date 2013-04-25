@@ -25,7 +25,8 @@
 
 UIArea::UIArea(UIArea *anchor, int w, int h) : ErrorBase()
 {
-	m_autosizeParent = true;
+	m_autosizeParentWidth = true;
+	m_autosizeParentHeight = true;
 	m_autosizeWidth = true;
 	m_autosizeHeight = true;
 	m_rect.x = 0;
@@ -131,7 +132,8 @@ UIArea::SetSize(int w, int h, bool autosize, bool parent)
 		m_autosizeHeight = false;
 	}
 	if (!parent) {
-		m_autosizeParent = false;
+		m_autosizeParentWidth = false;
+		m_autosizeParentHeight = false;
 	}
 }
 
@@ -147,7 +149,7 @@ UIArea::SetWidth(int w, bool autosize, bool parent)
 		m_autosizeWidth = false;
 	}
 	if (!parent) {
-		m_autosizeParent = false;
+		m_autosizeParentWidth = false;
 	}
 }
 
@@ -163,21 +165,33 @@ UIArea::SetHeight(int h, bool autosize, bool parent)
 		m_autosizeHeight = false;
 	}
 	if (!parent) {
-		m_autosizeParent = false;
+		m_autosizeParentHeight = false;
 	}
 }
 
 void
 UIArea::AutoSize(int w, int h, bool parent)
 {
-	if (parent && !m_autosizeParent) {
-		return;
-	}
 	if (m_autosizeWidth && m_autosizeHeight) {
-		SetSize(w, h, true, parent);
+		if (parent && !m_autosizeParentWidth && !m_autosizeParentHeight) {
+			return;
+		}
+		if (parent && !m_autosizeParentWidth) {
+			SetHeight(h, true, parent);
+		} else if (parent && !m_autosizeParentHeight) {
+			SetWidth(w, true, parent);
+		} else {
+			SetSize(w, h, true, parent);
+		}
 	} else if (m_autosizeWidth) {
+		if (parent && !m_autosizeParentWidth) {
+			return;
+		}
 		SetWidth(w, true, parent);
 	} else if (m_autosizeHeight)  {
+		if (parent && !m_autosizeParentHeight) {
+			return;
+		}
 		SetHeight(h, true, parent);
 	}
 }

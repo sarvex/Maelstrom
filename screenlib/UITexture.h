@@ -58,6 +58,7 @@ public:
 		m_angle = angle;
 	}
 	void SetStretchGrid(int cornerSize);
+	bool IsStretching() const { return m_stretch; }
 
 	void Draw(FrameBuf *screen, int x, int y, int w, int h);
 

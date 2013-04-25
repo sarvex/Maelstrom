@@ -141,7 +141,8 @@ protected:
 
 private:
 	/* This is private so updates can trigger OnRectChanged() */
-	bool m_autosizeParent;
+	bool m_autosizeParentWidth;
+	bool m_autosizeParentHeight;
 	bool m_autosizeWidth;
 	bool m_autosizeHeight;
 	SDL_Rect m_rect;
