@@ -36,6 +36,9 @@ UIDrawEngine::UIDrawEngine()
 
 UIDrawEngine::~UIDrawEngine()
 {
+	if (m_textImage) {
+		m_ui->FreeText(m_textImage);
+	}
 }
 
 void
