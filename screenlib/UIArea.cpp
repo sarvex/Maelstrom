@@ -312,6 +312,10 @@ UIArea::LoadAnchorLocation(rapidxml::xml_node<> *node, const char *name, AnchorL
 void
 UIArea::SetAnchorElement(UIArea *anchor)
 {
+	if (anchor == m_anchor.element) {
+		return;
+	}
+
 	if (m_anchor.element) {
 		m_anchor.element->DelAnchoredArea(this);
 	}
