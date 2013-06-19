@@ -16,7 +16,4 @@
    <FileRef
       location = "group:../../../../../3rdparty/iphone/SDL_net/Xcode-iOS/SDL_net.xcodeproj">
    </FileRef>
-   <FileRef
-      location = "group:../../../../../3rdparty/iphone/libfreetype/Xcode-iPhoneOS/Freetype.xcodeproj">
-   </FileRef>
 </Workspace>
