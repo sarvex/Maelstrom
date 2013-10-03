@@ -12,31 +12,32 @@ SDL_TTF_PATH := ../SDL_ttf
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/$(SDL_PATH)/include $(LOCAL_PATH)/$(SDL_IMAGE_PATH) $(LOCAL_PATH)/$(SDL_NET_PATH) $(LOCAL_PATH)/$(SDL_TTF_PATH)
 
 # Add your application source files here...
-LOCAL_SRC_FILES := $(SDL_PATH)/src/main/android/SDL_android_main.cpp \
+LOCAL_SRC_FILES := $(SDL_PATH)/src/main/android/SDL_android_main.c \
 	../../../mainstub.cpp			\
-	../../../game/MacDialog.cpp		\
-	../../../game/MaelstromFeatures.cpp	\
-	../../../game/MaelstromUI.cpp		\
-	../../../game/about.cpp			\
-	../../../game/continue.cpp		\
-	../../../game/controls.cpp		\
-	../../../game/fastrand.cpp		\
-	../../../game/game.cpp			\
-	../../../game/gameinfo.cpp		\
-	../../../game/gameover.cpp		\
-	../../../game/init.cpp			\
-	../../../game/load.cpp			\
-	../../../game/lobby.cpp			\
-	../../../game/main.cpp			\
-	../../../game/make.cpp			\
-	../../../game/myerror.cpp		\
-	../../../game/netplay.cpp		\
-	../../../game/object.cpp		\
-	../../../game/objects.cpp		\
-	../../../game/player.cpp		\
-	../../../game/rect.cpp			\
-	../../../game/replay.cpp		\
-	../../../game/scores.cpp		\
+	../../../game/MacDialog.cpp     \
+	../../../game/MaelstromUI.cpp   \
+	../../../game/ServiceManager.cpp    \
+	../../../game/about.cpp         \
+	../../../game/continue.cpp      \
+	../../../game/controls.cpp      \
+	../../../game/fastrand.cpp      \
+	../../../game/game.cpp          \
+	../../../game/gameinfo.cpp      \
+	../../../game/gameover.cpp      \
+	../../../game/init.cpp          \
+	../../../game/load.cpp          \
+	../../../game/lobby.cpp         \
+	../../../game/main.cpp          \
+	../../../game/make.cpp          \
+	../../../game/myerror.cpp       \
+	../../../game/netplay.cpp       \
+	../../../game/object.cpp        \
+	../../../game/objects.cpp       \
+	../../../game/player.cpp        \
+	../../../game/rect.cpp          \
+	../../../game/replay.cpp        \
+	../../../game/scores.cpp        \
+	../../../game/store.cpp         \
 	../../../maclib/Mac_FontServ.cpp	\
 	../../../maclib/Mac_Sound.cpp		\
 	../../../physfs/archiver_dir.c		\
