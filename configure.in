@@ -84,7 +84,8 @@ http://www.libsdl.org/projects/SDL_net/
 fi
 
 dnl Check for zlib
-CHECK_ZLIB
+#CHECK_ZLIB
+LIBS="$LIBS -lz"
 
 dnl Set up the icon object file, for Mingw32
 case "$target" in

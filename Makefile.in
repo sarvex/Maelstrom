@@ -67,9 +67,8 @@ DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/build-scripts/install-sh \
 	$(top_srcdir)/build-scripts/missing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/acinclude/check_zlib.m4 \
-	$(top_srcdir)/acinclude/pkg.m4 $(top_srcdir)/acinclude/sdl2.m4 \
-	$(top_srcdir)/configure.in
+am__aclocal_m4_deps = $(top_srcdir)/acinclude/pkg.m4 \
+	$(top_srcdir)/acinclude/sdl2.m4 $(top_srcdir)/configure.in
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
@@ -210,7 +209,6 @@ AWK = @AWK@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
-CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
 CXXDEPMODE = @CXXDEPMODE@
@@ -221,11 +219,9 @@ DEPDIR = @DEPDIR@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
-EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 EXTRA_LIBS = @EXTRA_LIBS@
 GAME_INSTALLDIR = @GAME_INSTALLDIR@
-GREP = @GREP@
 ICONOBJ = @ICONOBJ@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -340,7 +336,8 @@ EXTRA_DIST = \
 	Xcode			\
 	Xcode-iOS		\
 	autogen.sh		\
-	ico_o
+	ico_o			\
+	icon.xpm
 
 DIST_SUBDIRS = $(SUBDIRS)
 all: all-recursive
