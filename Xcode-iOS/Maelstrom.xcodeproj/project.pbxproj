@@ -24,7 +24,6 @@
 /* Begin PBXBuildFile section */
 		93D8E49B15911A6700BD8D0E /* libSDL2_net.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 938A44A2157D55870081A436 /* libSDL2_net.a */; };
 		93D8E49C15911A6C00BD8D0E /* libSDL2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 938A44AE157D55AE0081A436 /* libSDL2.a */; };
-		93E9C29D16442B1900B39D38 /* libFreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 93E9C29A16442ADC00B39D38 /* libFreetype.a */; };
 		AA0777CE145EB56C00DB8DB3 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA0777CD145EB56C00DB8DB3 /* OpenGLES.framework */; };
 		AA0777D2145EB60A00DB8DB3 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA0777D1145EB60A00DB8DB3 /* AudioToolbox.framework */; };
 		AA0777D4145EB68300DB8DB3 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA0777D3145EB68300DB8DB3 /* QuartzCore.framework */; };
@@ -110,6 +109,8 @@
 		AAD13B84145E8A8F0040B19C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAD13B83145E8A8F0040B19C /* Foundation.framework */; };
 		AAD13B86145E8A8F0040B19C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAD13B85145E8A8F0040B19C /* CoreGraphics.framework */; };
 		AAD13B8C145E8A8F0040B19C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = AAD13B8A145E8A8F0040B19C /* InfoPlist.strings */; };
+		F32BA6072183ABF900017013 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F32BA5FC2183ABF900017013 /* CoreMotion.framework */; };
+		F32BA6092183AC4000017013 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F32BA6082183AC4000017013 /* AVFoundation.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -162,20 +163,6 @@
 			remoteGlobalIDString = BE1FA72F07AF4C45004B6283;
 			remoteInfo = libSDL_image;
 		};
-		93E9C29916442ADC00B39D38 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 93E9C29516442ADC00B39D38 /* Freetype.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D2AAC07E0554694100DB518D;
-			remoteInfo = libFreetype;
-		};
-		93E9C29B16442AE300B39D38 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 93E9C29516442ADC00B39D38 /* Freetype.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = D2AAC07D0554694100DB518D;
-			remoteInfo = libFreetype;
-		};
 		AAC04159160E809F00E22BC5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = AAC04155160E809E00E22BC5 /* SDL_image.xcodeproj */;
@@ -190,6 +177,27 @@
 			remoteGlobalIDString = BE48FD6E07AFA17000BB41DA;
 			remoteInfo = "Static Library";
 		};
+		F32BA5EC2183A4EE00017013 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 938A44A3157D55AE0081A436 /* SDL.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = FAB598141BB5C1B100BE72C5;
+			remoteInfo = "libSDL-tvOS";
+		};
+		F32BA5F12183A4FA00017013 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AAC04155160E809E00E22BC5 /* SDL_image.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = AA5314451FE0FA910025C9BE;
+			remoteInfo = "libSDL_image-tvOS";
+		};
+		F32BA5F62183A50900017013 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AAD53E5E1643923500203E03 /* SDL_ttf.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = AA53152E1FE1016F0025C9BE;
+			remoteInfo = "libSDL_ttf-tvOS";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -197,7 +205,6 @@
 		938A4498157D555C0081A436 /* SDL_net.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL_net.xcodeproj; path = "Xcode-iOS/SDL_net.xcodeproj"; sourceTree = "<group>"; };
 		938A44A3157D55AE0081A436 /* SDL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL.xcodeproj; path = "Xcode-iOS/SDL/SDL.xcodeproj"; sourceTree = "<group>"; };
 		93D8E4A315911CDC00BD8D0E /* Maelstrom-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Maelstrom-Info.plist"; path = "Xcode-iOS/Maelstrom-Info.plist"; sourceTree = "<group>"; };
-		93E9C29516442ADC00B39D38 /* Freetype.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Freetype.xcodeproj; path = "../../../../../3rdparty/iphone/libfreetype/Xcode-iPhoneOS/Freetype.xcodeproj"; sourceTree = SOURCE_ROOT; };
 		AA07778A145EB40800DB8DB3 /* begin_code.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = begin_code.h; sourceTree = "<group>"; };
 		AA07778B145EB40800DB8DB3 /* close_code.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = close_code.h; sourceTree = "<group>"; };
 		AA07778C145EB40800DB8DB3 /* SDL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL.h; sourceTree = "<group>"; };
@@ -413,6 +420,8 @@
 		AAD13B8B145E8A8F0040B19C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AAD53E5D1643922300203E03 /* SDL_ttf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_ttf.h; sourceTree = "<group>"; };
 		AAD53E5E1643923500203E03 /* SDL_ttf.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL_ttf.xcodeproj; path = "Xcode-iOS/SDL_ttf.xcodeproj"; sourceTree = "<group>"; };
+		F32BA5FC2183ABF900017013 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
+		F32BA6082183AC4000017013 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -420,22 +429,23 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				93E9C29D16442B1900B39D38 /* libFreetype.a in Frameworks */,
 				AA0777DB145EC12900DB8DB3 /* libz.dylib in Frameworks */,
 				93D8E49C15911A6C00BD8D0E /* libSDL2.a in Frameworks */,
 				AAC0415B160E811F00E22BC5 /* libSDL2_image.a in Frameworks */,
 				AA9352DA1643958300B7B41B /* libSDL2_ttf.a in Frameworks */,
 				93D8E49B15911A6700BD8D0E /* libSDL2_net.a in Frameworks */,
-				AAD13B82145E8A8F0040B19C /* UIKit.framework in Frameworks */,
-				AAD13B84145E8A8F0040B19C /* Foundation.framework in Frameworks */,
-				AAC04179160E84D000E22BC5 /* MobileCoreServices.framework in Frameworks */,
+				AA0777D2145EB60A00DB8DB3 /* AudioToolbox.framework in Frameworks */,
+				F32BA6092183AC4000017013 /* AVFoundation.framework in Frameworks */,
 				AAD13B86145E8A8F0040B19C /* CoreGraphics.framework in Frameworks */,
+				F32BA6072183ABF900017013 /* CoreMotion.framework in Frameworks */,
+				AAD13B84145E8A8F0040B19C /* Foundation.framework in Frameworks */,
+				AA7557A61594EE8F00BBD41B /* GameKit.framework in Frameworks */,
+				AAC04173160E837E00E22BC5 /* ImageIO.framework in Frameworks */,
+				AAC04179160E84D000E22BC5 /* MobileCoreServices.framework in Frameworks */,
 				AA0777CE145EB56C00DB8DB3 /* OpenGLES.framework in Frameworks */,
 				AA0777D4145EB68300DB8DB3 /* QuartzCore.framework in Frameworks */,
-				AAC04173160E837E00E22BC5 /* ImageIO.framework in Frameworks */,
-				AA0777D2145EB60A00DB8DB3 /* AudioToolbox.framework in Frameworks */,
-				AA7557A61594EE8F00BBD41B /* GameKit.framework in Frameworks */,
 				AA425CF1166DBF59005F2C24 /* StoreKit.framework in Frameworks */,
+				AAD13B82145E8A8F0040B19C /* UIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -462,14 +472,7 @@
 			isa = PBXGroup;
 			children = (
 				938A44AE157D55AE0081A436 /* libSDL2.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		93E9C29616442ADC00B39D38 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				93E9C29A16442ADC00B39D38 /* libFreetype.a */,
+				F32BA5ED2183A4EE00017013 /* libSDL2.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -481,7 +484,7 @@
 				AA077789145EB40800DB8DB3 /* include */,
 			);
 			name = SDL;
-			path = ../../../../../3rdparty/iphone/SDL;
+			path = ../../SDL;
 			sourceTree = "<group>";
 		};
 		AA077789145EB40800DB8DB3 /* include */ = {
@@ -555,7 +558,7 @@
 				AA0777C5145EB43200DB8DB3 /* include */,
 			);
 			name = SDL_net;
-			path = ../../../../../3rdparty/iphone/SDL_net;
+			path = ../../SDL_net;
 			sourceTree = "<group>";
 		};
 		AA0777C5145EB43200DB8DB3 /* include */ = {
@@ -571,7 +574,7 @@
 			children = (
 			);
 			name = physfs;
-			path = ../../../../../3rdparty/iphone/physfs;
+			path = "../../physfs-3.0.1";
 			sourceTree = SOURCE_ROOT;
 		};
 		AA439054161EBE1800FE5F41 /* physfs */ = {
@@ -742,7 +745,7 @@
 				AAC04153160E807000E22BC5 /* include */,
 			);
 			name = SDL_image;
-			path = ../../../../../3rdparty/iphone/SDL_image;
+			path = ../../SDL_image;
 			sourceTree = "<group>";
 		};
 		AAC04153160E807000E22BC5 /* include */ = {
@@ -757,6 +760,7 @@
 			isa = PBXGroup;
 			children = (
 				AAC0415A160E809F00E22BC5 /* libSDL2_image.a */,
+				F32BA5F22183A4FA00017013 /* libSDL2_image.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -789,6 +793,8 @@
 		AAD13B80145E8A8F0040B19C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F32BA6082183AC4000017013 /* AVFoundation.framework */,
+				F32BA5FC2183ABF900017013 /* CoreMotion.framework */,
 				AA0777DA145EC12900DB8DB3 /* libz.dylib */,
 				AA0777D1145EB60A00DB8DB3 /* AudioToolbox.framework */,
 				AAD13B85145E8A8F0040B19C /* CoreGraphics.framework */,
@@ -844,12 +850,11 @@
 		AAD53E43164391BD00203E03 /* SDL_ttf */ = {
 			isa = PBXGroup;
 			children = (
-				93E9C29516442ADC00B39D38 /* Freetype.xcodeproj */,
 				AAD53E5E1643923500203E03 /* SDL_ttf.xcodeproj */,
 				AAD53E5C1643921100203E03 /* include */,
 			);
 			name = SDL_ttf;
-			path = ../../../../../3rdparty/iphone/SDL_ttf;
+			path = ../../SDL_ttf;
 			sourceTree = "<group>";
 		};
 		AAD53E5C1643921100203E03 /* include */ = {
@@ -864,6 +869,7 @@
 			isa = PBXGroup;
 			children = (
 				AAD53E7E164392D700203E03 /* libSDL2_ttf.a */,
+				F32BA5F72183A50900017013 /* libSDL2_ttf.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -883,7 +889,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				93E9C29C16442AE300B39D38 /* PBXTargetDependency */,
 				93E9C28D16442AD100B39D38 /* PBXTargetDependency */,
 				93E9C28F16442AD100B39D38 /* PBXTargetDependency */,
 				93D8E495159117BC00BD8D0E /* PBXTargetDependency */,
@@ -901,6 +906,14 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0430;
+				TargetAttributes = {
+					026598AB163AC12800A8047B = {
+						DevelopmentTeam = MXGJJ98X76;
+					};
+					AAD13B7C145E8A8F0040B19C = {
+						DevelopmentTeam = MXGJJ98X76;
+					};
+				};
 			};
 			buildConfigurationList = AAD13B77145E8A8F0040B19C /* Build configuration list for PBXProject "Maelstrom" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -913,10 +926,6 @@
 			productRefGroup = AAD13B7E145E8A8F0040B19C /* Products */;
 			projectDirPath = "";
 			projectReferences = (
-				{
-					ProductGroup = 93E9C29616442ADC00B39D38 /* Products */;
-					ProjectRef = 93E9C29516442ADC00B39D38 /* Freetype.xcodeproj */;
-				},
 				{
 					ProductGroup = 938A44A4157D55AE0081A436 /* Products */;
 					ProjectRef = 938A44A3157D55AE0081A436 /* SDL.xcodeproj */;
@@ -957,13 +966,6 @@
 			remoteRef = 938A44AD157D55AE0081A436 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		93E9C29A16442ADC00B39D38 /* libFreetype.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libFreetype.a;
-			remoteRef = 93E9C29916442ADC00B39D38 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		AAC0415A160E809F00E22BC5 /* libSDL2_image.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -976,6 +978,27 @@
 			fileType = archive.ar;
 			path = libSDL2_ttf.a;
 			remoteRef = AAD53E7D164392D700203E03 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		F32BA5ED2183A4EE00017013 /* libSDL2.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libSDL2.a;
+			remoteRef = F32BA5EC2183A4EE00017013 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		F32BA5F22183A4FA00017013 /* libSDL2_image.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libSDL2_image.a;
+			remoteRef = F32BA5F12183A4FA00017013 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		F32BA5F72183A50900017013 /* libSDL2_ttf.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libSDL2_ttf.a;
+			remoteRef = F32BA5F62183A50900017013 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -1132,11 +1155,6 @@
 			name = libSDL_image;
 			targetProxy = 93E9C28E16442AD100B39D38 /* PBXContainerItemProxy */;
 		};
-		93E9C29C16442AE300B39D38 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = libFreetype;
-			targetProxy = 93E9C29B16442AE300B39D38 /* PBXContainerItemProxy */;
-		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -1175,21 +1193,7 @@
 		932D49F31693382100B8A913 /* Distribution */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.1;
-				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
-				SVNROOT = ../../../../..;
-				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Distribution;
@@ -1197,7 +1201,6 @@
 		932D49F41693382100B8A913 /* Distribution */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1206,7 +1209,6 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "Maelstrom-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
@@ -1227,48 +1229,18 @@
 		AAD13B93145E8A8F0040B19C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.1;
-				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
-				SVNROOT = ../../../../..;
-				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
 		AAD13B94145E8A8F0040B19C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.1;
-				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
-				SVNROOT = ../../../../..;
-				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -1276,7 +1248,6 @@
 		AAD13B96145E8A8F0040B19C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -1284,7 +1255,6 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "Maelstrom-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
@@ -1294,7 +1264,6 @@
 		AAD13B97145E8A8F0040B19C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -1302,7 +1271,6 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "Maelstrom-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
